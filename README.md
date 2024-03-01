@@ -101,7 +101,7 @@ having legacy code and learn tools from JVM ecosystem (but not only).
 - "Long-term" client is someone who park for more than half of the days in a month - 3 months in a row
 - Loyalty points can be redeemed to receive gifts
 
-## Customer recovery
+### Customer recovery
 
 - A customer labeled as 'difficult' has the right to assert their innocence
 - If the verifier accepts the justification, a discount should be provided to that person as compensation
