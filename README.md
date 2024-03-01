@@ -41,6 +41,22 @@ one of the [DevMentors YouTube video](https://www.youtube.com/@DevMentorsPL/vide
 Because it is my "native" background. And it is not my aim to learn new language. I want to learn how to model domain
 having legacy code and learn tools from JVM ecosystem (but not only).
 
+## MVP
+
+- [ ] 3-layer app with anemic model (without tests)
+  - [ ] Occupation logic
+  - [ ] Reservation logic
+  - [ ] Fee logic
+- [ ] Refactoring to add unit tests
+- [ ] Looking for deep model (modules)
+- [ ] Add other types of requirements
+  - [ ] Cleaning
+  - [ ] Maintenance
+  - [ ] Loyalty points
+  - [ ] Customer recovery
+- [ ] Add CQRS
+- [ ] ...
+
 ## Business context
 
 ### Parking on parking spots
