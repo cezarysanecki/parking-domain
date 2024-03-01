@@ -1,6 +1,8 @@
 # This config was automatically generated from your source code
 # Stacks detected: deps:java:.
 version: 2.1
+orbs:
+  codecov: codecov/codecov@4.0.1
 jobs:
   test-java:
     docker:
@@ -21,9 +23,7 @@ jobs:
           path: target/surefire-reports
       - store_test_results:
           path: target/failsafe-reports
-      - run:
-          name: Uploading coverage reports
-          command: bash <(curl -s https://codecov.io/bash)
+      - codecov/upload
 
       - save_cache:
           key: cache-{{ checksum "/tmp/CIRCLECI_CACHE_KEY" }}
