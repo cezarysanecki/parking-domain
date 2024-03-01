@@ -21,3 +21,22 @@ not the goal in itself.
 - [Maven](https://maven.apache.org/)
 - [H2 database](https://www.h2database.com/html/main.html)
 - [Lombok](https://projectlombok.org/)
+
+## FAQ
+
+### Is it production-ready?
+
+Nope. For now, it is just conception. We will see where we will get with this. For sure, I will learn a lot.
+I hope, you also!
+
+### Why parking domain?
+
+Do not know exactly... I tried to implement voting and vaccination domain, but writing ugly code (for education purposes)
+discouraged me from them. I wrote about that on [my blog \[PL\]](https://cezarysanecki.pl/2024/02/13/prezentacja-prostej-domeny/).
+
+### Why Java and Spring?
+
+Because it is my "native" background. And it is not my aim to learn new language. I want to learn how to model domain
+having legacy code and learn tools from JVM ecosystem (but not only).
+
+
