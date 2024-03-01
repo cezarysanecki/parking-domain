@@ -1,3 +1,5 @@
+[![CircleCI](https://dl.circleci.com/status-badge/img/circleci/EWnxGyN6YVSBw3fYwhnvGz/Wk32wgSw38FgCiuSE8XM8o/tree/master.svg?style=svg&circle-token=674289aa512a7b5437d07b4dc3450e1eb8b4a854)](https://dl.circleci.com/status-badge/redirect/circleci/EWnxGyN6YVSBw3fYwhnvGz/Wk32wgSw38FgCiuSE8XM8o/tree/master)
+
 ![Parkign domain](./docs/public/logo.png)
 
 # Parking Domain - [contest 100 commits](https://100commitow.pl/)
