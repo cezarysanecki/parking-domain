@@ -33,6 +33,8 @@ I hope, you also!
 
 Do not know exactly... I tried to implement voting and vaccination domain, but writing ugly code (for education purposes)
 discouraged me from them. I wrote about that on [my blog \[PL\]](https://cezarysanecki.pl/2024/02/13/prezentacja-prostej-domeny/).
+I hope that coding anemic model for parking domain will not end like previous examples. And I heard about this domain in
+one of the [DevMentors YouTube video](https://www.youtube.com/@DevMentorsPL/videos)... and I think why not!
 
 ### Why Java and Spring?
 
