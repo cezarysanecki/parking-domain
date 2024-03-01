@@ -95,6 +95,12 @@ having legacy code and learn tools from JVM ecosystem (but not only).
 - Clients reserve spots from main bank
 - Reservations cannot exceed 50% of the available main bank
 
+### Loyalty points
+
+- Clients can receive loyalty points for reporting issues or being "long-term" client
+- "Long-term" client is someone who park for more than half of the days in a month - 3 months in a row
+- Loyalty points can be redeemed to receive gifts
+
 ## Inspirations
 
 - [DevMentors YouTube video](https://www.youtube.com/@DevMentorsPL/videos)
