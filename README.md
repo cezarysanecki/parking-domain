@@ -41,6 +41,20 @@ one of the [DevMentors YouTube video](https://www.youtube.com/@DevMentorsPL/vide
 Because it is my "native" background. And it is not my aim to learn new language. I want to learn how to model domain
 having legacy code and learn tools from JVM ecosystem (but not only).
 
+## Business context
+
+### Parking on parking spots
+
+- Basic functionality for parking
+- Parking is available 24/7
+- Specified parking spot can be occupied (need to track them)
+- Parking spots can be occupied by: cars, motorcycles, bikes and scooters
+- To optimize occupation of parking spots assume that:
+  - 1 parking spot can be occupied by **1 car**
+  - 1 parking spot can be occupied by **2 motorcycles**
+  - 1 parking spot can be occupied by **3 bicycles or scooters**
+- We cannot mix vehicles types on one parking spot, unless they are in the same above group
+
 ## Inspirations
 
 - [DevMentors YouTube video](https://www.youtube.com/@DevMentorsPL/videos)
