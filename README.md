@@ -117,12 +117,12 @@ in the current project during the MVP phase. Certainly, I will create an anemic 
   - Change logic to add more unit tests
   - Split domains/hexagonal architecture
 - Save form vs Save state per field
-- Security (OAtuh, SSL, CORS etc.)
+- Security (OAuth, SSL, CORS etc.)
 - Event Sourcing
 - Microservices
   - Service discovery
   - Circuit breaker
-  - Tentants?
+  - Tenants?
 - Functional approach
 - Kubernetes/Docker
 - Kotlin
@@ -131,11 +131,11 @@ in the current project during the MVP phase. Certainly, I will create an anemic 
 - Slack notifications
 - JOOQ
 - Micronaut/Quarkus
-- Hotwire
+- HotWire
 - Observability
 - Profiling
 - Documentation
-- Bitemporal event
+- Bi-temporal event
 - jMeter
 
 ## Inspirations
