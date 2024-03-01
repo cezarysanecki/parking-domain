@@ -1,7 +1,7 @@
 [![Build](https://github.com/cezarysanecki/parking-domain/actions/workflows/maven.yml/badge.svg)](https://github.com/cezarysanecki/parking-domain/actions/workflows/maven.yml)
 [![codecov](https://codecov.io/gh/cezarysanecki/parking-domain/graph/badge.svg?token=IWUFNCKYCN)](https://codecov.io/gh/cezarysanecki/parking-domain)
 
-![Parkign domain](./docs/public/logo.png)
+![Parking domain](./docs/public/logo.png)
 
 # Parking Domain - [contest 100 commits](https://100commitow.pl/)
 
@@ -156,6 +156,10 @@ in the current project during the MVP phase. Certainly, I will create an anemic 
 - Documentation
 - Bi-temporal event
 - jMeter
+
+## Scratches
+
+![Scratch for parking](./docs/public/discovery_scratch.png)
 
 ## Inspirations
 
