@@ -1,6 +1,8 @@
 # This config was automatically generated from your source code
 # Stacks detected: deps:java:.
 version: 2.1
+orbs:
+  codecov: codecov/codecov@4.0.1
 jobs:
   test-java:
     docker:
@@ -49,5 +51,3 @@ workflows:
     jobs:
       - checkout
       - codecov/upload
-orbs:
-  codecov: codecov/codecov@4.0.1
