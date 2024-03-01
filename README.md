@@ -88,6 +88,12 @@ having legacy code and learn tools from JVM ecosystem (but not only).
     - being loyal client (park for more than half of the days in a month)
     - recommendation
 
+### Reservations
+
+- Clients can reserve spot for one day
+- Client can only have one reservation
+- Clients reserve spots from main bank
+
 ## Inspirations
 
 - [DevMentors YouTube video](https://www.youtube.com/@DevMentorsPL/videos)
