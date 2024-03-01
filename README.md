@@ -101,6 +101,12 @@ having legacy code and learn tools from JVM ecosystem (but not only).
 - "Long-term" client is someone who park for more than half of the days in a month - 3 months in a row
 - Loyalty points can be redeemed to receive gifts
 
+## 'Difficult' customers
+
+- Send warnings for such clients
+- If they repeat it for the third time within half of the year, then tow the vehicle
+- In the case of unregistered clients, contact the police
+
 ## Inspirations
 
 - [DevMentors YouTube video](https://www.youtube.com/@DevMentorsPL/videos)
