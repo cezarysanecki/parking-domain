@@ -41,4 +41,7 @@ one of the [DevMentors YouTube video](https://www.youtube.com/@DevMentorsPL/vide
 Because it is my "native" background. And it is not my aim to learn new language. I want to learn how to model domain
 having legacy code and learn tools from JVM ecosystem (but not only).
 
+## Inspirations
 
+- [DevMentors YouTube video](https://www.youtube.com/@DevMentorsPL/videos)
+- [Library by example](https://github.com/ddd-by-examples/library)
