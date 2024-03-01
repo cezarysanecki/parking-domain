@@ -111,7 +111,7 @@ having legacy code and learn tools from JVM ecosystem (but not only).
 I would like to learn the following technologies/tools. I need to consider which of them to use 
 in the current project during the MVP phase. Certainly, I will create an anemic model using a 3-layer architecture.
 
-- Very ugly 3 layered app (anemic models)
+- Very ugly 3-layer app (anemic models)
 - Refactoring
   - Unit/Integration tests (Protect business logic) + TestContainers if needed
   - Change logic to add more unit tests
