@@ -69,6 +69,25 @@ having legacy code and learn tools from JVM ecosystem (but not only).
   - They will receive loyalty points 
   - If they are given access to the broken spot, they should also be provided access to another parking spot from the emergency bank
 
+### Fee
+
+- Standard usage of parking spot:
+  - 15 minutes - free
+  - 1 hour - 5PLN
+  - 2 hours - 9PLN
+  - 4 hours - 17PLN
+  - one day - 40PLN
+  - each successive day - 50PLN
+- Subscription:
+  - dedicated spot bank
+  - exclusive parking spot
+  - monthly - 1000PLN
+- Discount:
+  - 1-10% for:
+    - reporting issues
+    - being loyal client (park for more than half of the days in a month)
+    - recommendation
+
 ## Inspirations
 
 - [DevMentors YouTube video](https://www.youtube.com/@DevMentorsPL/videos)
