@@ -1,4 +1,4 @@
-[![CircleCI](https://dl.circleci.com/status-badge/img/circleci/EWnxGyN6YVSBw3fYwhnvGz/Wk32wgSw38FgCiuSE8XM8o/tree/master.svg?style=svg&circle-token=674289aa512a7b5437d07b4dc3450e1eb8b4a854)](https://dl.circleci.com/status-badge/redirect/circleci/EWnxGyN6YVSBw3fYwhnvGz/Wk32wgSw38FgCiuSE8XM8o/tree/master)
+[![Build](https://github.com/cezarysanecki/parking-domain/actions/workflows/maven.yml/badge.svg)](https://github.com/cezarysanecki/parking-domain/actions/workflows/maven.yml)
 [![codecov](https://codecov.io/gh/cezarysanecki/parking-domain/graph/badge.svg?token=IWUFNCKYCN)](https://codecov.io/gh/cezarysanecki/parking-domain)
 
 ![Parkign domain](./docs/public/logo.png)
