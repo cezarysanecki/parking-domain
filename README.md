@@ -11,3 +11,13 @@ This is just experiment for **educational purposes**. Of course, I will define M
 not the goal in itself.
 
 **Let jump into the code and see what will happen!**
+
+## Used technologies (for now)
+
+- [Java 21](https://openjdk.org/projects/jdk/21/)
+- [Spring Boot 3](https://spring.io/projects/spring-boot)
+  - Web
+  - JPA
+- [Maven](https://maven.apache.org/)
+- [H2 database](https://www.h2database.com/html/main.html)
+- [Lombok](https://projectlombok.org/)
