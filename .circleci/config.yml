@@ -14,10 +14,17 @@ jobs:
                     sort | xargs cat > /tmp/CIRCLECI_CACHE_KEY
       - restore_cache:
           key: cache-{{ checksum "/tmp/CIRCLECI_CACHE_KEY" }}
+
       - run:
           command: mvn verify
       - store_test_results:
           path: target/surefire-reports
+      - store_test_results:
+          path: target/failsafe-reports
+      - run:
+          name: Uploading coverage reports
+          command: bash <(curl -s https://codecov.io/bash)
+
       - save_cache:
           key: cache-{{ checksum "/tmp/CIRCLECI_CACHE_KEY" }}
           paths:
