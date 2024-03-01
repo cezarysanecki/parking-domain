@@ -93,6 +93,7 @@ having legacy code and learn tools from JVM ecosystem (but not only).
 - Clients can reserve spot for one day
 - Client can only have one reservation
 - Clients reserve spots from main bank
+- Reservations cannot exceed 50% of the available main bank
 
 ## Inspirations
 
