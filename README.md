@@ -108,8 +108,8 @@ having legacy code and learn tools from JVM ecosystem (but not only).
 
 ## Educational goals
 
-I would like to learn below technologies/tools. I need to consider which of them to use in the current project 
-during the MVP phase. For sure, I will create anemic model using 3 layers architecture.
+I would like to learn the following technologies/tools. I need to consider which of them to use 
+in the current project during the MVP phase. Certainly, I will create an anemic model using a 3-layer architecture.
 
 - Very ugly 3 layered app (anemic models)
 - Refactoring
