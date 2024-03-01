@@ -57,9 +57,17 @@ having legacy code and learn tools from JVM ecosystem (but not only).
 
 ### Cleaning parking spots
 
-- Because parking is available 24/7, we cannot schedule a technical break to clean the spots.
-- We need to track when the spots were last cleaned and mark them as "out of order" when a specified period of time has passed since the last cleaning.
-- When 5 spots are marked for cleaning, we request the cleaning service.
+- Because parking is available 24/7, we cannot schedule a technical break to clean the spots
+- We need to track when the spots were last cleaned and mark them as "out of order" when a specified period of time has passed since the last cleaning
+- When 5 spots are marked for cleaning, we request the cleaning service
+
+### Repair/Maintenance of parking spots
+
+- Almost the same as cleaning parking spots
+- It may not be as widespread as cleaning, but occasionally, we may need to change the parking surface
+- Clients can report a malfunction or issue with a parking spot
+  - They will receive loyalty points 
+  - If they are given access to the broken spot, they should also be provided access to another parking spot from the emergency bank
 
 ## Inspirations
 
