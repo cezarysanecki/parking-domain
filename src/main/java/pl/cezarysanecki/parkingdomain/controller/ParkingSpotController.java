@@ -21,6 +21,11 @@ public class ParkingSpotController {
         return parkingSpotService.create().getId();
     }
 
+    @PostMapping("/occupy")
+    public Long occupy(@PathVariable("id") Long id) {
+        return parkingSpotService.occupy(id).getId();
+    }
+
     @GetMapping("/{id}")
     public ParkingSpot findBy(@PathVariable("id") Long id) {
         return parkingSpotService.findBy(id);
