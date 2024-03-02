@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.cezarysanecki.parkingdomain.model.ParkingSpot;
 import pl.cezarysanecki.parkingdomain.service.ParkingSpotService;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/parking-spot")
 @RequiredArgsConstructor
@@ -29,6 +31,11 @@ public class ParkingSpotController {
     @GetMapping("/{id}")
     public ParkingSpot findBy(@PathVariable("id") Long id) {
         return parkingSpotService.findBy(id);
+    }
+
+    @GetMapping
+    public List<ParkingSpot> findAll() {
+        return parkingSpotService.findAll();
     }
 
 }

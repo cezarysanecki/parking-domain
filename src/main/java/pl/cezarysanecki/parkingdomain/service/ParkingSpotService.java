@@ -35,4 +35,10 @@ public class ParkingSpotService {
                 .orElseThrow(() -> new IllegalStateException("cannot find parking spot by id: " + id));
     }
 
+    public List<ParkingSpot> findAll() {
+        Iterable<ParkingSpot> parkingSpots = parkingSpotRepository.findAll();
+        return StreamSupport.stream(parkingSpots.spliterator(), false)
+                .collect(Collectors.toList());
+    }
+
 }
