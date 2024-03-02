@@ -21,5 +21,9 @@ public class ParkingSpotService {
         parkingSpot.setStatus(ParkingSpotStatus.AVAILABLE);
         return parkingSpotRepository.save(parkingSpot);
     }
+    public ParkingSpot findBy(Long id) {
+        return parkingSpotRepository.findById(id)
+                .orElseThrow(() -> new IllegalStateException("cannot find parking spot by id: " + id));
+    }
 
 }
