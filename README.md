@@ -24,6 +24,7 @@ not the goal in itself.
 - [Maven](https://maven.apache.org/)
 - [H2 database](https://www.h2database.com/html/main.html)
 - [Lombok](https://projectlombok.org/)
+- [Bruno](https://www.usebruno.com/)
 
 ## FAQ
 
