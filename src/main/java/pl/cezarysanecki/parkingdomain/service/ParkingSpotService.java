@@ -30,6 +30,13 @@ public class ParkingSpotService {
         return parkingSpotRepository.save(parkingSpot);
     }
 
+    public ParkingSpot release(Long id) {
+        ParkingSpot parkingSpot = findBy(id);
+
+        parkingSpot.setStatus(ParkingSpotStatus.AVAILABLE);
+
+        return parkingSpotRepository.save(parkingSpot);
+    }
     public ParkingSpot findBy(Long id) {
         return parkingSpotRepository.findById(id)
                 .orElseThrow(() -> new IllegalStateException("cannot find parking spot by id: " + id));
