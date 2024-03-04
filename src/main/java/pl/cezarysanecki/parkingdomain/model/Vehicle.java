@@ -6,6 +6,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -20,5 +21,8 @@ public class Vehicle {
 
     @Enumerated(EnumType.STRING)
     private VehicleType type;
+
+    @OneToOne
+    private ParkingSpot parkingSpot;
 
 }

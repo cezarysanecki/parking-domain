@@ -24,17 +24,19 @@ public class ParkingSpotService {
     }
 
     public ParkingSpot occupy(Long parkingSpotId, Vehicle vehicle) {
-        ParkingSpot parkingSpot = findBy(id);
+        ParkingSpot parkingSpot = findBy(parkingSpotId);
 
         parkingSpot.setStatus(ParkingSpotStatus.OCCUPIED);
+        parkingSpot.setVehicle(vehicle);
 
         return parkingSpotRepository.save(parkingSpot);
     }
 
-    public ParkingSpot occupyAnyAvailable(final Vehicle vehicle) {
+    public ParkingSpot occupyAnyAvailable(Vehicle vehicle) {
         ParkingSpot parkingSpot = findAnyAvailable();
 
         parkingSpot.setStatus(ParkingSpotStatus.OCCUPIED);
+        parkingSpot.setVehicle(vehicle);
 
         return parkingSpotRepository.save(parkingSpot);
     }
@@ -50,7 +52,7 @@ public class ParkingSpotService {
     public ParkingSpot findAnyAvailable() {
         return findAll()
                 .stream()
-                .filter(parkingSpot -> parkingSpot.getStatus() == ParkingSpotStatus.AVAILABLE)
+                .filter(parkingSpot -> parkingSpot.getStatus()==ParkingSpotStatus.AVAILABLE)
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("cannot find available parking spot"));
     }
