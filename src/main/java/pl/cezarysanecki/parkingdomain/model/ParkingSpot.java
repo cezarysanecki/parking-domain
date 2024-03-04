@@ -9,13 +9,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Entity
 @Data
-@NoArgsConstructor
 public class ParkingSpot {
 
     @Id
@@ -30,6 +28,10 @@ public class ParkingSpot {
 
     @OneToOne
     private Vehicle reservedBy;
+
+    public ParkingSpot() {
+        status = ParkingSpotStatus.AVAILABLE;
+    }
 
     public boolean isAvailable() {
         return getStatus() == ParkingSpotStatus.AVAILABLE;

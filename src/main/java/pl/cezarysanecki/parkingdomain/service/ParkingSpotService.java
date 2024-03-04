@@ -18,9 +18,7 @@ public class ParkingSpotService {
     private final VehicleRepository vehicleRepository;
 
     public ParkingSpot create() {
-        ParkingSpot parkingSpot = new ParkingSpot();
-        parkingSpot.setStatus(ParkingSpotStatus.AVAILABLE);
-        return parkingSpotRepository.save(parkingSpot);
+        return parkingSpotRepository.save(new ParkingSpot());
     }
 
     public ParkingSpot reservedAnyFor(Vehicle vehicle) {
