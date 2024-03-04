@@ -2,6 +2,7 @@ package pl.cezarysanecki.parkingdomain.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.cezarysanecki.parkingdomain.model.ParkingSpot;
 import pl.cezarysanecki.parkingdomain.model.ParkingSpotStatus;
 import pl.cezarysanecki.parkingdomain.model.Vehicle;
@@ -17,10 +18,12 @@ public class ParkingSpotService {
     private final ParkingSpotRepository parkingSpotRepository;
     private final VehicleRepository vehicleRepository;
 
+    @Transactional
     public ParkingSpot create() {
         return parkingSpotRepository.save(new ParkingSpot());
     }
 
+    @Transactional
     public ParkingSpot reservedAnyFor(Vehicle vehicle) {
         ParkingSpot parkingSpot = findAnyAvailable();
 
@@ -29,6 +32,7 @@ public class ParkingSpotService {
         return parkingSpotRepository.save(parkingSpot);
     }
 
+    @Transactional
     public ParkingSpot reservedFor(Long parkingSpotId, Vehicle vehicle) {
         ParkingSpot parkingSpot = parkingSpotRepository.findBy(parkingSpotId);
 
@@ -37,6 +41,7 @@ public class ParkingSpotService {
         return parkingSpotRepository.save(parkingSpot);
     }
 
+    @Transactional
     public ParkingSpot release(Long id) {
         ParkingSpot parkingSpot = parkingSpotRepository.findBy(id);
 
