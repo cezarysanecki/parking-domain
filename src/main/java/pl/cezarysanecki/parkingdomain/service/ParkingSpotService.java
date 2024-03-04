@@ -44,7 +44,7 @@ public class ParkingSpotService {
         List<ParkingSpot> parkingSpots = findAll();
 
         return parkingSpots.stream()
-                .filter(parkingSpot -> isFull(parkingSpot) && isTheSameType(vehicle, parkingSpot))
+                .filter(parkingSpot -> !isFull(parkingSpot) && isTheSameType(vehicle, parkingSpot))
                 .findAny()
                 .or(() -> parkingSpots.stream()
                         .filter(parkingSpot -> parkingSpot.getStatus() == ParkingSpotStatus.AVAILABLE)
@@ -80,7 +80,7 @@ public class ParkingSpotService {
                 .map(Vehicle::getType)
                 .toList();
 
-        return !parkVehicleTypes.contains(vehicle.getType());
+        return !parkVehicleTypes.isEmpty() && parkVehicleTypes.contains(vehicle.getType());
     }
 
 }
