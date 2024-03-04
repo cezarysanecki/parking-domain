@@ -26,6 +26,22 @@ public class ParkingSpotService {
         return parkingSpotRepository.save(parkingSpot);
     }
 
+    public ParkingSpot reservedAnyFor(Vehicle vehicle) {
+        ParkingSpot parkingSpot = findAnyAvailable();
+
+        if (parkingSpot.getReservedBy() != null && !parkingSpot.getReservedBy().getId().equals(vehicle.getId())) {
+            throw new IllegalStateException("cannot reserve reserved parking spot");
+        }
+        if (parkingSpot.getStatus() != ParkingSpotStatus.AVAILABLE) {
+            throw new IllegalStateException("cannot reserve unavailable parking spot");
+        }
+
+        parkingSpot.setStatus(ParkingSpotStatus.RESERVED);
+        parkingSpot.setReservedBy(vehicle);
+
+        return parkingSpotRepository.save(parkingSpot);
+    }
+
     public ParkingSpot reservedFor(Long parkingSpotId, Vehicle vehicle) {
         ParkingSpot parkingSpot = findBy(parkingSpotId);
 
