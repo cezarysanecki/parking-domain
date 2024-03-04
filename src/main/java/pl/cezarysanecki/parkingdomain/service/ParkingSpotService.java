@@ -7,6 +7,7 @@ import pl.cezarysanecki.parkingdomain.model.ParkingSpotStatus;
 import pl.cezarysanecki.parkingdomain.model.Vehicle;
 import pl.cezarysanecki.parkingdomain.model.VehicleType;
 import pl.cezarysanecki.parkingdomain.repository.ParkingSpotRepository;
+import pl.cezarysanecki.parkingdomain.repository.VehicleRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,6 +18,7 @@ import java.util.stream.StreamSupport;
 public class ParkingSpotService {
 
     private final ParkingSpotRepository parkingSpotRepository;
+    private final VehicleRepository vehicleRepository;
 
     public ParkingSpot create() {
         ParkingSpot parkingSpot = new ParkingSpot();
@@ -28,6 +30,9 @@ public class ParkingSpotService {
         ParkingSpot parkingSpot = findBy(id);
 
         parkingSpot.setStatus(ParkingSpotStatus.AVAILABLE);
+
+        parkingSpot.getVehicles().forEach(vehicle -> vehicle.setParkingSpot(null));
+        vehicleRepository.saveAll(parkingSpot.getVehicles());
 
         return parkingSpotRepository.save(parkingSpot);
     }
