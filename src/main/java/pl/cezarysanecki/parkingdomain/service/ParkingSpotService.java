@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.cezarysanecki.parkingdomain.model.ParkingSpot;
 import pl.cezarysanecki.parkingdomain.model.ParkingSpotStatus;
+import pl.cezarysanecki.parkingdomain.model.Vehicle;
+import pl.cezarysanecki.parkingdomain.model.VehicleType;
 import pl.cezarysanecki.parkingdomain.repository.ParkingSpotRepository;
 
 import java.util.List;
@@ -38,6 +40,18 @@ public class ParkingSpotService {
                 .orElseThrow(() -> new IllegalArgumentException("cannot find available parking spot"));
     }
 
+    public ParkingSpot findAnyAvailableFor(Vehicle vehicle) {
+        List<ParkingSpot> parkingSpots = findAll();
+
+        return parkingSpots.stream()
+                .filter(parkingSpot -> isFull(parkingSpot) && isTheSameType(vehicle, parkingSpot))
+                .findAny()
+                .or(() -> parkingSpots.stream()
+                        .filter(parkingSpot -> parkingSpot.getStatus() == ParkingSpotStatus.AVAILABLE)
+                        .findAny())
+                .orElseThrow(() -> new IllegalArgumentException("cannot find available parking spot"));
+    }
+
     public ParkingSpot findBy(Long id) {
         return parkingSpotRepository.findById(id)
                 .orElseThrow(() -> new IllegalStateException("cannot find parking spot by id: " + id));
@@ -47,6 +61,26 @@ public class ParkingSpotService {
         Iterable<ParkingSpot> parkingSpots = parkingSpotRepository.findAll();
         return StreamSupport.stream(parkingSpots.spliterator(), false)
                 .collect(Collectors.toList());
+    }
+
+    private static boolean isFull(ParkingSpot parkingSpot) {
+        List<VehicleType> parkVehicleTypes = parkingSpot.getVehicles()
+                .stream()
+                .map(Vehicle::getType)
+                .toList();
+
+        return parkVehicleTypes.size() == 1 && parkVehicleTypes.get(0) == VehicleType.CAR
+                || parkVehicleTypes.size() == 2 && parkVehicleTypes.stream().allMatch(type -> type == VehicleType.MOTORCYCLE)
+                || parkVehicleTypes.size() == 3 && parkVehicleTypes.stream().allMatch(type -> type == VehicleType.BIKE || type == VehicleType.SCOOTER);
+    }
+
+    private static boolean isTheSameType(Vehicle vehicle, ParkingSpot parkingSpot) {
+        List<VehicleType> parkVehicleTypes = parkingSpot.getVehicles()
+                .stream()
+                .map(Vehicle::getType)
+                .toList();
+
+        return !parkVehicleTypes.contains(vehicle.getType());
     }
 
 }
