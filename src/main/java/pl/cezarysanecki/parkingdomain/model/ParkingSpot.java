@@ -69,4 +69,12 @@ public class ParkingSpot {
         setReservedBy(vehicle);
     }
 
+    public boolean isTheSameType(VehicleType type) {
+        List<VehicleType> parkVehicleTypes = getVehicles()
+                .stream()
+                .map(Vehicle::getType)
+                .toList();
+
+        return !parkVehicleTypes.isEmpty() && parkVehicleTypes.contains(type);
+    }
 }

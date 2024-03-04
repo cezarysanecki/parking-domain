@@ -73,7 +73,7 @@ public class ParkingSpotService {
         List<ParkingSpot> parkingSpots = parkingSpotRepository.findAll();
 
         return parkingSpots.stream()
-                .filter(parkingSpot -> !parkingSpot.isFull() && vehicle.isTheSameType(parkingSpot))
+                .filter(parkingSpot -> !parkingSpot.isFull() && parkingSpot.isTheSameType(vehicle.getType()))
                 .findAny()
                 .or(() -> parkingSpots.stream()
                         .filter(ParkingSpot::isAvailable)

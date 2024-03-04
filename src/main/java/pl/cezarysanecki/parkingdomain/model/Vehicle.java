@@ -11,8 +11,6 @@ import jakarta.persistence.ManyToOne;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Entity
 @Data
 @NoArgsConstructor
@@ -28,14 +26,5 @@ public class Vehicle {
     @ManyToOne
     @JsonBackReference
     private ParkingSpot parkingSpot;
-
-    public boolean isTheSameType(ParkingSpot parkingSpot) {
-        List<VehicleType> parkVehicleTypes = parkingSpot.getVehicles()
-                .stream()
-                .map(Vehicle::getType)
-                .toList();
-
-        return !parkVehicleTypes.isEmpty() && parkVehicleTypes.contains(getType());
-    }
 
 }
