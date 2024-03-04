@@ -77,4 +77,8 @@ public class ParkingSpot {
 
         return !parkVehicleTypes.isEmpty() && parkVehicleTypes.contains(type);
     }
+
+    public boolean isAnotherPlaceFor(VehicleType type) {
+        return !isFull() && isTheSameType(type);
+    }
 }
