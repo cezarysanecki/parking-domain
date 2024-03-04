@@ -22,22 +22,6 @@ public class ParkingSpotService {
         return parkingSpotRepository.save(parkingSpot);
     }
 
-    public ParkingSpot occupy(Long id) {
-        ParkingSpot parkingSpot = findBy(id);
-
-        parkingSpot.setStatus(ParkingSpotStatus.OCCUPIED);
-
-        return parkingSpotRepository.save(parkingSpot);
-    }
-
-    public ParkingSpot occupyAnyAvailable() {
-        ParkingSpot parkingSpot = findAnyAvailable();
-
-        parkingSpot.setStatus(ParkingSpotStatus.OCCUPIED);
-
-        return parkingSpotRepository.save(parkingSpot);
-    }
-
     public ParkingSpot release(Long id) {
         ParkingSpot parkingSpot = findBy(id);
 
