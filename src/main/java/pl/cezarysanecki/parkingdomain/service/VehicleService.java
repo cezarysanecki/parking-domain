@@ -28,7 +28,7 @@ public class VehicleService {
     }
 
     public Vehicle park(Long parkingSpotId, Vehicle vehicle) {
-        ParkingSpot parkingSpot = parkingSpotService.findBy(parkingSpotId);
+        ParkingSpot parkingSpot = parkingSpotRepository.findBy(parkingSpotId);
 
         if (parkingSpot.getVehicles().isEmpty()) {
             parkingSpot.setStatus(ParkingSpotStatus.OCCUPIED);

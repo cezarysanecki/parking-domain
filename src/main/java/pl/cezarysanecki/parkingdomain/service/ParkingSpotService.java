@@ -2,16 +2,14 @@ package pl.cezarysanecki.parkingdomain.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.cezarysanecki.parkingdomain.model.ParkingSpot;
 import pl.cezarysanecki.parkingdomain.model.ParkingSpotStatus;
 import pl.cezarysanecki.parkingdomain.model.Vehicle;
-import pl.cezarysanecki.parkingdomain.model.VehicleType;
 import pl.cezarysanecki.parkingdomain.repository.ParkingSpotRepository;
 import pl.cezarysanecki.parkingdomain.repository.VehicleRepository;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Service
 @RequiredArgsConstructor
@@ -20,46 +18,32 @@ public class ParkingSpotService {
     private final ParkingSpotRepository parkingSpotRepository;
     private final VehicleRepository vehicleRepository;
 
+    @Transactional
     public ParkingSpot create() {
-        ParkingSpot parkingSpot = new ParkingSpot();
-        parkingSpot.setStatus(ParkingSpotStatus.AVAILABLE);
-        return parkingSpotRepository.save(parkingSpot);
+        return parkingSpotRepository.save(new ParkingSpot());
     }
 
+    @Transactional
     public ParkingSpot reservedAnyFor(Vehicle vehicle) {
         ParkingSpot parkingSpot = findAnyAvailable();
 
-        if (parkingSpot.getReservedBy() != null && !parkingSpot.getReservedBy().getId().equals(vehicle.getId())) {
-            throw new IllegalStateException("cannot reserve reserved parking spot");
-        }
-        if (parkingSpot.getStatus() != ParkingSpotStatus.AVAILABLE) {
-            throw new IllegalStateException("cannot reserve unavailable parking spot");
-        }
-
-        parkingSpot.setStatus(ParkingSpotStatus.RESERVED);
-        parkingSpot.setReservedBy(vehicle);
+        parkingSpot.reserveFor(vehicle);
 
         return parkingSpotRepository.save(parkingSpot);
     }
 
+    @Transactional
     public ParkingSpot reservedFor(Long parkingSpotId, Vehicle vehicle) {
-        ParkingSpot parkingSpot = findBy(parkingSpotId);
+        ParkingSpot parkingSpot = parkingSpotRepository.findBy(parkingSpotId);
 
-        if (parkingSpot.getReservedBy() != null && !parkingSpot.getReservedBy().getId().equals(vehicle.getId())) {
-            throw new IllegalStateException("cannot reserve reserved parking spot");
-        }
-        if (parkingSpot.getStatus() != ParkingSpotStatus.AVAILABLE) {
-            throw new IllegalStateException("cannot reserve unavailable parking spot");
-        }
-
-        parkingSpot.setStatus(ParkingSpotStatus.RESERVED);
-        parkingSpot.setReservedBy(vehicle);
+        parkingSpot.reserveFor(vehicle);
 
         return parkingSpotRepository.save(parkingSpot);
     }
 
+    @Transactional
     public ParkingSpot release(Long id) {
-        ParkingSpot parkingSpot = findBy(id);
+        ParkingSpot parkingSpot = parkingSpotRepository.findBy(id);
 
         parkingSpot.setStatus(ParkingSpotStatus.AVAILABLE);
 
@@ -69,66 +53,32 @@ public class ParkingSpotService {
         return parkingSpotRepository.save(parkingSpot);
     }
 
-    public ParkingSpot findAnyAvailable() {
-        return findAll()
-                .stream()
-                .filter(parkingSpot -> parkingSpot.getStatus() == ParkingSpotStatus.AVAILABLE)
-                .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("cannot find available parking spot"));
-    }
-
-    public ParkingSpot findAnyAvailableFor(Vehicle vehicle) {
-        List<ParkingSpot> parkingSpots = findAll();
-
-        return parkingSpots.stream()
-                .filter(parkingSpot -> !isFull(parkingSpot) && isTheSameType(vehicle, parkingSpot))
-                .findAny()
-                .or(() -> parkingSpots.stream()
-                        .filter(parkingSpot -> parkingSpot.getStatus() == ParkingSpotStatus.AVAILABLE)
-                        .findAny())
-                .orElseThrow(() -> new IllegalArgumentException("cannot find available parking spot"));
-    }
-
     public ParkingSpot deleteReservationOn(Long parkingSpotId) {
-        ParkingSpot parkingSpot = findBy(parkingSpotId);
-        parkingSpot.setReservedBy(null);
-        if (parkingSpot.getVehicles().isEmpty()) {
-            parkingSpot.setStatus(ParkingSpotStatus.AVAILABLE);
-        } else {
-            parkingSpot.setStatus(ParkingSpotStatus.OCCUPIED);
-        }
+        ParkingSpot parkingSpot = parkingSpotRepository.findBy(parkingSpotId);
+        parkingSpot.deleteReservation();
         return parkingSpotRepository.save(parkingSpot);
     }
 
-    public ParkingSpot findBy(Long id) {
-        return parkingSpotRepository.findById(id)
-                .orElseThrow(() -> new IllegalStateException("cannot find parking spot by id: " + id));
-    }
-
-    public List<ParkingSpot> findAll() {
-        Iterable<ParkingSpot> parkingSpots = parkingSpotRepository.findAll();
-        return StreamSupport.stream(parkingSpots.spliterator(), false)
-                .collect(Collectors.toList());
-    }
-
-    private static boolean isFull(ParkingSpot parkingSpot) {
-        List<VehicleType> parkVehicleTypes = parkingSpot.getVehicles()
+    @Transactional(readOnly = true)
+    public ParkingSpot findAnyAvailable() {
+        return parkingSpotRepository.findAll()
                 .stream()
-                .map(Vehicle::getType)
-                .toList();
-
-        return parkVehicleTypes.size() == 1 && parkVehicleTypes.get(0) == VehicleType.CAR
-                || parkVehicleTypes.size() == 2 && parkVehicleTypes.stream().allMatch(type -> type == VehicleType.MOTORCYCLE)
-                || parkVehicleTypes.size() == 3 && parkVehicleTypes.stream().allMatch(type -> type == VehicleType.BIKE || type == VehicleType.SCOOTER);
+                .filter(ParkingSpot::isAvailable)
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("cannot find available parking spot"));
     }
 
-    private static boolean isTheSameType(Vehicle vehicle, ParkingSpot parkingSpot) {
-        List<VehicleType> parkVehicleTypes = parkingSpot.getVehicles()
-                .stream()
-                .map(Vehicle::getType)
-                .toList();
+    @Transactional(readOnly = true)
+    public ParkingSpot findAnyAvailableFor(Vehicle vehicle) {
+        List<ParkingSpot> parkingSpots = parkingSpotRepository.findAll();
 
-        return !parkVehicleTypes.isEmpty() && parkVehicleTypes.contains(vehicle.getType());
+        return parkingSpots.stream()
+                .filter(parkingSpot -> parkingSpot.isAnotherPlaceFor(vehicle.getType()))
+                .findAny()
+                .or(() -> parkingSpots.stream()
+                        .filter(ParkingSpot::isAvailable)
+                        .findAny())
+                .orElseThrow(() -> new IllegalArgumentException("cannot find available parking spot"));
     }
 
 }
