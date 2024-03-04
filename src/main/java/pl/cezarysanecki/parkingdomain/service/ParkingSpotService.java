@@ -23,26 +23,6 @@ public class ParkingSpotService {
         return parkingSpotRepository.save(parkingSpot);
     }
 
-    public ParkingSpot park(Long parkingSpotId, Vehicle vehicle) {
-        ParkingSpot parkingSpot = findBy(parkingSpotId);
-
-        parkingSpot.setStatus(ParkingSpotStatus.OCCUPIED);
-        parkingSpot.getVehicles().add(vehicle);
-        vehicle.setParkingSpot(parkingSpot);
-
-        return parkingSpotRepository.save(parkingSpot);
-    }
-
-    public ParkingSpot parkAnywhere(Vehicle vehicle) {
-        ParkingSpot parkingSpot = findAnyAvailable();
-
-        parkingSpot.setStatus(ParkingSpotStatus.OCCUPIED);
-        parkingSpot.getVehicles().add(vehicle);
-        vehicle.setParkingSpot(parkingSpot);
-
-        return parkingSpotRepository.save(parkingSpot);
-    }
-
     public ParkingSpot release(Long id) {
         ParkingSpot parkingSpot = findBy(id);
 
