@@ -35,6 +35,9 @@ public class VehicleService {
             parkingSpot.getVehicles().add(vehicle);
             vehicle.setParkingSpot(parkingSpot);
 
+            vehicleRepository.save(vehicle);
+            parkingSpotRepository.save(parkingSpot);
+
             return vehicle;
         }
 
@@ -44,6 +47,7 @@ public class VehicleService {
         parkingSpot.getVehicles().add(vehicle);
         vehicle.setParkingSpot(parkingSpot);
 
+        vehicleRepository.save(vehicle);
         parkingSpotRepository.save(parkingSpot);
 
         return vehicle;
@@ -57,6 +61,13 @@ public class VehicleService {
             parkingSpot.getVehicles().add(vehicle);
             vehicle.setParkingSpot(parkingSpot);
 
+            vehicleRepository.save(vehicle);
+            parkingSpotRepository.save(parkingSpot);
+
+            return vehicle;
+        }
+
+        if (parkingSpot.getVehicles().stream().anyMatch(vehicle1 -> vehicle1.getId().equals(vehicle.getId()))) {
             return vehicle;
         }
 
@@ -66,6 +77,7 @@ public class VehicleService {
         parkingSpot.getVehicles().add(vehicle);
         vehicle.setParkingSpot(parkingSpot);
 
+        vehicleRepository.save(vehicle);
         parkingSpotRepository.save(parkingSpot);
 
         return vehicle;
@@ -88,14 +100,14 @@ public class VehicleService {
                 .map(Vehicle::getType)
                 .toList();
 
-        if (parkVehicleTypes.size()==1 && parkVehicleTypes.get(0)==VehicleType.CAR) {
+        if (parkVehicleTypes.size() == 1 && parkVehicleTypes.get(0) == VehicleType.CAR) {
             throw new IllegalStateException("Parking spot is already occupied by car");
         }
-        if (parkVehicleTypes.size()==2 && parkVehicleTypes.stream().allMatch(type -> type==VehicleType.MOTORCYCLE)) {
+        if (parkVehicleTypes.size() == 2 && parkVehicleTypes.stream().allMatch(type -> type == VehicleType.MOTORCYCLE)) {
             throw new IllegalStateException("Parking spot is already occupied by 2 motorcycles");
         }
-        if (parkVehicleTypes.size()==3 && parkVehicleTypes.stream().allMatch(type -> type==VehicleType.BIKE)) {
-            throw new IllegalStateException("Parking spot is already occupied by 3 bikes");
+        if (parkVehicleTypes.size() == 3 && parkVehicleTypes.stream().allMatch(type -> type == VehicleType.BIKE || type == VehicleType.SCOOTER)) {
+            throw new IllegalStateException("Parking spot is already occupied by 3 bikes or scooters");
         }
 
         if (!parkVehicleTypes.contains(vehicle.getType())) {
