@@ -28,6 +28,7 @@ public class ParkingSpotService {
 
         parkingSpot.setStatus(ParkingSpotStatus.OCCUPIED);
         parkingSpot.setVehicle(vehicle);
+        vehicle.setParkingSpot(parkingSpot);
 
         return parkingSpotRepository.save(parkingSpot);
     }
@@ -37,6 +38,7 @@ public class ParkingSpotService {
 
         parkingSpot.setStatus(ParkingSpotStatus.OCCUPIED);
         parkingSpot.setVehicle(vehicle);
+        vehicle.setParkingSpot(parkingSpot);
 
         return parkingSpotRepository.save(parkingSpot);
     }
