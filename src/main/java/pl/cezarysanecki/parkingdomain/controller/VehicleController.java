@@ -24,6 +24,23 @@ public class VehicleController {
         return vehicleService.create(vehicleType).getId();
     }
 
+    @PostMapping("/{parkingSpotId}/park/{vehicleId}")
+    public Long park(
+            @PathVariable("parkingSpotId") Long parkingSpotId,
+            @PathVariable("vehicleId") Long vehicleId
+    ) {
+        Vehicle vehicle = vehicleService.findBy(vehicleId);
+        return vehicleService.park(parkingSpotId, vehicle).getId();
+    }
+
+    @PostMapping("/park-anywhere/{vehicleId}")
+    public Long parkAnywhere(
+            @PathVariable("vehicleId") Long vehicleId
+    ) {
+        Vehicle vehicle = vehicleService.findBy(vehicleId);
+        return vehicleService.parkAnywhere(vehicle).getId();
+    }
+
     @GetMapping("/{id}")
     public Vehicle findBy(@PathVariable("id") Long id) {
         return vehicleService.findBy(id);
