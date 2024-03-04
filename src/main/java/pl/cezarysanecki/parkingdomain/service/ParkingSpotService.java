@@ -72,7 +72,7 @@ public class ParkingSpotService {
     public ParkingSpot findAnyAvailable() {
         return findAll()
                 .stream()
-                .filter(parkingSpot -> parkingSpot.getStatus() == ParkingSpotStatus.AVAILABLE)
+                .filter(ParkingSpot::isAvailable)
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("cannot find available parking spot"));
     }
@@ -84,7 +84,7 @@ public class ParkingSpotService {
                 .filter(parkingSpot -> !isFull(parkingSpot) && isTheSameType(vehicle, parkingSpot))
                 .findAny()
                 .or(() -> parkingSpots.stream()
-                        .filter(parkingSpot -> parkingSpot.getStatus() == ParkingSpotStatus.AVAILABLE)
+                        .filter(ParkingSpot::isAvailable)
                         .findAny())
                 .orElseThrow(() -> new IllegalArgumentException("cannot find available parking spot"));
     }

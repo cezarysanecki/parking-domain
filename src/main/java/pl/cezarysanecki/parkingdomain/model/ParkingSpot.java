@@ -31,4 +31,7 @@ public class ParkingSpot {
     @OneToOne
     private Vehicle reservedBy;
 
+    public boolean isAvailable() {
+        return getStatus() == ParkingSpotStatus.AVAILABLE;
+    }
 }
