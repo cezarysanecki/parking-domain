@@ -1,5 +1,6 @@
 package pl.cezarysanecki.parkingdomain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -33,10 +34,12 @@ public class ParkingSpot {
         status = ParkingSpotStatus.AVAILABLE;
     }
 
+    @JsonIgnore
     public boolean isAvailable() {
         return getStatus() == ParkingSpotStatus.AVAILABLE;
     }
 
+    @JsonIgnore
     public boolean isFull() {
         List<VehicleType> parkVehicleTypes = getVehicles()
                 .stream()
