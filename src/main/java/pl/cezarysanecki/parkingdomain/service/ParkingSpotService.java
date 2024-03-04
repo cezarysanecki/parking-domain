@@ -37,6 +37,15 @@ public class ParkingSpotService {
 
         return parkingSpotRepository.save(parkingSpot);
     }
+
+    public ParkingSpot findAnyAvailable() {
+        return findAll()
+                .stream()
+                .filter(parkingSpot -> parkingSpot.getStatus() == ParkingSpotStatus.AVAILABLE)
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("cannot find available parking spot"));
+    }
+
     public ParkingSpot findBy(Long id) {
         return parkingSpotRepository.findById(id)
                 .orElseThrow(() -> new IllegalStateException("cannot find parking spot by id: " + id));
