@@ -31,7 +31,7 @@ public class ParkingSpotService {
         return parkingSpotRepository.save(parkingSpot);
     }
 
-    public ParkingSpot occupyAnyAvailable() {
+    public ParkingSpot occupyAnyAvailable(final Vehicle vehicle) {
         ParkingSpot parkingSpot = findAnyAvailable();
 
         parkingSpot.setStatus(ParkingSpotStatus.OCCUPIED);

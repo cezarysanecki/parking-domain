@@ -35,9 +35,12 @@ public class ParkingSpotController {
         return parkingSpotService.occupy(parkingSpotId, vehicle).getId();
     }
 
-    @PostMapping("/occupy-any")
-    public Long occupyAny() {
-        return parkingSpotService.occupyAnyAvailable().getId();
+    @PostMapping("/park-anywhere/{vehicleId}")
+    public Long parkAnywhere(
+            @PathVariable("vehicleId") Long vehicleId
+    ) {
+        Vehicle vehicle = vehicleService.findBy(vehicleId);
+        return parkingSpotService.occupyAnyAvailable(vehicle).getId();
     }
 
     @PostMapping("/{id}/release")
