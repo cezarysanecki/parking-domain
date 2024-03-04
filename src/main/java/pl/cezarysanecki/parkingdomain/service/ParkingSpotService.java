@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.cezarysanecki.parkingdomain.model.ParkingSpot;
 import pl.cezarysanecki.parkingdomain.model.ParkingSpotStatus;
+import pl.cezarysanecki.parkingdomain.model.Vehicle;
 import pl.cezarysanecki.parkingdomain.repository.ParkingSpotRepository;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public class ParkingSpotService {
         return parkingSpotRepository.save(parkingSpot);
     }
 
-    public ParkingSpot occupy(Long id) {
+    public ParkingSpot occupy(Long parkingSpotId, Vehicle vehicle) {
         ParkingSpot parkingSpot = findBy(id);
 
         parkingSpot.setStatus(ParkingSpotStatus.OCCUPIED);
