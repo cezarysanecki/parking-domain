@@ -2,6 +2,6 @@ package pl.cezarysanecki.parkingdomain.model;
 
 public enum VehicleType {
 
-    CAR, MOTORCYCLE, BIKE
+    CAR, MOTORCYCLE, BIKE, SCOOTER
 
 }
