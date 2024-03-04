@@ -53,6 +53,13 @@ public class ParkingSpotService {
         return parkingSpotRepository.save(parkingSpot);
     }
 
+    public ParkingSpot deleteReservationOn(Long parkingSpotId) {
+        ParkingSpot parkingSpot = parkingSpotRepository.findBy(parkingSpotId);
+        parkingSpot.deleteReservation();
+        return parkingSpotRepository.save(parkingSpot);
+    }
+
+    @Transactional(readOnly = true)
     public ParkingSpot findAnyAvailable() {
         return parkingSpotRepository.findAll()
                 .stream()
@@ -61,6 +68,7 @@ public class ParkingSpotService {
                 .orElseThrow(() -> new IllegalArgumentException("cannot find available parking spot"));
     }
 
+    @Transactional(readOnly = true)
     public ParkingSpot findAnyAvailableFor(Vehicle vehicle) {
         List<ParkingSpot> parkingSpots = parkingSpotRepository.findAll();
 
@@ -71,12 +79,6 @@ public class ParkingSpotService {
                         .filter(ParkingSpot::isAvailable)
                         .findAny())
                 .orElseThrow(() -> new IllegalArgumentException("cannot find available parking spot"));
-    }
-
-    public ParkingSpot deleteReservationOn(Long parkingSpotId) {
-        ParkingSpot parkingSpot = parkingSpotRepository.findBy(parkingSpotId);
-        parkingSpot.deleteReservation();
-        return parkingSpotRepository.save(parkingSpot);
     }
 
 }
