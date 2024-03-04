@@ -54,7 +54,7 @@ public class VehicleService {
     }
 
     public Vehicle parkAnywhere(Vehicle vehicle) {
-        ParkingSpot parkingSpot = parkingSpotService.findAnyAvailable();
+        ParkingSpot parkingSpot = parkingSpotService.findAnyAvailableFor(vehicle);
 
         if (parkingSpot.getVehicles().isEmpty()) {
             parkingSpot.setStatus(ParkingSpotStatus.OCCUPIED);
