@@ -69,7 +69,7 @@ public class ParkingSpotController {
 
     @GetMapping
     public List<ParkingSpot> findAll() {
-        return parkingSpotService.findAll();
+        return parkingSpotRepository.findAll();
     }
 
 }

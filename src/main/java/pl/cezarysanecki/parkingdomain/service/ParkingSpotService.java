@@ -9,8 +9,6 @@ import pl.cezarysanecki.parkingdomain.repository.ParkingSpotRepository;
 import pl.cezarysanecki.parkingdomain.repository.VehicleRepository;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Service
 @RequiredArgsConstructor
@@ -69,7 +67,7 @@ public class ParkingSpotService {
     }
 
     public ParkingSpot findAnyAvailable() {
-        return findAll()
+        return parkingSpotRepository.findAll()
                 .stream()
                 .filter(ParkingSpot::isAvailable)
                 .findAny()
@@ -77,7 +75,7 @@ public class ParkingSpotService {
     }
 
     public ParkingSpot findAnyAvailableFor(Vehicle vehicle) {
-        List<ParkingSpot> parkingSpots = findAll();
+        List<ParkingSpot> parkingSpots = parkingSpotRepository.findAll();
 
         return parkingSpots.stream()
                 .filter(parkingSpot -> !parkingSpot.isFull() && vehicle.isTheSameType(parkingSpot))
@@ -97,12 +95,6 @@ public class ParkingSpotService {
             parkingSpot.setStatus(ParkingSpotStatus.OCCUPIED);
         }
         return parkingSpotRepository.save(parkingSpot);
-    }
-
-    public List<ParkingSpot> findAll() {
-        Iterable<ParkingSpot> parkingSpots = parkingSpotRepository.findAll();
-        return StreamSupport.stream(parkingSpots.spliterator(), false)
-                .collect(Collectors.toList());
     }
 
 }
