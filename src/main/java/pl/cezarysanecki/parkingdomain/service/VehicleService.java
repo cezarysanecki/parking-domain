@@ -43,6 +43,10 @@ public class VehicleService {
 
         checkVehicleTypeRules(vehicle, parkingSpot);
 
+        if (parkingSpot.getReservedBy() != null && !parkingSpot.getReservedBy().getId().equals(vehicle.getId())) {
+            throw new IllegalStateException("cannot park on reserved parking spot");
+        }
+
         parkingSpot.setStatus(ParkingSpotStatus.OCCUPIED);
         parkingSpot.getVehicles().add(vehicle);
         vehicle.setParkingSpot(parkingSpot);
@@ -72,6 +76,10 @@ public class VehicleService {
         }
 
         checkVehicleTypeRules(vehicle, parkingSpot);
+
+        if (parkingSpot.getReservedBy() != null && !parkingSpot.getReservedBy().getId().equals(vehicle.getId())) {
+            throw new IllegalStateException("cannot park on reserved parking spot");
+        }
 
         parkingSpot.setStatus(ParkingSpotStatus.OCCUPIED);
         parkingSpot.getVehicles().add(vehicle);
