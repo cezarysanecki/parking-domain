@@ -27,24 +27,48 @@ public class VehicleService {
         return vehicleRepository.save(vehicle);
     }
 
-    public ParkingSpot park(Long parkingSpotId, Vehicle vehicle) {
+    public Vehicle park(Long parkingSpotId, Vehicle vehicle) {
         ParkingSpot parkingSpot = parkingSpotService.findBy(parkingSpotId);
 
+        if (parkingSpot.getVehicles().isEmpty()) {
+            parkingSpot.setStatus(ParkingSpotStatus.OCCUPIED);
+            parkingSpot.getVehicles().add(vehicle);
+            vehicle.setParkingSpot(parkingSpot);
+
+            return vehicle;
+        }
+
+        checkVehicleTypeRules(vehicle, parkingSpot);
+
         parkingSpot.setStatus(ParkingSpotStatus.OCCUPIED);
         parkingSpot.getVehicles().add(vehicle);
         vehicle.setParkingSpot(parkingSpot);
 
-        return parkingSpotRepository.save(parkingSpot);
+        parkingSpotRepository.save(parkingSpot);
+
+        return vehicle;
     }
 
-    public ParkingSpot parkAnywhere(Vehicle vehicle) {
+    public Vehicle parkAnywhere(Vehicle vehicle) {
         ParkingSpot parkingSpot = parkingSpotService.findAnyAvailable();
+
+        if (parkingSpot.getVehicles().isEmpty()) {
+            parkingSpot.setStatus(ParkingSpotStatus.OCCUPIED);
+            parkingSpot.getVehicles().add(vehicle);
+            vehicle.setParkingSpot(parkingSpot);
+
+            return vehicle;
+        }
+
+        checkVehicleTypeRules(vehicle, parkingSpot);
 
         parkingSpot.setStatus(ParkingSpotStatus.OCCUPIED);
         parkingSpot.getVehicles().add(vehicle);
         vehicle.setParkingSpot(parkingSpot);
 
-        return parkingSpotRepository.save(parkingSpot);
+        parkingSpotRepository.save(parkingSpot);
+
+        return vehicle;
     }
 
     public Vehicle findBy(Long id) {
@@ -56,6 +80,27 @@ public class VehicleService {
         Iterable<Vehicle> vehicles = vehicleRepository.findAll();
         return StreamSupport.stream(vehicles.spliterator(), false)
                 .collect(Collectors.toList());
+    }
+
+    private static void checkVehicleTypeRules(Vehicle vehicle, ParkingSpot parkingSpot) {
+        List<VehicleType> parkVehicleTypes = parkingSpot.getVehicles()
+                .stream()
+                .map(Vehicle::getType)
+                .toList();
+
+        if (parkVehicleTypes.size()==1 && parkVehicleTypes.get(0)==VehicleType.CAR) {
+            throw new IllegalStateException("Parking spot is already occupied by car");
+        }
+        if (parkVehicleTypes.size()==2 && parkVehicleTypes.stream().allMatch(type -> type==VehicleType.MOTORCYCLE)) {
+            throw new IllegalStateException("Parking spot is already occupied by 2 motorcycles");
+        }
+        if (parkVehicleTypes.size()==3 && parkVehicleTypes.stream().allMatch(type -> type==VehicleType.BIKE)) {
+            throw new IllegalStateException("Parking spot is already occupied by 3 bikes");
+        }
+
+        if (!parkVehicleTypes.contains(vehicle.getType())) {
+            throw new IllegalStateException("Cannot mix vehicle types, this is for: " + parkVehicleTypes.get(0));
+        }
     }
 
 }
