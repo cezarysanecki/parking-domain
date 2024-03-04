@@ -57,4 +57,16 @@ public class ParkingSpot {
         }
     }
 
+    public void reserveFor(final Vehicle vehicle) {
+        if (getReservedBy() != null && !getReservedBy().getId().equals(vehicle.getId())) {
+            throw new IllegalStateException("cannot reserve reserved parking spot");
+        }
+        if (getStatus() != ParkingSpotStatus.AVAILABLE) {
+            throw new IllegalStateException("cannot reserve unavailable parking spot");
+        }
+
+        setStatus(ParkingSpotStatus.RESERVED);
+        setReservedBy(vehicle);
+    }
+
 }
