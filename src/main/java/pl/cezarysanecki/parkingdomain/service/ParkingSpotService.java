@@ -32,6 +32,14 @@ public class ParkingSpotService {
         return parkingSpotRepository.save(parkingSpot);
     }
 
+    public ParkingSpot findAnyAvailable() {
+        return findAll()
+                .stream()
+                .filter(parkingSpot -> parkingSpot.getStatus() == ParkingSpotStatus.AVAILABLE)
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("cannot find available parking spot"));
+    }
+
     public ParkingSpot findAnyAvailableFor(Vehicle vehicle) {
         List<ParkingSpot> parkingSpots = findAll();
 
