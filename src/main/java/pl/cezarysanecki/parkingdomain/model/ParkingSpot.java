@@ -52,24 +52,24 @@ public class ParkingSpot {
     }
 
     public void deleteReservation() {
-        setReservedBy(null);
-        if (getVehicles().isEmpty()) {
-            setStatus(ParkingSpotStatus.AVAILABLE);
+        this.reservedBy = null;
+        if (this.vehicles.isEmpty()) {
+            this.status = ParkingSpotStatus.AVAILABLE;
         } else {
-            setStatus(ParkingSpotStatus.OCCUPIED);
+            this.status = ParkingSpotStatus.OCCUPIED;
         }
     }
 
     public void reserveFor(final Vehicle vehicle) {
-        if (getReservedBy() != null && !getReservedBy().getId().equals(vehicle.getId())) {
+        if (this.reservedBy != null && !this.reservedBy.getId().equals(vehicle.getId())) {
             throw new IllegalStateException("cannot reserve reserved parking spot");
         }
-        if (getStatus() != ParkingSpotStatus.AVAILABLE) {
+        if (!isAvailable()) {
             throw new IllegalStateException("cannot reserve unavailable parking spot");
         }
 
-        setStatus(ParkingSpotStatus.RESERVED);
-        setReservedBy(vehicle);
+        this.status = ParkingSpotStatus.RESERVED;
+        this.reservedBy = vehicle;
     }
 
     public boolean isTheSameType(VehicleType type) {
