@@ -46,4 +46,13 @@ public class ParkingSpot {
                 || parkVehicleTypes.size() == 3 && parkVehicleTypes.stream().allMatch(type -> type == VehicleType.BIKE || type == VehicleType.SCOOTER);
     }
 
+    public void deleteReservation() {
+        setReservedBy(null);
+        if (getVehicles().isEmpty()) {
+            setStatus(ParkingSpotStatus.AVAILABLE);
+        } else {
+            setStatus(ParkingSpotStatus.OCCUPIED);
+        }
+    }
+
 }

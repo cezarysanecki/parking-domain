@@ -88,12 +88,7 @@ public class ParkingSpotService {
 
     public ParkingSpot deleteReservationOn(Long parkingSpotId) {
         ParkingSpot parkingSpot = parkingSpotRepository.findBy(parkingSpotId);
-        parkingSpot.setReservedBy(null);
-        if (parkingSpot.getVehicles().isEmpty()) {
-            parkingSpot.setStatus(ParkingSpotStatus.AVAILABLE);
-        } else {
-            parkingSpot.setStatus(ParkingSpotStatus.OCCUPIED);
-        }
+        parkingSpot.deleteReservation();
         return parkingSpotRepository.save(parkingSpot);
     }
 
