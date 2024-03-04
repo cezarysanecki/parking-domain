@@ -89,6 +89,17 @@ public class ParkingSpotService {
                 .orElseThrow(() -> new IllegalArgumentException("cannot find available parking spot"));
     }
 
+    public ParkingSpot deleteReservationOn(Long parkingSpotId) {
+        ParkingSpot parkingSpot = findBy(parkingSpotId);
+        parkingSpot.setReservedBy(null);
+        if (parkingSpot.getVehicles().isEmpty()) {
+            parkingSpot.setStatus(ParkingSpotStatus.AVAILABLE);
+        } else {
+            parkingSpot.setStatus(ParkingSpotStatus.OCCUPIED);
+        }
+        return parkingSpotRepository.save(parkingSpot);
+    }
+
     public ParkingSpot findBy(Long id) {
         return parkingSpotRepository.findById(id)
                 .orElseThrow(() -> new IllegalStateException("cannot find parking spot by id: " + id));
