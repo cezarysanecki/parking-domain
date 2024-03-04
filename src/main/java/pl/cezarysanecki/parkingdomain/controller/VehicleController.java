@@ -20,7 +20,9 @@ public class VehicleController {
     private final VehicleService vehicleService;
 
     @PostMapping("/{vehicleType}")
-    public Long create(@PathVariable("vehicleType") VehicleType vehicleType) {
+    public Long create(
+            @PathVariable("vehicleType") VehicleType vehicleType
+    ) {
         return vehicleService.create(vehicleType).getId();
     }
 
@@ -42,7 +44,9 @@ public class VehicleController {
     }
 
     @GetMapping("/{id}")
-    public Vehicle findBy(@PathVariable("id") Long id) {
+    public Vehicle findBy(
+            @PathVariable("id") Long id
+    ) {
         return vehicleService.findBy(id);
     }
 
