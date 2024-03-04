@@ -27,7 +27,7 @@ public class ParkingSpotService {
         ParkingSpot parkingSpot = findBy(parkingSpotId);
 
         parkingSpot.setStatus(ParkingSpotStatus.OCCUPIED);
-        parkingSpot.setVehicle(vehicle);
+        parkingSpot.getVehicles().add(vehicle);
         vehicle.setParkingSpot(parkingSpot);
 
         return parkingSpotRepository.save(parkingSpot);
@@ -37,7 +37,7 @@ public class ParkingSpotService {
         ParkingSpot parkingSpot = findAnyAvailable();
 
         parkingSpot.setStatus(ParkingSpotStatus.OCCUPIED);
-        parkingSpot.setVehicle(vehicle);
+        parkingSpot.getVehicles().add(vehicle);
         vehicle.setParkingSpot(parkingSpot);
 
         return parkingSpotRepository.save(parkingSpot);

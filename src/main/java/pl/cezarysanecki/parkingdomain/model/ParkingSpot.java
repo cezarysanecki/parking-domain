@@ -25,6 +25,6 @@ public class ParkingSpot {
     private ParkingSpotStatus status;
 
     @OneToMany
-    private List<Vehicle> vehicle;
+    private List<Vehicle> vehicles;
 
 }
