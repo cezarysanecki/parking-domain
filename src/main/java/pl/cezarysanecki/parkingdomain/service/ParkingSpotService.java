@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.cezarysanecki.parkingdomain.model.ParkingSpot;
 import pl.cezarysanecki.parkingdomain.model.ParkingSpotStatus;
-import pl.cezarysanecki.parkingdomain.model.Vehicle;
 import pl.cezarysanecki.parkingdomain.repository.ParkingSpotRepository;
 
 import java.util.List;
@@ -34,7 +33,7 @@ public class ParkingSpotService {
     public ParkingSpot findAnyAvailable() {
         return findAll()
                 .stream()
-                .filter(parkingSpot -> parkingSpot.getStatus()==ParkingSpotStatus.AVAILABLE)
+                .filter(parkingSpot -> parkingSpot.getStatus() == ParkingSpotStatus.AVAILABLE)
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("cannot find available parking spot"));
     }
