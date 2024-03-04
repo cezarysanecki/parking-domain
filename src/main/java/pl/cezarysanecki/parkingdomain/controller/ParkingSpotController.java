@@ -32,7 +32,7 @@ public class ParkingSpotController {
             @PathVariable("vehicleId") Long vehicleId
     ) {
         Vehicle vehicle = vehicleService.findBy(vehicleId);
-        return parkingSpotService.occupy(parkingSpotId, vehicle).getId();
+        return parkingSpotService.park(parkingSpotId, vehicle).getId();
     }
 
     @PostMapping("/park-anywhere/{vehicleId}")
@@ -40,7 +40,7 @@ public class ParkingSpotController {
             @PathVariable("vehicleId") Long vehicleId
     ) {
         Vehicle vehicle = vehicleService.findBy(vehicleId);
-        return parkingSpotService.occupyAnyAvailable(vehicle).getId();
+        return parkingSpotService.parkAnywhere(vehicle).getId();
     }
 
     @PostMapping("/{id}/release")

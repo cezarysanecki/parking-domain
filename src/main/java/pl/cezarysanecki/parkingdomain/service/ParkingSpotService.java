@@ -23,7 +23,7 @@ public class ParkingSpotService {
         return parkingSpotRepository.save(parkingSpot);
     }
 
-    public ParkingSpot occupy(Long parkingSpotId, Vehicle vehicle) {
+    public ParkingSpot park(Long parkingSpotId, Vehicle vehicle) {
         ParkingSpot parkingSpot = findBy(parkingSpotId);
 
         parkingSpot.setStatus(ParkingSpotStatus.OCCUPIED);
@@ -32,7 +32,7 @@ public class ParkingSpotService {
         return parkingSpotRepository.save(parkingSpot);
     }
 
-    public ParkingSpot occupyAnyAvailable(Vehicle vehicle) {
+    public ParkingSpot parkAnywhere(Vehicle vehicle) {
         ParkingSpot parkingSpot = findAnyAvailable();
 
         parkingSpot.setStatus(ParkingSpotStatus.OCCUPIED);
