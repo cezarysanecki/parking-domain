@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.cezarysanecki.parkingdomain.model.ParkingSpot;
 import pl.cezarysanecki.parkingdomain.model.Vehicle;
+import pl.cezarysanecki.parkingdomain.repository.ParkingSpotRepository;
 import pl.cezarysanecki.parkingdomain.service.ParkingSpotService;
 import pl.cezarysanecki.parkingdomain.service.VehicleService;
 
@@ -20,6 +21,7 @@ import java.util.List;
 public class ParkingSpotController {
 
     private final ParkingSpotService parkingSpotService;
+    private final ParkingSpotRepository parkingSpotRepository;
     private final VehicleService vehicleService;
 
     @PostMapping
@@ -62,7 +64,7 @@ public class ParkingSpotController {
     public ParkingSpot findBy(
             @PathVariable("id") Long id
     ) {
-        return parkingSpotService.findBy(id);
+        return parkingSpotRepository.findBy(id);
     }
 
     @GetMapping

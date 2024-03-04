@@ -42,7 +42,7 @@ public class ParkingSpotService {
     }
 
     public ParkingSpot reservedFor(Long parkingSpotId, Vehicle vehicle) {
-        ParkingSpot parkingSpot = findBy(parkingSpotId);
+        ParkingSpot parkingSpot = parkingSpotRepository.findBy(parkingSpotId);
 
         if (parkingSpot.getReservedBy() != null && !parkingSpot.getReservedBy().getId().equals(vehicle.getId())) {
             throw new IllegalStateException("cannot reserve reserved parking spot");
@@ -58,7 +58,7 @@ public class ParkingSpotService {
     }
 
     public ParkingSpot release(Long id) {
-        ParkingSpot parkingSpot = findBy(id);
+        ParkingSpot parkingSpot = parkingSpotRepository.findBy(id);
 
         parkingSpot.setStatus(ParkingSpotStatus.AVAILABLE);
 
@@ -89,7 +89,7 @@ public class ParkingSpotService {
     }
 
     public ParkingSpot deleteReservationOn(Long parkingSpotId) {
-        ParkingSpot parkingSpot = findBy(parkingSpotId);
+        ParkingSpot parkingSpot = parkingSpotRepository.findBy(parkingSpotId);
         parkingSpot.setReservedBy(null);
         if (parkingSpot.getVehicles().isEmpty()) {
             parkingSpot.setStatus(ParkingSpotStatus.AVAILABLE);
@@ -97,11 +97,6 @@ public class ParkingSpotService {
             parkingSpot.setStatus(ParkingSpotStatus.OCCUPIED);
         }
         return parkingSpotRepository.save(parkingSpot);
-    }
-
-    public ParkingSpot findBy(Long id) {
-        return parkingSpotRepository.findById(id)
-                .orElseThrow(() -> new IllegalStateException("cannot find parking spot by id: " + id));
     }
 
     public List<ParkingSpot> findAll() {
