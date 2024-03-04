@@ -34,4 +34,16 @@ public class ParkingSpot {
     public boolean isAvailable() {
         return getStatus() == ParkingSpotStatus.AVAILABLE;
     }
+
+    public boolean isFull() {
+        List<VehicleType> parkVehicleTypes = getVehicles()
+                .stream()
+                .map(Vehicle::getType)
+                .toList();
+
+        return parkVehicleTypes.size() == 1 && parkVehicleTypes.get(0) == VehicleType.CAR
+                || parkVehicleTypes.size() == 2 && parkVehicleTypes.stream().allMatch(type -> type == VehicleType.MOTORCYCLE)
+                || parkVehicleTypes.size() == 3 && parkVehicleTypes.stream().allMatch(type -> type == VehicleType.BIKE || type == VehicleType.SCOOTER);
+    }
+
 }
