@@ -28,6 +28,11 @@ public class ParkingSpotController {
         return parkingSpotService.occupy(id).getId();
     }
 
+    @PostMapping("/occupy-any")
+    public Long occupyAny() {
+        return parkingSpotService.occupyAnyAvailable().getId();
+    }
+
     @PostMapping("/{id}/release")
     public Long release(@PathVariable("id") Long id) {
         return parkingSpotService.release(id).getId();
