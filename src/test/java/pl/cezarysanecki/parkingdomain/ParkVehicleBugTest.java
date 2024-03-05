@@ -12,6 +12,7 @@ import pl.cezarysanecki.parkingdomain.model.VehicleType;
 import pl.cezarysanecki.parkingdomain.service.ParkingSpotService;
 import pl.cezarysanecki.parkingdomain.service.VehicleService;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -38,10 +39,10 @@ class ParkVehicleBugTest {
                 .andDo(print())
                 .andExpect(status().isOk());
 
-        assertThrows(
+        ServletException exception = assertThrows(
                 ServletException.class,
-                () -> mockMvc.perform(post("/vehicle/" + vehicle.getId() + "/park-on/" + parkingSpot.getId())),
-                "Parking spot is already occupied by car");
+                () -> mockMvc.perform(post("/vehicle/" + vehicle.getId() + "/park-on/" + parkingSpot.getId())));
+        assertEquals("Parking spot is already occupied by car", exception.getCause().getMessage());
     }
 
 }
