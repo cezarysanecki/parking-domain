@@ -30,7 +30,7 @@ public class VehicleService {
     }
 
     @Transactional
-    public Vehicle park(Long parkingSpotId, Vehicle vehicle) {
+    public Long park(Long parkingSpotId, Vehicle vehicle) {
         ParkingSpot parkingSpot = parkingSpotRepository.findBy(parkingSpotId);
 
         if (parkingSpot.getVehicles().isEmpty()) {
@@ -38,7 +38,7 @@ public class VehicleService {
             parkingSpot.getVehicles().add(vehicle);
             vehicle.setParkingSpot(parkingSpot);
 
-            return vehicle;
+            return vehicle.getId();
         }
 
         ParkedVehicleTypesOnParkingSpot parkedVehicleTypes = parkingSpot.getParkedVehicleTypes();
@@ -65,7 +65,7 @@ public class VehicleService {
         parkingSpot.getVehicles().add(vehicle);
         vehicle.setParkingSpot(parkingSpot);
 
-        return vehicle;
+        return vehicle.getId();
     }
 
     @Transactional
