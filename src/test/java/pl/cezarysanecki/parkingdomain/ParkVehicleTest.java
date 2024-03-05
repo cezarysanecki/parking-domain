@@ -133,4 +133,22 @@ class ParkVehicleTest {
         assertEquals("Parking spot is already occupied by 3 bikes or scooters", exception.getCause().getMessage());
     }
 
+    @Test
+    void parkAnywhereLogicShouldPlaceTwoMotorcyclesOnTheSameParkingSpot() throws Exception {
+        Vehicle vehicle1 = vehicleService.create(VehicleType.MOTORCYCLE);
+        Vehicle vehicle2 = vehicleService.create(VehicleType.MOTORCYCLE);
+        ParkingSpot parkingSpot = parkingSpotService.create();
+
+        mockMvc.perform(post("/vehicle/" + vehicle1.getId() + "/park-anywhere/test"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.vehicleId").value(vehicle1.getId()))
+                .andExpect(jsonPath("$.parkingSpotId").value(parkingSpot.getId()));
+        mockMvc.perform(post("/vehicle/" + vehicle2.getId() + "/park-anywhere/test"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.vehicleId").value(vehicle2.getId()))
+                .andExpect(jsonPath("$.parkingSpotId").value(parkingSpot.getId()));
+    }
+
 }
