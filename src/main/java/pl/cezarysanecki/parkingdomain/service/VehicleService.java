@@ -3,6 +3,7 @@ package pl.cezarysanecki.parkingdomain.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.cezarysanecki.parkingdomain.model.ParkedVehicleTypesOnParkingSpot;
 import pl.cezarysanecki.parkingdomain.model.ParkingSpot;
 import pl.cezarysanecki.parkingdomain.model.ParkingSpotStatus;
 import pl.cezarysanecki.parkingdomain.model.Vehicle;
@@ -40,20 +41,20 @@ public class VehicleService {
             return vehicle;
         }
 
-        List<VehicleType> parkVehicleTypes = parkingSpot.getVehicleTypes();
+        ParkedVehicleTypesOnParkingSpot parkedVehicleTypes = parkingSpot.getParkedVehicleTypes();
 
-        if (parkVehicleTypes.size() == 1 && parkVehicleTypes.get(0) == VehicleType.CAR) {
+        if (parkedVehicleTypes.isFullyOccupiedByCars()) {
             throw new IllegalStateException("Parking spot is already occupied by car");
         }
-        if (parkVehicleTypes.size() == 2 && parkVehicleTypes.stream().allMatch(type -> type == VehicleType.MOTORCYCLE)) {
+        if (parkedVehicleTypes.isFullyOccupiedByMotorcycles()) {
             throw new IllegalStateException("Parking spot is already occupied by 2 motorcycles");
         }
-        if (parkVehicleTypes.size() == 3 && parkVehicleTypes.stream().allMatch(type -> type == VehicleType.BIKE || type == VehicleType.SCOOTER)) {
+        if (parkedVehicleTypes.isFullyOccupiedByBikesOrScooters()) {
             throw new IllegalStateException("Parking spot is already occupied by 3 bikes or scooters");
         }
 
-        if (!parkVehicleTypes.contains(vehicle.getType())) {
-            throw new IllegalStateException("Cannot mix vehicle types, this is for: " + parkVehicleTypes.get(0));
+        if (!parkedVehicleTypes.contains(vehicle.getType())) {
+            throw new IllegalStateException("Cannot mix vehicle types, this is for: " + parkedVehicleTypes.getVehicleTypes().get(0));
         }
 
         if (parkingSpot.isNotReservedFor(vehicle.getId())) {

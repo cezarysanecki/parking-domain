@@ -94,4 +94,9 @@ public class ParkingSpot {
                 .map(Vehicle::getType)
                 .toList();
     }
+
+    public ParkedVehicleTypesOnParkingSpot getParkedVehicleTypes() {
+        return new ParkedVehicleTypesOnParkingSpot(getVehicleTypes());
+    }
+
 }
