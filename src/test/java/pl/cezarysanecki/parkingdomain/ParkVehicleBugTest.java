@@ -45,4 +45,23 @@ class ParkVehicleBugTest {
         assertEquals("Parking spot is already occupied by car", exception.getCause().getMessage());
     }
 
+    @Test
+    void shouldAllowMixBikesAndScootersOnTheSameParkingSpot() throws Exception {
+        Vehicle vehicle1 = vehicleService.create(VehicleType.BIKE);
+        Vehicle vehicle2 = vehicleService.create(VehicleType.BIKE);
+        Vehicle vehicle3 = vehicleService.create(VehicleType.SCOOTER);
+        ParkingSpot parkingSpot = parkingSpotService.create();
+
+        mockMvc.perform(post("/vehicle/" + vehicle1.getId() + "/park-on/" + parkingSpot.getId()))
+                .andDo(print())
+                .andExpect(status().isOk());
+        mockMvc.perform(post("/vehicle/" + vehicle2.getId() + "/park-on/" + parkingSpot.getId()))
+                .andDo(print())
+                .andExpect(status().isOk());
+        ServletException exception = assertThrows(
+                ServletException.class,
+                () -> mockMvc.perform(post("/vehicle/" + vehicle3.getId() + "/park-on/" + parkingSpot.getId())));
+        assertEquals("Cannot mix vehicle types, this is for: BIKE", exception.getCause().getMessage());
+    }
+
 }

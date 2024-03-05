@@ -92,4 +92,45 @@ class ParkVehicleTest {
         assertEquals("Parking spot is already occupied by 2 motorcycles", exception.getCause().getMessage());
     }
 
+    @Test
+    void allowToParkThreeBikesOrScootersOnOnePlace() throws Exception {
+        Vehicle vehicle1 = vehicleService.create(VehicleType.BIKE);
+        Vehicle vehicle2 = vehicleService.create(VehicleType.BIKE);
+        Vehicle vehicle3 = vehicleService.create(VehicleType.BIKE);
+        ParkingSpot parkingSpot = parkingSpotService.create();
+
+        mockMvc.perform(post("/vehicle/" + vehicle1.getId() + "/park-on/" + parkingSpot.getId()))
+                .andDo(print())
+                .andExpect(status().isOk());
+        mockMvc.perform(post("/vehicle/" + vehicle2.getId() + "/park-on/" + parkingSpot.getId()))
+                .andDo(print())
+                .andExpect(status().isOk());
+        mockMvc.perform(post("/vehicle/" + vehicle3.getId() + "/park-on/" + parkingSpot.getId()))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void onlyThreeBikesOrScootersCanParkOnOneParkingSpot() throws Exception {
+        Vehicle vehicle1 = vehicleService.create(VehicleType.SCOOTER);
+        Vehicle vehicle2 = vehicleService.create(VehicleType.SCOOTER);
+        Vehicle vehicle3 = vehicleService.create(VehicleType.SCOOTER);
+        Vehicle vehicle4 = vehicleService.create(VehicleType.SCOOTER);
+        ParkingSpot parkingSpot = parkingSpotService.create();
+
+        mockMvc.perform(post("/vehicle/" + vehicle1.getId() + "/park-on/" + parkingSpot.getId()))
+                .andDo(print())
+                .andExpect(status().isOk());
+        mockMvc.perform(post("/vehicle/" + vehicle2.getId() + "/park-on/" + parkingSpot.getId()))
+                .andDo(print())
+                .andExpect(status().isOk());
+        mockMvc.perform(post("/vehicle/" + vehicle3.getId() + "/park-on/" + parkingSpot.getId()))
+                .andDo(print())
+                .andExpect(status().isOk());
+        ServletException exception = assertThrows(
+                ServletException.class,
+                () -> mockMvc.perform(post("/vehicle/" + vehicle4.getId() + "/park-on/" + parkingSpot.getId())));
+        assertEquals("Parking spot is already occupied by 3 bikes or scooters", exception.getCause().getMessage());
+    }
+
 }
