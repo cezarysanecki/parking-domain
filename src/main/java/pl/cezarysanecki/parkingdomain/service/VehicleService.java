@@ -67,6 +67,7 @@ public class VehicleService {
         return vehicle;
     }
 
+    @Transactional
     public Vehicle parkAnywhere(Vehicle vehicle) {
         ParkingSpot parkingSpot = parkingSpotService.findAnyAvailableFor(vehicle);
 
@@ -74,9 +75,6 @@ public class VehicleService {
             parkingSpot.setStatus(ParkingSpotStatus.OCCUPIED);
             parkingSpot.getVehicles().add(vehicle);
             vehicle.setParkingSpot(parkingSpot);
-
-            vehicleRepository.save(vehicle);
-            parkingSpotRepository.save(parkingSpot);
 
             return vehicle;
         }
@@ -109,9 +107,6 @@ public class VehicleService {
         parkingSpot.getVehicles().add(vehicle);
         vehicle.setParkingSpot(parkingSpot);
 
-        vehicleRepository.save(vehicle);
-        parkingSpotRepository.save(parkingSpot);
-
         return vehicle;
     }
 
@@ -124,24 +119,6 @@ public class VehicleService {
         Iterable<Vehicle> vehicles = vehicleRepository.findAll();
         return StreamSupport.stream(vehicles.spliterator(), false)
                 .collect(Collectors.toList());
-    }
-
-    private static void checkVehicleTypeRules(Vehicle vehicle, ParkingSpot parkingSpot) {
-        List<VehicleType> parkVehicleTypes = parkingSpot.getVehicleTypes();
-
-        if (parkVehicleTypes.size() == 1 && parkVehicleTypes.get(0) == VehicleType.CAR) {
-            throw new IllegalStateException("Parking spot is already occupied by car");
-        }
-        if (parkVehicleTypes.size() == 2 && parkVehicleTypes.stream().allMatch(type -> type == VehicleType.MOTORCYCLE)) {
-            throw new IllegalStateException("Parking spot is already occupied by 2 motorcycles");
-        }
-        if (parkVehicleTypes.size() == 3 && parkVehicleTypes.stream().allMatch(type -> type == VehicleType.BIKE || type == VehicleType.SCOOTER)) {
-            throw new IllegalStateException("Parking spot is already occupied by 3 bikes or scooters");
-        }
-
-        if (!parkVehicleTypes.contains(vehicle.getType())) {
-            throw new IllegalStateException("Cannot mix vehicle types, this is for: " + parkVehicleTypes.get(0));
-        }
     }
 
 }
