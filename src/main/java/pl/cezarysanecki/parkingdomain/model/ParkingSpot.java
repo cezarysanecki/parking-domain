@@ -89,4 +89,9 @@ public class ParkingSpot {
         return this.reservedBy != null && !this.reservedBy.getId().equals(vehicleId);
     }
 
+    public List<VehicleType> getVehicleTypes() {
+        return this.vehicles.stream()
+                .map(Vehicle::getType)
+                .toList();
+    }
 }

@@ -2,6 +2,7 @@ package pl.cezarysanecki.parkingdomain.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.cezarysanecki.parkingdomain.model.ParkingSpot;
 import pl.cezarysanecki.parkingdomain.model.ParkingSpotStatus;
 import pl.cezarysanecki.parkingdomain.model.Vehicle;
@@ -27,6 +28,7 @@ public class VehicleService {
         return vehicleRepository.save(vehicle);
     }
 
+    @Transactional
     public Vehicle park(Long parkingSpotId, Vehicle vehicle) {
         ParkingSpot parkingSpot = parkingSpotRepository.findBy(parkingSpotId);
 
@@ -35,13 +37,24 @@ public class VehicleService {
             parkingSpot.getVehicles().add(vehicle);
             vehicle.setParkingSpot(parkingSpot);
 
-            vehicleRepository.save(vehicle);
-            parkingSpotRepository.save(parkingSpot);
-
             return vehicle;
         }
 
-        checkVehicleTypeRules(vehicle, parkingSpot);
+        List<VehicleType> parkVehicleTypes = parkingSpot.getVehicleTypes();
+
+        if (parkVehicleTypes.size() == 1 && parkVehicleTypes.get(0) == VehicleType.CAR) {
+            throw new IllegalStateException("Parking spot is already occupied by car");
+        }
+        if (parkVehicleTypes.size() == 2 && parkVehicleTypes.stream().allMatch(type -> type == VehicleType.MOTORCYCLE)) {
+            throw new IllegalStateException("Parking spot is already occupied by 2 motorcycles");
+        }
+        if (parkVehicleTypes.size() == 3 && parkVehicleTypes.stream().allMatch(type -> type == VehicleType.BIKE || type == VehicleType.SCOOTER)) {
+            throw new IllegalStateException("Parking spot is already occupied by 3 bikes or scooters");
+        }
+
+        if (!parkVehicleTypes.contains(vehicle.getType())) {
+            throw new IllegalStateException("Cannot mix vehicle types, this is for: " + parkVehicleTypes.get(0));
+        }
 
         if (parkingSpot.isNotReservedFor(vehicle.getId())) {
             throw new IllegalStateException("cannot park on reserved parking spot");
@@ -50,9 +63,6 @@ public class VehicleService {
         parkingSpot.setStatus(ParkingSpotStatus.OCCUPIED);
         parkingSpot.getVehicles().add(vehicle);
         vehicle.setParkingSpot(parkingSpot);
-
-        vehicleRepository.save(vehicle);
-        parkingSpotRepository.save(parkingSpot);
 
         return vehicle;
     }
@@ -75,7 +85,21 @@ public class VehicleService {
             return vehicle;
         }
 
-        checkVehicleTypeRules(vehicle, parkingSpot);
+        List<VehicleType> parkVehicleTypes = parkingSpot.getVehicleTypes();
+
+        if (parkVehicleTypes.size() == 1 && parkVehicleTypes.get(0) == VehicleType.CAR) {
+            throw new IllegalStateException("Parking spot is already occupied by car");
+        }
+        if (parkVehicleTypes.size() == 2 && parkVehicleTypes.stream().allMatch(type -> type == VehicleType.MOTORCYCLE)) {
+            throw new IllegalStateException("Parking spot is already occupied by 2 motorcycles");
+        }
+        if (parkVehicleTypes.size() == 3 && parkVehicleTypes.stream().allMatch(type -> type == VehicleType.BIKE || type == VehicleType.SCOOTER)) {
+            throw new IllegalStateException("Parking spot is already occupied by 3 bikes or scooters");
+        }
+
+        if (!parkVehicleTypes.contains(vehicle.getType())) {
+            throw new IllegalStateException("Cannot mix vehicle types, this is for: " + parkVehicleTypes.get(0));
+        }
 
         if (parkingSpot.isNotReservedFor(vehicle.getId())) {
             throw new IllegalStateException("cannot park on reserved parking spot");
@@ -103,10 +127,7 @@ public class VehicleService {
     }
 
     private static void checkVehicleTypeRules(Vehicle vehicle, ParkingSpot parkingSpot) {
-        List<VehicleType> parkVehicleTypes = parkingSpot.getVehicles()
-                .stream()
-                .map(Vehicle::getType)
-                .toList();
+        List<VehicleType> parkVehicleTypes = parkingSpot.getVehicleTypes();
 
         if (parkVehicleTypes.size() == 1 && parkVehicleTypes.get(0) == VehicleType.CAR) {
             throw new IllegalStateException("Parking spot is already occupied by car");
