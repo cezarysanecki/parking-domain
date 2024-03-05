@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import pl.cezarysanecki.parkingdomain.api.ParkedVehicleResource;
 import pl.cezarysanecki.parkingdomain.model.Vehicle;
 import pl.cezarysanecki.parkingdomain.model.VehicleType;
 import pl.cezarysanecki.parkingdomain.service.VehicleService;
@@ -41,6 +42,18 @@ public class VehicleController {
     ) {
         Vehicle vehicle = vehicleService.findBy(vehicleId);
         return vehicleService.parkAnywhere(vehicle).getId();
+    }
+
+    @PostMapping("/{vehicleId}/park-anywhere/test")
+    public ParkedVehicleResource parkAnywhereWithResource(
+            @PathVariable("vehicleId") Long vehicleId
+    ) {
+        Vehicle vehicle = vehicleService.findBy(vehicleId);
+        Vehicle parkedVehicle = vehicleService.parkAnywhere(vehicle);
+
+        return new ParkedVehicleResource(
+                parkedVehicle.getId(),
+                parkedVehicle.getParkingSpot().getId());
     }
 
     @GetMapping("/{id}")

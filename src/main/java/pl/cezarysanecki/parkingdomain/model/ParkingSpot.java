@@ -84,4 +84,19 @@ public class ParkingSpot {
     public boolean isAnotherPlaceFor(VehicleType type) {
         return !isFull() && isTheSameType(type);
     }
+
+    public boolean isNotReservedFor(Long vehicleId) {
+        return this.reservedBy != null && !this.reservedBy.getId().equals(vehicleId);
+    }
+
+    public List<VehicleType> getVehicleTypes() {
+        return this.vehicles.stream()
+                .map(Vehicle::getType)
+                .toList();
+    }
+
+    public ParkedVehicleTypesOnParkingSpot getParkedVehicleTypes() {
+        return new ParkedVehicleTypesOnParkingSpot(getVehicleTypes());
+    }
+
 }

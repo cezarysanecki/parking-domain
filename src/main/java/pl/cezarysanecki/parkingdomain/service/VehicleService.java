@@ -2,6 +2,8 @@ package pl.cezarysanecki.parkingdomain.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import pl.cezarysanecki.parkingdomain.model.ParkedVehicleTypesOnParkingSpot;
 import pl.cezarysanecki.parkingdomain.model.ParkingSpot;
 import pl.cezarysanecki.parkingdomain.model.ParkingSpotStatus;
 import pl.cezarysanecki.parkingdomain.model.Vehicle;
@@ -27,6 +29,7 @@ public class VehicleService {
         return vehicleRepository.save(vehicle);
     }
 
+    @Transactional
     public Vehicle park(Long parkingSpotId, Vehicle vehicle) {
         ParkingSpot parkingSpot = parkingSpotRepository.findBy(parkingSpotId);
 
@@ -35,15 +38,26 @@ public class VehicleService {
             parkingSpot.getVehicles().add(vehicle);
             vehicle.setParkingSpot(parkingSpot);
 
-            vehicleRepository.save(vehicle);
-            parkingSpotRepository.save(parkingSpot);
-
             return vehicle;
         }
 
-        checkVehicleTypeRules(vehicle, parkingSpot);
+        ParkedVehicleTypesOnParkingSpot parkedVehicleTypes = parkingSpot.getParkedVehicleTypes();
 
-        if (parkingSpot.getReservedBy() != null && !parkingSpot.getReservedBy().getId().equals(vehicle.getId())) {
+        if (parkedVehicleTypes.isFullyOccupiedByCars()) {
+            throw new IllegalStateException("Parking spot is already occupied by car");
+        }
+        if (parkedVehicleTypes.isFullyOccupiedByMotorcycles()) {
+            throw new IllegalStateException("Parking spot is already occupied by 2 motorcycles");
+        }
+        if (parkedVehicleTypes.isFullyOccupiedByBikesOrScooters()) {
+            throw new IllegalStateException("Parking spot is already occupied by 3 bikes or scooters");
+        }
+
+        if (!parkedVehicleTypes.contains(vehicle.getType())) {
+            throw new IllegalStateException("Cannot mix vehicle types, this is for: " + parkedVehicleTypes.getVehicleTypes().get(0));
+        }
+
+        if (parkingSpot.isNotReservedFor(vehicle.getId())) {
             throw new IllegalStateException("cannot park on reserved parking spot");
         }
 
@@ -51,12 +65,10 @@ public class VehicleService {
         parkingSpot.getVehicles().add(vehicle);
         vehicle.setParkingSpot(parkingSpot);
 
-        vehicleRepository.save(vehicle);
-        parkingSpotRepository.save(parkingSpot);
-
         return vehicle;
     }
 
+    @Transactional
     public Vehicle parkAnywhere(Vehicle vehicle) {
         ParkingSpot parkingSpot = parkingSpotService.findAnyAvailableFor(vehicle);
 
@@ -65,9 +77,6 @@ public class VehicleService {
             parkingSpot.getVehicles().add(vehicle);
             vehicle.setParkingSpot(parkingSpot);
 
-            vehicleRepository.save(vehicle);
-            parkingSpotRepository.save(parkingSpot);
-
             return vehicle;
         }
 
@@ -75,38 +84,7 @@ public class VehicleService {
             return vehicle;
         }
 
-        checkVehicleTypeRules(vehicle, parkingSpot);
-
-        if (parkingSpot.getReservedBy() != null && !parkingSpot.getReservedBy().getId().equals(vehicle.getId())) {
-            throw new IllegalStateException("cannot park on reserved parking spot");
-        }
-
-        parkingSpot.setStatus(ParkingSpotStatus.OCCUPIED);
-        parkingSpot.getVehicles().add(vehicle);
-        vehicle.setParkingSpot(parkingSpot);
-
-        vehicleRepository.save(vehicle);
-        parkingSpotRepository.save(parkingSpot);
-
-        return vehicle;
-    }
-
-    public Vehicle findBy(Long id) {
-        return vehicleRepository.findById(id)
-                .orElseThrow(() -> new IllegalStateException("cannot find vehicle by id: " + id));
-    }
-
-    public List<Vehicle> findAll() {
-        Iterable<Vehicle> vehicles = vehicleRepository.findAll();
-        return StreamSupport.stream(vehicles.spliterator(), false)
-                .collect(Collectors.toList());
-    }
-
-    private static void checkVehicleTypeRules(Vehicle vehicle, ParkingSpot parkingSpot) {
-        List<VehicleType> parkVehicleTypes = parkingSpot.getVehicles()
-                .stream()
-                .map(Vehicle::getType)
-                .toList();
+        List<VehicleType> parkVehicleTypes = parkingSpot.getVehicleTypes();
 
         if (parkVehicleTypes.size() == 1 && parkVehicleTypes.get(0) == VehicleType.CAR) {
             throw new IllegalStateException("Parking spot is already occupied by car");
@@ -121,6 +99,27 @@ public class VehicleService {
         if (!parkVehicleTypes.contains(vehicle.getType())) {
             throw new IllegalStateException("Cannot mix vehicle types, this is for: " + parkVehicleTypes.get(0));
         }
+
+        if (parkingSpot.isNotReservedFor(vehicle.getId())) {
+            throw new IllegalStateException("cannot park on reserved parking spot");
+        }
+
+        parkingSpot.setStatus(ParkingSpotStatus.OCCUPIED);
+        parkingSpot.getVehicles().add(vehicle);
+        vehicle.setParkingSpot(parkingSpot);
+
+        return vehicle;
+    }
+
+    public Vehicle findBy(Long id) {
+        return vehicleRepository.findById(id)
+                .orElseThrow(() -> new IllegalStateException("cannot find vehicle by id: " + id));
+    }
+
+    public List<Vehicle> findAll() {
+        Iterable<Vehicle> vehicles = vehicleRepository.findAll();
+        return StreamSupport.stream(vehicles.spliterator(), false)
+                .collect(Collectors.toList());
     }
 
 }
