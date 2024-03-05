@@ -99,4 +99,8 @@ public class ParkingSpot {
         return new ParkedVehicleTypesOnParkingSpot(getVehicleTypes());
     }
 
+    public boolean isOccupiedBy(Long vehicleId) {
+        return getVehicles().stream().anyMatch(vehicle1 -> vehicle1.getId().equals(vehicleId));
+    }
+
 }

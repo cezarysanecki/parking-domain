@@ -80,7 +80,7 @@ public class VehicleService {
             return vehicle;
         }
 
-        if (parkingSpot.getVehicles().stream().anyMatch(vehicle1 -> vehicle1.getId().equals(vehicle.getId()))) {
+        if (parkingSpot.isOccupiedBy(vehicle.getId())) {
             return vehicle;
         }
 
