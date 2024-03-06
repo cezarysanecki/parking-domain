@@ -24,9 +24,7 @@ public class VehicleService {
     private final ParkingSpotRepository parkingSpotRepository;
 
     public Vehicle create(VehicleType vehicleType) {
-        Vehicle vehicle = new Vehicle();
-        vehicle.setType(vehicleType);
-        return vehicleRepository.save(vehicle);
+        return vehicleRepository.save(Vehicle.createUsing(vehicleType));
     }
 
     @Transactional
