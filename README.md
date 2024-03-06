@@ -173,10 +173,11 @@ available and client is marked as unwanted. If not we reject possibility to rese
 
 ![Reserve parking spot](/docs/public/es/es_releasing_reserved_parking_spot.png)
 
-2 hours before reservation we inform clients that they need to free spot. We reserve for them another parking spot.
-If client informs that he released parking spot then we add him loyalty points for helping us.
-1 hour before reservation we check if spot is released. If not, we move that vehicles and charge for that users of 
-these vehicles. If yes, we just removed parking spot from available parking bank. 
+2 hours before a reservation, we inform clients that they need to vacate their spot.
+We reserve another parking spot for them. If a client notifies us that they've freed up the parking spot, 
+we reward them with loyalty points for their assistance. 1 hour before the reservation, 
+we check if the spot has been released. If not, we relocate the vehicles and charge the users of those vehicles. 
+If yes, we simply remove the parking spot from the available parking bank.
 
 ### Punishing client
 
