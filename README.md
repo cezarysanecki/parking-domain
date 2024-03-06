@@ -53,6 +53,7 @@ having legacy code and learn tools from JVM ecosystem (but not only).
   - [ ] ~~Fee logic~~
 - [ ] Refactoring to add unit tests
 - [ ] Looking for deep model (modules)
+  - [X] Do simple Event Storming session
 - [ ] Add other types of requirements
   - [ ] Cleaning
   - [ ] Maintenance
