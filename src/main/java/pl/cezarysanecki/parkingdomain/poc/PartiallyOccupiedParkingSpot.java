@@ -4,41 +4,33 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-class PartiallyOccupiedParkingSpot implements OccupiedParkingSpot {
+class PartiallyOccupiedParkingSpot implements ParkingSpot {
 
     private final ParkingSpotId parkingSpotId;
-    private final VehicleType parkedVehicleType;
+    private final int capacity;
     private final List<VehicleId> parkedVehicles;
 
     PartiallyOccupiedParkingSpot(
             ParkingSpotId parkingSpotId,
-            VehicleType parkedVehicleType,
+            int capacity,
             List<VehicleId> parkedVehicles) {
         this.parkingSpotId = parkingSpotId;
-        this.parkedVehicleType = parkedVehicleType;
+        this.capacity = capacity;
         this.parkedVehicles = new ArrayList<>(parkedVehicles);
     }
 
-    ParkingSpot grantAccessTo(Vehicle vehicle) {
-        VehicleId vehicleId = vehicle.getVehicleId();
-        VehicleType vehicleType = vehicle.getVehicleType();
-
+    ParkingSpot grantAccessFor(VehicleId vehicleId) {
         parkedVehicles.add(vehicleId);
 
-        if (parkedVehicles.size() == parkedVehicleType.getAllowedVehiclesOnSpot()) {
-            return new FullyOccupiedParkingSpot(parkingSpotId, parkedVehicles());
+        if (parkedVehicles.size() == capacity) {
+            return new FullyOccupiedParkingSpot(parkingSpotId, capacity, Collections.unmodifiableList(parkedVehicles));
         }
-        return new PartiallyOccupiedParkingSpot(parkingSpotId, vehicleType, parkedVehicles());
+        return new PartiallyOccupiedParkingSpot(parkingSpotId, capacity, Collections.unmodifiableList(parkedVehicles));
     }
 
     @Override
     public ParkingSpotId parkingSpotId() {
         return parkingSpotId;
-    }
-
-    @Override
-    public List<VehicleId> parkedVehicles() {
-        return Collections.unmodifiableList(parkedVehicles);
     }
 
 }

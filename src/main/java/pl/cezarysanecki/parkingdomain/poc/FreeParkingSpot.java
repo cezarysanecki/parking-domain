@@ -8,15 +8,13 @@ import java.util.List;
 class FreeParkingSpot implements ParkingSpot {
 
     private final ParkingSpotId parkingSpotId;
+    private final int capacity;
 
-    ParkingSpot grantAccessTo(Vehicle vehicle) {
-        VehicleId vehicleId = vehicle.getVehicleId();
-        VehicleType vehicleType = vehicle.getVehicleType();
-
-        if (vehicleType.getAllowedVehiclesOnSpot() == 1) {
-            return new FullyOccupiedParkingSpot(parkingSpotId, List.of(vehicleId));
+    ParkingSpot grantAccessFor(VehicleId vehicleId) {
+        if (capacity == 1) {
+            return new FullyOccupiedParkingSpot(parkingSpotId, capacity, List.of(vehicleId));
         }
-        return new PartiallyOccupiedParkingSpot(parkingSpotId, vehicleType, List.of(vehicleId));
+        return new PartiallyOccupiedParkingSpot(parkingSpotId, capacity, List.of(vehicleId));
     }
 
     @Override

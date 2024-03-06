@@ -5,6 +5,6 @@ import lombok.Value;
 @Value
 class VehicleType {
 
-    int allowedVehiclesOnSpot;
+    int type;
 
 }
