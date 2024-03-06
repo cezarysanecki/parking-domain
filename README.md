@@ -126,6 +126,28 @@ having legacy code and learn tools from JVM ecosystem (but not only).
 - A customer labeled as 'difficult' has the right to assert their innocence
 - If the verifier accepts the justification, a discount should be provided to that person as compensation
 
+## Event Storming session
+
+### Registration new parking spot
+
+![Registration new parking spot](/docs/public/es/es_registration_parking_spot.png)
+
+There is possibility to register new parking spots in system f.ex. when we create new ones.
+After registration, it lends in overall parking spots bank.
+
+**Hot spot:** Need to consider if there is a need to provide parking spots for disabled people.
+
+### Parking vehicle
+
+![Parking vehicle](/docs/public/es/es_parking_vehicle.png)
+
+Need to find available parking spot for specified vehicle type. If it fails we will try to find another one 
+up to 3 times (because one of them could vanish from bank just a moment ago). If there is success just assign
+this parking spot to vehicle.
+
+**Hot spot:** What if there would like to park huge vehicle which requires f.ex. 2 parking spots? 
+For now, we skip this case.
+
 ## Educational goals
 
 I would like to learn the following technologies/tools. I need to consider which of them to use 
