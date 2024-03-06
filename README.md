@@ -182,9 +182,9 @@ these vehicles. If yes, we just removed parking spot from available parking bank
 
 ![Punishing client](/docs/public/es/es_punishing_for_unused_reservation.png)
 
-15 minutes after reservation we check if client do not park on reserved spot. If not, we add this spot to 
-available bank and warn client. If this was 2nd or 3rd warning then we remove his loyalty points. If this was 4th warning
-then we mark this client as unwanted.
+15 minutes after a reservation, we check if the client has not parked in the reserved spot. 
+If not, we add this spot to the available bank and notify the client. If this is the 2nd or 3rd warning, 
+we deduct loyalty points. If it's the 4th warning, we mark the client as unwanted.
 
 ## Educational goals
 
