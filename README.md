@@ -148,6 +148,44 @@ this parking spot to vehicle.
 **Hot spot:** What if there would like to park huge vehicle which requires f.ex. 2 parking spots? 
 For now, we skip this case.
 
+### Release parking spot
+
+![Release parking spot](/docs/public/es/es_release_parking_spot_and_cleaning.png)
+
+Simple scenario, if someone did not pay then there is refusal to release parking spot.
+But if there was payment we put parking spot back to bank, add loyalty points to user and increase counter
+responsible for parking spot's clearance. When parking spot clearance counter reach 5 then we mark this spot as needed 
+clearance. Of course, it is removed from available bank. When at least 10 parking spots and these spots are free
+(there are no vehicles on it) we call external cleaning service. Unless it was already called.
+
+After cleaning, parking spots go back to available bank, and we tick off that external clearance has been done.
+
+### Reservation
+
+![Reserve parking spot](/docs/public/es/es_reservation.png)
+
+We can reserve parking spot for specified date f.ex. to go to cinema. There are two conditions: is any parking spot
+available and client is marked as unwanted. If not we reject possibility to reserve spot.
+
+**Hot spot:** Can we reserve more than one parking spot (group reservation)?
+
+### Reservation
+
+![Reserve parking spot](/docs/public/es/es_releasing_reserved_parking_spot.png)
+
+2 hours before reservation we inform clients that they need to free spot. We reserve for them another parking spot.
+If client informs that he released parking spot then we add him loyalty points for helping us.
+1 hour before reservation we check if spot is released. If not, we move that vehicles and charge for that users of 
+these vehicles. If yes, we just removed parking spot from available parking bank. 
+
+### Punishing client
+
+![Punishing client](/docs/public/es/es_punishing_for_unused_reservation.png)
+
+15 minutes after reservation we check if client do not park on reserved spot. If not, we add this spot to 
+available bank and warn client. If this was 2nd or 3rd warning then we remove his loyalty points. If this was 4th warning
+then we mark this client as unwanted.
+
 ## Educational goals
 
 I would like to learn the following technologies/tools. I need to consider which of them to use 
