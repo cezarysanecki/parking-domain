@@ -30,30 +30,26 @@ public class VehicleService {
     public Long park(Long parkingSpotId, Vehicle vehicle) {
         ParkingSpot parkingSpot = parkingSpotRepository.findBy(parkingSpotId);
 
-        if (parkingSpot.isCompletelyFree()) {
-            parkingSpot.assignVehicle(vehicle);
+        if (!parkingSpot.isCompletelyFree()) {
+            ParkedVehicleTypesOnParkingSpot parkedVehicleTypes = parkingSpot.getParkedVehicleTypes();
 
-            return vehicle.getId();
-        }
+            if (parkedVehicleTypes.isFullyOccupiedByCars()) {
+                throw new IllegalStateException("Parking spot is already occupied by car");
+            }
+            if (parkedVehicleTypes.isFullyOccupiedByMotorcycles()) {
+                throw new IllegalStateException("Parking spot is already occupied by 2 motorcycles");
+            }
+            if (parkedVehicleTypes.isFullyOccupiedByBikesOrScooters()) {
+                throw new IllegalStateException("Parking spot is already occupied by 3 bikes or scooters");
+            }
 
-        ParkedVehicleTypesOnParkingSpot parkedVehicleTypes = parkingSpot.getParkedVehicleTypes();
+            if (!parkedVehicleTypes.contains(vehicle.getType())) {
+                throw new IllegalStateException("Cannot mix vehicle types, this is for: " + parkedVehicleTypes.getVehicleTypes().get(0));
+            }
 
-        if (parkedVehicleTypes.isFullyOccupiedByCars()) {
-            throw new IllegalStateException("Parking spot is already occupied by car");
-        }
-        if (parkedVehicleTypes.isFullyOccupiedByMotorcycles()) {
-            throw new IllegalStateException("Parking spot is already occupied by 2 motorcycles");
-        }
-        if (parkedVehicleTypes.isFullyOccupiedByBikesOrScooters()) {
-            throw new IllegalStateException("Parking spot is already occupied by 3 bikes or scooters");
-        }
-
-        if (!parkedVehicleTypes.contains(vehicle.getType())) {
-            throw new IllegalStateException("Cannot mix vehicle types, this is for: " + parkedVehicleTypes.getVehicleTypes().get(0));
-        }
-
-        if (parkingSpot.isNotReservedFor(vehicle.getId())) {
-            throw new IllegalStateException("cannot park on reserved parking spot");
+            if (parkingSpot.isNotReservedFor(vehicle.getId())) {
+                throw new IllegalStateException("cannot park on reserved parking spot");
+            }
         }
 
         parkingSpot.assignVehicle(vehicle);
