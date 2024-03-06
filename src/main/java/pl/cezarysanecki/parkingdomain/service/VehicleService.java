@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.cezarysanecki.parkingdomain.model.ParkedVehicleTypesOnParkingSpot;
 import pl.cezarysanecki.parkingdomain.model.ParkingSpot;
-import pl.cezarysanecki.parkingdomain.model.ParkingSpotStatus;
 import pl.cezarysanecki.parkingdomain.model.Vehicle;
 import pl.cezarysanecki.parkingdomain.model.VehicleType;
 import pl.cezarysanecki.parkingdomain.repository.ParkingSpotRepository;
@@ -31,10 +30,8 @@ public class VehicleService {
     public Long park(Long parkingSpotId, Vehicle vehicle) {
         ParkingSpot parkingSpot = parkingSpotRepository.findBy(parkingSpotId);
 
-        if (parkingSpot.getVehicles().isEmpty()) {
-            parkingSpot.setStatus(ParkingSpotStatus.OCCUPIED);
-            parkingSpot.getVehicles().add(vehicle);
-            vehicle.setParkingSpot(parkingSpot);
+        if (parkingSpot.isCompletelyFree()) {
+            parkingSpot.assignVehicle(vehicle);
 
             return vehicle.getId();
         }
@@ -59,9 +56,7 @@ public class VehicleService {
             throw new IllegalStateException("cannot park on reserved parking spot");
         }
 
-        parkingSpot.setStatus(ParkingSpotStatus.OCCUPIED);
-        parkingSpot.getVehicles().add(vehicle);
-        vehicle.setParkingSpot(parkingSpot);
+        parkingSpot.assignVehicle(vehicle);
 
         return vehicle.getId();
     }
@@ -70,10 +65,8 @@ public class VehicleService {
     public Vehicle parkAnywhere(Vehicle vehicle) {
         ParkingSpot parkingSpot = parkingSpotService.findAnyAvailableFor(vehicle);
 
-        if (parkingSpot.getVehicles().isEmpty()) {
-            parkingSpot.setStatus(ParkingSpotStatus.OCCUPIED);
-            parkingSpot.getVehicles().add(vehicle);
-            vehicle.setParkingSpot(parkingSpot);
+        if (parkingSpot.isCompletelyFree()) {
+            parkingSpot.assignVehicle(vehicle);
 
             return vehicle;
         }
@@ -102,9 +95,7 @@ public class VehicleService {
             throw new IllegalStateException("cannot park on reserved parking spot");
         }
 
-        parkingSpot.setStatus(ParkingSpotStatus.OCCUPIED);
-        parkingSpot.getVehicles().add(vehicle);
-        vehicle.setParkingSpot(parkingSpot);
+        parkingSpot.assignVehicle(vehicle);
 
         return vehicle;
     }
