@@ -33,7 +33,7 @@ public class VehicleController {
             @PathVariable("parkingSpotId") Long parkingSpotId
     ) {
         Vehicle vehicle = vehicleService.findBy(vehicleId);
-        return vehicleService.park(parkingSpotId, vehicle).getId();
+        return vehicleService.park(parkingSpotId, vehicle);
     }
 
     @PostMapping("/{vehicleId}/park-anywhere")

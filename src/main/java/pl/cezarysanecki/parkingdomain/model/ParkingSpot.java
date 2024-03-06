@@ -99,4 +99,18 @@ public class ParkingSpot {
         return new ParkedVehicleTypesOnParkingSpot(getVehicleTypes());
     }
 
+    public boolean isOccupiedBy(Long vehicleId) {
+        return getVehicles().stream().anyMatch(vehicle1 -> vehicle1.getId().equals(vehicleId));
+    }
+
+    public void assignVehicle(final Vehicle vehicle) {
+        this.status = ParkingSpotStatus.OCCUPIED;
+        this.vehicles.add(vehicle);
+        vehicle.setParkingSpot(this);
+    }
+
+    public boolean isCompletelyFree() {
+        return this.vehicles.isEmpty();
+    }
+
 }

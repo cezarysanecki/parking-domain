@@ -27,4 +27,10 @@ public class Vehicle {
     @JsonBackReference
     private ParkingSpot parkingSpot;
 
+    public static Vehicle createUsing(VehicleType vehicleType) {
+        Vehicle vehicle = new Vehicle();
+        vehicle.setType(vehicleType);
+        return vehicle;
+    }
+
 }

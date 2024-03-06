@@ -47,12 +47,13 @@ having legacy code and learn tools from JVM ecosystem (but not only).
 
 ## MVP
 
-- [ ] 3-layer app with anemic model (without tests)
-  - [ ] Occupation logic
-  - [ ] Reservation logic
-  - [ ] Fee logic
+- [X] 3-layer app with anemic model (without tests)
+  - [X] Occupation logic
+  - [X] Reservation logic
+  - [ ] ~~Fee logic~~
 - [ ] Refactoring to add unit tests
 - [ ] Looking for deep model (modules)
+  - [X] Do simple Event Storming session
 - [ ] Add other types of requirements
   - [ ] Cleaning
   - [ ] Maintenance
