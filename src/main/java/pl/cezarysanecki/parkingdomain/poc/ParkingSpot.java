@@ -7,7 +7,7 @@ interface ParkingSpot {
 
     ParkingSpotId parkingSpotId();
 
-    default ParkingSpot resolve(
+    static ParkingSpot resolve(
             ParkingSpotId parkingSpotId,
             int capacity,
             Collection<VehicleId> parkedVehicles) {
