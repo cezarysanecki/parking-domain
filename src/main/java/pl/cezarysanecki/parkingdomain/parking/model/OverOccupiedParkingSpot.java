@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Value
-class OverOccupiedParkingSpot implements ParkingSpot {
+public class OverOccupiedParkingSpot implements ParkingSpot {
 
     @NonNull
     ParkingSpotId parkingSpotId;
@@ -28,7 +28,7 @@ class OverOccupiedParkingSpot implements ParkingSpot {
         this.parkedVehicles = new HashSet<>(parkedVehicles);
     }
 
-    ParkingSpot leaveBy(VehicleId vehicleId) {
+    public ParkingSpot leaveBy(VehicleId vehicleId) {
         parkedVehicles.remove(vehicleId);
 
         if (capacity < parkedVehicles.size()) {

@@ -6,7 +6,7 @@ import lombok.Value;
 import java.util.Set;
 
 @Value
-class FreeParkingSpot implements ParkingSpot {
+public class FreeParkingSpot implements ParkingSpot {
 
     @NonNull
     ParkingSpotId parkingSpotId;
@@ -23,7 +23,7 @@ class FreeParkingSpot implements ParkingSpot {
         this.capacity = capacity;
     }
 
-    ParkingSpot occupyBy(VehicleId vehicleId) {
+    public ParkingSpot occupyBy(VehicleId vehicleId) {
         if (capacity == 1) {
             return new FullyOccupiedParkingSpot(parkingSpotId, capacity, Set.of(vehicleId));
         }
