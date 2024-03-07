@@ -32,4 +32,26 @@ class GrantingAccessToParkingSpotTest extends Specification {
       "four-spaced"    | 4        | [VehicleId.of(1), VehicleId.of(2), VehicleId.of(3)]
   }
   
+  def "partially occupy free parking spot after granting access to free space"() {
+    given:
+      def freeParkingSpot = new FreeParkingSpot(ParkingSpotId.of(1), 2)
+    
+    when:
+      def result = freeParkingSpot.grantAccessFor VehicleId.of(4)
+    
+    then:
+      result in PartiallyOccupiedParkingSpot
+  }
+  
+  def "partially occupy partially occupied parking spot after granting access to free space"() {
+    given:
+      def freeParkingSpot = new PartiallyOccupiedParkingSpot(ParkingSpotId.of(1), 3, [VehicleId.of(1)])
+    
+    when:
+      def result = freeParkingSpot.grantAccessFor VehicleId.of(2)
+    
+    then:
+      result in PartiallyOccupiedParkingSpot
+  }
+  
 }
