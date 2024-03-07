@@ -10,7 +10,7 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Value
-public class AssignedAvailableSpot implements DomainEvent {
+public class AssignedSpot implements DomainEvent {
 
     @NonNull UUID eventId = UUID.randomUUID();
     @NonNull Instant when = Instant.now();
