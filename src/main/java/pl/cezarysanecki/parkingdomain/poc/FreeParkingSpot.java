@@ -1,6 +1,6 @@
 package pl.cezarysanecki.parkingdomain.poc;
 
-import java.util.List;
+import java.util.Set;
 
 class FreeParkingSpot implements ParkingSpot {
 
@@ -18,11 +18,11 @@ class FreeParkingSpot implements ParkingSpot {
         this.capacity = capacity;
     }
 
-    ParkingSpot grantAccessFor(VehicleId vehicleId) {
+    ParkingSpot occupyBy(VehicleId vehicleId) {
         if (capacity == 1) {
-            return new FullyOccupiedParkingSpot(parkingSpotId, capacity, List.of(vehicleId));
+            return new FullyOccupiedParkingSpot(parkingSpotId, capacity, Set.of(vehicleId));
         }
-        return new PartiallyOccupiedParkingSpot(parkingSpotId, capacity, List.of(vehicleId));
+        return new PartiallyOccupiedParkingSpot(parkingSpotId, capacity, Set.of(vehicleId));
     }
 
     @Override

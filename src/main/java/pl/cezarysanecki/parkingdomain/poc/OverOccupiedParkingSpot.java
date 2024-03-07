@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Value
-class FullyOccupiedParkingSpot implements ParkingSpot {
+class OverOccupiedParkingSpot implements ParkingSpot {
 
     @NonNull
     ParkingSpotId parkingSpotId;
@@ -16,7 +16,7 @@ class FullyOccupiedParkingSpot implements ParkingSpot {
     @NonNull
     Set<VehicleId> parkedVehicles;
 
-    FullyOccupiedParkingSpot(
+    OverOccupiedParkingSpot(
             ParkingSpotId parkingSpotId,
             int capacity,
             Set<VehicleId> parkedVehicles) {
@@ -31,10 +31,10 @@ class FullyOccupiedParkingSpot implements ParkingSpot {
     ParkingSpot leaveBy(VehicleId vehicleId) {
         parkedVehicles.remove(vehicleId);
 
-        if (parkedVehicles.isEmpty()) {
-            return new FreeParkingSpot(parkingSpotId, capacity);
+        if (capacity < parkedVehicles.size()) {
+            return new OverOccupiedParkingSpot(parkingSpotId, capacity, getParkedVehicles());
         }
-        return new PartiallyOccupiedParkingSpot(parkingSpotId, capacity, getParkedVehicles());
+        return new FullyOccupiedParkingSpot(parkingSpotId, capacity, getParkedVehicles());
     }
 
     @Override
