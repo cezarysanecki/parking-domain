@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.parking;
+package pl.cezarysanecki.parkingdomain.parking.model;
 
 import java.util.Collection;
 import java.util.HashSet;

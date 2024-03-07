@@ -1,5 +1,10 @@
 package pl.cezarysanecki.parkingdomain.parking
 
+import pl.cezarysanecki.parkingdomain.parking.model.FreeParkingSpot
+import pl.cezarysanecki.parkingdomain.parking.model.FullyOccupiedParkingSpot
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId
+import pl.cezarysanecki.parkingdomain.parking.model.PartiallyOccupiedParkingSpot
+import pl.cezarysanecki.parkingdomain.parking.model.VehicleId
 import spock.lang.Specification
 
 class LeavingFullyOccupiedParkingSpotTest extends Specification {
