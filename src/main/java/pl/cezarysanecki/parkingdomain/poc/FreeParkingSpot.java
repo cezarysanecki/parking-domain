@@ -1,14 +1,22 @@
 package pl.cezarysanecki.parkingdomain.poc;
 
-import lombok.RequiredArgsConstructor;
-
 import java.util.List;
 
-@RequiredArgsConstructor
 class FreeParkingSpot implements ParkingSpot {
 
     private final ParkingSpotId parkingSpotId;
     private final int capacity;
+
+    FreeParkingSpot(
+            ParkingSpotId parkingSpotId,
+            int capacity
+    ) {
+        if (capacity <= 0) {
+            throw new IllegalStateException("capacity must be positive");
+        }
+        this.parkingSpotId = parkingSpotId;
+        this.capacity = capacity;
+    }
 
     ParkingSpot grantAccessFor(VehicleId vehicleId) {
         if (capacity == 1) {

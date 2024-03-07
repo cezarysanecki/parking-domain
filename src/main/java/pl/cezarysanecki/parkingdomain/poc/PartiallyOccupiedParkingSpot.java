@@ -14,6 +14,9 @@ class PartiallyOccupiedParkingSpot implements ParkingSpot {
             ParkingSpotId parkingSpotId,
             int capacity,
             List<VehicleId> parkedVehicles) {
+        if (capacity <= 0) {
+            throw new IllegalStateException("capacity must be positive");
+        }
         this.parkingSpotId = parkingSpotId;
         this.capacity = capacity;
         this.parkedVehicles = new ArrayList<>(parkedVehicles);
@@ -23,9 +26,9 @@ class PartiallyOccupiedParkingSpot implements ParkingSpot {
         parkedVehicles.add(vehicleId);
 
         if (parkedVehicles.size() == capacity) {
-            return new FullyOccupiedParkingSpot(parkingSpotId, capacity, Collections.unmodifiableList(parkedVehicles));
+            return new FullyOccupiedParkingSpot(parkingSpotId, capacity, getParkedVehicles());
         }
-        return new PartiallyOccupiedParkingSpot(parkingSpotId, capacity, Collections.unmodifiableList(parkedVehicles));
+        return new PartiallyOccupiedParkingSpot(parkingSpotId, capacity, getParkedVehicles());
     }
 
     ParkingSpot revokeAccessFrom(VehicleId vehicleId) {
@@ -34,12 +37,16 @@ class PartiallyOccupiedParkingSpot implements ParkingSpot {
         if (parkedVehicles.isEmpty()) {
             return new FreeParkingSpot(parkingSpotId, capacity);
         }
-        return new PartiallyOccupiedParkingSpot(parkingSpotId, capacity, Collections.unmodifiableList(parkedVehicles));
+        return new PartiallyOccupiedParkingSpot(parkingSpotId, capacity, getParkedVehicles());
     }
 
     @Override
     public ParkingSpotId parkingSpotId() {
         return parkingSpotId;
+    }
+
+    List<VehicleId> getParkedVehicles() {
+        return Collections.unmodifiableList(parkedVehicles);
     }
 
 }
