@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.poc;
+package pl.cezarysanecki.parkingdomain.parking.model;
 
 import lombok.NonNull;
 import lombok.Value;
@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Value
-class OverOccupiedParkingSpot implements ParkingSpot {
+public class FullyOccupiedParkingSpot implements ParkingSpot {
 
     @NonNull
     ParkingSpotId parkingSpotId;
@@ -16,7 +16,7 @@ class OverOccupiedParkingSpot implements ParkingSpot {
     @NonNull
     Set<VehicleId> parkedVehicles;
 
-    OverOccupiedParkingSpot(
+    FullyOccupiedParkingSpot(
             ParkingSpotId parkingSpotId,
             int capacity,
             Set<VehicleId> parkedVehicles) {
@@ -28,21 +28,17 @@ class OverOccupiedParkingSpot implements ParkingSpot {
         this.parkedVehicles = new HashSet<>(parkedVehicles);
     }
 
-    ParkingSpot leaveBy(VehicleId vehicleId) {
+    public ParkingSpot leaveBy(VehicleId vehicleId) {
         parkedVehicles.remove(vehicleId);
 
-        if (capacity < parkedVehicles.size()) {
-            return new OverOccupiedParkingSpot(parkingSpotId, capacity, getParkedVehicles());
+        if (parkedVehicles.isEmpty()) {
+            return new FreeParkingSpot(parkingSpotId, capacity);
         }
-        return new FullyOccupiedParkingSpot(parkingSpotId, capacity, getParkedVehicles());
+        return new PartiallyOccupiedParkingSpot(parkingSpotId, capacity, getParkedVehicles());
     }
 
     @Override
-    public ParkingSpotId parkingSpotId() {
-        return parkingSpotId;
-    }
-
-    Set<VehicleId> getParkedVehicles() {
+    public Set<VehicleId> getParkedVehicles() {
         return Collections.unmodifiableSet(parkedVehicles);
     }
 

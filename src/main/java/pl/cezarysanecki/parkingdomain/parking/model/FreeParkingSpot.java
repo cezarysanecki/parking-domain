@@ -1,11 +1,16 @@
-package pl.cezarysanecki.parkingdomain.poc;
+package pl.cezarysanecki.parkingdomain.parking.model;
+
+import lombok.NonNull;
+import lombok.Value;
 
 import java.util.Set;
 
-class FreeParkingSpot implements ParkingSpot {
+@Value
+public class FreeParkingSpot implements ParkingSpot {
 
-    private final ParkingSpotId parkingSpotId;
-    private final int capacity;
+    @NonNull
+    ParkingSpotId parkingSpotId;
+    int capacity;
 
     FreeParkingSpot(
             ParkingSpotId parkingSpotId,
@@ -18,7 +23,7 @@ class FreeParkingSpot implements ParkingSpot {
         this.capacity = capacity;
     }
 
-    ParkingSpot occupyBy(VehicleId vehicleId) {
+    public ParkingSpot occupyBy(VehicleId vehicleId) {
         if (capacity == 1) {
             return new FullyOccupiedParkingSpot(parkingSpotId, capacity, Set.of(vehicleId));
         }
@@ -26,8 +31,8 @@ class FreeParkingSpot implements ParkingSpot {
     }
 
     @Override
-    public ParkingSpotId parkingSpotId() {
-        return parkingSpotId;
+    public Set<VehicleId> getParkedVehicles() {
+        return Set.of();
     }
 
 }

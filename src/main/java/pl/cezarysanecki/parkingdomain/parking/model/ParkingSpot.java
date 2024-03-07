@@ -1,11 +1,16 @@
-package pl.cezarysanecki.parkingdomain.poc;
+package pl.cezarysanecki.parkingdomain.parking.model;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 
-interface ParkingSpot {
+public interface ParkingSpot {
 
-    ParkingSpotId parkingSpotId();
+    ParkingSpotId getParkingSpotId();
+
+    int getCapacity();
+
+    Set<VehicleId> getParkedVehicles();
 
     static ParkingSpot resolve(
             ParkingSpotId parkingSpotId,
