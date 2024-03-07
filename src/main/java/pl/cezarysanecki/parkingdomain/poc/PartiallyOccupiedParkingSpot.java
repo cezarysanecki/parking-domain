@@ -1,14 +1,20 @@
 package pl.cezarysanecki.parkingdomain.poc;
 
+import lombok.NonNull;
+import lombok.Value;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+@Value
 class PartiallyOccupiedParkingSpot implements ParkingSpot {
 
-    private final ParkingSpotId parkingSpotId;
-    private final int capacity;
-    private final Set<VehicleId> parkedVehicles;
+    @NonNull
+    ParkingSpotId parkingSpotId;
+    int capacity;
+    @NonNull
+    Set<VehicleId> parkedVehicles;
 
     PartiallyOccupiedParkingSpot(
             ParkingSpotId parkingSpotId,
@@ -41,11 +47,7 @@ class PartiallyOccupiedParkingSpot implements ParkingSpot {
     }
 
     @Override
-    public ParkingSpotId parkingSpotId() {
-        return parkingSpotId;
-    }
-
-    Set<VehicleId> getParkedVehicles() {
+    public Set<VehicleId> getParkedVehicles() {
         return Collections.unmodifiableSet(parkedVehicles);
     }
 

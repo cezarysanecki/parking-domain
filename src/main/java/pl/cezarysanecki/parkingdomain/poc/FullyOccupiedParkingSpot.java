@@ -38,11 +38,7 @@ class FullyOccupiedParkingSpot implements ParkingSpot {
     }
 
     @Override
-    public ParkingSpotId parkingSpotId() {
-        return parkingSpotId;
-    }
-
-    Set<VehicleId> getParkedVehicles() {
+    public Set<VehicleId> getParkedVehicles() {
         return Collections.unmodifiableSet(parkedVehicles);
     }
 

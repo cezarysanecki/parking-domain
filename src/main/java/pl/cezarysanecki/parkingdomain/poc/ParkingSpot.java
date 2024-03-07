@@ -2,10 +2,15 @@ package pl.cezarysanecki.parkingdomain.poc;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 
 interface ParkingSpot {
 
-    ParkingSpotId parkingSpotId();
+    ParkingSpotId getParkingSpotId();
+
+    int getCapacity();
+
+    Set<VehicleId> getParkedVehicles();
 
     static ParkingSpot resolve(
             ParkingSpotId parkingSpotId,
