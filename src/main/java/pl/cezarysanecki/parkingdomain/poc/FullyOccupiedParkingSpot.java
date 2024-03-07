@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 
 @RequiredArgsConstructor
-class FullyOccupiedParkingSpot implements OccupiedParkingSpot {
+class FullyOccupiedParkingSpot implements ParkingSpot {
 
     private final ParkingSpotId parkingSpotId;
     private final int capacity;
@@ -14,11 +14,6 @@ class FullyOccupiedParkingSpot implements OccupiedParkingSpot {
     @Override
     public ParkingSpotId parkingSpotId() {
         return parkingSpotId;
-    }
-
-    @Override
-    public List<VehicleId> parkedVehicles() {
-        return parkedVehicles;
     }
 
 }
