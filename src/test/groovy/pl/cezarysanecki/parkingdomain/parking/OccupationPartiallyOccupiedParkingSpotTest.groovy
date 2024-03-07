@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.poc
+package pl.cezarysanecki.parkingdomain.parking
 
 import spock.lang.Specification
 

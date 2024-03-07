@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.poc;
+package pl.cezarysanecki.parkingdomain.parking;
 
 import lombok.NonNull;
 import lombok.Value;
@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Value
-class PartiallyOccupiedParkingSpot implements ParkingSpot {
+class FullyOccupiedParkingSpot implements ParkingSpot {
 
     @NonNull
     ParkingSpotId parkingSpotId;
@@ -16,7 +16,7 @@ class PartiallyOccupiedParkingSpot implements ParkingSpot {
     @NonNull
     Set<VehicleId> parkedVehicles;
 
-    PartiallyOccupiedParkingSpot(
+    FullyOccupiedParkingSpot(
             ParkingSpotId parkingSpotId,
             int capacity,
             Set<VehicleId> parkedVehicles) {
@@ -26,15 +26,6 @@ class PartiallyOccupiedParkingSpot implements ParkingSpot {
         this.parkingSpotId = parkingSpotId;
         this.capacity = capacity;
         this.parkedVehicles = new HashSet<>(parkedVehicles);
-    }
-
-    ParkingSpot occupyBy(VehicleId vehicleId) {
-        parkedVehicles.add(vehicleId);
-
-        if (parkedVehicles.size() == capacity) {
-            return new FullyOccupiedParkingSpot(parkingSpotId, capacity, getParkedVehicles());
-        }
-        return new PartiallyOccupiedParkingSpot(parkingSpotId, capacity, getParkedVehicles());
     }
 
     ParkingSpot leaveBy(VehicleId vehicleId) {
