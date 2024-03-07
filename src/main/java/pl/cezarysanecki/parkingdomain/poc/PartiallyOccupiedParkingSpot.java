@@ -28,6 +28,15 @@ class PartiallyOccupiedParkingSpot implements ParkingSpot {
         return new PartiallyOccupiedParkingSpot(parkingSpotId, capacity, Collections.unmodifiableList(parkedVehicles));
     }
 
+    ParkingSpot revokeAccessFrom(VehicleId vehicleId) {
+        parkedVehicles.remove(vehicleId);
+
+        if (parkedVehicles.isEmpty()) {
+            return new FreeParkingSpot(parkingSpotId, capacity);
+        }
+        return new PartiallyOccupiedParkingSpot(parkingSpotId, capacity, Collections.unmodifiableList(parkedVehicles));
+    }
+
     @Override
     public ParkingSpotId parkingSpotId() {
         return parkingSpotId;
