@@ -3,6 +3,12 @@ package pl.cezarysanecki.parkingdomain.parking.model;
 import io.vavr.collection.Set;
 import io.vavr.control.Either;
 import lombok.Value;
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.FullyOccupied;
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ParkingFailed;
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ReleasingFailed;
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleLeft;
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleParked;
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleParkedEvents;
 
 import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announceFailure;
 import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announceSuccess;
@@ -15,26 +21,26 @@ public class ParkingSpot {
     int capacity;
     Set<Vehicle> parkedVehicles;
 
-    public Either<ParkingSpotEvent.ParkingFailed, ParkingSpotEvent.VehicleParkedEvents> park(Vehicle vehicle) {
+    public Either<ParkingFailed, VehicleParkedEvents> park(Vehicle vehicle) {
         if (cannotPark(vehicle)) {
-            return announceFailure(new ParkingSpotEvent.ParkingFailed(parkingSpotId));
+            return announceFailure(new ParkingFailed(parkingSpotId));
         }
 
-        ParkingSpotEvent.VehicleParked vehicleParked = new ParkingSpotEvent.VehicleParked(parkingSpotId, vehicle);
+        VehicleParked vehicleParked = new VehicleParked(parkingSpotId, vehicle);
         if (isFull()) {
-            return announceSuccess(ParkingSpotEvent.VehicleParkedEvents.events(parkingSpotId, vehicleParked, new ParkingSpotEvent.FullyOccupied(parkingSpotId)));
+            return announceSuccess(events(parkingSpotId, vehicleParked, new FullyOccupied(parkingSpotId)));
         }
-        return announceSuccess(ParkingSpotEvent.VehicleParkedEvents.events(parkingSpotId, vehicleParked));
+        return announceSuccess(events(parkingSpotId, vehicleParked));
     }
 
-    public Either<ParkingSpotEvent.ReleasingFailed, ParkingSpotEvent.VehicleLeft> release(VehicleId vehicleId) {
+    public Either<ReleasingFailed, VehicleLeft> release(VehicleId vehicleId) {
         Vehicle foundVehicle = parkedVehicles
                 .find(parkedVehicle -> parkedVehicle.getVehicleId().equals(vehicleId))
                 .getOrNull();
         if (foundVehicle == null) {
-            return announceFailure(new ParkingSpotEvent.ReleasingFailed(parkingSpotId));
+            return announceFailure(new ReleasingFailed(parkingSpotId));
         }
-        return announceSuccess(new ParkingSpotEvent.VehicleLeft(parkingSpotId, foundVehicle));
+        return announceSuccess(new VehicleLeft(parkingSpotId, foundVehicle));
     }
 
     private boolean cannotPark(Vehicle vehicleSizeUnit) {
