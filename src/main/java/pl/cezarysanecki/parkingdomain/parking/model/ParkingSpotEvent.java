@@ -43,7 +43,7 @@ public sealed interface ParkingSpotEvent extends DomainEvent {
 
         @NonNull ParkingSpotId parkingSpotId;
         @NonNull VehicleParked vehicleParked;
-        @NonNull Option<FullyOccupied> parkingSpotFullyOccupied;
+        @NonNull Option<FullyOccupied> fullyOccupied;
 
         @Override
         public Instant getWhen() {
@@ -60,7 +60,7 @@ public sealed interface ParkingSpotEvent extends DomainEvent {
 
         @Override
         public List<DomainEvent> normalize() {
-            return List.<DomainEvent>of(vehicleParked).appendAll(parkingSpotFullyOccupied.toList());
+            return List.<DomainEvent>of(vehicleParked).appendAll(fullyOccupied.toList());
         }
     }
 

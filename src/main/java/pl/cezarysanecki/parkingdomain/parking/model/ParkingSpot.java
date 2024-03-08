@@ -9,6 +9,7 @@ import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleLeft
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleParked;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleParkedEvents;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announceFailure;
@@ -22,11 +23,22 @@ public class ParkingSpot {
     int capacity;
     Set<Vehicle> parkedVehicles;
 
+    public ParkingSpot(ParkingSpotId parkingSpotId, int capacity) {
+        this(parkingSpotId, capacity, Set.of());
+    }
+
+    public ParkingSpot(ParkingSpotId parkingSpotId, int capacity, Set<Vehicle> parkedVehicles) {
+        this.parkingSpotId = parkingSpotId;
+        this.capacity = capacity;
+        this.parkedVehicles = new HashSet<>(parkedVehicles);
+    }
+
     public Either<ParkingFailed, VehicleParkedEvents> park(Vehicle vehicle) {
         if (cannotPark(vehicle)) {
             return announceFailure(new ParkingFailed(parkingSpotId));
         }
 
+        parkedVehicles.add(vehicle);
         VehicleParked vehicleParked = new VehicleParked(parkingSpotId, vehicle);
         if (isFull()) {
             return announceSuccess(events(parkingSpotId, vehicleParked, new FullyOccupied(parkingSpotId)));
