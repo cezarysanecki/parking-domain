@@ -1,6 +1,5 @@
 package pl.cezarysanecki.parkingdomain.parking.model;
 
-import io.vavr.collection.Set;
 import io.vavr.control.Either;
 import lombok.Value;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.FullyOccupied;
@@ -9,6 +8,8 @@ import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ReleasingFa
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleLeft;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleParked;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleParkedEvents;
+
+import java.util.Set;
 
 import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announceFailure;
 import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announceSuccess;
@@ -34,9 +35,10 @@ public class ParkingSpot {
     }
 
     public Either<ReleasingFailed, VehicleLeft> release(VehicleId vehicleId) {
-        Vehicle foundVehicle = parkedVehicles
-                .find(parkedVehicle -> parkedVehicle.getVehicleId().equals(vehicleId))
-                .getOrNull();
+        Vehicle foundVehicle = parkedVehicles.stream()
+                .filter(parkedVehicle -> parkedVehicle.getVehicleId().equals(vehicleId))
+                .findFirst()
+                .orElse(null);
         if (foundVehicle == null) {
             return announceFailure(new ReleasingFailed(parkingSpotId));
         }
@@ -52,10 +54,10 @@ public class ParkingSpot {
     }
 
     private Integer currentOccupation() {
-        return parkedVehicles
+        return parkedVehicles.stream()
                 .map(Vehicle::getVehicleSizeUnit)
                 .map(VehicleSizeUnit::getValue)
-                .reduce(Integer::sum);
+                .reduce(0, Integer::sum);
     }
 
 }

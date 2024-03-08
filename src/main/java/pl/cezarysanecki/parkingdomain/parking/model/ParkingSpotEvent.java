@@ -8,7 +8,7 @@ import pl.cezarysanecki.parkingdomain.commons.events.DomainEvent;
 
 import java.time.Instant;
 
-public interface ParkingSpotEvent extends DomainEvent {
+public sealed interface ParkingSpotEvent extends DomainEvent {
 
     ParkingSpotId getParkingSpotId();
 
@@ -17,14 +17,21 @@ public interface ParkingSpotEvent extends DomainEvent {
     }
 
     @Value
-    class FullyOccupied implements ParkingSpotEvent {
+    final class ParkingSpotCreated implements ParkingSpotEvent {
 
         @NonNull ParkingSpotId parkingSpotId;
 
     }
 
     @Value
-    class VehicleParked implements ParkingSpotEvent {
+    final class FullyOccupied implements ParkingSpotEvent {
+
+        @NonNull ParkingSpotId parkingSpotId;
+
+    }
+
+    @Value
+    final class VehicleParked implements ParkingSpotEvent {
 
         @NonNull ParkingSpotId parkingSpotId;
         @NonNull Vehicle vehicle;
@@ -32,7 +39,7 @@ public interface ParkingSpotEvent extends DomainEvent {
     }
 
     @Value
-    class VehicleParkedEvents implements ParkingSpotEvent {
+    final class VehicleParkedEvents implements ParkingSpotEvent {
 
         @NonNull ParkingSpotId parkingSpotId;
         @NonNull VehicleParked vehicleParked;
@@ -58,14 +65,14 @@ public interface ParkingSpotEvent extends DomainEvent {
     }
 
     @Value
-    class ParkingFailed implements ParkingSpotEvent {
+    final class ParkingFailed implements ParkingSpotEvent {
 
         @NonNull ParkingSpotId parkingSpotId;
 
     }
 
     @Value
-    class VehicleLeft implements ParkingSpotEvent {
+    final class VehicleLeft implements ParkingSpotEvent {
 
         @NonNull ParkingSpotId parkingSpotId;
         @NonNull Vehicle vehicle;
@@ -73,7 +80,7 @@ public interface ParkingSpotEvent extends DomainEvent {
     }
 
     @Value
-    class ReleasingFailed implements ParkingSpotEvent {
+    final class ReleasingFailed implements ParkingSpotEvent {
 
         @NonNull ParkingSpotId parkingSpotId;
 
