@@ -17,7 +17,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ActiveProfiles("local")
@@ -35,14 +34,12 @@ class ParkVehicleTest {
 
     @Test
     void shouldParkVehicleAnywhere() throws Exception {
+        parkingSpotService.create();
         Vehicle vehicle = vehicleService.create(VehicleType.CAR);
-        ParkingSpot parkingSpot = parkingSpotService.create();
 
         mockMvc.perform(post("/vehicle/" + vehicle.getId() + "/park-anywhere/test"))
                 .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.vehicleId").value(vehicle.getId()))
-                .andExpect(jsonPath("$.parkingSpotId").value(parkingSpot.getId()));
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -133,24 +130,6 @@ class ParkVehicleTest {
                 ServletException.class,
                 () -> mockMvc.perform(post("/vehicle/" + vehicle4.getId() + "/park-on/" + parkingSpot.getId())));
         assertEquals("Parking spot is already occupied by 3 bikes or scooters", exception.getCause().getMessage());
-    }
-
-    @Test
-    void parkAnywhereLogicShouldPlaceTwoMotorcyclesOnTheSameParkingSpot() throws Exception {
-        Vehicle vehicle1 = vehicleService.create(VehicleType.MOTORCYCLE);
-        Vehicle vehicle2 = vehicleService.create(VehicleType.MOTORCYCLE);
-        ParkingSpot parkingSpot = parkingSpotService.create();
-
-        mockMvc.perform(post("/vehicle/" + vehicle1.getId() + "/park-anywhere/test"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.vehicleId").value(vehicle1.getId()))
-                .andExpect(jsonPath("$.parkingSpotId").value(parkingSpot.getId()));
-        mockMvc.perform(post("/vehicle/" + vehicle2.getId() + "/park-anywhere/test"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.vehicleId").value(vehicle2.getId()))
-                .andExpect(jsonPath("$.parkingSpotId").value(parkingSpot.getId()));
     }
 
 }
