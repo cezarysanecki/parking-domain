@@ -1,14 +1,10 @@
 package pl.cezarysanecki.parkingdomain.parking.model;
 
-import lombok.NonNull;
 import lombok.Value;
 
-import java.util.UUID;
-
 @Value(staticConstructor = "of")
-public class ParkingSpotId {
+public class VehicleSizeUnit {
 
-    @NonNull
-    UUID value;
+    int value;
 
 }

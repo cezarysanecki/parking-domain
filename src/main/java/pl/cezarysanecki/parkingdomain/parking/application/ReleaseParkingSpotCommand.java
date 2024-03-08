@@ -3,12 +3,12 @@ package pl.cezarysanecki.parkingdomain.parking.application;
 import lombok.NonNull;
 import lombok.Value;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.parking.model.Vehicle;
+import pl.cezarysanecki.parkingdomain.parking.model.VehicleId;
 
 @Value
-public class ParkVehicleCommand {
+public class ReleaseParkingSpotCommand {
 
     @NonNull ParkingSpotId parkingSpotId;
-    @NonNull Vehicle vehicle;
+    @NonNull VehicleId vehicleId;
 
 }

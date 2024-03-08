@@ -1,11 +1,11 @@
 package pl.cezarysanecki.parkingdomain.parking.model;
 
-import java.util.Optional;
+import io.vavr.control.Option;
 
 public interface ParkingSpots {
 
-    Optional<ParkingSpot> findBy(ParkingSpotId parkingSpotId);
+    Option<ParkingSpot> findBy(ParkingSpotId parkingSpotId);
 
-    void save(ParkingSpot parkingSpot);
+    ParkingSpot publish(ParkingSpotEvent event);
 
 }

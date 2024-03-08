@@ -5,8 +5,12 @@ import java.util.UUID;
 
 public interface DomainEvent {
 
-    UUID getEventId();
+    default UUID getEventId() {
+        return UUID.randomUUID();
+    }
 
-    Instant getWhen();
+    default Instant getWhen() {
+        return Instant.now();
+    }
 
 }

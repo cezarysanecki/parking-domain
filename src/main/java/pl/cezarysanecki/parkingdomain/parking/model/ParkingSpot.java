@@ -1,31 +1,75 @@
 package pl.cezarysanecki.parkingdomain.parking.model;
 
-import java.util.Collection;
+import io.vavr.control.Either;
+import lombok.Value;
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.FullyOccupied;
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ParkingFailed;
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ReleasingFailed;
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleLeft;
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleParked;
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleParkedEvents;
+
 import java.util.HashSet;
 import java.util.Set;
 
-public interface ParkingSpot {
+import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announceFailure;
+import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announceSuccess;
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleParkedEvents.events;
 
-    ParkingSpotId getParkingSpotId();
+@Value
+public class ParkingSpot {
 
-    int getCapacity();
+    ParkingSpotId parkingSpotId;
+    int capacity;
+    Set<Vehicle> parkedVehicles;
 
-    Set<VehicleId> getParkedVehicles();
+    public ParkingSpot(ParkingSpotId parkingSpotId, int capacity) {
+        this(parkingSpotId, capacity, Set.of());
+    }
 
-    static ParkingSpot resolve(
-            ParkingSpotId parkingSpotId,
-            int capacity,
-            Collection<VehicleId> parkedVehicles) {
-        if (parkedVehicles.isEmpty()) {
-            return new FreeParkingSpot(parkingSpotId, capacity);
+    public ParkingSpot(ParkingSpotId parkingSpotId, int capacity, Set<Vehicle> parkedVehicles) {
+        this.parkingSpotId = parkingSpotId;
+        this.capacity = capacity;
+        this.parkedVehicles = new HashSet<>(parkedVehicles);
+    }
+
+    public Either<ParkingFailed, VehicleParkedEvents> park(Vehicle vehicle) {
+        if (cannotPark(vehicle)) {
+            return announceFailure(new ParkingFailed(parkingSpotId));
         }
-        if (capacity > parkedVehicles.size()) {
-            return new PartiallyOccupiedParkingSpot(parkingSpotId, capacity, new HashSet<>(parkedVehicles));
+
+        parkedVehicles.add(vehicle);
+        VehicleParked vehicleParked = new VehicleParked(parkingSpotId, vehicle);
+        if (isFull()) {
+            return announceSuccess(events(parkingSpotId, vehicleParked, new FullyOccupied(parkingSpotId)));
         }
-        if (capacity == parkedVehicles.size()) {
-            return new FullyOccupiedParkingSpot(parkingSpotId, capacity, new HashSet<>(parkedVehicles));
+        return announceSuccess(events(parkingSpotId, vehicleParked));
+    }
+
+    public Either<ReleasingFailed, VehicleLeft> release(VehicleId vehicleId) {
+        Vehicle foundVehicle = parkedVehicles.stream()
+                .filter(parkedVehicle -> parkedVehicle.getVehicleId().equals(vehicleId))
+                .findFirst()
+                .orElse(null);
+        if (foundVehicle == null) {
+            return announceFailure(new ReleasingFailed(parkingSpotId));
         }
-        return new OverOccupiedParkingSpot(parkingSpotId, capacity, new HashSet<>(parkedVehicles));
+        return announceSuccess(new VehicleLeft(parkingSpotId, foundVehicle));
+    }
+
+    private boolean cannotPark(Vehicle vehicleSizeUnit) {
+        return currentOccupation() + vehicleSizeUnit.getVehicleSizeUnit().getValue() > capacity;
+    }
+
+    private boolean isFull() {
+        return capacity == currentOccupation();
+    }
+
+    private Integer currentOccupation() {
+        return parkedVehicles.stream()
+                .map(Vehicle::getVehicleSizeUnit)
+                .map(VehicleSizeUnit::getValue)
+                .reduce(0, Integer::sum);
     }
 
 }
