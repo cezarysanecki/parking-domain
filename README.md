@@ -25,6 +25,7 @@ not the goal in itself.
 - [H2 database](https://www.h2database.com/html/main.html)
 - [Lombok](https://projectlombok.org/)
 - [Bruno](https://www.usebruno.com/)
+- [vavr](https://docs.vavr.io/)
 
 ## FAQ
 
