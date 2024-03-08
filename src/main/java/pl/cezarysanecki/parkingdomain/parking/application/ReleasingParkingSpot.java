@@ -17,32 +17,32 @@ import static io.vavr.Patterns.$Left;
 import static io.vavr.Patterns.$Right;
 import static pl.cezarysanecki.parkingdomain.commons.commands.Result.Rejection;
 import static pl.cezarysanecki.parkingdomain.commons.commands.Result.Success;
-import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ParkingFailed;
-import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleParkedEvents;
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ReleasingFailed;
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleLeft;
 
 @Slf4j
 @RequiredArgsConstructor
-public class ParkingOnParkingSpot {
+public class ReleasingParkingSpot {
 
     private final ParkingSpots parkingSpots;
 
-    public Try<Result> park(@NonNull ParkVehicleCommand command) {
+    public Try<Result> release(@NonNull ReleaseParkingSpotCommand command) {
         return Try.of(() -> {
             ParkingSpot parkingSpot = find(command.getParkingSpotId());
-            Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(command.getVehicle());
+            Either<ReleasingFailed, VehicleLeft> result = parkingSpot.release(command.getVehicleId());
             return API.Match(result).of(
                     Case($Left($()), this::publishEvents),
                     Case($Right($()), this::publishEvents));
         }).onFailure(throwable -> log.error("Failed to park vehicle", throwable));
     }
 
-    private Result publishEvents(VehicleParkedEvents vehicleParked) {
-        parkingSpots.publish(vehicleParked);
+    private Result publishEvents(VehicleLeft vehicleLeft) {
+        parkingSpots.publish(vehicleLeft);
         return Success;
     }
 
-    private Result publishEvents(ParkingFailed parkingFailed) {
-        parkingSpots.publish(parkingFailed);
+    private Result publishEvents(ReleasingFailed releasingFailed) {
+        parkingSpots.publish(releasingFailed);
         return Rejection;
     }
 
