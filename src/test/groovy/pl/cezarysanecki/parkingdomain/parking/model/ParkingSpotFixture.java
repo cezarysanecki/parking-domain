@@ -29,6 +29,10 @@ public class ParkingSpotFixture {
         return new Vehicle(vehicleId, VehicleSizeUnit.of(1));
     }
 
+    public static Vehicle vehicleWith(VehicleId vehicleId, int size) {
+        return new Vehicle(vehicleId, VehicleSizeUnit.of(1));
+    }
+
     public static VehicleId anyVehicleId() {
         return VehicleId.of(UUID.randomUUID());
     }
