@@ -7,37 +7,35 @@ import spock.lang.Specification
 
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.*
 
-class ParkingOnParkingSpotTest extends Specification {
+class ReleasingParkingSpotTest extends Specification {
   
   ParkingSpotId parkingSpotId = anyParkingSpotId()
-  
-  Vehicle alrightVehicle = vehicleWith(1)
-  Vehicle tooBigVehicle = vehicleWith(2)
+  VehicleId vehicleId = anyVehicleId()
   
   ParkingSpots repository = Stub()
   
-  def 'should successfully parking vehicle if parking spot has enough place'() {
+  def 'should successfully release parking spot if vehicle is parked on it'() {
     given:
-      ParkingOnParkingSpot parkingOnParkingSpot = new ParkingOnParkingSpot(repository)
+      ReleasingParkingSpot releasingParkingSpot = new ReleasingParkingSpot(repository)
     and:
-      persisted(emptyParkingSpotWith(parkingSpotId, 1))
+      persisted(parkingSpotWith(parkingSpotId, vehicleWith(vehicleId)))
     
     when:
-      def result = parkingOnParkingSpot.park(new ParkVehicleCommand(parkingSpotId, alrightVehicle))
+      def result = releasingParkingSpot.release(new ReleaseParkingSpotCommand(parkingSpotId, vehicleId))
     
     then:
       result.isSuccess()
       result.get() == Result.Success
   }
   
-  def 'should reject parking vehicle if it is too big for parking spot'() {
+  def 'should reject releasing parking spot if specified vehicle is not parked on it'() {
     given:
-      ParkingOnParkingSpot parkingOnParkingSpot = new ParkingOnParkingSpot(repository)
+      ReleasingParkingSpot releasingParkingSpot = new ReleasingParkingSpot(repository)
     and:
       persisted(emptyParkingSpotWith(parkingSpotId, 1))
     
     when:
-      def result = parkingOnParkingSpot.park(new ParkVehicleCommand(parkingSpotId, tooBigVehicle))
+      def result = releasingParkingSpot.release(new ReleaseParkingSpotCommand(parkingSpotId, vehicleId))
     
     then:
       result.isSuccess()
@@ -46,12 +44,12 @@ class ParkingOnParkingSpotTest extends Specification {
   
   def 'should fail if parking spot does not exist'() {
     given:
-      ParkingOnParkingSpot parkingOnParkingSpot = new ParkingOnParkingSpot(repository)
+      ReleasingParkingSpot releasingParkingSpot = new ReleasingParkingSpot(repository)
     and:
       unknownParkingSpot()
     
     when:
-      def result = parkingOnParkingSpot.park(new ParkVehicleCommand(parkingSpotId, alrightVehicle))
+      def result = releasingParkingSpot.release(new ReleaseParkingSpotCommand(parkingSpotId, vehicleId))
     
     then:
       result.isFailure()

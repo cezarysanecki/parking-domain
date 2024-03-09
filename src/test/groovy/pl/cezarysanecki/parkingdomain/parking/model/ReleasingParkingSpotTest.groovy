@@ -6,13 +6,13 @@ import spock.lang.Specification
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.*
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.emptyParkingSpotWith
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.parkingSpotWith
-import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.vehicleWithSize
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.vehicleWith
 
 class ReleasingParkingSpotTest extends Specification {
   
   def "can release parked vehicle"() {
     given:
-      def vehicle = vehicleWithSize(1)
+      def vehicle = vehicleWith(1)
     and:
       def parkingSpot = parkingSpotWith(vehicle)
     
@@ -31,7 +31,7 @@ class ReleasingParkingSpotTest extends Specification {
     given:
       def parkingSpot = emptyParkingSpotWith(1)
     and:
-      def vehicle = vehicleWithSize(1)
+      def vehicle = vehicleWith(1)
     
     when:
       Either<ReleasingFailed, VehicleLeft> result = parkingSpot.release(vehicle.vehicleId)

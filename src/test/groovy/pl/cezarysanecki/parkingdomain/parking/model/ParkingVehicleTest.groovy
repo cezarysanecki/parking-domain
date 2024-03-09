@@ -5,7 +5,7 @@ import spock.lang.Specification
 
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.*
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.emptyParkingSpotWith
-import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.vehicleWithSize
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.vehicleWith
 
 class ParkingVehicleTest extends Specification {
   
@@ -13,7 +13,7 @@ class ParkingVehicleTest extends Specification {
     given:
       def parkingSpot = emptyParkingSpotWith(4)
     and:
-      def vehicle = vehicleWithSize(1)
+      def vehicle = vehicleWith(1)
     
     when:
       Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(vehicle)
@@ -31,7 +31,7 @@ class ParkingVehicleTest extends Specification {
     given:
       def parkingSpot = emptyParkingSpotWith(1)
     and:
-      def vehicle = vehicleWithSize(1)
+      def vehicle = vehicleWith(1)
     
     when:
       Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(vehicle)
@@ -52,7 +52,7 @@ class ParkingVehicleTest extends Specification {
     given:
       def parkingSpot = emptyParkingSpotWith(1)
     and:
-      def vehicle = vehicleWithSize(2)
+      def vehicle = vehicleWith(2)
     
     when:
       Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(vehicle)
