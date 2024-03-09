@@ -13,6 +13,10 @@ public class ParkingSpotFixture {
         return new ParkingSpot(parkingSpotId, capacity);
     }
 
+    public static ParkingSpot parkingSpotWith(Vehicle vehicle) {
+        return new ParkingSpot(anyParkingSpotId(), vehicle.getVehicleSizeUnit().getValue(), Set.of(vehicle));
+    }
+
     public static ParkingSpot parkingSpotWith(ParkingSpotId parkingSpotId, Vehicle vehicle) {
         return new ParkingSpot(parkingSpotId, vehicle.getVehicleSizeUnit().getValue(), Set.of(vehicle));
     }
