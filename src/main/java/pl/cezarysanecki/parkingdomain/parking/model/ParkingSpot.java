@@ -57,6 +57,16 @@ public class ParkingSpot {
         return announceSuccess(new VehicleLeft(parkingSpotId, foundVehicle));
     }
 
+    public boolean isEmpty() {
+        return currentOccupation() == 0;
+    }
+
+    public boolean isParked(VehicleId vehicleId) {
+        return parkedVehicles.stream()
+                .map(Vehicle::getVehicleId)
+                .anyMatch(vehicleId::equals);
+    }
+
     private boolean cannotPark(Vehicle vehicleSizeUnit) {
         return currentOccupation() + vehicleSizeUnit.getVehicleSizeUnit().getValue() > capacity;
     }
