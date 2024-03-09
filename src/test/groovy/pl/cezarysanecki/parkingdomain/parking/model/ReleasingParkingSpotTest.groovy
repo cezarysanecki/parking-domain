@@ -4,7 +4,7 @@ import io.vavr.control.Either
 import spock.lang.Specification
 
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.*
-import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.emptyWithCapacity
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.emptyParkingSpotWith
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.parkingSpotWith
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.vehicleWithSize
 
@@ -29,7 +29,7 @@ class ReleasingParkingSpotTest extends Specification {
   
   def "vehicle cannot be release from parking spot if it is not on this spot"() {
     given:
-      def parkingSpot = emptyWithCapacity(1)
+      def parkingSpot = emptyParkingSpotWith(1)
     and:
       def vehicle = vehicleWithSize(1)
     

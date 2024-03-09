@@ -5,8 +5,12 @@ import java.util.UUID;
 
 public class ParkingSpotFixture {
 
-    public static ParkingSpot emptyWithCapacity(int capacity) {
+    public static ParkingSpot emptyParkingSpotWith(int capacity) {
         return new ParkingSpot(anyParkingSpotId(), capacity);
+    }
+
+    public static ParkingSpot emptyParkingSpotWith(ParkingSpotId parkingSpotId, int capacity) {
+        return new ParkingSpot(parkingSpotId, capacity);
     }
 
     public static ParkingSpot parkingSpotWith(Vehicle vehicle) {
