@@ -11,9 +11,9 @@ class ParkingVehicleTest extends Specification {
   
   def "vehicle can park if there is enough space"() {
     given:
-      def parkingSpot = emptyParkingSpotWith(4)
+      ParkingSpot parkingSpot = emptyParkingSpotWith(4)
     and:
-      def vehicle = vehicleWith(1)
+      Vehicle vehicle = vehicleWith(1)
     
     when:
       Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(vehicle)
@@ -29,9 +29,9 @@ class ParkingVehicleTest extends Specification {
   
   def "vehicle can park occupying fully parking spot"() {
     given:
-      def parkingSpot = emptyParkingSpotWith(1)
+      ParkingSpot parkingSpot = emptyParkingSpotWith(1)
     and:
-      def vehicle = vehicleWith(1)
+      Vehicle vehicle = vehicleWith(1)
     
     when:
       Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(vehicle)
@@ -50,9 +50,9 @@ class ParkingVehicleTest extends Specification {
   
   def "vehicle cannot park is too big for parking spot"() {
     given:
-      def parkingSpot = emptyParkingSpotWith(1)
+      ParkingSpot parkingSpot = emptyParkingSpotWith(1)
     and:
-      def vehicle = vehicleWith(2)
+      Vehicle vehicle = vehicleWith(2)
     
     when:
       Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(vehicle)
