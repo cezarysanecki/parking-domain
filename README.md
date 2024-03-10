@@ -69,13 +69,9 @@ having legacy code and learn tools from JVM ecosystem (but not only).
 
 - Basic functionality for parking
 - Parking is available 24/7
-- Specified parking spot can be occupied (need to track them)
-- Parking spots can be occupied by: cars, motorcycles, bikes and scooters
-- To optimize occupation of parking spots assume that:
-  - 1 parking spot can be occupied by **1 car**
-  - 1 parking spot can be occupied by **2 motorcycles**
-  - 1 parking spot can be occupied by **3 bicycles or scooters**
-- We cannot mix vehicles types on one parking spot, unless they are in the same above group
+- Parking spots have their own identity
+- Parking spots can be occupied (for now) by: cars, motorcycles and scooters
+- Every parking spot has its capacity which can be optimized by parking every vehicle type 
 
 ### Cleaning parking spots
 
