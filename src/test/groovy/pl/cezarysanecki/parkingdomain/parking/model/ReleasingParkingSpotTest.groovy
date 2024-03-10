@@ -3,18 +3,17 @@ package pl.cezarysanecki.parkingdomain.parking.model
 import io.vavr.control.Either
 import spock.lang.Specification
 
-import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.*
-import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.emptyParkingSpotWith
-import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.parkingSpotWith
-import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.vehicleWith
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ReleasingFailed
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleLeft
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.*
 
 class ReleasingParkingSpotTest extends Specification {
   
   def "can release parked vehicle"() {
     given:
-      def vehicle = vehicleWith(1)
+      Vehicle vehicle = vehicleWith(1)
     and:
-      def parkingSpot = parkingSpotWith(vehicle)
+      ParkingSpot parkingSpot = parkingSpotWith(vehicle)
     
     when:
       Either<ReleasingFailed, VehicleLeft> result = parkingSpot.release(vehicle.vehicleId)
@@ -29,9 +28,9 @@ class ReleasingParkingSpotTest extends Specification {
   
   def "vehicle cannot be release from parking spot if it is not on this spot"() {
     given:
-      def parkingSpot = emptyParkingSpotWith(1)
+      ParkingSpot parkingSpot = emptyParkingSpotWith(1)
     and:
-      def vehicle = vehicleWith(1)
+      Vehicle vehicle = vehicleWith(1)
     
     when:
       Either<ReleasingFailed, VehicleLeft> result = parkingSpot.release(vehicle.vehicleId)
