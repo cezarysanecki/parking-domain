@@ -2,10 +2,12 @@ package pl.cezarysanecki.parkingdomain.parking.model;
 
 import io.vavr.control.Option;
 
+import java.time.Instant;
+
 public interface ParkingSpots {
 
-    Option<NormalParkingSpot> findBy(ParkingSpotId parkingSpotId);
+    Option<ParkingSpot> findBy(ParkingSpotId parkingSpotId, Instant when);
 
-    NormalParkingSpot publish(ParkingSpotEvent event);
+    ParkingSpot publish(ParkingSpotEvent event);
 
 }
