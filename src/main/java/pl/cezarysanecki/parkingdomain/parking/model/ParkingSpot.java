@@ -5,13 +5,17 @@ import lombok.Value;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.FullyOccupied;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ParkingFailed;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ReleasingFailed;
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ReservationFailed;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ReservationFulfilled;
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ReservationMade;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleLeft;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleParked;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleParkedEvents;
 
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announceFailure;
 import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announceSuccess;
@@ -70,6 +74,20 @@ public class ParkingSpot {
             return announceSuccess(events(parkingSpotId, vehicleParked, new FullyOccupied(parkingSpotId)));
         }
         return announceSuccess(events(parkingSpotId, vehicleParked));
+    }
+
+    public Either<ReservationFailed, ReservationMade> reserve(Set<Vehicle> vehicles, Instant since) {
+        Set<VehicleId> vehicleIds = vehicles.stream()
+                .map(Vehicle::getVehicleId)
+                .collect(Collectors.toUnmodifiableSet());
+        Integer requestedCapacity = vehicles.stream()
+                .map(Vehicle::getVehicleSizeUnit)
+                .map(VehicleSizeUnit::getValue)
+                .reduce(0, Integer::sum);
+        if (requestedCapacity > capacity) {
+            return announceFailure(new ReservationFailed(parkingSpotId, vehicleIds));
+        }
+        return announceSuccess(new ReservationMade(parkingSpotId, vehicleIds, since));
     }
 
     public boolean isEmpty() {
