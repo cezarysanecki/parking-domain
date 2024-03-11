@@ -56,10 +56,10 @@ class ParkingSpotEntity {
 
     private ParkingSpotEntity handle(VehicleLeft vehicleLeft) {
         UUID vehicleId = vehicleLeft.getVehicle().getVehicleId().getValue();
-        return removeHoldIfPresent(parkingSpotId, vehicleId);
+        return removeVehicleIfPresent(parkingSpotId, vehicleId);
     }
 
-    private ParkingSpotEntity removeHoldIfPresent(UUID parkingSpotId, UUID vehicleId) {
+    private ParkingSpotEntity removeVehicleIfPresent(UUID parkingSpotId, UUID vehicleId) {
         parkedVehicles.stream()
                 .filter(entity -> entity.is(parkingSpotId, vehicleId))
                 .findAny()
