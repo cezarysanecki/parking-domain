@@ -20,7 +20,7 @@ class InMemoryParkingSpotRepository implements ParkingSpots {
     private static final Map<ParkingSpotId, ParkingSpotEntity> DATABASE = new ConcurrentHashMap<>();
 
     @Override
-    public Option<ParkingSpot> findBy(ParkingSpotId parkingSpotId) {
+    public Option<ParkingSpot> tryFindBy(ParkingSpotId parkingSpotId) {
         return Option.ofOptional(
                 DATABASE.values()
                         .stream()
@@ -32,11 +32,11 @@ class InMemoryParkingSpotRepository implements ParkingSpots {
     @Override
     public ParkingSpot publish(ParkingSpotEvent event) {
         return Match(event).of(
-                Case($(instanceOf(ParkingSpotCreated.class)), this::createNewPatron),
+                Case($(instanceOf(ParkingSpotCreated.class)), this::createNewParkingSpot),
                 Case($(), this::handleNextEvent));
     }
 
-    private ParkingSpot createNewPatron(ParkingSpotCreated event) {
+    private ParkingSpot createNewParkingSpot(ParkingSpotCreated event) {
         ParkingSpotId parkingSpotId = event.getParkingSpotId();
         ParkingSpotEntity entity = new ParkingSpotEntity(parkingSpotId.getValue(), 4);
         DATABASE.put(parkingSpotId, entity);

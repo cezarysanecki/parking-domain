@@ -28,7 +28,7 @@ public class ParkingOnParkingSpot {
 
     public Try<Result> park(@NonNull ParkVehicleCommand command) {
         return Try.of(() -> {
-            ParkingSpot parkingSpot = find(command.getParkingSpotId());
+            ParkingSpot parkingSpot = parkingSpots.findBy(command.getParkingSpotId());
             Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(command.getVehicle());
             return API.Match(result).of(
                     Case($Left($()), this::publishEvents),
@@ -44,11 +44,6 @@ public class ParkingOnParkingSpot {
     private Result publishEvents(ParkingFailed parkingFailed) {
         parkingSpots.publish(parkingFailed);
         return Rejection;
-    }
-
-    private ParkingSpot find(ParkingSpotId parkingSpotId) {
-        return parkingSpots.findBy(parkingSpotId)
-                .getOrElseThrow(() -> new IllegalArgumentException("Cannot find parking spot with id: " + parkingSpotId));
     }
 
 }

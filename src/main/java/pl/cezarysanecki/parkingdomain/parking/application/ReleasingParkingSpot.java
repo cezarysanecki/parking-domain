@@ -47,7 +47,7 @@ public class ReleasingParkingSpot {
     }
 
     private ParkingSpot find(ParkingSpotId parkingSpotId) {
-        return parkingSpots.findBy(parkingSpotId)
+        return parkingSpots.tryFindBy(parkingSpotId)
                 .getOrElseThrow(() -> new IllegalArgumentException("Cannot find parking spot with id: " + parkingSpotId));
     }
 

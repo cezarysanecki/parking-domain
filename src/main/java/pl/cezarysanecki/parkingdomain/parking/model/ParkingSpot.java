@@ -34,13 +34,13 @@ public class ParkingSpot {
     }
 
     public Either<ParkingFailed, VehicleParkedEvents> park(Vehicle vehicle) {
-        if (cannotPark(vehicle)) {
+        if (isNotEnoughSpaceFor(vehicle)) {
             return announceFailure(new ParkingFailed(parkingSpotId));
         }
 
         parkedVehicles.add(vehicle);
         VehicleParked vehicleParked = new VehicleParked(parkingSpotId, vehicle);
-        if (isFull()) {
+        if (isFullOccupied()) {
             return announceSuccess(events(parkingSpotId, vehicleParked, new FullyOccupied(parkingSpotId)));
         }
         return announceSuccess(events(parkingSpotId, vehicleParked));
@@ -67,11 +67,11 @@ public class ParkingSpot {
                 .anyMatch(vehicleId::equals);
     }
 
-    private boolean cannotPark(Vehicle vehicleSizeUnit) {
+    private boolean isNotEnoughSpaceFor(Vehicle vehicleSizeUnit) {
         return currentOccupation() + vehicleSizeUnit.getVehicleSizeUnit().getValue() > capacity;
     }
 
-    private boolean isFull() {
+    private boolean isFullOccupied() {
         return capacity == currentOccupation();
     }
 
