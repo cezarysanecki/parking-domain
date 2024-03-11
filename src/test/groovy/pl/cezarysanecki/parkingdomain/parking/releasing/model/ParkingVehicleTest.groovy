@@ -122,4 +122,21 @@ class ParkingVehicleTest extends Specification {
       }
   }
   
+  def "cannot park on out of order parking spot"() {
+    given:
+      Vehicle vehicle = vehicleWith(1)
+    and:
+      ParkingSpot parkingSpot = outOfOrderParkingSpot()
+    
+    when:
+      Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(vehicle)
+    
+    then:
+      result.isLeft()
+      result.getLeft().with {
+        assert it.parkingSpotId == parkingSpot.parkingSpotId
+        assert it.vehicleId == vehicle.vehicleId
+      }
+  }
+  
 }
