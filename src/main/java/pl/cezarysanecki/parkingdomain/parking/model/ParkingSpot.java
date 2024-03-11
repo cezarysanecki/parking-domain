@@ -129,7 +129,7 @@ public class ParkingSpot {
     }
 
     @Value(staticConstructor = "of")
-    public static class Reservation {
+    private static class Reservation {
 
         Set<VehicleId> bookedFor;
         Option<Instant> since;
