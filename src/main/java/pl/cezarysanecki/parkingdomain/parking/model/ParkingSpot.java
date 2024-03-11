@@ -64,6 +64,16 @@ public class ParkingSpot {
         return announceSuccess(new ParkingSpotEvent.VehicleLeft(parkingSpotId, foundVehicle));
     }
 
+    public boolean isEmpty() {
+        return parkedVehicles.isEmpty();
+    }
+
+    public boolean isParked(VehicleId vehicleId) {
+        return parkedVehicles.stream()
+                .map(Vehicle::getVehicleId)
+                .anyMatch(parkedVehicleId -> parkedVehicleId.equals(vehicleId));
+    }
+
     private boolean isNotReservedFor(Vehicle vehicle) {
         return !bookedFor.isEmpty() && !bookedFor.contains(vehicle.getVehicleId());
     }
@@ -85,16 +95,6 @@ public class ParkingSpot {
                 .map(Vehicle::getVehicleSizeUnit)
                 .map(VehicleSizeUnit::getValue)
                 .reduce(0, Integer::sum);
-    }
-
-    public boolean isEmpty() {
-        return parkedVehicles.isEmpty();
-    }
-
-    public boolean isParked(VehicleId vehicleId) {
-        return parkedVehicles.stream()
-                .map(Vehicle::getVehicleId)
-                .anyMatch(parkedVehicleId -> parkedVehicleId.equals(vehicleId));
     }
 
 }
