@@ -34,7 +34,7 @@ public class ParkingSpotFixture {
     }
 
     public static Vehicle vehicleWith(VehicleId vehicleId, int size) {
-        return new Vehicle(vehicleId, VehicleSizeUnit.of(1));
+        return new Vehicle(vehicleId, VehicleSizeUnit.of(size));
     }
 
     public static VehicleId anyVehicleId() {
