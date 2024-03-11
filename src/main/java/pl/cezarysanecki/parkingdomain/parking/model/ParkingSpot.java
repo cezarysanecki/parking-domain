@@ -37,6 +37,13 @@ public class ParkingSpot {
         this.reservation = Reservation.none();
     }
 
+    public ParkingSpot(ParkingSpotId parkingSpotId, int capacity, Set<Vehicle> parkedVehicles) {
+        this.parkingSpotId = parkingSpotId;
+        this.capacity = capacity;
+        this.parkedVehicles = new HashSet<>(parkedVehicles);
+        this.reservation = Reservation.none();
+    }
+
     public ParkingSpot(
             ParkingSpotId parkingSpotId,
             int capacity,
@@ -66,7 +73,7 @@ public class ParkingSpot {
         if (isNotEnoughSpaceFor(vehicle)) {
             return announceFailure(new ParkingFailed(parkingSpotId, vehicleId));
         }
-        if (reservation.isNotFulfillingBy(vehicle)) {
+        if (reservation.isNotFulfillingBy(vehicle, now)) {
             return announceFailure(new ParkingFailed(parkingSpotId, vehicleId));
         }
 
@@ -131,12 +138,18 @@ public class ParkingSpot {
             return new Reservation(Set.of(), Option.none());
         }
 
-        boolean isNotFulfillingBy(Vehicle vehicle) {
-            return !bookedFor.isEmpty() && !bookedFor.contains(vehicle.getVehicleId());
+        boolean isNotFulfillingBy(Vehicle vehicle, Instant now) {
+            return !bookedFor.isEmpty()
+                    && !bookedFor.contains(vehicle.getVehicleId())
+                    && since.map(instant -> now.plusSeconds(twoHours()).isAfter(instant)).getOrElse(false);
         }
 
         boolean isFor(Vehicle vehicle) {
             return !bookedFor.isEmpty() && bookedFor.contains(vehicle.getVehicleId());
+        }
+
+        private static int twoHours() {
+            return 2 * 60 * 60;
         }
 
     }

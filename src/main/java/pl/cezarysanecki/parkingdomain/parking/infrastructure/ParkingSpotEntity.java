@@ -11,6 +11,7 @@ import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehiclePark
 import pl.cezarysanecki.parkingdomain.parking.model.Vehicle;
 import pl.cezarysanecki.parkingdomain.parking.model.VehicleId;
 
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -28,6 +29,7 @@ class ParkingSpotEntity {
     int capacity;
     Set<ParkedVehicleEntity> parkedVehicles;
     Set<VehicleId> reservations;
+    Instant reservationSince;
 
     ParkingSpotEntity(UUID parkingSpotId, int capacity) {
         this.parkingSpotId = parkingSpotId;

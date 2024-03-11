@@ -1,5 +1,6 @@
 package pl.cezarysanecki.parkingdomain.parking.model;
 
+import java.time.Instant;
 import java.util.Set;
 import java.util.UUID;
 
@@ -10,7 +11,7 @@ public class ParkingSpotFixture {
     }
 
     public static ParkingSpot reservedParkingSpotFor(VehicleId vehicleId) {
-        return new ParkingSpot(anyParkingSpotId(), 4, Set.of(), Set.of(vehicleId));
+        return new ParkingSpot(anyParkingSpotId(), 4, Set.of(), Set.of(vehicleId), Instant.now());
     }
 
     public static ParkingSpot emptyParkingSpotWith(ParkingSpotId parkingSpotId, int capacity) {
@@ -18,11 +19,11 @@ public class ParkingSpotFixture {
     }
 
     public static ParkingSpot parkingSpotWith(Vehicle vehicle) {
-        return new ParkingSpot(anyParkingSpotId(), vehicle.getVehicleSizeUnit().getValue(), Set.of(vehicle), Set.of());
+        return new ParkingSpot(anyParkingSpotId(), vehicle.getVehicleSizeUnit().getValue(), Set.of(vehicle));
     }
 
     public static ParkingSpot parkingSpotWith(ParkingSpotId parkingSpotId, Vehicle vehicle) {
-        return new ParkingSpot(parkingSpotId, vehicle.getVehicleSizeUnit().getValue(), Set.of(vehicle), Set.of());
+        return new ParkingSpot(parkingSpotId, vehicle.getVehicleSizeUnit().getValue(), Set.of(vehicle));
     }
 
     public static ParkingSpotId anyParkingSpotId() {
