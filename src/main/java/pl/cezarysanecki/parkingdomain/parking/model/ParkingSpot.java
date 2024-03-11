@@ -1,5 +1,6 @@
 package pl.cezarysanecki.parkingdomain.parking.model;
 
+import io.vavr.collection.List;
 import io.vavr.control.Either;
 import io.vavr.control.Option;
 import lombok.Value;
@@ -29,6 +30,7 @@ public class ParkingSpot {
     int capacity;
     Set<Vehicle> parkedVehicles;
     Reservation reservation;
+    List<ParkingPolicy> parkingPolicies = ParkingPolicy.allCurrentPolicies();
 
     public ParkingSpot(ParkingSpotId parkingSpotId, int capacity) {
         this.parkingSpotId = parkingSpotId;
@@ -70,19 +72,16 @@ public class ParkingSpot {
     public Either<ParkingFailed, VehicleParkedEvents> park(Vehicle vehicle, Instant now) {
         VehicleId vehicleId = vehicle.getVehicleId();
 
-        if (isNotEnoughSpaceFor(vehicle)) {
-            return announceFailure(new ParkingFailed(parkingSpotId, vehicleId));
-        }
-        if (reservation.isNotFulfillingBy(vehicle, now)) {
-            return announceFailure(new ParkingFailed(parkingSpotId, vehicleId));
+        Option<Rejection> rejection = canPark(vehicle, now);
+        if (rejection.isDefined()) {
+            return announceFailure(new ParkingFailed(parkingSpotId, vehicleId, rejection.map(Rejection::getReason).get()));
         }
 
-        parkedVehicles.add(vehicle);
         VehicleParked vehicleParked = new VehicleParked(parkingSpotId, vehicle);
         if (reservation.isFor(vehicle)) {
             return announceSuccess(events(parkingSpotId, vehicleParked, new ReservationFulfilled(parkingSpotId, vehicleId)));
         }
-        if (isFullOccupied()) {
+        if (isFullOccupiedWith(vehicle)) {
             return announceSuccess(events(parkingSpotId, vehicleParked, new FullyOccupied(parkingSpotId)));
         }
         return announceSuccess(events(parkingSpotId, vehicleParked));
@@ -112,13 +111,20 @@ public class ParkingSpot {
                 .anyMatch(vehicleId::equals);
     }
 
-
-    private boolean isNotEnoughSpaceFor(Vehicle vehicleSizeUnit) {
-        return currentOccupation() + vehicleSizeUnit.getVehicleSizeUnit().getValue() > capacity;
+    boolean hasNotEnoughSpaceFor(Vehicle vehicle) {
+        return currentOccupation() + vehicle.getVehicleSizeUnit().getValue() > capacity;
     }
 
-    private boolean isFullOccupied() {
-        return capacity == currentOccupation();
+    private Option<Rejection> canPark(Vehicle vehicle, Instant now) {
+        return parkingPolicies
+                .toStream()
+                .map(policy -> policy.apply(this, vehicle, reservation, now))
+                .find(Either::isLeft)
+                .map(Either::getLeft);
+    }
+
+    private boolean isFullOccupiedWith(Vehicle vehicle) {
+        return capacity + vehicle.getVehicleSizeUnit().getValue() >= currentOccupation();
     }
 
     private Integer currentOccupation() {
@@ -129,16 +135,16 @@ public class ParkingSpot {
     }
 
     @Value(staticConstructor = "of")
-    private static class Reservation {
+    static class Reservation {
 
         Set<VehicleId> bookedFor;
         Option<Instant> since;
 
-        static Reservation none() {
+        private static Reservation none() {
             return new Reservation(Set.of(), Option.none());
         }
 
-        boolean isNotFulfillingBy(Vehicle vehicle, Instant now) {
+        boolean isNotFulfilledBy(Vehicle vehicle, Instant now) {
             return !bookedFor.isEmpty()
                     && !bookedFor.contains(vehicle.getVehicleId())
                     && since.map(instant -> now.plusSeconds(twoHours()).isAfter(instant)).getOrElse(false);

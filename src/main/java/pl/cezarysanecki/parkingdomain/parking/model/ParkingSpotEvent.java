@@ -75,6 +75,7 @@ public sealed interface ParkingSpotEvent extends DomainEvent {
 
         @NonNull ParkingSpotId parkingSpotId;
         @NonNull VehicleId vehicleId;
+        @NonNull String reason;
 
     }
 
