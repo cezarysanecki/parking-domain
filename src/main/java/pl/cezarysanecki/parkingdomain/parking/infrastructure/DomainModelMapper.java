@@ -19,6 +19,11 @@ class DomainModelMapper {
                         .map(vehicleEntity -> new Vehicle(
                                 VehicleId.of(vehicleEntity.vehicleId),
                                 VehicleSizeUnit.of(vehicleEntity.vehicleSizeUnit)))
+                        .collect(Collectors.toUnmodifiableSet()),
+                entity.reservations.stream()
+                        .map(vehicleEntity -> new Vehicle(
+                                VehicleId.of(vehicleEntity.vehicleId),
+                                VehicleSizeUnit.of(vehicleEntity.vehicleSizeUnit)))
                         .collect(Collectors.toUnmodifiableSet()));
     }
 

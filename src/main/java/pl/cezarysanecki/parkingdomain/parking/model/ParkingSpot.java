@@ -14,6 +14,8 @@ import java.util.Set;
 
 import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announceFailure;
 import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announceSuccess;
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ReservationFailed;
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ReservationMade;
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleParkedEvents.events;
 
 @Value
@@ -22,15 +24,21 @@ public class ParkingSpot {
     ParkingSpotId parkingSpotId;
     int capacity;
     Set<Vehicle> parkedVehicles;
+    Set<Vehicle> reservations;
 
     public ParkingSpot(ParkingSpotId parkingSpotId, int capacity) {
-        this(parkingSpotId, capacity, Set.of());
+        this(parkingSpotId, capacity, Set.of(), Set.of());
     }
 
-    public ParkingSpot(ParkingSpotId parkingSpotId, int capacity, Set<Vehicle> parkedVehicles) {
+    public ParkingSpot(
+            ParkingSpotId parkingSpotId,
+            int capacity,
+            Set<Vehicle> parkedVehicles,
+            Set<Vehicle> reservations) {
         this.parkingSpotId = parkingSpotId;
         this.capacity = capacity;
         this.parkedVehicles = new HashSet<>(parkedVehicles);
+        this.reservations = new HashSet<>(reservations);
     }
 
     public Either<ParkingFailed, VehicleParkedEvents> park(Vehicle vehicle) {
@@ -57,6 +65,15 @@ public class ParkingSpot {
         return announceSuccess(new VehicleLeft(parkingSpotId, foundVehicle));
     }
 
+    public Either<ReservationFailed, ReservationMade> reserveFor(Vehicle vehicle) {
+        if (isNoSpaceToTakeReservationFor(vehicle)) {
+            return announceFailure(new ReservationFailed(parkingSpotId, vehicle.getVehicleId()));
+        }
+
+        reservations.add(vehicle);
+        return announceSuccess(new ReservationMade(parkingSpotId, vehicle.getVehicleId()));
+    }
+
     public boolean isEmpty() {
         return currentOccupation() == 0;
     }
@@ -71,12 +88,23 @@ public class ParkingSpot {
         return currentOccupation() + vehicleSizeUnit.getVehicleSizeUnit().getValue() > capacity;
     }
 
+    private boolean isNoSpaceToTakeReservationFor(Vehicle vehicleSizeUnit) {
+        return reservedOccupation() + vehicleSizeUnit.getVehicleSizeUnit().getValue() > capacity;
+    }
+
     private boolean isFullOccupied() {
         return capacity == currentOccupation();
     }
 
     private Integer currentOccupation() {
         return parkedVehicles.stream()
+                .map(Vehicle::getVehicleSizeUnit)
+                .map(VehicleSizeUnit::getValue)
+                .reduce(0, Integer::sum);
+    }
+
+    private Integer reservedOccupation() {
+        return reservations.stream()
                 .map(Vehicle::getVehicleSizeUnit)
                 .map(VehicleSizeUnit::getValue)
                 .reduce(0, Integer::sum);

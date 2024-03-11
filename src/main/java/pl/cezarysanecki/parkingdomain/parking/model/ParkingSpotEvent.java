@@ -86,4 +86,20 @@ public sealed interface ParkingSpotEvent extends DomainEvent {
 
     }
 
+    @Value
+    final class ReservationMade implements ParkingSpotEvent {
+
+        @NonNull ParkingSpotId parkingSpotId;
+        @NonNull VehicleId vehicleId;
+
+    }
+
+    @Value
+    final class ReservationFailed implements ParkingSpotEvent {
+
+        @NonNull ParkingSpotId parkingSpotId;
+        @NonNull VehicleId vehicleId;
+
+    }
+
 }

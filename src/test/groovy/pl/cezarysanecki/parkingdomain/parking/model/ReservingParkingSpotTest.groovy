@@ -1,11 +1,12 @@
 package pl.cezarysanecki.parkingdomain.parking.model
 
 import io.vavr.control.Either
+import spock.lang.Specification
 
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.emptyParkingSpotWith
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.vehicleWith
 
-class ReservingParkingSpotTest {
+class ReservingParkingSpotTest extends Specification {
   
   def "can reserve parking spot for vehicle when there is space"() {
     given:
