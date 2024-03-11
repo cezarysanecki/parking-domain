@@ -11,7 +11,6 @@ import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehiclePark
 import pl.cezarysanecki.parkingdomain.parking.model.Vehicle;
 import pl.cezarysanecki.parkingdomain.parking.model.VehicleId;
 
-import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -29,7 +28,6 @@ class ParkingSpotEntity {
     int capacity;
     Set<ParkedVehicleEntity> parkedVehicles;
     Set<VehicleId> reservations;
-    Instant reservationSince;
 
     ParkingSpotEntity(UUID parkingSpotId, int capacity) {
         this.parkingSpotId = parkingSpotId;
@@ -58,10 +56,10 @@ class ParkingSpotEntity {
 
     private ParkingSpotEntity handle(VehicleLeft vehicleLeft) {
         UUID vehicleId = vehicleLeft.getVehicle().getVehicleId().getValue();
-        return removeHoldIfPresent(parkingSpotId, vehicleId);
+        return removeVehicleIfPresent(parkingSpotId, vehicleId);
     }
 
-    private ParkingSpotEntity removeHoldIfPresent(UUID parkingSpotId, UUID vehicleId) {
+    private ParkingSpotEntity removeVehicleIfPresent(UUID parkingSpotId, UUID vehicleId) {
         parkedVehicles.stream()
                 .filter(entity -> entity.is(parkingSpotId, vehicleId))
                 .findAny()

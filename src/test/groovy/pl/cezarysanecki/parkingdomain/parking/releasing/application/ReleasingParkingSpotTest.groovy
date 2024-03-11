@@ -1,11 +1,13 @@
-package pl.cezarysanecki.parkingdomain.parking.application
+package pl.cezarysanecki.parkingdomain.parking.releasing.application
 
 import io.vavr.control.Option
 import pl.cezarysanecki.parkingdomain.commons.commands.Result
+import pl.cezarysanecki.parkingdomain.parking.application.ReleaseParkingSpotCommand
+import pl.cezarysanecki.parkingdomain.parking.application.ReleasingParkingSpot
 import pl.cezarysanecki.parkingdomain.parking.model.*
 import spock.lang.Specification
 
-import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.*
+import static pl.cezarysanecki.parkingdomain.parking.releasing.model.ParkingSpotFixture.*
 
 class ReleasingParkingSpotTest extends Specification {
   

@@ -1,6 +1,11 @@
-package pl.cezarysanecki.parkingdomain.parking.model;
+package pl.cezarysanecki.parkingdomain.parking.releasing.model;
 
-import java.time.Instant;
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpot;
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
+import pl.cezarysanecki.parkingdomain.parking.model.Vehicle;
+import pl.cezarysanecki.parkingdomain.parking.model.VehicleId;
+import pl.cezarysanecki.parkingdomain.parking.model.VehicleSizeUnit;
+
 import java.util.Set;
 import java.util.UUID;
 
@@ -11,7 +16,7 @@ public class ParkingSpotFixture {
     }
 
     public static ParkingSpot reservedParkingSpotFor(VehicleId vehicleId) {
-        return new ParkingSpot(anyParkingSpotId(), 4, Set.of(), Set.of(vehicleId), Instant.now());
+        return new ParkingSpot(anyParkingSpotId(), 4, Set.of(), Set.of(vehicleId));
     }
 
     public static ParkingSpot emptyParkingSpotWith(ParkingSpotId parkingSpotId, int capacity) {
@@ -19,11 +24,11 @@ public class ParkingSpotFixture {
     }
 
     public static ParkingSpot parkingSpotWith(Vehicle vehicle) {
-        return new ParkingSpot(anyParkingSpotId(), vehicle.getVehicleSizeUnit().getValue(), Set.of(vehicle));
+        return new ParkingSpot(anyParkingSpotId(), vehicle.getVehicleSizeUnit().getValue(), Set.of(vehicle), Set.of());
     }
 
     public static ParkingSpot parkingSpotWith(ParkingSpotId parkingSpotId, Vehicle vehicle) {
-        return new ParkingSpot(parkingSpotId, vehicle.getVehicleSizeUnit().getValue(), Set.of(vehicle));
+        return new ParkingSpot(parkingSpotId, vehicle.getVehicleSizeUnit().getValue(), Set.of(vehicle), Set.of());
     }
 
     public static ParkingSpotId anyParkingSpotId() {
