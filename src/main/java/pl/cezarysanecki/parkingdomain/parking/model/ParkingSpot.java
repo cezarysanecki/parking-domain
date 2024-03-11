@@ -40,6 +40,17 @@ public class ParkingSpot {
         this.bookedFor = new HashSet<>(reservations);
     }
 
+    public Either<ReleasingFailed, VehicleLeft> release(VehicleId vehicleId) {
+        Vehicle foundVehicle = parkedVehicles.stream()
+                .filter(parkedVehicle -> parkedVehicle.getVehicleId().equals(vehicleId))
+                .findFirst()
+                .orElse(null);
+        if (foundVehicle == null) {
+            return announceFailure(new ReleasingFailed(parkingSpotId));
+        }
+        return announceSuccess(new VehicleLeft(parkingSpotId, foundVehicle));
+    }
+
     public Either<ParkingFailed, VehicleParkedEvents> park(Vehicle vehicle) {
         VehicleId vehicleId = vehicle.getVehicleId();
 
@@ -61,25 +72,6 @@ public class ParkingSpot {
         return announceSuccess(events(parkingSpotId, vehicleParked));
     }
 
-    private boolean isNotFulfillingReservation(Vehicle vehicle) {
-        return !bookedFor.isEmpty() && !bookedFor.contains(vehicle.getVehicleId());
-    }
-
-    private boolean hasReservationFor(Vehicle vehicle) {
-        return !bookedFor.isEmpty() && bookedFor.contains(vehicle.getVehicleId());
-    }
-
-    public Either<ReleasingFailed, VehicleLeft> release(VehicleId vehicleId) {
-        Vehicle foundVehicle = parkedVehicles.stream()
-                .filter(parkedVehicle -> parkedVehicle.getVehicleId().equals(vehicleId))
-                .findFirst()
-                .orElse(null);
-        if (foundVehicle == null) {
-            return announceFailure(new ReleasingFailed(parkingSpotId));
-        }
-        return announceSuccess(new VehicleLeft(parkingSpotId, foundVehicle));
-    }
-
     public boolean isEmpty() {
         return currentOccupation() == 0;
     }
@@ -88,6 +80,14 @@ public class ParkingSpot {
         return parkedVehicles.stream()
                 .map(Vehicle::getVehicleId)
                 .anyMatch(vehicleId::equals);
+    }
+
+    private boolean isNotFulfillingReservation(Vehicle vehicle) {
+        return !bookedFor.isEmpty() && !bookedFor.contains(vehicle.getVehicleId());
+    }
+
+    private boolean hasReservationFor(Vehicle vehicle) {
+        return !bookedFor.isEmpty() && bookedFor.contains(vehicle.getVehicleId());
     }
 
     private boolean isNotEnoughSpaceFor(Vehicle vehicleSizeUnit) {
