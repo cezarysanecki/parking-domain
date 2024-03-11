@@ -2,6 +2,9 @@ package pl.cezarysanecki.parkingdomain.parking.releasing.application
 
 import io.vavr.control.Option
 import pl.cezarysanecki.parkingdomain.commons.commands.Result
+import pl.cezarysanecki.parkingdomain.parking.application.ParkVehicleCommand
+import pl.cezarysanecki.parkingdomain.parking.application.ParkingOnParkingSpot
+import pl.cezarysanecki.parkingdomain.parking.model.*
 import spock.lang.Specification
 
 import java.time.Instant

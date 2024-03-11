@@ -16,13 +16,13 @@ public class ParkingSpotConfig {
     }
 
     @Bean
-    ReleasingParkingSpot releasingParkingSpot(ParkingSpots parkingSpots) {
+    public ReleasingParkingSpot releasingParkingSpot(ParkingSpots parkingSpots) {
         return new ReleasingParkingSpot(parkingSpots);
     }
 
     @Bean
     @Profile("local")
-    ParkingSpots inMemoryParkingSpotRepository() {
+    public ParkingSpots inMemoryParkingSpotRepository() {
         return new InMemoryParkingSpotRepository();
     }
 

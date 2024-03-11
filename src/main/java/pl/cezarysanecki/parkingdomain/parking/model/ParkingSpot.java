@@ -83,4 +83,15 @@ public class ParkingSpot {
                 .map(VehicleSizeUnit::getValue)
                 .reduce(0, Integer::sum);
     }
+
+    public boolean isEmpty() {
+        return parkedVehicles.isEmpty();
+    }
+
+    public boolean isParked(VehicleId vehicleId) {
+        return parkedVehicles.stream()
+                .map(Vehicle::getVehicleId)
+                .anyMatch(parkedVehicleId -> parkedVehicleId.equals(vehicleId));
+    }
+
 }
