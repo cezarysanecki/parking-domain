@@ -6,6 +6,8 @@ import pl.cezarysanecki.parkingdomain.parking.model.Vehicle;
 import pl.cezarysanecki.parkingdomain.parking.model.VehicleId;
 import pl.cezarysanecki.parkingdomain.parking.model.VehicleSizeUnit;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -29,6 +31,11 @@ public class ParkingSpotFixture {
 
     public static ParkingSpot parkingSpotWith(Vehicle vehicle) {
         return new ParkingSpot(anyParkingSpotId(), vehicle.getVehicleSizeUnit().getValue(), Set.of(vehicle), Set.of());
+    }
+
+    public static ParkingSpot parkingSpotWith(List<Vehicle> vehicles) {
+        Integer capacity = vehicles.stream().map(Vehicle::getVehicleSizeUnit).map(VehicleSizeUnit::getValue).reduce(0, Integer::sum);
+        return new ParkingSpot(anyParkingSpotId(), capacity, new HashSet<>(vehicles), false);
     }
 
     public static ParkingSpot parkingSpotWith(ParkingSpotId parkingSpotId, Vehicle vehicle) {
