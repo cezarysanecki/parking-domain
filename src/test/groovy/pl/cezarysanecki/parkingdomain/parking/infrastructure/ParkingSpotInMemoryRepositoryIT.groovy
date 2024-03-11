@@ -56,7 +56,7 @@ class ParkingSpotInMemoryRepositoryIT extends Specification {
   }
   
   ParkingSpot loadPersistedParkingSpot(ParkingSpotId parkingSpotId) {
-    Option<ParkingSpot> loaded = parkingSpots.findBy(parkingSpotId)
+    Option<ParkingSpot> loaded = parkingSpots.tryFindBy(parkingSpotId)
     ParkingSpot parkingSpot = loaded.getOrElseThrow({
       new IllegalStateException("should have been persisted")
     })

@@ -58,13 +58,13 @@ class ParkingOnParkingSpotTest extends Specification {
   }
   
   ParkingSpot persisted(ParkingSpot parkingSpot) {
-    repository.findBy(parkingSpot.parkingSpotId) >> Option.of(parkingSpot)
+    repository.tryFindBy(parkingSpot.parkingSpotId) >> Option.of(parkingSpot)
     repository.publish(_ as ParkingSpotEvent) >> parkingSpot
     return parkingSpot
   }
   
   ParkingSpotId unknownParkingSpot() {
-    repository.findBy(parkingSpotId) >> Option.none()
+    repository.tryFindBy(parkingSpotId) >> Option.none()
     return parkingSpotId
   }
   
