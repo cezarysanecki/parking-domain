@@ -7,6 +7,7 @@ import lombok.Value;
 import pl.cezarysanecki.parkingdomain.commons.events.DomainEvent;
 
 import java.time.Instant;
+import java.util.Set;
 
 public sealed interface ParkingSpotEvent extends DomainEvent {
 
@@ -44,6 +45,7 @@ public sealed interface ParkingSpotEvent extends DomainEvent {
         @NonNull ParkingSpotId parkingSpotId;
         @NonNull VehicleParked vehicleParked;
         @NonNull Option<FullyOccupied> fullyOccupied;
+        @NonNull Option<ReservationFulfilled> reservationFulfilled;
 
         @Override
         public Instant getWhen() {
@@ -51,11 +53,15 @@ public sealed interface ParkingSpotEvent extends DomainEvent {
         }
 
         public static VehicleParkedEvents events(ParkingSpotId parkingSpotId, VehicleParked vehicleParked) {
-            return new VehicleParkedEvents(parkingSpotId, vehicleParked, Option.none());
+            return new VehicleParkedEvents(parkingSpotId, vehicleParked, Option.none(), Option.none());
         }
 
         public static VehicleParkedEvents events(ParkingSpotId parkingSpotId, VehicleParked vehicleParked, FullyOccupied fullyOccupied) {
-            return new VehicleParkedEvents(parkingSpotId, vehicleParked, Option.of(fullyOccupied));
+            return new VehicleParkedEvents(parkingSpotId, vehicleParked, Option.of(fullyOccupied), Option.none());
+        }
+
+        public static VehicleParkedEvents events(ParkingSpotId parkingSpotId, VehicleParked vehicleParked, ReservationFulfilled reservationFulfilled) {
+            return new VehicleParkedEvents(parkingSpotId, vehicleParked, Option.none(), Option.of(reservationFulfilled));
         }
 
         @Override
@@ -68,6 +74,7 @@ public sealed interface ParkingSpotEvent extends DomainEvent {
     final class ParkingFailed implements ParkingSpotEvent {
 
         @NonNull ParkingSpotId parkingSpotId;
+        @NonNull VehicleId vehicleId;
 
     }
 
@@ -83,6 +90,31 @@ public sealed interface ParkingSpotEvent extends DomainEvent {
     final class ReleasingFailed implements ParkingSpotEvent {
 
         @NonNull ParkingSpotId parkingSpotId;
+
+    }
+
+    @Value
+    final class ReservationMade implements ParkingSpotEvent {
+
+        @NonNull ParkingSpotId parkingSpotId;
+        @NonNull Set<VehicleId> vehicles;
+        @NonNull Instant since;
+
+    }
+
+    @Value
+    final class ReservationFailed implements ParkingSpotEvent {
+
+        @NonNull ParkingSpotId parkingSpotId;
+        @NonNull Set<VehicleId> vehicles;
+
+    }
+
+    @Value
+    final class ReservationFulfilled implements ParkingSpotEvent {
+
+        @NonNull ParkingSpotId parkingSpotId;
+        @NonNull VehicleId vehicleId;
 
     }
 

@@ -7,6 +7,7 @@ import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ParkingSpot
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpots;
 
+import java.time.Instant;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -30,13 +31,18 @@ class InMemoryParkingSpotRepository implements ParkingSpots {
     }
 
     @Override
+    public Option<ParkingSpot> findBy(ParkingSpotId parkingSpotId, Instant when) {
+        return findBy(parkingSpotId);
+    }
+
+    @Override
     public ParkingSpot publish(ParkingSpotEvent event) {
         return Match(event).of(
-                Case($(instanceOf(ParkingSpotCreated.class)), this::createNewPatron),
+                Case($(instanceOf(ParkingSpotCreated.class)), this::createNewParkingSpot),
                 Case($(), this::handleNextEvent));
     }
 
-    private ParkingSpot createNewPatron(ParkingSpotCreated event) {
+    private ParkingSpot createNewParkingSpot(ParkingSpotCreated event) {
         ParkingSpotId parkingSpotId = event.getParkingSpotId();
         ParkingSpotEntity entity = new ParkingSpotEntity(parkingSpotId.getValue(), 4);
         DATABASE.put(parkingSpotId, entity);

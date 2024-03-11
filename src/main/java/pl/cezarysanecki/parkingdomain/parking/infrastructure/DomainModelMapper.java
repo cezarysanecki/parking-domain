@@ -1,6 +1,8 @@
 package pl.cezarysanecki.parkingdomain.parking.infrastructure;
 
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.model.Vehicle;
@@ -9,6 +11,7 @@ import pl.cezarysanecki.parkingdomain.parking.model.VehicleSizeUnit;
 
 import java.util.stream.Collectors;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 class DomainModelMapper {
 
     static ParkingSpot map(ParkingSpotEntity entity) {
@@ -19,7 +22,9 @@ class DomainModelMapper {
                         .map(vehicleEntity -> new Vehicle(
                                 VehicleId.of(vehicleEntity.vehicleId),
                                 VehicleSizeUnit.of(vehicleEntity.vehicleSizeUnit)))
-                        .collect(Collectors.toUnmodifiableSet()));
+                        .collect(Collectors.toUnmodifiableSet()),
+                entity.reservations,
+                entity.reservationSince);
     }
 
 }

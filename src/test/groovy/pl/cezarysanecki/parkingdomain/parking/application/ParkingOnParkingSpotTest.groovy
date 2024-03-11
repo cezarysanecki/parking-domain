@@ -5,6 +5,8 @@ import pl.cezarysanecki.parkingdomain.commons.commands.Result
 import pl.cezarysanecki.parkingdomain.parking.model.*
 import spock.lang.Specification
 
+import java.time.Instant
+
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.*
 
 class ParkingOnParkingSpotTest extends Specification {
@@ -23,7 +25,7 @@ class ParkingOnParkingSpotTest extends Specification {
       persisted(emptyParkingSpotWith(parkingSpotId, 1))
     
     when:
-      def result = parkingOnParkingSpot.park(new ParkVehicleCommand(parkingSpotId, alrightVehicle))
+      def result = parkingOnParkingSpot.park(new ParkVehicleCommand(parkingSpotId, alrightVehicle, Instant.now()))
     
     then:
       result.isSuccess()
@@ -37,7 +39,7 @@ class ParkingOnParkingSpotTest extends Specification {
       persisted(emptyParkingSpotWith(parkingSpotId, 1))
     
     when:
-      def result = parkingOnParkingSpot.park(new ParkVehicleCommand(parkingSpotId, tooBigVehicle))
+      def result = parkingOnParkingSpot.park(new ParkVehicleCommand(parkingSpotId, tooBigVehicle, Instant.now()))
     
     then:
       result.isSuccess()
@@ -51,20 +53,20 @@ class ParkingOnParkingSpotTest extends Specification {
       unknownParkingSpot()
     
     when:
-      def result = parkingOnParkingSpot.park(new ParkVehicleCommand(parkingSpotId, alrightVehicle))
+      def result = parkingOnParkingSpot.park(new ParkVehicleCommand(parkingSpotId, alrightVehicle, Instant.now()))
     
     then:
       result.isFailure()
   }
   
   ParkingSpot persisted(ParkingSpot parkingSpot) {
-    repository.findBy(parkingSpot.parkingSpotId) >> Option.of(parkingSpot)
+    repository.findBy(parkingSpot.parkingSpotId, _ as Instant) >> Option.of(parkingSpot)
     repository.publish(_ as ParkingSpotEvent) >> parkingSpot
     return parkingSpot
   }
   
   ParkingSpotId unknownParkingSpot() {
-    repository.findBy(parkingSpotId) >> Option.none()
+    repository.findBy(parkingSpotId, _ as Instant) >> Option.none()
     return parkingSpotId
   }
   
