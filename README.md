@@ -71,7 +71,26 @@ having legacy code and learn tools from JVM ecosystem (but not only).
 - Parking is available 24/7
 - Parking spots have their own identity
 - Parking spots can be occupied (for now) by: cars, motorcycles and scooters
-- Every parking spot has its capacity which can be optimized by parking every vehicle type 
+- Every parking spot has its own capacity (for now it is 4 units)
+- On parking spot can park different combinations of vehicle types f.ex.
+  - One vehicle (1 x 4)
+  - Two motorcycles (2 x 2)
+  - One motorcycles and two scooters (1 x 2 + 2 x 1)
+  - Four scooters (4 x 1)
+
+### Reservations
+
+- Client can reserve:
+  - any spot f.ex.
+    - all space of spot for vehicle
+    - half of spot for motorcycle
+  - for additional fee chosen whole parking spot
+- Client can reserve parking spot 
+  - minimum one week earlier
+  - maximum size hours before
+- Reservation can last for 10 hours
+- Clients reserve spots from main bank
+- Reservations cannot exceed 50% of the available main bank
 
 ### Cleaning parking spots
 
@@ -105,13 +124,6 @@ having legacy code and learn tools from JVM ecosystem (but not only).
     - reporting issues
     - being loyal client (park for more than half of the days in a month)
     - recommendation
-
-### Reservations
-
-- Clients can reserve spot for one day
-- Client can only have one reservation
-- Clients reserve spots from main bank
-- Reservations cannot exceed 50% of the available main bank
 
 ### Loyalty points
 
