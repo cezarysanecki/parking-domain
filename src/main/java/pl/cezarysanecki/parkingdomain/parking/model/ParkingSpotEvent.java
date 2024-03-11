@@ -7,7 +7,6 @@ import lombok.Value;
 import pl.cezarysanecki.parkingdomain.commons.events.DomainEvent;
 
 import java.time.Instant;
-import java.util.Set;
 
 public sealed interface ParkingSpotEvent extends DomainEvent {
 
@@ -91,23 +90,6 @@ public sealed interface ParkingSpotEvent extends DomainEvent {
     final class ReleasingFailed implements ParkingSpotEvent {
 
         @NonNull ParkingSpotId parkingSpotId;
-
-    }
-
-    @Value
-    final class ReservationMade implements ParkingSpotEvent {
-
-        @NonNull ParkingSpotId parkingSpotId;
-        @NonNull Set<VehicleId> vehicles;
-        @NonNull Instant since;
-
-    }
-
-    @Value
-    final class ReservationFailed implements ParkingSpotEvent {
-
-        @NonNull ParkingSpotId parkingSpotId;
-        @NonNull Set<VehicleId> vehicles;
 
     }
 

@@ -33,6 +33,9 @@ public class ParkingSpot {
     public Either<ParkingFailed, VehicleParkedEvents> park(Vehicle vehicle) {
         VehicleId vehicleId = vehicle.getVehicleId();
 
+        if (isParked(vehicleId)) {
+            return announceFailure(new ParkingFailed(parkingSpotId, vehicleId, "vehicle is already parked on parking spot"));
+        }
         if (isNotReservedFor(vehicle)) {
             return announceFailure(new ParkingFailed(parkingSpotId, vehicleId, "parking spot is not reserved for this vehicle"));
         }
