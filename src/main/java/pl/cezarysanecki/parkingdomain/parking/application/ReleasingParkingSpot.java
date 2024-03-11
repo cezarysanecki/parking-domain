@@ -29,7 +29,7 @@ public class ReleasingParkingSpot {
     public Try<Result> release(@NonNull ReleaseParkingSpotCommand command) {
         return Try.of(() -> {
             ParkingSpot parkingSpot = find(command.getParkingSpotId());
-            Either<ReleasingFailed, VehicleLeft> result = parkingSpot.release(command.getVehicleId());
+            Either<ReleasingFailed, VehicleLeft> result = parkingSpot.releaseBy(command.getVehicleId());
             return API.Match(result).of(
                     Case($Left($()), this::publishEvents),
                     Case($Right($()), this::publishEvents));

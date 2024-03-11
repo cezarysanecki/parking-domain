@@ -1,11 +1,13 @@
-package pl.cezarysanecki.parkingdomain.parking.model
+package pl.cezarysanecki.parkingdomain.parking.releasing.model
 
 import io.vavr.control.Either
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpot
+import pl.cezarysanecki.parkingdomain.parking.model.Vehicle
 import spock.lang.Specification
 
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ReleasingFailed
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleLeft
-import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.*
+import static pl.cezarysanecki.parkingdomain.parking.releasing.model.ParkingSpotFixture.*
 
 class ReleasingParkingSpotTest extends Specification {
   
@@ -16,7 +18,7 @@ class ReleasingParkingSpotTest extends Specification {
       ParkingSpot parkingSpot = parkingSpotWith(vehicle)
     
     when:
-      Either<ReleasingFailed, VehicleLeft> result = parkingSpot.release(vehicle.vehicleId)
+      Either<ReleasingFailed, VehicleLeft> result = parkingSpot.releaseBy(vehicle.vehicleId)
     
     then:
       result.isRight()
@@ -33,7 +35,7 @@ class ReleasingParkingSpotTest extends Specification {
       Vehicle vehicle = vehicleWith(1)
     
     when:
-      Either<ReleasingFailed, VehicleLeft> result = parkingSpot.release(vehicle.vehicleId)
+      Either<ReleasingFailed, VehicleLeft> result = parkingSpot.releaseBy(vehicle.vehicleId)
     
     then:
       result.isLeft()

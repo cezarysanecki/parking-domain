@@ -1,12 +1,12 @@
-package pl.cezarysanecki.parkingdomain.parking.model
+package pl.cezarysanecki.parkingdomain.parking.releasing.model
 
 import io.vavr.control.Either
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpot
+import pl.cezarysanecki.parkingdomain.parking.model.Vehicle
 import spock.lang.Specification
 
-import java.time.Instant
-
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.*
-import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.*
+import static pl.cezarysanecki.parkingdomain.parking.releasing.model.ParkingSpotFixture.*
 
 class ParkingVehicleTest extends Specification {
   
@@ -17,7 +17,7 @@ class ParkingVehicleTest extends Specification {
       Vehicle vehicle = vehicleWith(1)
     
     when:
-      Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(vehicle, Instant.now())
+      Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(vehicle)
     
     then:
       result.isRight()
@@ -35,7 +35,7 @@ class ParkingVehicleTest extends Specification {
       Vehicle vehicle = vehicleWith(1)
     
     when:
-      Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(vehicle, Instant.now())
+      Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(vehicle)
     
     then:
       result.isRight()
@@ -56,7 +56,7 @@ class ParkingVehicleTest extends Specification {
       ParkingSpot parkingSpot = reservedParkingSpotFor(vehicle.vehicleId)
     
     when:
-      Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(vehicle, Instant.now())
+      Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(vehicle)
     
     then:
       result.isRight()
@@ -78,7 +78,7 @@ class ParkingVehicleTest extends Specification {
       Vehicle vehicle = vehicleWith(2)
     
     when:
-      Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(vehicle, Instant.now())
+      Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(vehicle)
     
     then:
       result.isLeft()

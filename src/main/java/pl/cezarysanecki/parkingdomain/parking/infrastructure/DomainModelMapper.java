@@ -23,8 +23,7 @@ class DomainModelMapper {
                                 VehicleId.of(vehicleEntity.vehicleId),
                                 VehicleSizeUnit.of(vehicleEntity.vehicleSizeUnit)))
                         .collect(Collectors.toUnmodifiableSet()),
-                entity.reservations,
-                entity.reservationSince);
+                entity.reservations);
     }
 
 }

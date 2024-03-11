@@ -1,13 +1,12 @@
-package pl.cezarysanecki.parkingdomain.parking.application
+package pl.cezarysanecki.parkingdomain.parking.releasing.application
 
 import io.vavr.control.Option
 import pl.cezarysanecki.parkingdomain.commons.commands.Result
-import pl.cezarysanecki.parkingdomain.parking.model.*
 import spock.lang.Specification
 
 import java.time.Instant
 
-import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.*
+import static pl.cezarysanecki.parkingdomain.parking.releasing.model.ParkingSpotFixture.*
 
 class ParkingOnParkingSpotTest extends Specification {
   
