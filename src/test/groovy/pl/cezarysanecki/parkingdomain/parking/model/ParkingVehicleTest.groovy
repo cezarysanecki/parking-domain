@@ -5,6 +5,7 @@ import spock.lang.Specification
 
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.*
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.emptyParkingSpotWith
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.reservedParkingSpotFor
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.vehicleWith
 
 class ParkingVehicleTest extends Specification {
@@ -45,6 +46,28 @@ class ParkingVehicleTest extends Specification {
         
         FullyOccupied fullyOccupied = it.fullyOccupied.get()
         assert fullyOccupied.parkingSpotId == parkingSpot.parkingSpotId
+      }
+  }
+  
+  def "vehicle can park on its reservation"() {
+    given:
+      Vehicle vehicle = vehicleWith(1)
+    and:
+      ParkingSpot parkingSpot = reservedParkingSpotFor(vehicle.vehicleId)
+    
+    when:
+      Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(vehicle)
+    
+    then:
+      result.isRight()
+      result.get().with {
+        VehicleParked vehicleParked = it.vehicleParked
+        assert vehicleParked.parkingSpotId == parkingSpot.parkingSpotId
+        assert vehicleParked.vehicle == vehicle
+        
+        ReservationFulfilled reservationFulfilled = it.reservationFulfilled.get()
+        assert reservationFulfilled.parkingSpotId == parkingSpot.parkingSpotId
+        assert reservationFulfilled.vehicleId == vehicle.vehicleId
       }
   }
   

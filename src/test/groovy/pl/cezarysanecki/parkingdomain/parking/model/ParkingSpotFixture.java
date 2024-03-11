@@ -9,6 +9,10 @@ public class ParkingSpotFixture {
         return new ParkingSpot(anyParkingSpotId(), capacity);
     }
 
+    public static ParkingSpot reservedParkingSpotFor(VehicleId vehicleId) {
+        return new ParkingSpot(anyParkingSpotId(), 4, Set.of(), Set.of(vehicleId));
+    }
+
     public static ParkingSpot emptyParkingSpotWith(ParkingSpotId parkingSpotId, int capacity) {
         return new ParkingSpot(parkingSpotId, capacity);
     }
