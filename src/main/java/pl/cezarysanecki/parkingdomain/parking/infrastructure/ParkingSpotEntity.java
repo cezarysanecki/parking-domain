@@ -26,7 +26,6 @@ class ParkingSpotEntity {
     UUID parkingSpotId;
     int capacity;
     Set<ParkedVehicleEntity> parkedVehicles;
-    Set<ReservationEntity> reservations;
 
     ParkingSpotEntity(UUID parkingSpotId, int capacity) {
         this.parkingSpotId = parkingSpotId;

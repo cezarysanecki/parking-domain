@@ -7,6 +7,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
+import pl.cezarysanecki.parkingdomain.parking.model.NormalParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpots;
@@ -28,7 +29,7 @@ public class ParkingOnParkingSpot {
 
     public Try<Result> park(@NonNull ParkVehicleCommand command) {
         return Try.of(() -> {
-            ParkingSpot parkingSpot = parkingSpots.findBy(command.getParkingSpotId());
+            NormalParkingSpot parkingSpot = load(command.getParkingSpotId());
             Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(command.getVehicle());
             return API.Match(result).of(
                     Case($Left($()), this::publishEvents),
@@ -44,6 +45,11 @@ public class ParkingOnParkingSpot {
     private Result publishEvents(ParkingFailed parkingFailed) {
         parkingSpots.publish(parkingFailed);
         return Rejection;
+    }
+
+    private NormalParkingSpot load(ParkingSpotId parkingSpotId) {
+        return parkingSpots.findBy(parkingSpotId)
+                .getOrElseThrow(() -> new IllegalArgumentException("Cannot find parking spot with id: " + parkingSpotId));
     }
 
 }

@@ -13,7 +13,7 @@ class ReleasingParkingSpotTest extends Specification {
     given:
       Vehicle vehicle = vehicleWith(1)
     and:
-      ParkingSpot parkingSpot = parkingSpotWith(vehicle)
+      NormalParkingSpot parkingSpot = parkingSpotWith(vehicle)
     
     when:
       Either<ReleasingFailed, VehicleLeft> result = parkingSpot.release(vehicle.vehicleId)
@@ -28,7 +28,7 @@ class ReleasingParkingSpotTest extends Specification {
   
   def "vehicle cannot be release from parking spot if it is not on this spot"() {
     given:
-      ParkingSpot parkingSpot = emptyParkingSpotWith(1)
+      NormalParkingSpot parkingSpot = emptyParkingSpotWith(1)
     and:
       Vehicle vehicle = vehicleWith(1)
     

@@ -4,13 +4,8 @@ import io.vavr.control.Option;
 
 public interface ParkingSpots {
 
-    Option<ParkingSpot> tryFindBy(ParkingSpotId parkingSpotId);
+    Option<NormalParkingSpot> findBy(ParkingSpotId parkingSpotId);
 
-    default ParkingSpot findBy(ParkingSpotId parkingSpotId) {
-        return tryFindBy(parkingSpotId)
-                .getOrElseThrow(() -> new IllegalArgumentException("Cannot find parking spot with id: " + parkingSpotId));
-    }
-
-    ParkingSpot publish(ParkingSpotEvent event);
+    NormalParkingSpot publish(ParkingSpotEvent event);
 
 }

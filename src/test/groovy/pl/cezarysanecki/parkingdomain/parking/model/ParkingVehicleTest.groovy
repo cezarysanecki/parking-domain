@@ -11,7 +11,7 @@ class ParkingVehicleTest extends Specification {
   
   def "vehicle can park if there is enough space"() {
     given:
-      ParkingSpot parkingSpot = emptyParkingSpotWith(4)
+      NormalParkingSpot parkingSpot = emptyParkingSpotWith(4)
     and:
       Vehicle vehicle = vehicleWith(1)
     
@@ -29,7 +29,7 @@ class ParkingVehicleTest extends Specification {
   
   def "vehicle can park occupying fully parking spot"() {
     given:
-      ParkingSpot parkingSpot = emptyParkingSpotWith(1)
+      NormalParkingSpot parkingSpot = emptyParkingSpotWith(1)
     and:
       Vehicle vehicle = vehicleWith(1)
     
@@ -50,7 +50,7 @@ class ParkingVehicleTest extends Specification {
   
   def "vehicle cannot park is too big for parking spot"() {
     given:
-      ParkingSpot parkingSpot = emptyParkingSpotWith(1)
+      NormalParkingSpot parkingSpot = emptyParkingSpotWith(1)
     and:
       Vehicle vehicle = vehicleWith(2)
     
@@ -61,6 +61,7 @@ class ParkingVehicleTest extends Specification {
       result.isLeft()
       result.getLeft().with {
         assert it.parkingSpotId == parkingSpot.parkingSpotId
+        assert it.vehicleId == vehicle.vehicleId
       }
   }
   

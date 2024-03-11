@@ -55,14 +55,14 @@ class ReleasingParkingSpotTest extends Specification {
       result.isFailure()
   }
   
-  ParkingSpot persisted(ParkingSpot parkingSpot) {
-    repository.tryFindBy(parkingSpot.parkingSpotId) >> Option.of(parkingSpot)
+  NormalParkingSpot persisted(NormalParkingSpot parkingSpot) {
+    repository.findBy(parkingSpot.parkingSpotId) >> Option.of(parkingSpot)
     repository.publish(_ as ParkingSpotEvent) >> parkingSpot
     return parkingSpot
   }
   
   ParkingSpotId unknownParkingSpot() {
-    repository.tryFindBy(parkingSpotId) >> Option.none()
+    repository.findBy(parkingSpotId) >> Option.none()
     return parkingSpotId
   }
   
