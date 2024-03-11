@@ -1,12 +1,13 @@
 package pl.cezarysanecki.parkingdomain.parking.infrastructure;
 
 import io.vavr.control.Option;
-import pl.cezarysanecki.parkingdomain.parking.model.NormalParkingSpot;
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ParkingSpotCreated;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpots;
 
+import java.time.Instant;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -20,7 +21,7 @@ class InMemoryParkingSpotRepository implements ParkingSpots {
     private static final Map<ParkingSpotId, ParkingSpotEntity> DATABASE = new ConcurrentHashMap<>();
 
     @Override
-    public Option<NormalParkingSpot> findBy(ParkingSpotId parkingSpotId) {
+    public Option<ParkingSpot> findBy(ParkingSpotId parkingSpotId) {
         return Option.ofOptional(
                 DATABASE.values()
                         .stream()
@@ -30,20 +31,25 @@ class InMemoryParkingSpotRepository implements ParkingSpots {
     }
 
     @Override
-    public NormalParkingSpot publish(ParkingSpotEvent event) {
+    public Option<ParkingSpot> findBy(ParkingSpotId parkingSpotId, Instant when) {
+        return findBy(parkingSpotId);
+    }
+
+    @Override
+    public ParkingSpot publish(ParkingSpotEvent event) {
         return Match(event).of(
                 Case($(instanceOf(ParkingSpotCreated.class)), this::createNewParkingSpot),
                 Case($(), this::handleNextEvent));
     }
 
-    private NormalParkingSpot createNewParkingSpot(ParkingSpotCreated event) {
+    private ParkingSpot createNewParkingSpot(ParkingSpotCreated event) {
         ParkingSpotId parkingSpotId = event.getParkingSpotId();
         ParkingSpotEntity entity = new ParkingSpotEntity(parkingSpotId.getValue(), 4);
         DATABASE.put(parkingSpotId, entity);
         return DomainModelMapper.map(entity);
     }
 
-    private NormalParkingSpot handleNextEvent(ParkingSpotEvent event) {
+    private ParkingSpot handleNextEvent(ParkingSpotEvent event) {
         ParkingSpotEntity entity = DATABASE.get(event.getParkingSpotId());
         entity = entity.handle(event);
         DATABASE.put(event.getParkingSpotId(), entity);

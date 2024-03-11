@@ -5,20 +5,20 @@ import java.util.UUID;
 
 public class ParkingSpotFixture {
 
-    public static NormalParkingSpot emptyParkingSpotWith(int capacity) {
-        return new NormalParkingSpot(anyParkingSpotId(), capacity);
+    public static ParkingSpot emptyParkingSpotWith(int capacity) {
+        return new ParkingSpot(anyParkingSpotId(), capacity);
     }
 
-    public static NormalParkingSpot emptyParkingSpotWith(ParkingSpotId parkingSpotId, int capacity) {
-        return new NormalParkingSpot(parkingSpotId, capacity);
+    public static ParkingSpot emptyParkingSpotWith(ParkingSpotId parkingSpotId, int capacity) {
+        return new ParkingSpot(parkingSpotId, capacity);
     }
 
-    public static NormalParkingSpot parkingSpotWith(Vehicle vehicle) {
-        return new NormalParkingSpot(anyParkingSpotId(), vehicle.getVehicleSizeUnit().getValue(), Set.of(vehicle));
+    public static ParkingSpot parkingSpotWith(Vehicle vehicle) {
+        return new ParkingSpot(anyParkingSpotId(), vehicle.getVehicleSizeUnit().getValue(), Set.of(vehicle));
     }
 
-    public static NormalParkingSpot parkingSpotWith(ParkingSpotId parkingSpotId, Vehicle vehicle) {
-        return new NormalParkingSpot(parkingSpotId, vehicle.getVehicleSizeUnit().getValue(), Set.of(vehicle));
+    public static ParkingSpot parkingSpotWith(ParkingSpotId parkingSpotId, Vehicle vehicle) {
+        return new ParkingSpot(parkingSpotId, vehicle.getVehicleSizeUnit().getValue(), Set.of(vehicle));
     }
 
     public static ParkingSpotId anyParkingSpotId() {

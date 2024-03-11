@@ -59,7 +59,7 @@ class ParkingOnParkingSpotTest extends Specification {
       result.isFailure()
   }
   
-  NormalParkingSpot persisted(NormalParkingSpot parkingSpot) {
+  ParkingSpot persisted(ParkingSpot parkingSpot) {
     repository.findBy(parkingSpot.parkingSpotId) >> Option.of(parkingSpot)
     repository.publish(_ as ParkingSpotEvent) >> parkingSpot
     return parkingSpot
