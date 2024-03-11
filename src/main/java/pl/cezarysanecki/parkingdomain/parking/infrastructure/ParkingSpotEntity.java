@@ -9,6 +9,7 @@ import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleLeft
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleParked;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleParkedEvents;
 import pl.cezarysanecki.parkingdomain.parking.model.Vehicle;
+import pl.cezarysanecki.parkingdomain.parking.model.VehicleId;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -26,11 +27,13 @@ class ParkingSpotEntity {
     UUID parkingSpotId;
     int capacity;
     Set<ParkedVehicleEntity> parkedVehicles;
+    Set<VehicleId> reservations;
 
     ParkingSpotEntity(UUID parkingSpotId, int capacity) {
         this.parkingSpotId = parkingSpotId;
         this.capacity = capacity;
         this.parkedVehicles = new HashSet<>();
+        this.reservations = new HashSet<>();
     }
 
     ParkingSpotEntity handle(ParkingSpotEvent event) {
