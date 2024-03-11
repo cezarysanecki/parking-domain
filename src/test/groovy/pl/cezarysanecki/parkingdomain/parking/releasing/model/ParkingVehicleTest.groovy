@@ -71,11 +71,45 @@ class ParkingVehicleTest extends Specification {
       }
   }
   
-  def "vehicle cannot park is too big for parking spot"() {
+  def "cannot park on parking spot by too big vehicle"() {
     given:
       ParkingSpot parkingSpot = emptyParkingSpotWith(1)
     and:
       Vehicle vehicle = vehicleWith(2)
+    
+    when:
+      Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(vehicle)
+    
+    then:
+      result.isLeft()
+      result.getLeft().with {
+        assert it.parkingSpotId == parkingSpot.parkingSpotId
+        assert it.vehicleId == vehicle.vehicleId
+      }
+  }
+  
+  def "cannot park on parking spot by the same vehicle"() {
+    given:
+      Vehicle vehicle = vehicleWith(2)
+    and:
+      ParkingSpot parkingSpot = parkingSpotWith(vehicle)
+    
+    when:
+      Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(vehicle)
+    
+    then:
+      result.isLeft()
+      result.getLeft().with {
+        assert it.parkingSpotId == parkingSpot.parkingSpotId
+        assert it.vehicleId == vehicle.vehicleId
+      }
+  }
+  
+  def "cannot park on not own reserved parking spot"() {
+    given:
+      Vehicle vehicle = vehicleWith(1)
+    and:
+      ParkingSpot parkingSpot = parkingSpotWith(vehicleWith(1))
     
     when:
       Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(vehicle)
