@@ -1,16 +1,15 @@
-package pl.cezarysanecki.parkingdomain.parking.releasing.infrastructure
+package pl.cezarysanecki.parkingdomain.parking.infrastructure
 
 import io.vavr.control.Option
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
-import pl.cezarysanecki.parkingdomain.parking.infrastructure.ParkingSpotConfig
 import pl.cezarysanecki.parkingdomain.parking.model.*
 import spock.lang.Specification
 
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ParkingSpotCreated
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleParked
-import static pl.cezarysanecki.parkingdomain.parking.releasing.model.ParkingSpotFixture.*
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.*
 
 @ActiveProfiles("local")
 @SpringBootTest(classes = [ParkingSpotConfig.class])

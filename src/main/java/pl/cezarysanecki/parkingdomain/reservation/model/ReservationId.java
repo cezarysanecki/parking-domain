@@ -1,14 +1,12 @@
-package pl.cezarysanecki.parkingdomain.parking.model;
+package pl.cezarysanecki.parkingdomain.reservation.model;
 
-import lombok.NonNull;
 import lombok.Value;
 
 import java.util.UUID;
 
 @Value(staticConstructor = "of")
-public class ParkingSpotId {
+public class ReservationId {
 
-    @NonNull
     UUID value;
 
     @Override
