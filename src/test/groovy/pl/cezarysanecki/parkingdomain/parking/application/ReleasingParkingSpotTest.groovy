@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.parking.releasing.application
+package pl.cezarysanecki.parkingdomain.parking.application
 
 import io.vavr.control.Option
 import pl.cezarysanecki.parkingdomain.commons.commands.Result
@@ -7,7 +7,7 @@ import pl.cezarysanecki.parkingdomain.parking.application.ReleasingParkingSpot
 import pl.cezarysanecki.parkingdomain.parking.model.*
 import spock.lang.Specification
 
-import static pl.cezarysanecki.parkingdomain.parking.releasing.model.ParkingSpotFixture.*
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.*
 
 class ReleasingParkingSpotTest extends Specification {
   

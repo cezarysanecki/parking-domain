@@ -15,4 +15,5 @@ public class ParkingSpotId {
     public String toString() {
         return value.toString();
     }
+
 }

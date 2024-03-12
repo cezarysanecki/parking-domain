@@ -12,6 +12,7 @@ public sealed interface ReservationEvent extends DomainEvent {
     @Value
     final class ReservationMade implements ReservationEvent {
 
+        @NonNull ReservationId reservationId;
         @NonNull ParkingSpotId parkingSpotId;
 
     }

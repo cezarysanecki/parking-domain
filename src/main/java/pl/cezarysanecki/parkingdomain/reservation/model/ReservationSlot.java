@@ -19,6 +19,10 @@ public class ReservationSlot {
         this.hours = hours;
     }
 
+    public ReservationSlot moveBy(int hours) {
+        return new ReservationSlot(since.plusHours(hours), this.hours);
+    }
+
     public LocalDateTime until() {
         return since.plusHours(hours);
     }

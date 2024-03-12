@@ -1,14 +1,12 @@
-package pl.cezarysanecki.parkingdomain.parking.releasing.model
+package pl.cezarysanecki.parkingdomain.parking.model
 
 import io.vavr.collection.List
 import io.vavr.control.Either
-import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpot
-import pl.cezarysanecki.parkingdomain.parking.model.Vehicle
 import spock.lang.Specification
 
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ReleasingFailed
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleLeft
-import static pl.cezarysanecki.parkingdomain.parking.releasing.model.ParkingSpotFixture.*
+import static ParkingSpotFixture.*
 
 class ReleasingParkingSpotTest extends Specification {
   

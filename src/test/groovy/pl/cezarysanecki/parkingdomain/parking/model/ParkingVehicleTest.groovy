@@ -1,12 +1,10 @@
-package pl.cezarysanecki.parkingdomain.parking.releasing.model
+package pl.cezarysanecki.parkingdomain.parking.model
 
 import io.vavr.control.Either
-import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpot
-import pl.cezarysanecki.parkingdomain.parking.model.Vehicle
 import spock.lang.Specification
 
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.*
-import static pl.cezarysanecki.parkingdomain.parking.releasing.model.ParkingSpotFixture.*
+import static ParkingSpotFixture.*
 
 class ParkingVehicleTest extends Specification {
   
@@ -85,6 +83,7 @@ class ParkingVehicleTest extends Specification {
       result.getLeft().with {
         assert it.parkingSpotId == parkingSpot.parkingSpotId
         assert it.vehicleId == vehicle.vehicleId
+        assert it.reason.contains("not enough space on parking spot")
       }
   }
   
@@ -102,6 +101,7 @@ class ParkingVehicleTest extends Specification {
       result.getLeft().with {
         assert it.parkingSpotId == parkingSpot.parkingSpotId
         assert it.vehicleId == vehicle.vehicleId
+        assert it.reason.contains("vehicle is already parked on parking spot")
       }
   }
   
@@ -119,6 +119,7 @@ class ParkingVehicleTest extends Specification {
       result.getLeft().with {
         assert it.parkingSpotId == parkingSpot.parkingSpotId
         assert it.vehicleId == vehicle.vehicleId
+        assert it.reason.contains("parking spot is not reserved for this vehicle")
       }
   }
   
@@ -136,6 +137,7 @@ class ParkingVehicleTest extends Specification {
       result.getLeft().with {
         assert it.parkingSpotId == parkingSpot.parkingSpotId
         assert it.vehicleId == vehicle.vehicleId
+        assert it.reason.contains("parking on out of order parking spot is forbidden")
       }
   }
   

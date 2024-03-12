@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.parking.releasing.model;
+package pl.cezarysanecki.parkingdomain.parking.model;
 
 import pl.cezarysanecki.parkingdomain.GlobalConstants;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpot;
