@@ -1,6 +1,7 @@
 package pl.cezarysanecki.parkingdomain.reservation.model;
 
 import io.vavr.control.Either;
+import io.vavr.control.Option;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import pl.cezarysanecki.parkingdomain.GlobalConstants;
@@ -16,6 +17,8 @@ import java.util.UUID;
 
 import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announceFailure;
 import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announceSuccess;
+import static pl.cezarysanecki.parkingdomain.reservation.model.ReservationEvent.ReservationCancellationFailed;
+import static pl.cezarysanecki.parkingdomain.reservation.model.ReservationEvent.ReservationCancelled;
 
 @RequiredArgsConstructor
 public class ReservationSchedule {
@@ -41,6 +44,18 @@ public class ReservationSchedule {
         }
 
         return announceSuccess(new ReservationMade(ReservationId.of(UUID.randomUUID()), parkingSpotId));
+    }
+
+    public Either<ReservationCancellationFailed, ReservationCancelled> cancel(ReservationId reservationId) {
+        Option<Reservation> reservation = reservations.findBy(reservationId);
+        if (reservation.isEmpty()) {
+            return announceFailure(new ReservationCancellationFailed(parkingSpotId, "there is no such reservation"));
+        }
+        long minutesToReservation = reservation.get().minutesTo(now);
+        if (minutesToReservation < 60) {
+            return announceFailure(new ReservationCancellationFailed(parkingSpotId, "it is too late to cancel reservation"));
+        }
+        return announceSuccess(new ReservationCancelled(reservationId, parkingSpotId));
     }
 
     private static boolean isEnoughSpaceFor(final Set<Vehicle> vehicles) {

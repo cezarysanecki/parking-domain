@@ -25,4 +25,20 @@ public sealed interface ReservationEvent extends DomainEvent {
 
     }
 
+    @Value
+    final class ReservationCancelled implements ReservationEvent {
+
+        @NonNull ReservationId reservationId;
+        @NonNull ParkingSpotId parkingSpotId;
+
+    }
+
+    @Value
+    final class ReservationCancellationFailed implements ReservationEvent {
+
+        @NonNull ParkingSpotId parkingSpotId;
+        @NonNull String reason;
+
+    }
+
 }

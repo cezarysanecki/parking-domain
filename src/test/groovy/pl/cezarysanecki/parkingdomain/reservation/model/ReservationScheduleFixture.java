@@ -4,6 +4,7 @@ import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 
 import java.time.LocalDateTime;
 import java.util.Set;
+import java.util.UUID;
 
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.anyParkingSpotId;
 
@@ -23,6 +24,10 @@ public class ReservationScheduleFixture {
 
     public static ReservationSchedule occupiedReservationSchedule(LocalDateTime now) {
         return new ReservationSchedule(anyParkingSpotId(), Reservations.none(), false, now);
+    }
+
+    public static ReservationId anyReservationId() {
+        return ReservationId.of(UUID.randomUUID());
     }
 
 }
