@@ -109,7 +109,7 @@ class ParkingVehicleTest extends Specification {
     given:
       Vehicle vehicle = vehicleWith(1)
     and:
-      ParkingSpot parkingSpot = parkingSpotWith(vehicleWith(1))
+      ParkingSpot parkingSpot = reservedParkingSpotFor(anyVehicleId())
     
     when:
       Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(vehicle)

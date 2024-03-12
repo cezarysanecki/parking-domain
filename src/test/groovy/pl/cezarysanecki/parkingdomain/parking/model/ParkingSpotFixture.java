@@ -1,11 +1,6 @@
 package pl.cezarysanecki.parkingdomain.parking.model;
 
 import pl.cezarysanecki.parkingdomain.GlobalConstants;
-import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpot;
-import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.parking.model.Vehicle;
-import pl.cezarysanecki.parkingdomain.parking.model.VehicleId;
-import pl.cezarysanecki.parkingdomain.parking.model.VehicleSizeUnit;
 
 import java.util.HashSet;
 import java.util.List;

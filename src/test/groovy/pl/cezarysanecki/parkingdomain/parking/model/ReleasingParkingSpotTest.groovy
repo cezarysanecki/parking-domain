@@ -42,7 +42,7 @@ class ReleasingParkingSpotTest extends Specification {
     given:
       Vehicle vehicle = vehicleWith(1)
     and:
-      ParkingSpot parkingSpot = outOfOrderParkingSpot()
+      ParkingSpot parkingSpot = outOfOrderParkingSpotWith(vehicle)
     
     when:
       Either<ReleasingFailed, VehicleLeft> result = parkingSpot.releaseBy(vehicle.vehicleId)
