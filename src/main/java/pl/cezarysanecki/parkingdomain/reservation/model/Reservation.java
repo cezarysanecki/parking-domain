@@ -8,6 +8,7 @@ import java.util.Set;
 @Value
 public class Reservation {
 
+    ReservationId reservationId;
     ReservationSlot reservationSlot;
     Set<Vehicle> vehicles;
 

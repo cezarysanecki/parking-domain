@@ -33,7 +33,7 @@ class MakingReservationTest extends Specification {
       def now = LocalDateTime.of(2024, 10, 10, 10, 0)
     and:
       def reservationSlot = new ReservationSlot(now, 2)
-      def reservation = new Reservation(reservationSlot, Set.of(vehicleWith(1)))
+      def reservation = new Reservation(anyReservationId(), reservationSlot, Set.of(vehicleWith(1)))
     and:
       def reservationSchedule = reservationScheduleWith(now, reservation)
     
@@ -84,7 +84,7 @@ class MakingReservationTest extends Specification {
   def "cannot reserve parking spot in the same time as other reservation"() {
     given:
       def reservationSlot = new ReservationSlot(LocalDateTime.now(), 2)
-      def reservation = new Reservation(reservationSlot, Set.of(vehicleWith(1)))
+      def reservation = new Reservation(anyReservationId(), reservationSlot, Set.of(vehicleWith(1)))
     and:
       def reservationSchedule = reservationScheduleWith(LocalDateTime.now(), reservation)
     
@@ -106,7 +106,7 @@ class MakingReservationTest extends Specification {
       def vehicle = vehicleWith(1)
     and:
       def reservationSlot = new ReservationSlot(now, 2)
-      def reservation = new Reservation(reservationSlot, Set.of(vehicle))
+      def reservation = new Reservation(anyReservationId(), reservationSlot, Set.of(vehicle))
     and:
       def reservationSchedule = reservationScheduleWith(now, reservation)
     
