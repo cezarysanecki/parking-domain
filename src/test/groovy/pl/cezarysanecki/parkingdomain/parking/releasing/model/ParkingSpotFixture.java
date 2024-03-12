@@ -1,5 +1,6 @@
 package pl.cezarysanecki.parkingdomain.parking.releasing.model;
 
+import pl.cezarysanecki.parkingdomain.GlobalConstants;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.model.Vehicle;
@@ -18,7 +19,7 @@ public class ParkingSpotFixture {
     }
 
     public static ParkingSpot reservedParkingSpotFor(VehicleId vehicleId) {
-        return new ParkingSpot(anyParkingSpotId(), 4, Set.of(), Set.of(vehicleId));
+        return new ParkingSpot(anyParkingSpotId(), GlobalConstants.ParkingSlot.AVAILABLE_SPACE, Set.of(), Set.of(vehicleId));
     }
 
     public static ParkingSpot emptyParkingSpotWith(ParkingSpotId parkingSpotId, int capacity) {
@@ -26,7 +27,11 @@ public class ParkingSpotFixture {
     }
 
     public static ParkingSpot outOfOrderParkingSpot() {
-        return new ParkingSpot(anyParkingSpotId(), 1, Set.of(), true);
+        return new ParkingSpot(anyParkingSpotId(), GlobalConstants.ParkingSlot.AVAILABLE_SPACE, Set.of(), true);
+    }
+
+    public static ParkingSpot outOfOrderParkingSpotWith(Vehicle vehicle) {
+        return new ParkingSpot(anyParkingSpotId(), GlobalConstants.ParkingSlot.AVAILABLE_SPACE, Set.of(vehicle), true);
     }
 
     public static ParkingSpot parkingSpotWith(Vehicle vehicle) {

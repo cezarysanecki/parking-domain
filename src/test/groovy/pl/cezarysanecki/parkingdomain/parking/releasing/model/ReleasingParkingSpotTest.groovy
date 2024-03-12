@@ -40,6 +40,23 @@ class ReleasingParkingSpotTest extends Specification {
       result.size() == 2
   }
   
+  def "can release out of order parking spot"() {
+    given:
+      Vehicle vehicle = vehicleWith(1)
+    and:
+      ParkingSpot parkingSpot = outOfOrderParkingSpot()
+    
+    when:
+      Either<ReleasingFailed, VehicleLeft> result = parkingSpot.releaseBy(vehicle.vehicleId)
+    
+    then:
+      result.isRight()
+      result.get().with {
+        assert it.parkingSpotId == parkingSpot.parkingSpotId
+        assert it.vehicle == vehicle
+      }
+  }
+  
   def "vehicle cannot be release from parking spot if it is not on this spot"() {
     given:
       ParkingSpot parkingSpot = emptyParkingSpotWith(1)

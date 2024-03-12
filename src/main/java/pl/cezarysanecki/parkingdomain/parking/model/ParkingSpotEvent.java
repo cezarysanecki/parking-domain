@@ -12,10 +12,6 @@ public sealed interface ParkingSpotEvent extends DomainEvent {
 
     ParkingSpotId getParkingSpotId();
 
-    default List<DomainEvent> normalize() {
-        return List.of(this);
-    }
-
     @Value
     final class ParkingSpotCreated implements ParkingSpotEvent {
 
