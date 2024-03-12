@@ -35,6 +35,16 @@ public class MakingParkingSlotReservation {
         }).onFailure(throwable -> log.error("Failed to reserve parking slot", throwable));
     }
 
+    public Try<Result> reserve(@NonNull ReserveAnyParkingSpotCommand command) {
+        return Try.of(() -> {
+            ReservationSchedule reservationSchedule = reservationSchedules.findFreeFor(command.getReservationSlot());
+            Either<ReservationFailed, ReservationMade> result = reservationSchedule.reserve(command.getVehicles(), command.getReservationSlot());
+            return Match(result).of(
+                    Case($Left($()), this::publishEvents),
+                    Case($Right($()), this::publishEvents));
+        }).onFailure(throwable -> log.error("Failed to reserve parking slot", throwable));
+    }
+
     private Result publishEvents(ReservationMade reservationMade) {
         reservationSchedules.publish(reservationMade);
         return Success;
