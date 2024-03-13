@@ -44,7 +44,7 @@ class InMemoryParkingSpotRepository implements ParkingSpots {
 
     private ParkingSpot createNewParkingSpot(ParkingSpotCreated event) {
         ParkingSpotId parkingSpotId = event.getParkingSpotId();
-        ParkingSpotEntity entity = new ParkingSpotEntity(parkingSpotId.getValue(), 4);
+        ParkingSpotEntity entity = new ParkingSpotEntity(parkingSpotId.getValue(), event.getCapacity());
         DATABASE.put(parkingSpotId, entity);
         return DomainModelMapper.map(entity);
     }

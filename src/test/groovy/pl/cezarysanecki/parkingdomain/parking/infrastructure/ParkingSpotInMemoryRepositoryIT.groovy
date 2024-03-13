@@ -48,7 +48,7 @@ class ParkingSpotInMemoryRepositoryIT extends Specification {
   }
   
   ParkingSpotCreated parkingSpotCreated() {
-    return new ParkingSpotCreated(parkingSpotId)
+    return new ParkingSpotCreated(parkingSpotId, 4)
   }
   
   VehicleParked vehicleParked() {

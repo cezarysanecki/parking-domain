@@ -40,7 +40,8 @@ class ParkingSpotEntity {
         return API.Match(event).of(
                 Case($(instanceOf(VehicleParkedEvents.class)), this::handle),
                 Case($(instanceOf(VehicleParked.class)), this::handle),
-                Case($(instanceOf(VehicleLeft.class)), this::handle));
+                Case($(instanceOf(VehicleLeft.class)), this::handle),
+                Case($(), () -> this));
     }
 
     private ParkingSpotEntity handle(VehicleParkedEvents vehicleParkedEvents) {
