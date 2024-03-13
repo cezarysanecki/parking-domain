@@ -1,14 +1,8 @@
 package pl.cezarysanecki.parkingdomain.parking.web;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import io.vavr.control.Try;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -46,10 +40,9 @@ class ParkingController {
 }
 
 @Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 class ParkVehicleRequest {
+
     UUID vehicleId;
     int vehicleSize;
+
 }
