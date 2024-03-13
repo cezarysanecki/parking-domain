@@ -44,7 +44,7 @@ class InMemoryParkingSpotRepository implements ParkingSpots {
         ParkingSpot result = Match(event).of(
                 Case($(instanceOf(ParkingSpotCreated.class)), this::createNewParkingSpot),
                 Case($(), this::handleNextEvent));
-        eventPublisher.publish(event);
+        eventPublisher.publish(event.normalize());
         return result;
     }
 
