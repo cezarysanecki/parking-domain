@@ -1,10 +1,12 @@
 package pl.cezarysanecki.parkingdomain.parking.infrastructure;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 import pl.cezarysanecki.parkingdomain.parking.application.ParkingOnParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.application.ReleasingParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ParkingSpotCreated;
@@ -15,7 +17,10 @@ import java.util.UUID;
 
 @Slf4j
 @Configuration
+@RequiredArgsConstructor
 public class ParkingSpotConfig {
+
+    private final EventPublisher eventPublisher;
 
     @Bean
     public ParkingOnParkingSpot parkingOnParkingSpot(ParkingSpots parkingSpots) {
@@ -30,7 +35,7 @@ public class ParkingSpotConfig {
     @Bean
     @Profile("local")
     public ParkingSpots inMemoryParkingSpotRepository() {
-        return new InMemoryParkingSpotRepository();
+        return new InMemoryParkingSpotRepository(eventPublisher);
     }
 
     @Profile("local")

@@ -1,6 +1,8 @@
 package pl.cezarysanecki.parkingdomain.parking.infrastructure;
 
 import io.vavr.control.Option;
+import lombok.RequiredArgsConstructor;
+import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ParkingSpotCreated;
@@ -16,9 +18,11 @@ import static io.vavr.API.Case;
 import static io.vavr.API.Match;
 import static io.vavr.Predicates.instanceOf;
 
+@RequiredArgsConstructor
 class InMemoryParkingSpotRepository implements ParkingSpots {
 
     private static final Map<ParkingSpotId, ParkingSpotEntity> DATABASE = new ConcurrentHashMap<>();
+    private final EventPublisher eventPublisher;
 
     @Override
     public Option<ParkingSpot> findBy(ParkingSpotId parkingSpotId) {
@@ -37,9 +41,11 @@ class InMemoryParkingSpotRepository implements ParkingSpots {
 
     @Override
     public ParkingSpot publish(ParkingSpotEvent event) {
-        return Match(event).of(
+        ParkingSpot result = Match(event).of(
                 Case($(instanceOf(ParkingSpotCreated.class)), this::createNewParkingSpot),
                 Case($(), this::handleNextEvent));
+        eventPublisher.publish(event);
+        return result;
     }
 
     private ParkingSpot createNewParkingSpot(ParkingSpotCreated event) {
