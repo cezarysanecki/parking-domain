@@ -1,12 +1,12 @@
 package pl.cezarysanecki.parkingdomain.commons.events;
 
-import java.util.Collection;
+import io.vavr.collection.List;
 
 public interface EventPublisher {
 
     void publish(DomainEvent event);
 
-    default void publish(Collection<DomainEvent> events) {
+    default void publish(List<DomainEvent> events) {
         events.forEach(this::publish);
     }
 
