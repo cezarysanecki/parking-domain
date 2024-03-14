@@ -39,6 +39,7 @@ public sealed interface ReservationEvent extends DomainEvent {
     final class ReservationCancellationFailed implements ReservationEvent {
 
         @NonNull ParkingSpotId parkingSpotId;
+        @NonNull ReservationId reservationId;
         @NonNull String reason;
 
     }
