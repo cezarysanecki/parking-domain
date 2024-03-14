@@ -14,6 +14,10 @@ public class Reservations {
         return new Reservations(Set.of());
     }
 
+    public boolean isEmpty() {
+        return collection.isEmpty();
+    }
+
     public boolean contains(ClientId clientId) {
         return collection.stream()
                 .map(Reservation::getClientId)
@@ -25,7 +29,7 @@ public class Reservations {
                 .anyMatch(reservation -> reservation.intersects(slot));
     }
 
-    Option<Reservation> findBy(ReservationId reservationId) {
+    public Option<Reservation> findBy(ReservationId reservationId) {
         return Option.ofOptional(collection.stream()
                 .filter(reservation -> reservation.getReservationId().equals(reservationId))
                 .findFirst());

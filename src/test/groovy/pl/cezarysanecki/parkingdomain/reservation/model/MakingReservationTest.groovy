@@ -18,53 +18,66 @@ class MakingReservationTest extends Specification {
   
   def "can reserve when there are no other reservations"() {
     given:
+      def clientId = anyClientId()
+    and:
       def reservationSchedule = emptyReservationSchedule(LocalDateTime.now())
     and:
       def reservationSlot = new ReservationSlot(LocalDateTime.now(), 2)
     
     when:
-      Either<ReservationFailed, ReservationMade> result = reservationSchedule.reserve(anyClientId(), reservationSlot)
+      Either<ReservationFailed, ReservationMade> result = reservationSchedule.reserve(clientId, reservationSlot)
     
     then:
       result.isRight()
       result.get().with {
         assert it.parkingSpotId == reservationSchedule.parkingSpotId
+        assert it.reservationSlot == reservationSlot
+        assert it.clientId == clientId
       }
   }
   
   def "can reserve when reservations does not intersect"() {
     given:
+      def clientId = anyClientId()
+    and:
       def now = LocalDateTime.of(2024, 10, 10, 10, 0)
     and:
       def reservationSlot = new ReservationSlot(now, 2)
-      def reservation = new Reservation(anyReservationId(), reservationSlot, anyClientId())
+      def reservation = new Reservation(anyReservationId(), reservationSlot, clientId)
     and:
       def reservationSchedule = reservationScheduleWith(now, reservation)
     
     when:
-      Either<ReservationFailed, ReservationMade> result = reservationSchedule.reserve(anyClientId(), reservationSlot.moveBy(3))
+      Either<ReservationFailed, ReservationMade> result = reservationSchedule.reserve(clientId, reservationSlot.moveBy(3))
     
     then:
       result.isRight()
       result.get().with {
         assert it.parkingSpotId == reservationSchedule.parkingSpotId
+        assert it.reservationSlot == reservationSlot
+        assert it.clientId == clientId
       }
   }
   
   def "can reserve when since date is not too early for occupied parking spot"() {
     given:
+      def clientId = anyClientId()
+    and:
       def now = LocalDateTime.of(2024, 10, 10, 10, 0)
     and:
       def reservationSchedule = occupiedReservationSchedule(now)
+    and:
+      def reservationSlot = new ReservationSlot(now.plusHours(3), 2)
     
     when:
-      Either<ReservationFailed, ReservationMade> result = reservationSchedule.reserve(
-          anyClientId(), new ReservationSlot(now.plusHours(3), 2))
+      Either<ReservationFailed, ReservationMade> result = reservationSchedule.reserve(clientId, reservationSlot)
     
     then:
       result.isRight()
       result.get().with {
         assert it.parkingSpotId == reservationSchedule.parkingSpotId
+        assert it.reservationSlot == reservationSlot
+        assert it.clientId == clientId
       }
   }
   

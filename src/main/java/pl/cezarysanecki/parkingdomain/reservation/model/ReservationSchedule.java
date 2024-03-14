@@ -51,6 +51,14 @@ public class ReservationSchedule {
         return announceSuccess(new ReservationCancelled(reservationId, parkingSpotId));
     }
 
+    public boolean thereIsReservationFor(ClientId clientId) {
+        return isAlreadyReservedFor(clientId);
+    }
+
+    public boolean isEmpty() {
+        return reservations.isEmpty();
+    }
+
     private boolean thereIsNoEnoughTimeToFreeSpot(ReservationSlot reservationSlot) {
         return !free && now.plusHours(2).plusMinutes(59).isAfter(reservationSlot.getSince());
     }
