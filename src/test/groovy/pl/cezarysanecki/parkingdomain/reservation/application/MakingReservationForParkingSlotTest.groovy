@@ -1,19 +1,27 @@
 package pl.cezarysanecki.parkingdomain.reservation.application
 
+import io.vavr.control.Option
 import pl.cezarysanecki.parkingdomain.commons.commands.Result
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId
-import pl.cezarysanecki.parkingdomain.reservation.model.*
+import pl.cezarysanecki.parkingdomain.reservation.model.ClientId
+import pl.cezarysanecki.parkingdomain.reservation.model.ReservationEvent
+import pl.cezarysanecki.parkingdomain.reservation.model.ReservationSchedule
+import pl.cezarysanecki.parkingdomain.reservation.model.ReservationSchedules
+import pl.cezarysanecki.parkingdomain.reservation.model.ReservationSlot
 import spock.lang.Specification
 
 import java.time.LocalDateTime
 
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.anyParkingSpotId
-import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.vehicleWith
+import static pl.cezarysanecki.parkingdomain.reservation.model.ReservationScheduleFixture.anyClientId
 import static pl.cezarysanecki.parkingdomain.reservation.model.ReservationScheduleFixture.emptyReservationSchedule
+import static pl.cezarysanecki.parkingdomain.reservation.model.ReservationScheduleFixture.reservationScheduleWith
+import static pl.cezarysanecki.parkingdomain.reservation.model.ReservationScheduleFixture.reservationWith
 
-class MakingParkingSlotReservationTest extends Specification {
+class MakingReservationForParkingSlotTest extends Specification {
   
   ParkingSpotId parkingSpotId = anyParkingSpotId()
+  ClientId clientId = anyClientId()
   
   ReservationSchedules repository = Stub()
   
@@ -27,14 +35,14 @@ class MakingParkingSlotReservationTest extends Specification {
     
     when:
       def result = makingParkingSlotReservation.reserve(
-          new ReserveParkingSpotCommand(parkingSpotId, Set.of(vehicleWith(2)), new ReservationSlot(now, 3)))
+          new ReserveParkingSpotCommand(parkingSpotId, clientId, new ReservationSlot(now, 3)))
     
     then:
       result.isSuccess()
       result.get() == Result.Success
   }
   
-  def 'should successfully reserve any parking spot'() {
+  def 'should reject reserving parking spot when there is reservation on that slot'() {
     given:
       MakingParkingSlotReservation makingParkingSlotReservation = new MakingParkingSlotReservation(repository)
     and:
@@ -42,45 +50,40 @@ class MakingParkingSlotReservationTest extends Specification {
     and:
       def reservationSlot = new ReservationSlot(now, 3)
     and:
-      anyPersisted(reservationSlot, now)
+      persisted(reservationScheduleWith(parkingSpotId, now, reservationWith(reservationSlot, clientId)))
     
     when:
       def result = makingParkingSlotReservation.reserve(
-          new ReserveAnyParkingSpotCommand(Set.of(vehicleWith(2)), reservationSlot))
-    
-    then:
-      result.isSuccess()
-      result.get() == Result.Success
-  }
-  
-  def 'should reject reserving parking spot when vehicle is too big'() {
-    given:
-      MakingParkingSlotReservation makingParkingSlotReservation = new MakingParkingSlotReservation(repository)
-    and:
-      def now = LocalDateTime.now()
-    and:
-      persisted(emptyReservationSchedule(parkingSpotId, now))
-    
-    when:
-      def result = makingParkingSlotReservation.reserve(
-          new ReserveParkingSpotCommand(parkingSpotId, Set.of(vehicleWith(5)), new ReservationSlot(now, 3)))
+          new ReserveParkingSpotCommand(parkingSpotId, clientId, reservationSlot))
     
     then:
       result.isSuccess()
       result.get() == Result.Rejection
   }
   
+  def 'should fail if reservation schedule does not exist'() {
+    given:
+      MakingParkingSlotReservation makingParkingSlotReservation = new MakingParkingSlotReservation(repository)
+    and:
+      unknownReservationSchedule()
+    
+    when:
+      def result = makingParkingSlotReservation.reserve(
+          new ReserveParkingSpotCommand(parkingSpotId, clientId, new ReservationSlot(LocalDateTime.now(), 3)))
+    
+    then:
+      result.isFailure()
+  }
+  
   ReservationSchedule persisted(ReservationSchedule reservationSchedule) {
-    repository.findBy(reservationSchedule.parkingSpotId) >> reservationSchedule
+    repository.findBy(reservationSchedule.parkingSpotId) >> Option.of(reservationSchedule)
     repository.publish(_ as ReservationEvent) >> reservationSchedule
     return reservationSchedule
   }
   
-  ReservationSchedule anyPersisted(ReservationSlot reservationSlot, LocalDateTime now) {
-    def reservationSchedule = new ReservationSchedule(parkingSpotId, Reservations.none(), true, now)
-    repository.findFreeFor(reservationSlot) >> reservationSchedule
-    repository.publish(_ as ReservationEvent) >> reservationSchedule
-    return reservationSchedule
+  ParkingSpotId unknownReservationSchedule() {
+    repository.findBy(parkingSpotId) >> Option.none()
+    return parkingSpotId
   }
   
 }

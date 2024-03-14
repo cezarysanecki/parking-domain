@@ -22,12 +22,24 @@ public class ReservationScheduleFixture {
         return new ReservationSchedule(anyParkingSpotId(), new Reservations(Set.of(reservation)), true, now);
     }
 
+    public static ReservationSchedule reservationScheduleWith(ParkingSpotId parkingSpotId, LocalDateTime now, Reservation reservation) {
+        return new ReservationSchedule(parkingSpotId, new Reservations(Set.of(reservation)), true, now);
+    }
+
     public static ReservationSchedule occupiedReservationSchedule(LocalDateTime now) {
         return new ReservationSchedule(anyParkingSpotId(), Reservations.none(), false, now);
     }
 
+    public static Reservation reservationWith(ReservationSlot reservationSlot, ClientId clientId) {
+        return new Reservation(anyReservationId(), reservationSlot, clientId);
+    }
+
     public static ReservationId anyReservationId() {
         return ReservationId.of(UUID.randomUUID());
+    }
+
+    public static ClientId anyClientId() {
+        return ClientId.of(UUID.randomUUID());
     }
 
 }
