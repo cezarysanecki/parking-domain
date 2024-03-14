@@ -83,7 +83,7 @@ public class ParkingSpot {
                 .findFirst()
                 .orElse(null);
         if (foundVehicle == null) {
-            return announceFailure(new ReleasingFailed(parkingSpotId));
+            return announceFailure(new ReleasingFailed(parkingSpotId, vehicleId, "vehicle not park on this spot"));
         }
         VehicleLeft vehicleLeft = new VehicleLeft(parkingSpotId, foundVehicle);
         if (isCompletelyFreedUp(foundVehicle)) {

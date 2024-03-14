@@ -90,6 +90,8 @@ class ReleasingParkingSpotTest extends Specification {
       result.isLeft()
       result.getLeft().with {
         assert it.parkingSpotId == parkingSpot.parkingSpotId
+        assert it.vehicleId == vehicle.vehicleId
+        assert it.reason == "vehicle not park on this spot"
       }
   }
   

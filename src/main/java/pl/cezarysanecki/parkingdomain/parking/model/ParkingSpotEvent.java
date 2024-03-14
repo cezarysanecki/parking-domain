@@ -121,6 +121,8 @@ public sealed interface ParkingSpotEvent extends DomainEvent {
     final class ReleasingFailed implements ParkingSpotEvent {
 
         @NonNull ParkingSpotId parkingSpotId;
+        @NonNull VehicleId vehicleId;
+        @NonNull String reason;
 
     }
 
