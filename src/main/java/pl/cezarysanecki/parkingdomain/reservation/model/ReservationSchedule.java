@@ -22,7 +22,7 @@ public class ReservationSchedule {
     @Getter
     private final ParkingSpotId parkingSpotId;
     private final Reservations reservations;
-    private final boolean free;
+    private final boolean noOccupation;
     private final LocalDateTime now;
 
     public Either<ReservationFailed, ReservationMade> reserve(ClientId clientId, ReservationSlot reservationSlot) {
@@ -60,7 +60,7 @@ public class ReservationSchedule {
     }
 
     private boolean thereIsNoEnoughTimeToFreeSpot(ReservationSlot reservationSlot) {
-        return !free && now.plusHours(2).plusMinutes(59).isAfter(reservationSlot.getSince());
+        return !noOccupation && now.plusHours(2).plusMinutes(59).isAfter(reservationSlot.getSince());
     }
 
     private boolean isAlreadyReservedFor(ClientId clientId) {
