@@ -89,7 +89,6 @@ class InMemoryReservationScheduleRepository implements ReservationSchedules {
         ParkingSpotId parkingSpotId = parkingSpotEvent.getParkingSpotId();
         ReservationsEntity entity = DATABASE.get(parkingSpotId);
         entity = entity.handle(parkingSpotEvent);
-        log.debug("creating parking spot view with id {}", parkingSpotId);
         return domainModelMapper.map(entity);
     }
 
