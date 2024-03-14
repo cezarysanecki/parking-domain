@@ -9,7 +9,6 @@ public class AvailableParkingSpotView {
 
     @NonNull
     ParkingSpotId parkingSpotId;
-    @NonNull
     int leftCapacity;
 
 }
