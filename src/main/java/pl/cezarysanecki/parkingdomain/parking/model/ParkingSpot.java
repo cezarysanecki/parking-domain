@@ -87,9 +87,9 @@ public class ParkingSpot {
         }
         VehicleLeft vehicleLeft = new VehicleLeft(parkingSpotId, foundVehicle);
         if (isCompletelyFreedUp(foundVehicle)) {
-            return announceSuccess(VehicleLeftEvents.events(parkingSpotId, vehicleLeft));
+            return announceSuccess(VehicleLeftEvents.events(parkingSpotId, vehicleLeft, new CompletelyFreedUp(parkingSpotId)));
         }
-        return announceSuccess(VehicleLeftEvents.events(parkingSpotId, vehicleLeft, new CompletelyFreedUp(parkingSpotId)));
+        return announceSuccess(VehicleLeftEvents.events(parkingSpotId, vehicleLeft));
     }
 
     public List<VehicleLeft> releaseAll() {
