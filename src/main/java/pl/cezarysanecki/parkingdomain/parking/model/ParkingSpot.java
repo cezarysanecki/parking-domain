@@ -102,6 +102,10 @@ public class ParkingSpot {
         return parkedVehicles.isEmpty();
     }
 
+    public boolean isFull() {
+        return currentOccupation() == capacity;
+    }
+
     public boolean isParked(VehicleId vehicleId) {
         return parkedVehicles.stream()
                 .map(Vehicle::getVehicleId)
