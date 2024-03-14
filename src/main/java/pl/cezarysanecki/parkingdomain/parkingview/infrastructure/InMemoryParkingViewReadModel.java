@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NonNull;
 import org.springframework.context.event.EventListener;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent;
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.FullyOccupied;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ParkingSpotCreated;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleLeft;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleParked;
@@ -55,7 +56,7 @@ class InMemoryParkingViewReadModel implements ParkingViews {
     }
 
     @EventListener
-    public void handle(ParkingSpotEvent.FullyOccupied fullyOccupied) {
+    public void handle(FullyOccupied fullyOccupied) {
         database.remove(fullyOccupied.getParkingSpotId());
     }
 

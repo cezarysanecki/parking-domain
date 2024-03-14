@@ -31,4 +31,9 @@ public class ReservationSlot {
         return until().isAfter(reservationSlot.since) && since.isBefore(reservationSlot.until());
     }
 
+    @Override
+    public String toString() {
+        return since + " - " + until();
+    }
+
 }

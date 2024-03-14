@@ -5,11 +5,11 @@ import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 
 public interface ReservationSchedules {
 
-    ReservationSchedule findBy(ParkingSpotId parkingSpotId);
+    Option<ReservationSchedule> findBy(ParkingSpotId parkingSpotId);
 
     Option<ReservationSchedule> findBy(ReservationId reservationId);
 
-    ReservationSchedule findFreeFor(ReservationSlot reservationSlot);
+    Option<ReservationSchedule> findFreeFor(ReservationSlot reservationSlot);
 
     ReservationSchedule publish(ReservationEvent event);
 

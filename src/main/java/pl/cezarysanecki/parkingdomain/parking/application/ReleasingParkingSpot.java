@@ -18,7 +18,7 @@ import static io.vavr.Patterns.$Right;
 import static pl.cezarysanecki.parkingdomain.commons.commands.Result.Rejection;
 import static pl.cezarysanecki.parkingdomain.commons.commands.Result.Success;
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ReleasingFailed;
-import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleLeft;
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleLeftEvents;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -29,15 +29,15 @@ public class ReleasingParkingSpot {
     public Try<Result> release(@NonNull ReleaseParkingSpotCommand command) {
         return Try.of(() -> {
             ParkingSpot parkingSpot = find(command.getParkingSpotId());
-            Either<ReleasingFailed, VehicleLeft> result = parkingSpot.releaseBy(command.getVehicleId());
+            Either<ReleasingFailed, VehicleLeftEvents> result = parkingSpot.releaseBy(command.getVehicleId());
             return API.Match(result).of(
                     Case($Left($()), this::publishEvents),
                     Case($Right($()), this::publishEvents));
         }).onFailure(throwable -> log.error("Failed to park vehicle", throwable));
     }
 
-    private Result publishEvents(VehicleLeft vehicleLeft) {
-        parkingSpots.publish(vehicleLeft);
+    private Result publishEvents(VehicleLeftEvents vehicleLeftEvents) {
+        parkingSpots.publish(vehicleLeftEvents);
         return Success;
     }
 

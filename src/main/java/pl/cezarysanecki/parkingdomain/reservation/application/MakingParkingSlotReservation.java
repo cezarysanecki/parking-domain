@@ -6,8 +6,10 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.reservation.model.ReservationSchedule;
 import pl.cezarysanecki.parkingdomain.reservation.model.ReservationSchedules;
+import pl.cezarysanecki.parkingdomain.reservation.model.ReservationSlot;
 
 import static io.vavr.API.$;
 import static io.vavr.API.Case;
@@ -27,8 +29,8 @@ public class MakingParkingSlotReservation {
 
     public Try<Result> reserve(@NonNull ReserveParkingSpotCommand command) {
         return Try.of(() -> {
-            ReservationSchedule reservationSchedule = reservationSchedules.findBy(command.getParkingSpotId());
-            Either<ReservationFailed, ReservationMade> result = reservationSchedule.reserve(command.getVehicles(), command.getReservationSlot());
+            ReservationSchedule reservationSchedule = load(command.getParkingSpotId());
+            Either<ReservationFailed, ReservationMade> result = reservationSchedule.reserve(command.getClientId(), command.getReservationSlot());
             return Match(result).of(
                     Case($Left($()), this::publishEvents),
                     Case($Right($()), this::publishEvents));
@@ -37,8 +39,8 @@ public class MakingParkingSlotReservation {
 
     public Try<Result> reserve(@NonNull ReserveAnyParkingSpotCommand command) {
         return Try.of(() -> {
-            ReservationSchedule reservationSchedule = reservationSchedules.findFreeFor(command.getReservationSlot());
-            Either<ReservationFailed, ReservationMade> result = reservationSchedule.reserve(command.getVehicles(), command.getReservationSlot());
+            ReservationSchedule reservationSchedule = loadFree(command.getReservationSlot());
+            Either<ReservationFailed, ReservationMade> result = reservationSchedule.reserve(command.getClientId(), command.getReservationSlot());
             return Match(result).of(
                     Case($Left($()), this::publishEvents),
                     Case($Right($()), this::publishEvents));
@@ -53,6 +55,16 @@ public class MakingParkingSlotReservation {
     private Result publishEvents(ReservationFailed reservationFailed) {
         reservationSchedules.publish(reservationFailed);
         return Rejection;
+    }
+
+    private ReservationSchedule load(ParkingSpotId parkingSpotId) {
+        return reservationSchedules.findBy(parkingSpotId)
+                .getOrElseThrow(() -> new IllegalArgumentException("Cannot find parking spot with id: " + parkingSpotId));
+    }
+
+    private ReservationSchedule loadFree(ReservationSlot reservationSlot) {
+        return reservationSchedules.findFreeFor(reservationSlot)
+                .getOrElseThrow(() -> new IllegalArgumentException("Cannot find free parking spot for slot: " + reservationSlot));
     }
 
 }
