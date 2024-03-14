@@ -20,13 +20,12 @@ import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.model.Vehicle;
 import pl.cezarysanecki.parkingdomain.parking.model.VehicleId;
 import pl.cezarysanecki.parkingdomain.parking.model.VehicleSizeUnit;
-import pl.cezarysanecki.parkingdomain.parkingview.model.AvailableParkingSpotsView;
+import pl.cezarysanecki.parkingdomain.parkingview.model.AvailableParkingSpotView;
 import pl.cezarysanecki.parkingdomain.parkingview.model.ParkingViews;
 
 import java.time.Instant;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -66,17 +65,8 @@ class ParkingController {
     }
 
     @GetMapping("/available-parking-spots")
-    ResponseEntity<Set<AvailableParkingSpot>> getAvailableParkingSpots() {
-        AvailableParkingSpotsView available = parkingViews.findAvailable();
-
-        return ResponseEntity.ok(
-                available.getAvailableParkingSpots()
-                        .stream()
-                        .map(availableParkingSpotView -> new AvailableParkingSpot(
-                                availableParkingSpotView.getParkingSpotId().getValue(),
-                                availableParkingSpotView.getLeftCapacity()
-                        ))
-                        .collect(Collectors.toUnmodifiableSet()));
+    ResponseEntity<Set<AvailableParkingSpotView>> getAvailableParkingSpots() {
+        return ResponseEntity.ok(parkingViews.findAvailable().getAvailableParkingSpots());
     }
 
 }
@@ -97,15 +87,5 @@ class ParkVehicleRequest {
 class LeaveParkingSpotRequest {
 
     UUID vehicleId;
-
-}
-
-@Getter
-@NoArgsConstructor
-@AllArgsConstructor
-class AvailableParkingSpot {
-
-    UUID parkingSpotId;
-    int leftCapacity;
 
 }
