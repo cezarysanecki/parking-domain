@@ -3,6 +3,7 @@ package pl.cezarysanecki.parkingdomain.reservation.infrastructure;
 import io.vavr.API;
 import io.vavr.control.Option;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent;
@@ -21,6 +22,7 @@ import static io.vavr.API.$;
 import static io.vavr.API.Case;
 import static io.vavr.Predicates.instanceOf;
 
+@Slf4j
 @RequiredArgsConstructor
 class InMemoryReservationScheduleRepository implements ReservationSchedules {
 
@@ -56,7 +58,7 @@ class InMemoryReservationScheduleRepository implements ReservationSchedules {
     public Option<ReservationSchedule> findFreeFor(ReservationSlot reservationSlot) {
         return Option.ofOptional(
                 DATABASE.values().stream()
-                        .filter(reservationsEntity -> reservationsEntity.free)
+                        .filter(reservationsEntity -> reservationsEntity.noOccupation)
                         .findFirst()
                         .map(domainModelMapper::map));
     }
@@ -79,6 +81,7 @@ class InMemoryReservationScheduleRepository implements ReservationSchedules {
         ParkingSpotId parkingSpotId = parkingSpotCreated.getParkingSpotId();
         ReservationsEntity entity = new ReservationsEntity(parkingSpotId.getValue());
         DATABASE.put(parkingSpotId, entity);
+        log.debug("creating reservation schedule for parking spot with id {}", parkingSpotId);
         return domainModelMapper.map(entity);
     }
 

@@ -42,11 +42,11 @@ public class ReservationSchedule {
     public Either<ReservationCancellationFailed, ReservationCancelled> cancel(ReservationId reservationId) {
         Option<Reservation> reservation = reservations.findBy(reservationId);
         if (reservation.isEmpty()) {
-            return announceFailure(new ReservationCancellationFailed(parkingSpotId, "there is no such reservation"));
+            return announceFailure(new ReservationCancellationFailed(parkingSpotId, reservationId, "there is no such reservation"));
         }
         long minutesToReservation = reservation.get().minutesTo(now);
         if (minutesToReservation < 60) {
-            return announceFailure(new ReservationCancellationFailed(parkingSpotId, "it is too late to cancel reservation"));
+            return announceFailure(new ReservationCancellationFailed(parkingSpotId, reservationId, "it is too late to cancel reservation"));
         }
         return announceSuccess(new ReservationCancelled(reservationId, parkingSpotId));
     }

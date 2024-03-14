@@ -1,10 +1,13 @@
 package pl.cezarysanecki.parkingdomain.parkingview.infrastructure;
 
+import io.vavr.API;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.FullyOccupied;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ParkingSpotCreated;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleLeft;
@@ -20,44 +23,15 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
+import static io.vavr.API.$;
+import static io.vavr.API.Case;
+import static io.vavr.Predicates.instanceOf;
+
+@Slf4j
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 class InMemoryParkingViewReadModel implements ParkingViews {
 
     private final Map<ParkingSpotId, ParkingSpotViewModel> database = new ConcurrentHashMap<>();
-
-    @EventListener
-    public void handle(ParkingSpotCreated parkingSpotCreated) {
-        ParkingSpotId parkingSpotId = parkingSpotCreated.getParkingSpotId();
-        database.put(parkingSpotId, new ParkingSpotViewModel(parkingSpotId.getValue(), parkingSpotCreated.getCapacity()));
-    }
-
-    @EventListener
-    public void handle(VehicleLeft vehicleLeft) {
-        ParkingSpotId parkingSpotId = vehicleLeft.getParkingSpotId();
-        Vehicle vehicle = vehicleLeft.getVehicle();
-
-        ParkingSpotViewModel parkingSpotViewModel = database.getOrDefault(
-                parkingSpotId, new ParkingSpotViewModel(parkingSpotId.getValue(), 0));
-        parkingSpotViewModel.leftCapacity += vehicle.getVehicleSizeUnit().getValue();
-
-        database.put(parkingSpotId, parkingSpotViewModel);
-    }
-
-    @EventListener
-    public void handle(VehicleParked vehicleParked) {
-        ParkingSpotId parkingSpotId = vehicleParked.getParkingSpotId();
-        Vehicle vehicle = vehicleParked.getVehicle();
-
-        ParkingSpotViewModel parkingSpotViewModel = database.get(parkingSpotId);
-        parkingSpotViewModel.leftCapacity -= vehicle.getVehicleSizeUnit().getValue();
-
-        database.put(parkingSpotId, parkingSpotViewModel);
-    }
-
-    @EventListener
-    public void handle(FullyOccupied fullyOccupied) {
-        database.remove(fullyOccupied.getParkingSpotId());
-    }
 
     @Override
     public AvailableParkingSpotsView findAvailable() {
@@ -68,6 +42,54 @@ class InMemoryParkingViewReadModel implements ParkingViews {
                         model.leftCapacity
                 ))
                 .collect(Collectors.toUnmodifiableSet()));
+    }
+
+    @EventListener
+    public void handle(ParkingSpotEvent event) {
+        API.Match(event).of(
+                Case($(instanceOf(ParkingSpotCreated.class)), this::handle),
+                Case($(instanceOf(VehicleLeft.class)), this::handle),
+                Case($(instanceOf(VehicleParked.class)), this::handle),
+                Case($(instanceOf(FullyOccupied.class)), this::handle),
+                Case($(), () -> event));
+    }
+
+    public ParkingSpotEvent handle(ParkingSpotCreated parkingSpotCreated) {
+        ParkingSpotId parkingSpotId = parkingSpotCreated.getParkingSpotId();
+        database.put(parkingSpotId, new ParkingSpotViewModel(parkingSpotId.getValue(), parkingSpotCreated.getCapacity()));
+        log.debug("creating parking spot view with id {}", parkingSpotId);
+        return parkingSpotCreated;
+    }
+
+    private ParkingSpotEvent handle(VehicleLeft vehicleLeft) {
+        ParkingSpotId parkingSpotId = vehicleLeft.getParkingSpotId();
+        Vehicle vehicle = vehicleLeft.getVehicle();
+
+        ParkingSpotViewModel parkingSpotViewModel = database.getOrDefault(
+                parkingSpotId, new ParkingSpotViewModel(parkingSpotId.getValue(), 0));
+        parkingSpotViewModel.leftCapacity += vehicle.getVehicleSizeUnit().getValue();
+
+        database.put(vehicleLeft.getParkingSpotId(), parkingSpotViewModel);
+        log.debug("updating parking spot view with id {} for leaving vehicle", parkingSpotId);
+        return vehicleLeft;
+    }
+
+    private ParkingSpotEvent handle(VehicleParked vehicleParked) {
+        ParkingSpotId parkingSpotId = vehicleParked.getParkingSpotId();
+        Vehicle vehicle = vehicleParked.getVehicle();
+
+        ParkingSpotViewModel parkingSpotViewModel = database.get(parkingSpotId);
+        parkingSpotViewModel.leftCapacity -= vehicle.getVehicleSizeUnit().getValue();
+
+        database.put(vehicleParked.getParkingSpotId(), parkingSpotViewModel);
+        log.debug("updating parking spot view with id {} for parking vehicle", parkingSpotId);
+        return vehicleParked;
+    }
+
+    private ParkingSpotEvent handle(FullyOccupied fullyOccupied) {
+        database.remove(fullyOccupied.getParkingSpotId());
+        log.debug("removing parking spot view with id {}", fullyOccupied.getParkingSpotId());
+        return fullyOccupied;
     }
 
     @Data

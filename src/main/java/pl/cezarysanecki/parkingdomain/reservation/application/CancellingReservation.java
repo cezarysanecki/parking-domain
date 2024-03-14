@@ -37,12 +37,14 @@ public class CancellingReservation {
     }
 
     private Result publishEvents(ReservationCancelled reservationCancelled) {
+        log.debug("successfully cancelled reservation with id {}", reservationCancelled.getReservationId());
         reservationSchedules.publish(reservationCancelled);
         return Success;
     }
 
     private Result publishEvents(ReservationCancellationFailed reservationCancellationFailed) {
         reservationSchedules.publish(reservationCancellationFailed);
+        log.debug("rejected to cancel reservation with id {}, reason: {}", reservationCancellationFailed.getReservationId(), reservationCancellationFailed.getReason());
         return Rejection;
     }
 

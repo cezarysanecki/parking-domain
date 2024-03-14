@@ -49,11 +49,13 @@ public class MakingParkingSlotReservation {
 
     private Result publishEvents(ReservationMade reservationMade) {
         reservationSchedules.publish(reservationMade);
+        log.debug("successfully made reservation with id {}", reservationMade.getReservationId());
         return Success;
     }
 
     private Result publishEvents(ReservationFailed reservationFailed) {
         reservationSchedules.publish(reservationFailed);
+        log.debug("rejected to make reservation with for parking spot with id {}, reason: {}", reservationFailed.getParkingSpotId(), reservationFailed.getReason());
         return Rejection;
     }
 
