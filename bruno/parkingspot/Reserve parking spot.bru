@@ -1,11 +1,19 @@
 meta {
   name: Reserve parking spot
   type: http
-  seq: 2
+  seq: 15
 }
 
 post {
-  url: {{baseUrl}}/parking-spot/1/reserve-for/1
-  body: none
+  url: {{baseUrl}}/reservation
+  body: json
   auth: none
+}
+
+body:json {
+  {
+    "clientId": "5e60f60c-3cef-42d2-82eb-4c093e37b54c",
+    "since": "2024-10-10T14:00:00.000",
+    "hours": 4
+  }
 }
