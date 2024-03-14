@@ -1,15 +1,13 @@
 package pl.cezarysanecki.parkingdomain.reservation.application;
 
 import lombok.Value;
-import pl.cezarysanecki.parkingdomain.parking.model.Vehicle;
+import pl.cezarysanecki.parkingdomain.reservation.model.ClientId;
 import pl.cezarysanecki.parkingdomain.reservation.model.ReservationSlot;
-
-import java.util.Set;
 
 @Value
 public class ReserveAnyParkingSpotCommand {
 
-    Set<Vehicle> vehicles;
+    ClientId clientId;
     ReservationSlot reservationSlot;
 
 }

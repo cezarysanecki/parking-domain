@@ -6,16 +6,17 @@ import lombok.Getter;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.FullyOccupied;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ParkingFailed;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ReservationFulfilled;
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleLeftEvents;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleParkedEvents;
 
 import java.util.Set;
 
 import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announceFailure;
 import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announceSuccess;
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.CompletelyFreedUp;
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ReleasingFailed;
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleLeft;
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleParked;
-import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleParkedEvents.events;
 
 public class ParkingSpot {
 
@@ -68,15 +69,15 @@ public class ParkingSpot {
 
         VehicleParked vehicleParked = new VehicleParked(parkingSpotId, vehicle);
         if (isReservedFor(vehicle)) {
-            return announceSuccess(events(parkingSpotId, vehicleParked, new ReservationFulfilled(parkingSpotId, vehicleId)));
+            return announceSuccess(VehicleParkedEvents.events(parkingSpotId, vehicleParked, new ReservationFulfilled(parkingSpotId, vehicleId)));
         }
         if (isFullyOccupied(vehicle)) {
-            return announceSuccess(events(parkingSpotId, vehicleParked, new FullyOccupied(parkingSpotId)));
+            return announceSuccess(VehicleParkedEvents.events(parkingSpotId, vehicleParked, new FullyOccupied(parkingSpotId)));
         }
-        return announceSuccess(events(parkingSpotId, vehicleParked));
+        return announceSuccess(VehicleParkedEvents.events(parkingSpotId, vehicleParked));
     }
 
-    public Either<ReleasingFailed, VehicleLeft> releaseBy(VehicleId vehicleId) {
+    public Either<ReleasingFailed, VehicleLeftEvents> releaseBy(VehicleId vehicleId) {
         Vehicle foundVehicle = parkedVehicles.stream()
                 .filter(parkedVehicle -> parkedVehicle.getVehicleId().equals(vehicleId))
                 .findFirst()
@@ -84,7 +85,11 @@ public class ParkingSpot {
         if (foundVehicle == null) {
             return announceFailure(new ReleasingFailed(parkingSpotId));
         }
-        return announceSuccess(new VehicleLeft(parkingSpotId, foundVehicle));
+        VehicleLeft vehicleLeft = new VehicleLeft(parkingSpotId, foundVehicle);
+        if (isCompletelyFreedUp(foundVehicle)) {
+            return announceSuccess(VehicleLeftEvents.events(parkingSpotId, vehicleLeft));
+        }
+        return announceSuccess(VehicleLeftEvents.events(parkingSpotId, vehicleLeft, new CompletelyFreedUp(parkingSpotId)));
     }
 
     public List<VehicleLeft> releaseAll() {
@@ -117,6 +122,10 @@ public class ParkingSpot {
 
     private boolean isFullyOccupied(Vehicle vehicle) {
         return currentOccupation() + vehicle.getVehicleSizeUnit().getValue() == capacity;
+    }
+
+    private boolean isCompletelyFreedUp(Vehicle foundVehicle) {
+        return currentOccupation() - foundVehicle.getVehicleSizeUnit().getValue() == 0;
     }
 
     private Integer currentOccupation() {

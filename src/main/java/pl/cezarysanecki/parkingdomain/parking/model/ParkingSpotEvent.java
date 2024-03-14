@@ -28,6 +28,13 @@ public sealed interface ParkingSpotEvent extends DomainEvent {
     }
 
     @Value
+    final class CompletelyFreedUp implements ParkingSpotEvent {
+
+        @NonNull ParkingSpotId parkingSpotId;
+
+    }
+
+    @Value
     final class VehicleParked implements ParkingSpotEvent {
 
         @NonNull ParkingSpotId parkingSpotId;
@@ -80,6 +87,33 @@ public sealed interface ParkingSpotEvent extends DomainEvent {
 
         @NonNull ParkingSpotId parkingSpotId;
         @NonNull Vehicle vehicle;
+
+    }
+
+    @Value
+    final class VehicleLeftEvents implements ParkingSpotEvent {
+
+        @NonNull ParkingSpotId parkingSpotId;
+        @NonNull VehicleLeft vehicleLeft;
+        @NonNull Option<CompletelyFreedUp> completelyFreedUps;
+
+        @Override
+        public Instant getWhen() {
+            return vehicleLeft.getWhen();
+        }
+
+        public static VehicleLeftEvents events(ParkingSpotId parkingSpotId, VehicleLeft vehicleLeft) {
+            return new VehicleLeftEvents(parkingSpotId, vehicleLeft, Option.none());
+        }
+
+        public static VehicleLeftEvents events(ParkingSpotId parkingSpotId, VehicleLeft vehicleLeft, CompletelyFreedUp completelyFreedUp) {
+            return new VehicleLeftEvents(parkingSpotId, vehicleLeft, Option.of(completelyFreedUp));
+        }
+
+        @Override
+        public List<DomainEvent> normalize() {
+            return List.<DomainEvent>of(vehicleLeft).appendAll(completelyFreedUps.toList());
+        }
 
     }
 

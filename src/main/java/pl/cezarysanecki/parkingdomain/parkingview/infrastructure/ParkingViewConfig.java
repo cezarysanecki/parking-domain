@@ -10,7 +10,7 @@ public class ParkingViewConfig {
 
     @Bean
     @Profile("local")
-    public ParkingViews parkingViews() {
+    public ParkingViews inMemoryParkingViewsRepository() {
         return new InMemoryParkingViewReadModel();
     }
 
