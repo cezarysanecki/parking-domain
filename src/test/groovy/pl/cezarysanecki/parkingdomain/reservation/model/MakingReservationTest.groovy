@@ -16,7 +16,7 @@ import static pl.cezarysanecki.parkingdomain.reservation.model.ReservationSchedu
 
 class MakingReservationTest extends Specification {
   
-  def "can reserve when there is no other reservation"() {
+  def "can reserve when there are no other reservations"() {
     given:
       def reservationSchedule = emptyReservationSchedule(LocalDateTime.now())
     and:
