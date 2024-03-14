@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
 import pl.cezarysanecki.parkingdomain.parking.application.ParkVehicleCommand;
 import pl.cezarysanecki.parkingdomain.parking.application.ParkingOnParkingSpot;
+import pl.cezarysanecki.parkingdomain.parking.application.ReleaseParkingSpotCommand;
+import pl.cezarysanecki.parkingdomain.parking.application.ReleasingParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.model.Vehicle;
 import pl.cezarysanecki.parkingdomain.parking.model.VehicleId;
@@ -31,6 +33,7 @@ import java.util.stream.Collectors;
 class ParkingController {
 
     private final ParkingOnParkingSpot parkingOnParkingSpot;
+    private final ReleasingParkingSpot releasingParkingSpot;
     private final ParkingViews parkingViews;
 
     @PostMapping("/park-on/{parkingSpotId}")
@@ -39,6 +42,20 @@ class ParkingController {
                 ParkingSpotId.of(parkingSpotId),
                 new Vehicle(VehicleId.of(request.vehicleId), VehicleSizeUnit.of(request.vehicleSize)),
                 Instant.now()));
+
+        return result
+                .map(success -> switch (success) {
+                    case Success -> ResponseEntity.ok().build();
+                    case Rejection -> ResponseEntity.badRequest().build();
+                })
+                .getOrElse(ResponseEntity.internalServerError().build());
+    }
+
+    @PostMapping("/release/{parkingSpotId}")
+    ResponseEntity release(@PathVariable UUID parkingSpotId, @RequestBody LeaveParkingSpotRequest request) {
+        Try<Result> result = releasingParkingSpot.release(new ReleaseParkingSpotCommand(
+                ParkingSpotId.of(parkingSpotId),
+                VehicleId.of(request.getVehicleId())));
 
         return result
                 .map(success -> switch (success) {
@@ -71,6 +88,15 @@ class ParkVehicleRequest {
 
     UUID vehicleId;
     int vehicleSize;
+
+}
+
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+class LeaveParkingSpotRequest {
+
+    UUID vehicleId;
 
 }
 
