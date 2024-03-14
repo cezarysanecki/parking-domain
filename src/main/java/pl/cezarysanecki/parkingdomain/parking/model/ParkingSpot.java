@@ -87,9 +87,9 @@ public class ParkingSpot {
         }
         VehicleLeft vehicleLeft = new VehicleLeft(parkingSpotId, foundVehicle);
         if (isCompletelyFreedUp(foundVehicle)) {
-            return announceSuccess(VehicleLeftEvents.events(parkingSpotId, vehicleLeft));
+            return announceSuccess(VehicleLeftEvents.events(parkingSpotId, vehicleLeft, new CompletelyFreedUp(parkingSpotId)));
         }
-        return announceSuccess(VehicleLeftEvents.events(parkingSpotId, vehicleLeft, new CompletelyFreedUp(parkingSpotId)));
+        return announceSuccess(VehicleLeftEvents.events(parkingSpotId, vehicleLeft));
     }
 
     public List<VehicleLeft> releaseAll() {
@@ -100,6 +100,10 @@ public class ParkingSpot {
 
     public boolean isEmpty() {
         return parkedVehicles.isEmpty();
+    }
+
+    public boolean isFull() {
+        return currentOccupation() == capacity;
     }
 
     public boolean isParked(VehicleId vehicleId) {
