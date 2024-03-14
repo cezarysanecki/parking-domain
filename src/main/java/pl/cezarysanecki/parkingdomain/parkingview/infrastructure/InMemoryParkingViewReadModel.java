@@ -31,7 +31,7 @@ import static io.vavr.Predicates.instanceOf;
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 class InMemoryParkingViewReadModel implements ParkingViews {
 
-    private final Map<ParkingSpotId, ParkingSpotViewModel> database = new ConcurrentHashMap<>();
+    private final Map<ParkingSpotId, ParkingSpotViewEntityModel> database = new ConcurrentHashMap<>();
 
     @Override
     public AvailableParkingSpotsView findAvailable() {
@@ -56,7 +56,7 @@ class InMemoryParkingViewReadModel implements ParkingViews {
 
     public ParkingSpotEvent handle(ParkingSpotCreated parkingSpotCreated) {
         ParkingSpotId parkingSpotId = parkingSpotCreated.getParkingSpotId();
-        database.put(parkingSpotId, new ParkingSpotViewModel(parkingSpotId.getValue(), parkingSpotCreated.getCapacity()));
+        database.put(parkingSpotId, new ParkingSpotViewEntityModel(parkingSpotId.getValue(), parkingSpotCreated.getCapacity()));
         log.debug("creating parking spot view with id {}", parkingSpotId);
         return parkingSpotCreated;
     }
@@ -65,11 +65,11 @@ class InMemoryParkingViewReadModel implements ParkingViews {
         ParkingSpotId parkingSpotId = vehicleLeft.getParkingSpotId();
         Vehicle vehicle = vehicleLeft.getVehicle();
 
-        ParkingSpotViewModel parkingSpotViewModel = database.getOrDefault(
-                parkingSpotId, new ParkingSpotViewModel(parkingSpotId.getValue(), 0));
-        parkingSpotViewModel.leftCapacity += vehicle.getVehicleSizeUnit().getValue();
+        ParkingSpotViewEntityModel entity = database.getOrDefault(
+                parkingSpotId, new ParkingSpotViewEntityModel(parkingSpotId.getValue(), 0));
+        entity.leftCapacity += vehicle.getVehicleSizeUnit().getValue();
 
-        database.put(vehicleLeft.getParkingSpotId(), parkingSpotViewModel);
+        database.put(vehicleLeft.getParkingSpotId(), entity);
         log.debug("updating parking spot view with id {} for leaving vehicle", parkingSpotId);
         return vehicleLeft;
     }
@@ -78,10 +78,10 @@ class InMemoryParkingViewReadModel implements ParkingViews {
         ParkingSpotId parkingSpotId = vehicleParked.getParkingSpotId();
         Vehicle vehicle = vehicleParked.getVehicle();
 
-        ParkingSpotViewModel parkingSpotViewModel = database.get(parkingSpotId);
-        parkingSpotViewModel.leftCapacity -= vehicle.getVehicleSizeUnit().getValue();
+        ParkingSpotViewEntityModel entity = database.get(parkingSpotId);
+        entity.leftCapacity -= vehicle.getVehicleSizeUnit().getValue();
 
-        database.put(vehicleParked.getParkingSpotId(), parkingSpotViewModel);
+        database.put(vehicleParked.getParkingSpotId(), entity);
         log.debug("updating parking spot view with id {} for parking vehicle", parkingSpotId);
         return vehicleParked;
     }
@@ -94,7 +94,7 @@ class InMemoryParkingViewReadModel implements ParkingViews {
 
     @Data
     @AllArgsConstructor
-    private static class ParkingSpotViewModel {
+    private static class ParkingSpotViewEntityModel {
 
         @NonNull
         UUID parkingSpotId;

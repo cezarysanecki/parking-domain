@@ -14,23 +14,25 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
 import pl.cezarysanecki.parkingdomain.parking.application.ParkVehicleCommand;
 import pl.cezarysanecki.parkingdomain.parking.application.ParkingOnParkingSpot;
+import pl.cezarysanecki.parkingdomain.parking.application.ReleaseParkingSpotCommand;
+import pl.cezarysanecki.parkingdomain.parking.application.ReleasingParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.model.Vehicle;
 import pl.cezarysanecki.parkingdomain.parking.model.VehicleId;
 import pl.cezarysanecki.parkingdomain.parking.model.VehicleSizeUnit;
-import pl.cezarysanecki.parkingdomain.parkingview.model.AvailableParkingSpotsView;
+import pl.cezarysanecki.parkingdomain.parkingview.model.AvailableParkingSpotView;
 import pl.cezarysanecki.parkingdomain.parkingview.model.ParkingViews;
 
 import java.time.Instant;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
 class ParkingController {
 
     private final ParkingOnParkingSpot parkingOnParkingSpot;
+    private final ReleasingParkingSpot releasingParkingSpot;
     private final ParkingViews parkingViews;
 
     @PostMapping("/park-on/{parkingSpotId}")
@@ -48,18 +50,23 @@ class ParkingController {
                 .getOrElse(ResponseEntity.internalServerError().build());
     }
 
-    @GetMapping("/available-parking-spots")
-    ResponseEntity<Set<AvailableParkingSpot>> getAvailableParkingSpots() {
-        AvailableParkingSpotsView available = parkingViews.findAvailable();
+    @PostMapping("/release/{parkingSpotId}")
+    ResponseEntity release(@PathVariable UUID parkingSpotId, @RequestBody LeaveParkingSpotRequest request) {
+        Try<Result> result = releasingParkingSpot.release(new ReleaseParkingSpotCommand(
+                ParkingSpotId.of(parkingSpotId),
+                VehicleId.of(request.getVehicleId())));
 
-        return ResponseEntity.ok(
-                available.getAvailableParkingSpots()
-                        .stream()
-                        .map(availableParkingSpotView -> new AvailableParkingSpot(
-                                availableParkingSpotView.getParkingSpotId().getValue(),
-                                availableParkingSpotView.getLeftCapacity()
-                        ))
-                        .collect(Collectors.toUnmodifiableSet()));
+        return result
+                .map(success -> switch (success) {
+                    case Success -> ResponseEntity.ok().build();
+                    case Rejection -> ResponseEntity.badRequest().build();
+                })
+                .getOrElse(ResponseEntity.internalServerError().build());
+    }
+
+    @GetMapping("/available-parking-spots")
+    ResponseEntity<Set<AvailableParkingSpotView>> getAvailableParkingSpots() {
+        return ResponseEntity.ok(parkingViews.findAvailable().getAvailableParkingSpots());
     }
 
 }
@@ -77,9 +84,8 @@ class ParkVehicleRequest {
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-class AvailableParkingSpot {
+class LeaveParkingSpotRequest {
 
-    UUID parkingSpotId;
-    int leftCapacity;
+    UUID vehicleId;
 
 }

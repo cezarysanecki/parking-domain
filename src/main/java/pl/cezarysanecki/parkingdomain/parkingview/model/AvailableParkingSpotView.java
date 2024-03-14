@@ -1,10 +1,14 @@
 package pl.cezarysanecki.parkingdomain.parkingview.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import lombok.Value;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 
-@Value
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class AvailableParkingSpotView {
 
     @NonNull
