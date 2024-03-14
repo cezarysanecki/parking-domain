@@ -5,9 +5,9 @@ import spock.lang.Specification
 
 import java.time.LocalDateTime
 
-import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.vehicleWith
 import static pl.cezarysanecki.parkingdomain.reservation.model.ReservationEvent.ReservationCancellationFailed
 import static pl.cezarysanecki.parkingdomain.reservation.model.ReservationEvent.ReservationCancelled
+import static pl.cezarysanecki.parkingdomain.reservation.model.ReservationScheduleFixture.anyClientId
 import static pl.cezarysanecki.parkingdomain.reservation.model.ReservationScheduleFixture.anyReservationId
 import static pl.cezarysanecki.parkingdomain.reservation.model.ReservationScheduleFixture.reservationScheduleWith
 
@@ -18,7 +18,7 @@ class CancellingReservationTest extends Specification {
       def now = LocalDateTime.of(2024, 10, 10, 10, 0)
     and:
       def reservationId = anyReservationId()
-      def reservation = new Reservation(reservationId, new ReservationSlot(now.plusMinutes(60), 3), Set.of(vehicleWith(1)))
+      def reservation = new Reservation(reservationId, new ReservationSlot(now.plusMinutes(60), 3), anyClientId())
     and:
       def reservationSchedule = reservationScheduleWith(now, reservation)
     
@@ -37,7 +37,7 @@ class CancellingReservationTest extends Specification {
     given:
       def now = LocalDateTime.of(2024, 10, 10, 10, 0)
     and:
-      def reservation = new Reservation(anyReservationId(), new ReservationSlot(now, 3), Set.of(vehicleWith(1)))
+      def reservation = new Reservation(anyReservationId(), new ReservationSlot(now, 3), anyClientId())
     and:
       def reservationSchedule = reservationScheduleWith(now, reservation)
     
@@ -57,7 +57,7 @@ class CancellingReservationTest extends Specification {
       def now = LocalDateTime.of(2024, 10, 10, 10, 0)
     and:
       def reservationId = anyReservationId()
-      def reservation = new Reservation(reservationId, new ReservationSlot(now.plusMinutes(59), 3), Set.of(vehicleWith(1)))
+      def reservation = new Reservation(reservationId, new ReservationSlot(now.plusMinutes(59), 3), anyClientId())
     and:
       def reservationSchedule = reservationScheduleWith(now, reservation)
     

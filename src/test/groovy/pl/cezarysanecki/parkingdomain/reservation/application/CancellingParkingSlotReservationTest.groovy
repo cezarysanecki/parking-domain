@@ -10,12 +10,13 @@ import java.time.LocalDateTime
 
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.anyParkingSpotId
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.vehicleWith
+import static pl.cezarysanecki.parkingdomain.reservation.model.ReservationScheduleFixture.anyClientId
 import static pl.cezarysanecki.parkingdomain.reservation.model.ReservationScheduleFixture.anyReservationId
 import static pl.cezarysanecki.parkingdomain.reservation.model.ReservationScheduleFixture.reservationScheduleWith
 
 class CancellingParkingSlotReservationTest extends Specification {
   
-  ParkingSpotId parkingSpotId = anyParkingSpotId()
+  ClientId clientId = anyClientId()
   
   ReservationSchedules repository = Stub()
   
@@ -26,7 +27,7 @@ class CancellingParkingSlotReservationTest extends Specification {
       def now = LocalDateTime.now()
     and:
       def reservationId = anyReservationId()
-      def reservation = new Reservation(reservationId, new ReservationSlot(now.plusMinutes(60), 3), Set.of(vehicleWith(1)))
+      def reservation = new Reservation(reservationId, new ReservationSlot(now.plusMinutes(60), 3), clientId)
     and:
       persisted(reservationId, reservationScheduleWith(now, reservation))
     
@@ -45,7 +46,7 @@ class CancellingParkingSlotReservationTest extends Specification {
       def now = LocalDateTime.now()
     and:
       def reservationId = anyReservationId()
-      def reservation = new Reservation(reservationId, new ReservationSlot(now.plusMinutes(30), 3), Set.of(vehicleWith(1)))
+      def reservation = new Reservation(reservationId, new ReservationSlot(now.plusMinutes(30), 3), clientId)
     and:
       persisted(reservationId, reservationScheduleWith(now, reservation))
     
