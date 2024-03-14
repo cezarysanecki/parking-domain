@@ -38,17 +38,16 @@ class MakingReservationTest extends Specification {
   
   def "can reserve when reservations does not intersect"() {
     given:
-      def clientId = anyClientId()
-    and:
       def now = LocalDateTime.of(2024, 10, 10, 10, 0)
     and:
       def reservationSlot = new ReservationSlot(now, 2)
-      def reservation = new Reservation(anyReservationId(), reservationSlot, clientId)
     and:
-      def reservationSchedule = reservationScheduleWith(now, reservation)
+      def reservationSchedule = reservationScheduleWith(now, reservationWith(reservationSlot.moveBy(12), anyClientId()))
+    and:
+      def clientId = anyClientId()
     
     when:
-      Either<ReservationFailed, ReservationMade> result = reservationSchedule.reserve(clientId, reservationSlot.moveBy(3))
+      Either<ReservationFailed, ReservationMade> result = reservationSchedule.reserve(clientId, reservationSlot)
     
     then:
       result.isRight()
@@ -117,7 +116,7 @@ class MakingReservationTest extends Specification {
       result.isLeft()
       result.getLeft().with {
         assert it.parkingSpotId == reservationSchedule.parkingSpotId
-        assert it.getReason().contains("it is already reserved for one of vehicles")
+        assert it.getReason().contains("it is already reserved for this client")
       }
   }
   

@@ -1,7 +1,5 @@
 package pl.cezarysanecki.parkingdomain.parking.model;
 
-import pl.cezarysanecki.parkingdomain.GlobalConstants;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -14,7 +12,7 @@ public class ParkingSpotFixture {
     }
 
     public static ParkingSpot reservedParkingSpotFor(VehicleId vehicleId) {
-        return new ParkingSpot(anyParkingSpotId(), GlobalConstants.ParkingSlot.AVAILABLE_SPACE, Set.of(), Set.of(vehicleId));
+        return new ParkingSpot(anyParkingSpotId(), 4, Set.of(), Set.of(vehicleId));
     }
 
     public static ParkingSpot emptyParkingSpotWith(ParkingSpotId parkingSpotId, int capacity) {
@@ -22,11 +20,11 @@ public class ParkingSpotFixture {
     }
 
     public static ParkingSpot outOfOrderParkingSpot() {
-        return new ParkingSpot(anyParkingSpotId(), GlobalConstants.ParkingSlot.AVAILABLE_SPACE, Set.of(), true);
+        return new ParkingSpot(anyParkingSpotId(), 4, Set.of(), true);
     }
 
     public static ParkingSpot outOfOrderParkingSpotWith(Vehicle vehicle) {
-        return new ParkingSpot(anyParkingSpotId(), GlobalConstants.ParkingSlot.AVAILABLE_SPACE, Set.of(vehicle), true);
+        return new ParkingSpot(anyParkingSpotId(), 4, Set.of(vehicle), true);
     }
 
     public static ParkingSpot parkingSpotWith(Vehicle vehicle) {

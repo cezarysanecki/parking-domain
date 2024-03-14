@@ -30,7 +30,7 @@ public class ReservationSchedule {
             return announceFailure(new ReservationFailed(parkingSpotId, "there is another reservation in that time"));
         }
         if (isAlreadyReservedFor(clientId)) {
-            return announceFailure(new ReservationFailed(parkingSpotId, "it is already reserved for one of vehicles"));
+            return announceFailure(new ReservationFailed(parkingSpotId, "it is already reserved for this client"));
         }
         if (thereIsNoEnoughTimeToFreeSpot(reservationSlot)) {
             return announceFailure(new ReservationFailed(parkingSpotId, "need to give some time to free parking spot"));
