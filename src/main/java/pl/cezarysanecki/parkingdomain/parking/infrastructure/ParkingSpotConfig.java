@@ -42,17 +42,9 @@ public class ParkingSpotConfig {
     @Bean
     CommandLineRunner init(ParkingSpots parkingSpots) {
         return args -> {
-            UUID parkingSpotId1 = UUID.randomUUID();
-            UUID parkingSpotId2 = UUID.randomUUID();
-            UUID parkingSpotId3 = UUID.randomUUID();
-
-            parkingSpots.publish(new ParkingSpotCreated(ParkingSpotId.of(parkingSpotId1), 4));
-            parkingSpots.publish(new ParkingSpotCreated(ParkingSpotId.of(parkingSpotId2), 4));
-            parkingSpots.publish(new ParkingSpotCreated(ParkingSpotId.of(parkingSpotId3), 4));
-
-            log.info("Created parking spot: {}", parkingSpotId1);
-            log.info("Created parking spot: {}", parkingSpotId2);
-            log.info("Created parking spot: {}", parkingSpotId3);
+            parkingSpots.publish(new ParkingSpotCreated(ParkingSpotId.of(UUID.randomUUID()), 4));
+            parkingSpots.publish(new ParkingSpotCreated(ParkingSpotId.of(UUID.randomUUID()), 4));
+            parkingSpots.publish(new ParkingSpotCreated(ParkingSpotId.of(UUID.randomUUID()), 4));
         };
     }
 

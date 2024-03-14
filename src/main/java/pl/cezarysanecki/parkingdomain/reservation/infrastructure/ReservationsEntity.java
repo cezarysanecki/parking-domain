@@ -1,6 +1,7 @@
 package pl.cezarysanecki.parkingdomain.reservation.infrastructure;
 
 import io.vavr.API;
+import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleParked;
 import pl.cezarysanecki.parkingdomain.reservation.model.ReservationEvent;
@@ -16,16 +17,17 @@ import static io.vavr.Predicates.instanceOf;
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.CompletelyFreedUp;
 import static pl.cezarysanecki.parkingdomain.reservation.model.ReservationEvent.ReservationMade;
 
+@Slf4j
 class ReservationsEntity {
 
     final UUID parkingSpotId;
     final Set<ReservationEntity> collection;
-    boolean free;
+    boolean noOccupation;
 
     ReservationsEntity(UUID parkingSpotId) {
         this.parkingSpotId = parkingSpotId;
         this.collection = new HashSet<>();
-        this.free = true;
+        this.noOccupation = true;
     }
 
     ReservationsEntity handle(ReservationEvent event) {
@@ -57,12 +59,14 @@ class ReservationsEntity {
     }
 
     private ReservationsEntity handle(VehicleParked vehicleParked) {
-        this.free = false;
+        this.noOccupation = false;
+        log.debug("parking spot with id {} is occupied", vehicleParked.getParkingSpotId());
         return this;
     }
 
     private ReservationsEntity handle(CompletelyFreedUp completelyFreedUp) {
-        this.free = true;
+        this.noOccupation = true;
+        log.debug("parking spot with id {} is free", completelyFreedUp.getParkingSpotId());
         return this;
     }
 

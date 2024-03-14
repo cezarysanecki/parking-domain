@@ -29,7 +29,7 @@ class DomainModelMapper {
                                         ClientId.of(reservationEntity.clientId)
                                 ))
                                 .collect(Collectors.toUnmodifiableSet())),
-                entity.free,
+                entity.noOccupation,
                 dateProvider.currentLocalDateTime());
     }
 
