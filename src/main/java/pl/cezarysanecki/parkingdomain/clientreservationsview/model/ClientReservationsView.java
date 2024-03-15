@@ -22,6 +22,7 @@ public class ClientReservationsView {
     public static class Reservation {
 
         UUID reservationId;
+        UUID parkingSpotId;
         LocalDateTime since;
         LocalDateTime until;
 

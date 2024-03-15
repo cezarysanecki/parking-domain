@@ -27,6 +27,7 @@ import pl.cezarysanecki.parkingdomain.parkingview.model.ParkingViews;
 import java.time.Instant;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -67,8 +68,13 @@ class ParkingController {
     }
 
     @GetMapping("/available-parking-spots")
-    ResponseEntity<Set<AvailableParkingSpotView>> getAvailableParkingSpots() {
-        return ResponseEntity.ok(parkingViews.findAvailable().getAvailableParkingSpots());
+    ResponseEntity<Set<AvailableParkingSpot>> getAvailableParkingSpots() {
+        return ResponseEntity.ok(
+                parkingViews.findAvailable()
+                        .getAvailableParkingSpots()
+                        .stream()
+                        .map(AvailableParkingSpot::new)
+                        .collect(Collectors.toUnmodifiableSet()));
     }
 
 }
@@ -90,5 +96,19 @@ class ParkVehicleRequest {
 class LeaveParkingSpotRequest {
 
     UUID vehicleId;
+
+}
+
+@Getter
+@NoArgsConstructor
+class AvailableParkingSpot {
+
+    UUID parkingSpotId;
+    int leftCapacity;
+
+    AvailableParkingSpot(AvailableParkingSpotView availableParkingSpotView) {
+        this.parkingSpotId = availableParkingSpotView.getParkingSpotId().getValue();
+        this.leftCapacity = availableParkingSpotView.getLeftCapacity();
+    }
 
 }

@@ -40,6 +40,7 @@ class InMemoryClientsReservationsViewRepository implements ClientsReservationsVi
                 .stream()
                 .map(reservationEntity -> new ClientReservationsView.Reservation(
                         reservationEntity.reservationId,
+                        reservationEntity.parkingSpotId,
                         reservationEntity.since,
                         reservationEntity.until))
                 .collect(Collectors.toUnmodifiableSet()));
