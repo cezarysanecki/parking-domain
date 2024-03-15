@@ -10,7 +10,7 @@ class ParkingVehicleTest extends Specification {
   
   def "vehicle can park if there is enough space"() {
     given:
-      ParkingSpot parkingSpot = emptyParkingSpotWith(4)
+      CommonParkingSpot parkingSpot = emptyParkingSpotWith(4)
     and:
       Vehicle vehicle = vehicleWith(1)
     
@@ -28,7 +28,7 @@ class ParkingVehicleTest extends Specification {
   
   def "vehicle can park occupying fully parking spot"() {
     given:
-      ParkingSpot parkingSpot = emptyParkingSpotWith(1)
+      CommonParkingSpot parkingSpot = emptyParkingSpotWith(1)
     and:
       Vehicle vehicle = vehicleWith(1)
     
@@ -51,7 +51,7 @@ class ParkingVehicleTest extends Specification {
     given:
       Vehicle vehicle = vehicleWith(1)
     and:
-      ParkingSpot parkingSpot = reservedParkingSpotFor(vehicle.vehicleId)
+      CommonParkingSpot parkingSpot = reservedParkingSpotFor(vehicle.vehicleId)
     
     when:
       Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(vehicle)
@@ -71,7 +71,7 @@ class ParkingVehicleTest extends Specification {
   
   def "cannot park on parking spot by too big vehicle"() {
     given:
-      ParkingSpot parkingSpot = emptyParkingSpotWith(1)
+      CommonParkingSpot parkingSpot = emptyParkingSpotWith(1)
     and:
       Vehicle vehicle = vehicleWith(2)
     
@@ -91,7 +91,7 @@ class ParkingVehicleTest extends Specification {
     given:
       Vehicle vehicle = vehicleWith(2)
     and:
-      ParkingSpot parkingSpot = parkingSpotWith(vehicle)
+      CommonParkingSpot parkingSpot = parkingSpotWith(vehicle)
     
     when:
       Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(vehicle)
@@ -109,7 +109,7 @@ class ParkingVehicleTest extends Specification {
     given:
       Vehicle vehicle = vehicleWith(1)
     and:
-      ParkingSpot parkingSpot = reservedParkingSpotFor(anyVehicleId())
+      CommonParkingSpot parkingSpot = reservedParkingSpotFor(anyVehicleId())
     
     when:
       Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(vehicle)
@@ -127,7 +127,7 @@ class ParkingVehicleTest extends Specification {
     given:
       Vehicle vehicle = vehicleWith(1)
     and:
-      ParkingSpot parkingSpot = outOfOrderParkingSpot()
+      CommonParkingSpot parkingSpot = outOfOrderParkingSpot()
     
     when:
       Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(vehicle)

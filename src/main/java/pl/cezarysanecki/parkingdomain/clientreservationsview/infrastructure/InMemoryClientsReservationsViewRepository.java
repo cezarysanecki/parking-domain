@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientId;
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent;
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ReservationFulfilled;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleEvent;
 import pl.cezarysanecki.parkingdomain.clientreservationsview.model.ClientReservationsView;
 import pl.cezarysanecki.parkingdomain.clientreservationsview.model.ClientsReservationsView;
@@ -67,6 +69,19 @@ class InMemoryClientsReservationsViewRepository implements ClientsReservationsVi
     }
 
     private ReservationScheduleEvent handle(ReservationCancelled reservationCancelled) {
+        ClientId clientId = reservationCancelled.getClientId();
+
+        ClientReservationsEntityViewModel entity = database.getOrDefault(
+                clientId, new ClientReservationsEntityViewModel(new HashSet<>()));
+        entity.getReservations().removeIf(
+                reservation -> reservation.getReservationId().equals(reservationCancelled.getReservationId().getValue()));
+
+        database.put(clientId, entity);
+        log.debug("removing reservation view for client with id {}", clientId);
+        return reservationCancelled;
+    }
+
+    private ReservationScheduleEvent handle(ReservationFulfilled reservationCancelled) {
         ClientId clientId = reservationCancelled.getClientId();
 
         ClientReservationsEntityViewModel entity = database.getOrDefault(

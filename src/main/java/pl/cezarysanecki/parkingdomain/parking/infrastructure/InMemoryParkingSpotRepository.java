@@ -4,7 +4,7 @@ import io.vavr.control.Option;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
-import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpot;
+import pl.cezarysanecki.parkingdomain.parking.model.CommonParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ParkingSpotCreated;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
@@ -27,7 +27,7 @@ class InMemoryParkingSpotRepository implements ParkingSpots {
     private final EventPublisher eventPublisher;
 
     @Override
-    public Option<ParkingSpot> findBy(ParkingSpotId parkingSpotId) {
+    public Option<CommonParkingSpot> findBy(ParkingSpotId parkingSpotId) {
         return Option.ofOptional(
                 DATABASE.values()
                         .stream()
@@ -37,20 +37,20 @@ class InMemoryParkingSpotRepository implements ParkingSpots {
     }
 
     @Override
-    public Option<ParkingSpot> findBy(ParkingSpotId parkingSpotId, Instant when) {
+    public Option<CommonParkingSpot> findBy(ParkingSpotId parkingSpotId, Instant when) {
         return findBy(parkingSpotId);
     }
 
     @Override
-    public ParkingSpot publish(ParkingSpotEvent event) {
-        ParkingSpot result = Match(event).of(
+    public CommonParkingSpot publish(ParkingSpotEvent event) {
+        CommonParkingSpot result = Match(event).of(
                 Case($(instanceOf(ParkingSpotCreated.class)), this::createNewParkingSpot),
                 Case($(), this::handleNextEvent));
         eventPublisher.publish(event.normalize());
         return result;
     }
 
-    private ParkingSpot createNewParkingSpot(ParkingSpotCreated event) {
+    private CommonParkingSpot createNewParkingSpot(ParkingSpotCreated event) {
         ParkingSpotId parkingSpotId = event.getParkingSpotId();
         ParkingSpotEntity entity = new ParkingSpotEntity(parkingSpotId.getValue(), event.getCapacity());
         DATABASE.put(parkingSpotId, entity);
@@ -58,7 +58,7 @@ class InMemoryParkingSpotRepository implements ParkingSpots {
         return DomainModelMapper.map(entity);
     }
 
-    private ParkingSpot handleNextEvent(ParkingSpotEvent event) {
+    private CommonParkingSpot handleNextEvent(ParkingSpotEvent event) {
         ParkingSpotEntity entity = DATABASE.get(event.getParkingSpotId());
         entity = entity.handle(event);
         DATABASE.put(event.getParkingSpotId(), entity);

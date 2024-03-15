@@ -2,8 +2,6 @@ package pl.cezarysanecki.parkingdomain.parking.application
 
 import io.vavr.control.Option
 import pl.cezarysanecki.parkingdomain.commons.commands.Result
-import pl.cezarysanecki.parkingdomain.parking.application.ReleaseParkingSpotCommand
-import pl.cezarysanecki.parkingdomain.parking.application.ReleasingParkingSpot
 import pl.cezarysanecki.parkingdomain.parking.model.*
 import spock.lang.Specification
 
@@ -57,7 +55,7 @@ class ReleasingParkingSpotTest extends Specification {
       result.isFailure()
   }
   
-  ParkingSpot persisted(ParkingSpot parkingSpot) {
+  CommonParkingSpot persisted(CommonParkingSpot parkingSpot) {
     repository.findBy(parkingSpot.parkingSpotId) >> Option.of(parkingSpot)
     repository.publish(_ as ParkingSpotEvent) >> parkingSpot
     return parkingSpot

@@ -13,7 +13,7 @@ class ReleasingParkingSpotTest extends Specification {
     given:
       Vehicle vehicle = vehicleWith(1)
     and:
-      ParkingSpot parkingSpot = parkingSpotWith([vehicle, vehicleWith(1)])
+      CommonParkingSpot parkingSpot = parkingSpotWith([vehicle, vehicleWith(1)])
     
     when:
       Either<ReleasingFailed, VehicleLeftEvents> result = parkingSpot.releaseBy(vehicle.vehicleId)
@@ -31,7 +31,7 @@ class ReleasingParkingSpotTest extends Specification {
     given:
       Vehicle vehicle = vehicleWith(1)
     and:
-      ParkingSpot parkingSpot = parkingSpotWith(vehicle)
+      CommonParkingSpot parkingSpot = parkingSpotWith(vehicle)
     
     when:
       Either<ReleasingFailed, VehicleLeftEvents> result = parkingSpot.releaseBy(vehicle.vehicleId)
@@ -52,7 +52,7 @@ class ReleasingParkingSpotTest extends Specification {
     given:
       Vehicle vehicle = vehicleWith(1)
     and:
-      ParkingSpot parkingSpot = outOfOrderParkingSpotWith(vehicle)
+      CommonParkingSpot parkingSpot = outOfOrderParkingSpotWith(vehicle)
     
     when:
       Either<ReleasingFailed, VehicleLeftEvents> result = parkingSpot.releaseBy(vehicle.vehicleId)
@@ -68,7 +68,7 @@ class ReleasingParkingSpotTest extends Specification {
   
   def "release all parked vehicle"() {
     given:
-      ParkingSpot parkingSpot = parkingSpotWith([vehicleWith(1), vehicleWith(1)])
+      CommonParkingSpot parkingSpot = parkingSpotWith([vehicleWith(1), vehicleWith(1)])
     
     when:
       List<VehicleLeft> result = parkingSpot.releaseAll()
@@ -79,7 +79,7 @@ class ReleasingParkingSpotTest extends Specification {
   
   def "vehicle cannot be release from parking spot if it is not on this spot"() {
     given:
-      ParkingSpot parkingSpot = emptyParkingSpotWith(1)
+      CommonParkingSpot parkingSpot = emptyParkingSpotWith(1)
     and:
       Vehicle vehicle = vehicleWith(1)
     

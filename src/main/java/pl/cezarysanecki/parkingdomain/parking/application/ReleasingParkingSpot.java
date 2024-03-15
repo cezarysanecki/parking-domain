@@ -1,6 +1,7 @@
 package pl.cezarysanecki.parkingdomain.parking.application;
 
 import io.vavr.API;
+import io.vavr.collection.List;
 import io.vavr.control.Either;
 import io.vavr.control.Try;
 import lombok.NonNull;
@@ -8,8 +9,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpot;
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpots;
+import pl.cezarysanecki.parkingdomain.parking.model.Vehicle;
+import pl.cezarysanecki.parkingdomain.parking.model.VehicleId;
 
 import static io.vavr.API.$;
 import static io.vavr.API.Case;
@@ -38,13 +42,14 @@ public class ReleasingParkingSpot {
 
     private Result publishEvents(VehicleLeftEvents vehicleLeftEvents) {
         parkingSpots.publish(vehicleLeftEvents);
-        log.debug("successfully vehicle left with id {}", vehicleLeftEvents.getVehicleLeft().getVehicle().getVehicleId());
+        List<VehicleId> vehicleIds = vehicleLeftEvents.getVehiclesLeft().map(ParkingSpotEvent.VehicleLeft::getVehicle).map(Vehicle::getVehicleId);
+        log.debug("successfully vehicle left with ids {}", vehicleIds);
         return Success;
     }
 
     private Result publishEvents(ReleasingFailed releasingFailed) {
         parkingSpots.publish(releasingFailed);
-        log.debug("rejected to leave vehicle with id {}, reason: {}", releasingFailed.getVehicleId(), releasingFailed.getReason());
+        log.debug("rejected to leave vehicle with ids {}, reason: {}", releasingFailed.getVehicleIds(), releasingFailed.getReason());
         return Rejection;
     }
 
