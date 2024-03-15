@@ -37,8 +37,8 @@ public class CancellingReservation {
     }
 
     private Result publishEvents(ReservationCancelled reservationCancelled) {
-        log.debug("successfully cancelled reservation with id {}", reservationCancelled.getReservationId());
         reservationSchedules.publish(reservationCancelled);
+        log.debug("successfully cancelled reservation with id {}", reservationCancelled.getReservationId());
         return Success;
     }
 

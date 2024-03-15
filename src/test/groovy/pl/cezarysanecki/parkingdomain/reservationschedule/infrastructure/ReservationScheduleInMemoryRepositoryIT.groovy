@@ -8,7 +8,7 @@ import pl.cezarysanecki.parkingdomain.commons.date.DateConfig
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisherTestConfig
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId
-import pl.cezarysanecki.parkingdomain.client.model.ClientId
+import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientId
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationId
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationSchedule
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationSchedules

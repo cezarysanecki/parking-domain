@@ -1,6 +1,6 @@
 package pl.cezarysanecki.parkingdomain.reservationschedule.model;
 
-import pl.cezarysanecki.parkingdomain.client.model.ClientId;
+import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientId;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 
 import java.time.LocalDateTime;

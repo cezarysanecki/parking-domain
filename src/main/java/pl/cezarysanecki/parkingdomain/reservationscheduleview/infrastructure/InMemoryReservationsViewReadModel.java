@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
-import pl.cezarysanecki.parkingdomain.client.model.ClientId;
+import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientId;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationEvent;
 import pl.cezarysanecki.parkingdomain.reservationscheduleview.model.ReservationsView;
 import pl.cezarysanecki.parkingdomain.reservationscheduleview.model.ReservationsViews;

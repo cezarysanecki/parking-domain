@@ -2,7 +2,7 @@ package pl.cezarysanecki.parkingdomain.reservationschedule.model;
 
 import io.vavr.control.Option;
 import lombok.Value;
-import pl.cezarysanecki.parkingdomain.client.model.ClientId;
+import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientId;
 
 import java.util.Set;
 

@@ -3,7 +3,7 @@ package pl.cezarysanecki.parkingdomain.reservationschedule.infrastructure;
 import lombok.RequiredArgsConstructor;
 import pl.cezarysanecki.parkingdomain.commons.date.DateProvider;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.client.model.ClientId;
+import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientId;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.Reservation;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationId;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationSchedule;

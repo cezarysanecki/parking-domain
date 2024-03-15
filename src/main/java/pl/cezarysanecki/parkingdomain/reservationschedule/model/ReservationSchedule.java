@@ -4,7 +4,7 @@ import io.vavr.control.Either;
 import io.vavr.control.Option;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import pl.cezarysanecki.parkingdomain.client.model.ClientId;
+import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientId;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationEvent.ReservationFailed;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationEvent.ReservationMade;

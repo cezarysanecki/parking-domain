@@ -1,7 +1,7 @@
 package pl.cezarysanecki.parkingdomain.reservationschedule.model;
 
 import lombok.Value;
-import pl.cezarysanecki.parkingdomain.client.model.ClientId;
+import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientId;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;

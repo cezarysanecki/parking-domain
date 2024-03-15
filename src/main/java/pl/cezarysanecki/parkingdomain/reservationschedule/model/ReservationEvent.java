@@ -2,7 +2,7 @@ package pl.cezarysanecki.parkingdomain.reservationschedule.model;
 
 import lombok.NonNull;
 import lombok.Value;
-import pl.cezarysanecki.parkingdomain.client.model.ClientId;
+import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientId;
 import pl.cezarysanecki.parkingdomain.commons.events.DomainEvent;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 

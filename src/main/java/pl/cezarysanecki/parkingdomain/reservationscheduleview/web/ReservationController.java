@@ -19,7 +19,7 @@ import pl.cezarysanecki.parkingdomain.reservationschedule.application.Cancelling
 import pl.cezarysanecki.parkingdomain.reservationschedule.application.MakingParkingSlotReservation;
 import pl.cezarysanecki.parkingdomain.reservationschedule.application.ReserveAnyParkingSpotCommand;
 import pl.cezarysanecki.parkingdomain.reservationschedule.application.ReserveParkingSpotCommand;
-import pl.cezarysanecki.parkingdomain.client.model.ClientId;
+import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientId;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationId;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationSlot;
 import pl.cezarysanecki.parkingdomain.reservationscheduleview.model.ReservationsView;
