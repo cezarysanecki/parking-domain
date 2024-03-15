@@ -3,10 +3,7 @@ package pl.cezarysanecki.parkingdomain.clientreservations.model;
 import io.vavr.control.Either;
 import lombok.RequiredArgsConstructor;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.reservationschedule.model.Reservation;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationSlot;
-
-import java.util.Set;
 
 import static pl.cezarysanecki.parkingdomain.clientreservations.model.ClientReservationsEvent.ReservationRequestCreated;
 import static pl.cezarysanecki.parkingdomain.clientreservations.model.ClientReservationsEvent.ReservationRequestFailed;
@@ -17,28 +14,28 @@ import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announc
 public class ClientReservations {
 
     private final ClientId clientId;
-    private final Set<Reservation> reservations;
+    private final int numberOfReservations;
 
     public static ClientReservations empty(ClientId clientId) {
-        return new ClientReservations(clientId, Set.of());
+        return new ClientReservations(clientId, 0);
     }
 
     public Either<ReservationRequestFailed, ReservationRequestCreated> requestReservation(ParkingSpotId parkingSpotId, ReservationSlot reservationSlot) {
-        if (hasToManyReservations()) {
+        if (hasTooManyReservations()) {
             return announceFailure(new ReservationRequestFailed(clientId, "cannot have more reservations"));
         }
         return announceSuccess(ReservationRequestCreated.with(clientId, reservationSlot, parkingSpotId));
     }
 
     public Either<ReservationRequestFailed, ReservationRequestCreated> requestReservation(ReservationSlot reservationSlot) {
-        if (hasToManyReservations()) {
+        if (hasTooManyReservations()) {
             return announceFailure(new ReservationRequestFailed(clientId, "cannot have more reservations"));
         }
         return announceSuccess(ReservationRequestCreated.with(clientId, reservationSlot));
     }
 
-    private boolean hasToManyReservations() {
-        return !reservations.isEmpty();
+    private boolean hasTooManyReservations() {
+        return numberOfReservations >= 1;
     }
 
 }
