@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientId;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent;
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ReservationFulfilled;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleLeft;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleParked;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleParkedEvents;
@@ -31,7 +32,6 @@ class ParkingSpotEntity {
     Option<ClientId> reservation;
     boolean outOfOrder;
 
-
     ParkingSpotEntity(UUID parkingSpotId, int capacity) {
         this.parkingSpotId = parkingSpotId;
         this.capacity = capacity;
@@ -44,6 +44,7 @@ class ParkingSpotEntity {
         return API.Match(event).of(
                 Case($(instanceOf(VehicleParkedEvents.class)), this::handle),
                 Case($(instanceOf(VehicleParked.class)), this::handle),
+                Case($(instanceOf(ReservationFulfilled.class)), this::handle),
                 Case($(instanceOf(VehicleLeft.class)), this::handle),
                 Case($(), () -> this));
     }
@@ -56,6 +57,11 @@ class ParkingSpotEntity {
         Vehicle vehicle = vehicleParked.getVehicle();
         parkedVehicles.add(new ParkedVehicleEntity(
                 parkingSpotId, vehicle.getVehicleId().getValue(), vehicle.getVehicleSizeUnit().getValue()));
+        return this;
+    }
+
+    private ParkingSpotEntity handle(ReservationFulfilled reservationFulfilled) {
+        reservation = Option.none();
         return this;
     }
 
