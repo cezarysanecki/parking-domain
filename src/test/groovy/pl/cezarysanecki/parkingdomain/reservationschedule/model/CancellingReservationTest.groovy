@@ -5,8 +5,8 @@ import spock.lang.Specification
 
 import java.time.LocalDateTime
 
-import static pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationEvent.ReservationCancellationFailed
-import static pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationEvent.ReservationCancelled
+import static ReservationScheduleEvent.ReservationCancellationFailed
+import static ReservationScheduleEvent.ReservationCancelled
 import static pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleFixture.anyClientId
 import static pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleFixture.anyReservationId
 import static pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleFixture.reservationScheduleWith

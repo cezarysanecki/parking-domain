@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientId;
-import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationEvent;
+import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleEvent;
 import pl.cezarysanecki.parkingdomain.reservationscheduleview.model.ReservationsView;
 import pl.cezarysanecki.parkingdomain.reservationscheduleview.model.ReservationsViews;
 
@@ -22,8 +22,8 @@ import java.util.stream.Collectors;
 import static io.vavr.API.$;
 import static io.vavr.API.Case;
 import static io.vavr.Predicates.instanceOf;
-import static pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationEvent.ReservationCancelled;
-import static pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationEvent.ReservationMade;
+import static pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleEvent.ReservationCancelled;
+import static pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleEvent.ReservationMade;
 
 @Slf4j
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
@@ -44,14 +44,14 @@ class InMemoryReservationsViewReadModel implements ReservationsViews {
     }
 
     @EventListener
-    public void handle(ReservationEvent event) {
+    public void handle(ReservationScheduleEvent event) {
         API.Match(event).of(
                 Case($(instanceOf(ReservationMade.class)), this::handle),
                 Case($(instanceOf(ReservationCancelled.class)), this::handle),
                 Case($(), () -> event));
     }
 
-    public ReservationEvent handle(ReservationMade reservationMade) {
+    public ReservationScheduleEvent handle(ReservationMade reservationMade) {
         ClientId clientId = reservationMade.getClientId();
 
         ReservationsEntityViewModel entity = database.getOrDefault(
@@ -66,7 +66,7 @@ class InMemoryReservationsViewReadModel implements ReservationsViews {
         return reservationMade;
     }
 
-    private ReservationEvent handle(ReservationCancelled reservationCancelled) {
+    private ReservationScheduleEvent handle(ReservationCancelled reservationCancelled) {
         ClientId clientId = reservationCancelled.getClientId();
 
         ReservationsEntityViewModel entity = database.getOrDefault(

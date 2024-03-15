@@ -11,6 +11,6 @@ public interface ReservationSchedules {
 
     Option<ReservationSchedule> findFreeFor(ReservationSlot reservationSlot);
 
-    ReservationSchedule publish(ReservationEvent event);
+    ReservationSchedule publish(ReservationScheduleEvent event);
 
 }

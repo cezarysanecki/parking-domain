@@ -6,12 +6,12 @@ import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientId;
 import pl.cezarysanecki.parkingdomain.commons.events.DomainEvent;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 
-public sealed interface ReservationEvent extends DomainEvent {
+public sealed interface ReservationScheduleEvent extends DomainEvent {
 
     ParkingSpotId getParkingSpotId();
 
     @Value
-    final class ReservationMade implements ReservationEvent {
+    final class ReservationMade implements ReservationScheduleEvent {
 
         @NonNull ReservationId reservationId;
         @NonNull ParkingSpotId parkingSpotId;
@@ -21,7 +21,7 @@ public sealed interface ReservationEvent extends DomainEvent {
     }
 
     @Value
-    final class ReservationFailed implements ReservationEvent {
+    final class ReservationFailed implements ReservationScheduleEvent {
 
         @NonNull ParkingSpotId parkingSpotId;
         @NonNull String reason;
@@ -29,7 +29,7 @@ public sealed interface ReservationEvent extends DomainEvent {
     }
 
     @Value
-    final class ReservationCancelled implements ReservationEvent {
+    final class ReservationCancelled implements ReservationScheduleEvent {
 
         @NonNull ReservationId reservationId;
         @NonNull ParkingSpotId parkingSpotId;
@@ -38,7 +38,7 @@ public sealed interface ReservationEvent extends DomainEvent {
     }
 
     @Value
-    final class ReservationCancellationFailed implements ReservationEvent {
+    final class ReservationCancellationFailed implements ReservationScheduleEvent {
 
         @NonNull ParkingSpotId parkingSpotId;
         @NonNull ReservationId reservationId;

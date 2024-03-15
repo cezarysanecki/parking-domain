@@ -4,7 +4,7 @@ import io.vavr.control.Option
 import pl.cezarysanecki.parkingdomain.commons.commands.Result
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientId
-import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationEvent
+import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleEvent
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationSchedule
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationSchedules
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationSlot
@@ -77,7 +77,7 @@ class MakingReservationForParkingSlotTest extends Specification {
   
   ReservationSchedule persisted(ReservationSchedule reservationSchedule) {
     repository.findBy(reservationSchedule.parkingSpotId) >> Option.of(reservationSchedule)
-    repository.publish(_ as ReservationEvent) >> reservationSchedule
+    repository.publish(_ as ReservationScheduleEvent) >> reservationSchedule
     return reservationSchedule
   }
   

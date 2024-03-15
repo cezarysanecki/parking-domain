@@ -9,8 +9,8 @@ import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientReservation
 import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientReservationsEvent;
 import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientReservationsRepository;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
-import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationEvent;
-import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationEvent.ReservationMade;
+import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleEvent;
+import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleEvent.ReservationMade;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -45,20 +45,21 @@ class InMemoryClientReservationsRepository implements ClientReservationsReposito
     }
 
     @EventListener
-    public void handle(ReservationEvent event) {
+    public void handle(ReservationScheduleEvent event) {
         Match(event).of(
                 Case($(instanceOf(ReservationMade.class)), this::handle),
                 Case($(), () -> event));
     }
 
-    private ReservationEvent handle(ReservationMade reservationMade) {
+    private ClientReservations handle(ReservationMade reservationMade) {
         ClientId clientId = reservationMade.getClientId();
 
         ClientReservationsEntity entity = DATABASE.getOrDefault(clientId, new ClientReservationsEntity(clientId.getValue()));
         entity.handle(reservationMade);
         DATABASE.put(clientId, entity);
 
-        return reservationMade;
+        log.debug("registered made reservation for client with id {}", clientId);
+        return DomainModelMapper.map(entity);
     }
 
 }

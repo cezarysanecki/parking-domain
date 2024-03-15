@@ -73,7 +73,7 @@ class CancellingParkingSlotReservationTest extends Specification {
   
   ReservationSchedule persisted(ReservationId reservationId, ReservationSchedule reservationSchedule) {
     repository.findBy(reservationId) >> Option.of(reservationSchedule)
-    repository.publish(_ as ReservationEvent) >> reservationSchedule
+    repository.publish(_ as ReservationScheduleEvent) >> reservationSchedule
     return reservationSchedule
   }
   

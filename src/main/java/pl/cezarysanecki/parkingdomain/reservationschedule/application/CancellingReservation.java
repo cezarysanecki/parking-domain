@@ -17,8 +17,8 @@ import static io.vavr.Patterns.$Left;
 import static io.vavr.Patterns.$Right;
 import static pl.cezarysanecki.parkingdomain.commons.commands.Result.Rejection;
 import static pl.cezarysanecki.parkingdomain.commons.commands.Result.Success;
-import static pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationEvent.ReservationCancellationFailed;
-import static pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationEvent.ReservationCancelled;
+import static pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleEvent.ReservationCancellationFailed;
+import static pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleEvent.ReservationCancelled;
 
 @Slf4j
 @RequiredArgsConstructor

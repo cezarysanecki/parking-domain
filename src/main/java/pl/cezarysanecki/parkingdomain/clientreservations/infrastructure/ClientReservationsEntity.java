@@ -4,8 +4,8 @@ import io.vavr.API;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
-import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationEvent;
-import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationEvent.ReservationMade;
+import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleEvent;
+import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleEvent.ReservationMade;
 
 import java.util.UUID;
 
@@ -26,7 +26,7 @@ class ClientReservationsEntity {
         this.numberOfReservations = 0;
     }
 
-    void handle(ReservationEvent event) {
+    void handle(ReservationScheduleEvent event) {
         API.Match(event).of(
                 Case($(instanceOf(ReservationMade.class)), this::handle),
                 Case($(), () -> this));

@@ -6,16 +6,16 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientId;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationEvent.ReservationFailed;
-import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationEvent.ReservationMade;
+import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleEvent.ReservationFailed;
+import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleEvent.ReservationMade;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announceFailure;
 import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announceSuccess;
-import static pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationEvent.ReservationCancellationFailed;
-import static pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationEvent.ReservationCancelled;
+import static pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleEvent.ReservationCancellationFailed;
+import static pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleEvent.ReservationCancelled;
 
 @RequiredArgsConstructor
 public class ReservationSchedule {

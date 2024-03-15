@@ -4,7 +4,7 @@ import io.vavr.control.Option
 import pl.cezarysanecki.parkingdomain.commons.commands.Result
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientId
-import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationEvent
+import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleEvent
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationSchedule
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationSchedules
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationSlot
@@ -80,14 +80,14 @@ class MakingReservationForAnyParkingSlotTest extends Specification {
   ReservationSchedule persistedEmpty(ReservationSlot reservationSlot, LocalDateTime now) {
     def reservationSchedule = new ReservationSchedule(parkingSpotId, Reservations.none(), true, now)
     repository.findFreeFor(reservationSlot) >> Option.of(reservationSchedule)
-    repository.publish(_ as ReservationEvent) >> reservationSchedule
+    repository.publish(_ as ReservationScheduleEvent) >> reservationSchedule
     return reservationSchedule
   }
   
   ReservationSchedule persisted(ReservationSlot reservationSlot, LocalDateTime now) {
     def reservationSchedule = reservationScheduleWith(parkingSpotId, now, reservationWith(reservationSlot, clientId))
     repository.findFreeFor(reservationSlot) >> Option.of(reservationSchedule)
-    repository.publish(_ as ReservationEvent) >> reservationSchedule
+    repository.publish(_ as ReservationScheduleEvent) >> reservationSchedule
     return reservationSchedule
   }
   

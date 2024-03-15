@@ -4,8 +4,8 @@ import io.vavr.API;
 import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleParked;
-import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationEvent;
-import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationEvent.ReservationCancelled;
+import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleEvent;
+import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleEvent.ReservationCancelled;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -15,7 +15,7 @@ import static io.vavr.API.$;
 import static io.vavr.API.Case;
 import static io.vavr.Predicates.instanceOf;
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.CompletelyFreedUp;
-import static pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationEvent.ReservationMade;
+import static pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleEvent.ReservationMade;
 
 @Slf4j
 class ReservationsEntity {
@@ -30,7 +30,7 @@ class ReservationsEntity {
         this.noOccupation = true;
     }
 
-    ReservationsEntity handle(ReservationEvent event) {
+    ReservationsEntity handle(ReservationScheduleEvent event) {
         return API.Match(event).of(
                 Case($(instanceOf(ReservationMade.class)), this::handle),
                 Case($(instanceOf(ReservationCancelled.class)), this::handle),

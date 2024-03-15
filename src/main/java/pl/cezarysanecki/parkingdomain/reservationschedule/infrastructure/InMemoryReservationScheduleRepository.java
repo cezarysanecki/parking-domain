@@ -9,7 +9,7 @@ import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ParkingSpotCreated;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationEvent;
+import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleEvent;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationId;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationSchedule;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationSchedules;
@@ -64,13 +64,13 @@ class InMemoryReservationScheduleRepository implements ReservationSchedules {
     }
 
     @Override
-    public ReservationSchedule publish(ReservationEvent event) {
+    public ReservationSchedule publish(ReservationScheduleEvent event) {
         ReservationSchedule result = handle(event);
         eventPublisher.publish(event.normalize());
         return result;
     }
 
-    private ReservationSchedule handle(ReservationEvent event) {
+    private ReservationSchedule handle(ReservationScheduleEvent event) {
         ReservationsEntity entity = DATABASE.get(event.getParkingSpotId());
         entity = entity.handle(event);
         DATABASE.put(event.getParkingSpotId(), entity);
