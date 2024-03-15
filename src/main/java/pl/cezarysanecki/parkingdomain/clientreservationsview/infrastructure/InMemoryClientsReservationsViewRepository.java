@@ -7,11 +7,11 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientId;
+import pl.cezarysanecki.parkingdomain.clientreservationsview.model.ClientReservationsView;
+import pl.cezarysanecki.parkingdomain.clientreservationsview.model.ClientsReservationsView;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ReservationFulfilled;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleEvent;
-import pl.cezarysanecki.parkingdomain.clientreservationsview.model.ClientReservationsView;
-import pl.cezarysanecki.parkingdomain.clientreservationsview.model.ClientsReservationsView;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -53,6 +53,13 @@ class InMemoryClientsReservationsViewRepository implements ClientsReservationsVi
                 Case($(), () -> event));
     }
 
+    @EventListener
+    public void handle(ParkingSpotEvent event) {
+        API.Match(event).of(
+                Case($(instanceOf(ReservationFulfilled.class)), this::handle),
+                Case($(), () -> event));
+    }
+
     public ReservationScheduleEvent handle(ReservationMade reservationMade) {
         ClientId clientId = reservationMade.getClientId();
 
@@ -60,6 +67,7 @@ class InMemoryClientsReservationsViewRepository implements ClientsReservationsVi
                 clientId, new ClientReservationsEntityViewModel(new HashSet<>()));
         entity.getReservations().add(new ClientReservationsEntityViewModel.ReservationEntity(
                 reservationMade.getReservationId().getValue(),
+                reservationMade.getParkingSpotId().getValue(),
                 reservationMade.getReservationSlot().getSince(),
                 reservationMade.getReservationSlot().until()));
 
@@ -81,17 +89,17 @@ class InMemoryClientsReservationsViewRepository implements ClientsReservationsVi
         return reservationCancelled;
     }
 
-    private ReservationScheduleEvent handle(ReservationFulfilled reservationCancelled) {
-        ClientId clientId = reservationCancelled.getClientId();
+    private ParkingSpotEvent handle(ReservationFulfilled reservationFulfilled) {
+        ClientId clientId = reservationFulfilled.getClientId();
 
         ClientReservationsEntityViewModel entity = database.getOrDefault(
                 clientId, new ClientReservationsEntityViewModel(new HashSet<>()));
         entity.getReservations().removeIf(
-                reservation -> reservation.getReservationId().equals(reservationCancelled.getReservationId().getValue()));
+                reservation -> reservation.getParkingSpotId().equals(reservationFulfilled.getParkingSpotId().getValue()));
 
         database.put(clientId, entity);
         log.debug("removing reservation view for client with id {}", clientId);
-        return reservationCancelled;
+        return reservationFulfilled;
     }
 
     @Data
@@ -105,6 +113,7 @@ class InMemoryClientsReservationsViewRepository implements ClientsReservationsVi
         private static class ReservationEntity {
 
             UUID reservationId;
+            UUID parkingSpotId;
             LocalDateTime since;
             LocalDateTime until;
 
