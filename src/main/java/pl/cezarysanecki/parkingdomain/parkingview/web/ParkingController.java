@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientId;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
 import pl.cezarysanecki.parkingdomain.parking.application.ParkVehicleCommand;
 import pl.cezarysanecki.parkingdomain.parking.application.ParkingOnParkingSpot;
@@ -38,6 +39,7 @@ class ParkingController {
     @PostMapping("/park-on/{parkingSpotId}")
     ResponseEntity park(@PathVariable UUID parkingSpotId, @RequestBody ParkVehicleRequest request) {
         Try<Result> result = parkingOnParkingSpot.park(new ParkVehicleCommand(
+                ClientId.of(request.getClientId()),
                 ParkingSpotId.of(parkingSpotId),
                 new Vehicle(VehicleId.of(request.vehicleId), VehicleSizeUnit.of(request.vehicleSize)),
                 Instant.now()));
@@ -76,6 +78,7 @@ class ParkingController {
 @AllArgsConstructor
 class ParkVehicleRequest {
 
+    UUID clientId;
     UUID vehicleId;
     int vehicleSize;
 
