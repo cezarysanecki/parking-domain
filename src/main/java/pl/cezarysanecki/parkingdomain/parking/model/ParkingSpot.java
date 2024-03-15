@@ -3,6 +3,7 @@ package pl.cezarysanecki.parkingdomain.parking.model;
 import io.vavr.collection.List;
 import io.vavr.control.Either;
 import io.vavr.control.Option;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientId;
@@ -21,7 +22,7 @@ import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.Rele
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleLeft;
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleParked;
 
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ParkingSpot {
 
     @Getter
@@ -37,6 +38,14 @@ public class ParkingSpot {
 
     public ParkingSpot(ParkingSpotId parkingSpotId, int capacity, ClientId bookedFor) {
         this(parkingSpotId, capacity, Set.of(), Option.of(bookedFor), false);
+    }
+
+    public ParkingSpot(ParkingSpotId parkingSpotId, int capacity, Set<Vehicle> parkedVehicles, boolean outOfOrder) {
+        this(parkingSpotId, capacity, parkedVehicles, Option.none(), outOfOrder);
+    }
+
+    public ParkingSpot(ParkingSpotId parkingSpotId, int capacity, Set<Vehicle> parkedVehicles, boolean outOfOrder, ClientId bookedFor) {
+        this(parkingSpotId, capacity, parkedVehicles, Option.of(bookedFor), outOfOrder);
     }
 
     public Either<ParkingFailed, VehicleParkedEvents> park(ClientId clientId, Vehicle vehicle) {
