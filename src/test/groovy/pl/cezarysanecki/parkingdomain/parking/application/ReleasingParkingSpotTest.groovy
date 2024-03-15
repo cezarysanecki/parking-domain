@@ -29,7 +29,7 @@ class ReleasingParkingSpotTest extends Specification {
       persisted(parkingSpotWith(parkingSpotId, vehicleWith(vehicleId)))
     
     when:
-      def result = releasingParkingSpot.release(new ReleaseParkingSpotCommand(parkingSpotId, vehicleId))
+      def result = releasingParkingSpot.release(new ReleaseParkingSpotCommand(vehicleId))
     
     then:
       result.isSuccess()
@@ -43,7 +43,7 @@ class ReleasingParkingSpotTest extends Specification {
       persisted(emptyParkingSpotWith(parkingSpotId, 1))
     
     when:
-      def result = releasingParkingSpot.release(new ReleaseParkingSpotCommand(parkingSpotId, vehicleId))
+      def result = releasingParkingSpot.release(new ReleaseParkingSpotCommand(vehicleId))
     
     then:
       result.isSuccess()
@@ -57,20 +57,20 @@ class ReleasingParkingSpotTest extends Specification {
       unknownParkingSpot()
     
     when:
-      def result = releasingParkingSpot.release(new ReleaseParkingSpotCommand(parkingSpotId, vehicleId))
+      def result = releasingParkingSpot.release(new ReleaseParkingSpotCommand(vehicleId))
     
     then:
       result.isFailure()
   }
   
   ParkingSpot persisted(ParkingSpot parkingSpot) {
-    repository.findBy(parkingSpot.parkingSpotId) >> Option.of(parkingSpot)
+    repository.findBy(vehicleId) >> Option.of(parkingSpot)
     repository.publish(_ as ParkingSpotEvent) >> parkingSpot
     return parkingSpot
   }
   
   ParkingSpotId unknownParkingSpot() {
-    repository.findBy(parkingSpotId) >> Option.none()
+    repository.findBy(vehicleId) >> Option.none()
     return parkingSpotId
   }
   
