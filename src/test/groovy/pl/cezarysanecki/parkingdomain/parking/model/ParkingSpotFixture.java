@@ -1,5 +1,7 @@
 package pl.cezarysanecki.parkingdomain.parking.model;
 
+import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientId;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -7,37 +9,37 @@ import java.util.UUID;
 
 public class ParkingSpotFixture {
 
-    public static CommonParkingSpot emptyParkingSpotWith(int capacity) {
-        return new CommonParkingSpot(anyParkingSpotId(), capacity);
+    public static ParkingSpot emptyParkingSpotWith(int capacity) {
+        return new ParkingSpot(anyParkingSpotId(), capacity);
     }
 
-    public static CommonParkingSpot reservedParkingSpotFor(VehicleId vehicleId) {
-        return new CommonParkingSpot(anyParkingSpotId(), 4, Set.of(), Set.of(vehicleId));
+    public static ParkingSpot reservedParkingSpotFor(ClientId clientId) {
+        return new ParkingSpot(anyParkingSpotId(), 4, clientId);
     }
 
-    public static CommonParkingSpot emptyParkingSpotWith(ParkingSpotId parkingSpotId, int capacity) {
-        return new CommonParkingSpot(parkingSpotId, capacity);
+    public static ParkingSpot emptyParkingSpotWith(ParkingSpotId parkingSpotId, int capacity) {
+        return new ParkingSpot(parkingSpotId, capacity);
     }
 
-    public static CommonParkingSpot outOfOrderParkingSpot() {
-        return new CommonParkingSpot(anyParkingSpotId(), 4, Set.of(), true);
+    public static ParkingSpot outOfOrderParkingSpot() {
+        return new ParkingSpot(anyParkingSpotId(), 4, Set.of(), true);
     }
 
-    public static CommonParkingSpot outOfOrderParkingSpotWith(Vehicle vehicle) {
-        return new CommonParkingSpot(anyParkingSpotId(), 4, Set.of(vehicle), true);
+    public static ParkingSpot outOfOrderParkingSpotWith(Vehicle vehicle) {
+        return new ParkingSpot(anyParkingSpotId(), 4, Set.of(vehicle), true);
     }
 
-    public static CommonParkingSpot parkingSpotWith(Vehicle vehicle) {
-        return new CommonParkingSpot(anyParkingSpotId(), vehicle.getVehicleSizeUnit().getValue(), Set.of(vehicle), Set.of());
+    public static ParkingSpot parkingSpotWith(Vehicle vehicle) {
+        return new ParkingSpot(anyParkingSpotId(), vehicle.getVehicleSizeUnit().getValue(), Set.of(vehicle), false);
     }
 
-    public static CommonParkingSpot parkingSpotWith(List<Vehicle> vehicles) {
+    public static ParkingSpot parkingSpotWith(List<Vehicle> vehicles) {
         Integer capacity = vehicles.stream().map(Vehicle::getVehicleSizeUnit).map(VehicleSizeUnit::getValue).reduce(0, Integer::sum);
-        return new CommonParkingSpot(anyParkingSpotId(), capacity, new HashSet<>(vehicles), false);
+        return new ParkingSpot(anyParkingSpotId(), capacity, new HashSet<>(vehicles), false);
     }
 
-    public static CommonParkingSpot parkingSpotWith(ParkingSpotId parkingSpotId, Vehicle vehicle) {
-        return new CommonParkingSpot(parkingSpotId, vehicle.getVehicleSizeUnit().getValue(), Set.of(vehicle), Set.of());
+    public static ParkingSpot parkingSpotWith(ParkingSpotId parkingSpotId, Vehicle vehicle) {
+        return new ParkingSpot(parkingSpotId, vehicle.getVehicleSizeUnit().getValue(), Set.of(vehicle), false);
     }
 
     public static ParkingSpotId anyParkingSpotId() {

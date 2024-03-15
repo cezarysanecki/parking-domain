@@ -44,7 +44,7 @@ class ClientReservationsViewController {
                     case Success -> ResponseEntity.ok().build();
                     case Rejection -> ResponseEntity.badRequest().build();
                 })
-                .getOrElse(ResponseEntity.internalServerError().build());
+                .getOrElse(() -> ResponseEntity.internalServerError().build());
     }
 
     @PostMapping("/client-reservation")
@@ -58,7 +58,7 @@ class ClientReservationsViewController {
                     case Success -> ResponseEntity.ok().build();
                     case Rejection -> ResponseEntity.badRequest().build();
                 })
-                .getOrElse(ResponseEntity.internalServerError().build());
+                .getOrElse(() -> ResponseEntity.internalServerError().build());
     }
 
     @GetMapping("/client-reservation/{clientId}")

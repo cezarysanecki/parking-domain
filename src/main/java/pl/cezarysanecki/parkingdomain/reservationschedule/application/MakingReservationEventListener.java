@@ -35,7 +35,7 @@ public class MakingReservationEventListener {
 
         ReservationSchedule reservationSchedule = event.getParkingSpotId()
                 .map(this::load)
-                .getOrElse(loadFree(reservationSlot));
+                .getOrElse(() -> loadFree(reservationSlot));
 
         Either<ReservationFailed, ReservationMade> result = reservationSchedule.reserve(clientId, reservationSlot);
         Match(result).of(

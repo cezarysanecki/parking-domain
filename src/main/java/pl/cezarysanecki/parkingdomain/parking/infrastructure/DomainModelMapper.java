@@ -29,7 +29,7 @@ class DomainModelMapper {
                         parkedVehicles,
                         entity.outOfOrder,
                         clientId))
-                .getOrElse(new ParkingSpot(
+                .getOrElse(() -> new ParkingSpot(
                         ParkingSpotId.of(entity.parkingSpotId),
                         entity.capacity,
                         parkedVehicles,

@@ -70,7 +70,7 @@ class ReservationScheduleInMemoryRepositoryIT extends Specification {
   }
   
   ReservationCancelled reservationCancelled() {
-    return new ReservationCancelled(reservationId, parkingSpotId)
+    return new ReservationCancelled(reservationId, parkingSpotId, clientId)
   }
   
   ReservationSchedule loadPersistedReservationSchedule(ParkingSpotId parkingSpotId) {

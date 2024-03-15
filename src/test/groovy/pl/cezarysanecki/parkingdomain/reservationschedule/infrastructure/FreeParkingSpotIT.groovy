@@ -6,7 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisherTestConfig
 import pl.cezarysanecki.parkingdomain.parking.infrastructure.ParkingSpotConfig
-import pl.cezarysanecki.parkingdomain.parking.model.CommonParkingSpot
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpot
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpots
 import pl.cezarysanecki.parkingdomain.parking.model.Vehicle
@@ -78,9 +78,9 @@ class FreeParkingSpotIT extends Specification {
     return new VehicleLeft(parkingSpotId, vehicle)
   }
   
-  CommonParkingSpot loadPersistedParkingSpot(ParkingSpotId parkingSpotId) {
-    Option<CommonParkingSpot> loaded = parkingSpots.findBy(parkingSpotId)
-    CommonParkingSpot parkingSpot = loaded.getOrElseThrow({
+  ParkingSpot loadPersistedParkingSpot(ParkingSpotId parkingSpotId) {
+    Option<ParkingSpot> loaded = parkingSpots.findBy(parkingSpotId)
+    ParkingSpot parkingSpot = loaded.getOrElseThrow({
       new IllegalStateException("should have been persisted")
     })
     return parkingSpot

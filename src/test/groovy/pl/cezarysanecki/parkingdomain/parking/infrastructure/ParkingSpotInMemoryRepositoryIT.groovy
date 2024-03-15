@@ -4,15 +4,22 @@ import io.vavr.control.Option
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
-import pl.cezarysanecki.parkingdomain.parking.model.*
+import pl.cezarysanecki.parkingdomain.commons.events.EventPublisherTestConfig
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpot
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpots
+import pl.cezarysanecki.parkingdomain.parking.model.Vehicle
+import pl.cezarysanecki.parkingdomain.parking.model.VehicleId
 import spock.lang.Specification
 
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ParkingSpotCreated
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleParked
-import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.*
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.anyParkingSpotId
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.anyVehicleId
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.vehicleWith
 
 @ActiveProfiles("local")
-@SpringBootTest(classes = [ParkingSpotConfig.class])
+@SpringBootTest(classes = [ParkingSpotConfig.class, EventPublisherTestConfig.class])
 class ParkingSpotInMemoryRepositoryIT extends Specification {
   
   ParkingSpotId parkingSpotId = anyParkingSpotId()
@@ -55,9 +62,9 @@ class ParkingSpotInMemoryRepositoryIT extends Specification {
     return new VehicleParked(parkingSpotId, vehicle)
   }
   
-  CommonParkingSpot loadPersistedParkingSpot(ParkingSpotId parkingSpotId) {
-    Option<CommonParkingSpot> loaded = parkingSpots.findBy(parkingSpotId)
-    CommonParkingSpot parkingSpot = loaded.getOrElseThrow({
+  ParkingSpot loadPersistedParkingSpot(ParkingSpotId parkingSpotId) {
+    Option<ParkingSpot> loaded = parkingSpots.findBy(parkingSpotId)
+    ParkingSpot parkingSpot = loaded.getOrElseThrow({
       new IllegalStateException("should have been persisted")
     })
     return parkingSpot

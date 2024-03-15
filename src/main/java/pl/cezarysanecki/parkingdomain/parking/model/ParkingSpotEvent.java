@@ -57,7 +57,6 @@ public sealed interface ParkingSpotEvent extends DomainEvent {
         @NonNull ParkingSpotId parkingSpotId;
         @NonNull VehicleParked vehicleParked;
         @NonNull Option<FullyOccupied> fullyOccupied;
-        @NonNull Option<ReservationFulfilled> reservationFulfilled;
 
         @Override
         public Instant getWhen() {
@@ -65,15 +64,11 @@ public sealed interface ParkingSpotEvent extends DomainEvent {
         }
 
         public static VehicleParkedEvents events(ParkingSpotId parkingSpotId, VehicleParked vehicleParked) {
-            return new VehicleParkedEvents(parkingSpotId, vehicleParked, Option.none(), Option.none());
+            return new VehicleParkedEvents(parkingSpotId, vehicleParked, Option.none());
         }
 
         public static VehicleParkedEvents events(ParkingSpotId parkingSpotId, VehicleParked vehicleParked, FullyOccupied fullyOccupied) {
-            return new VehicleParkedEvents(parkingSpotId, vehicleParked, Option.of(fullyOccupied), Option.none());
-        }
-
-        public static VehicleParkedEvents events(ParkingSpotId parkingSpotId, VehicleParked vehicleParked, ReservationFulfilled reservationFulfilled) {
-            return new VehicleParkedEvents(parkingSpotId, vehicleParked, Option.none(), Option.of(reservationFulfilled));
+            return new VehicleParkedEvents(parkingSpotId, vehicleParked, Option.of(fullyOccupied));
         }
 
         @Override

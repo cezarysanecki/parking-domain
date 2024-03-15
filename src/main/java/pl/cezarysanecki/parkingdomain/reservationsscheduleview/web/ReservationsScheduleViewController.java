@@ -29,7 +29,7 @@ class ReservationsScheduleViewController {
                     case Success -> ResponseEntity.ok().build();
                     case Rejection -> ResponseEntity.badRequest().build();
                 })
-                .getOrElse(ResponseEntity.internalServerError().build());
+                .getOrElse(() -> ResponseEntity.internalServerError().build());
     }
 
 }

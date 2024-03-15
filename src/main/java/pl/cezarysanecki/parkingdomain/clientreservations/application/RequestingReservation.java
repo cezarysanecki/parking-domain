@@ -61,7 +61,7 @@ public class RequestingReservation {
 
     private ClientReservations load(ClientId clientId) {
         return clientReservationsRepository.findBy(clientId)
-                .getOrElse(ClientReservations.empty(clientId));
+                .getOrElse(() -> ClientReservations.empty(clientId));
     }
 
 }

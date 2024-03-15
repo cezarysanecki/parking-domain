@@ -1,21 +1,32 @@
 package pl.cezarysanecki.parkingdomain.parking.model
 
 import io.vavr.control.Either
+import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientId
 import spock.lang.Specification
 
-import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.*
-import static ParkingSpotFixture.*
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.FullyOccupied
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ParkingFailed
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleParked
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleParkedEvents
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.emptyParkingSpotWith
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.outOfOrderParkingSpot
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.parkingSpotWith
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.reservedParkingSpotFor
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.vehicleWith
+import static pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleFixture.anyClientId
 
 class ParkingVehicleTest extends Specification {
   
+  ClientId clientId = anyClientId()
+  
   def "vehicle can park if there is enough space"() {
     given:
-      CommonParkingSpot parkingSpot = emptyParkingSpotWith(4)
+      ParkingSpot parkingSpot = emptyParkingSpotWith(4)
     and:
       Vehicle vehicle = vehicleWith(1)
     
     when:
-      Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(vehicle)
+      Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(clientId, vehicle)
     
     then:
       result.isRight()
@@ -28,12 +39,12 @@ class ParkingVehicleTest extends Specification {
   
   def "vehicle can park occupying fully parking spot"() {
     given:
-      CommonParkingSpot parkingSpot = emptyParkingSpotWith(1)
+      ParkingSpot parkingSpot = emptyParkingSpotWith(1)
     and:
       Vehicle vehicle = vehicleWith(1)
     
     when:
-      Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(vehicle)
+      Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(clientId, vehicle)
     
     then:
       result.isRight()
@@ -51,10 +62,10 @@ class ParkingVehicleTest extends Specification {
     given:
       Vehicle vehicle = vehicleWith(1)
     and:
-      CommonParkingSpot parkingSpot = reservedParkingSpotFor(vehicle.vehicleId)
+      ParkingSpot parkingSpot = reservedParkingSpotFor(clientId)
     
     when:
-      Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(vehicle)
+      Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(clientId, vehicle)
     
     then:
       result.isRight()
@@ -62,21 +73,17 @@ class ParkingVehicleTest extends Specification {
         VehicleParked vehicleParked = it.vehicleParked
         assert vehicleParked.parkingSpotId == parkingSpot.parkingSpotId
         assert vehicleParked.vehicle == vehicle
-        
-        ReservationFulfilled reservationFulfilled = it.reservationFulfilled.get()
-        assert reservationFulfilled.parkingSpotId == parkingSpot.parkingSpotId
-        assert reservationFulfilled.vehicleId == vehicle.vehicleId
       }
   }
   
   def "cannot park on parking spot by too big vehicle"() {
     given:
-      CommonParkingSpot parkingSpot = emptyParkingSpotWith(1)
+      ParkingSpot parkingSpot = emptyParkingSpotWith(1)
     and:
       Vehicle vehicle = vehicleWith(2)
     
     when:
-      Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(vehicle)
+      Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(clientId, vehicle)
     
     then:
       result.isLeft()
@@ -91,10 +98,10 @@ class ParkingVehicleTest extends Specification {
     given:
       Vehicle vehicle = vehicleWith(2)
     and:
-      CommonParkingSpot parkingSpot = parkingSpotWith(vehicle)
+      ParkingSpot parkingSpot = parkingSpotWith(vehicle)
     
     when:
-      Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(vehicle)
+      Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(clientId, vehicle)
     
     then:
       result.isLeft()
@@ -109,17 +116,17 @@ class ParkingVehicleTest extends Specification {
     given:
       Vehicle vehicle = vehicleWith(1)
     and:
-      CommonParkingSpot parkingSpot = reservedParkingSpotFor(anyVehicleId())
+      ParkingSpot parkingSpot = reservedParkingSpotFor(anyClientId())
     
     when:
-      Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(vehicle)
+      Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(clientId, vehicle)
     
     then:
       result.isLeft()
       result.getLeft().with {
         assert it.parkingSpotId == parkingSpot.parkingSpotId
         assert it.vehicleId == vehicle.vehicleId
-        assert it.reason.contains("parking spot is not reserved for this vehicle")
+        assert it.reason.contains("parking spot is not reserved for this client")
       }
   }
   
@@ -127,10 +134,10 @@ class ParkingVehicleTest extends Specification {
     given:
       Vehicle vehicle = vehicleWith(1)
     and:
-      CommonParkingSpot parkingSpot = outOfOrderParkingSpot()
+      ParkingSpot parkingSpot = outOfOrderParkingSpot()
     
     when:
-      Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(vehicle)
+      Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(clientId, vehicle)
     
     then:
       result.isLeft()

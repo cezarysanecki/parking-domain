@@ -50,7 +50,7 @@ class ParkingController {
                     case Success -> ResponseEntity.ok().build();
                     case Rejection -> ResponseEntity.badRequest().build();
                 })
-                .getOrElse(ResponseEntity.internalServerError().build());
+                .getOrElse(() -> ResponseEntity.internalServerError().build());
     }
 
     @PostMapping("/release/{parkingSpotId}")
@@ -64,7 +64,7 @@ class ParkingController {
                     case Success -> ResponseEntity.ok().build();
                     case Rejection -> ResponseEntity.badRequest().build();
                 })
-                .getOrElse(ResponseEntity.internalServerError().build());
+                .getOrElse(() -> ResponseEntity.internalServerError().build());
     }
 
     @GetMapping("/available-parking-spots")

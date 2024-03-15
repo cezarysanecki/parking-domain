@@ -61,7 +61,7 @@ public class ParkingSpot {
             return announceFailure(new ParkingFailed(parkingSpotId, vehicleId, "not enough space on parking spot"));
         }
         if (isNotReservedFor(clientId)) {
-            return announceFailure(new ParkingFailed(parkingSpotId, vehicleId, "parking spot is not reserved for this vehicle"));
+            return announceFailure(new ParkingFailed(parkingSpotId, vehicleId, "parking spot is not reserved for this client"));
         }
 
         VehicleParked vehicleParked = new VehicleParked(parkingSpotId, vehicle);
@@ -121,7 +121,7 @@ public class ParkingSpot {
     }
 
     private boolean isNotReservedFor(ClientId clientId) {
-        return !bookedFor.isEmpty() && bookedFor.get().equals(clientId);
+        return !bookedFor.isEmpty() && !bookedFor.get().equals(clientId);
     }
 
     private boolean thereIsNotEnoughSpaceFor(Vehicle vehicle) {
