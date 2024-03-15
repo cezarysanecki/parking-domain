@@ -4,6 +4,6 @@ import java.time.LocalDateTime;
 
 public interface DateProvider {
 
-    LocalDateTime currentLocalDateTime();
+    LocalDateTime now();
 
 }
