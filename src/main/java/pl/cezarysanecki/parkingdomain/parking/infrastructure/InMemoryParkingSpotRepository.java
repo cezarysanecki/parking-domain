@@ -9,6 +9,7 @@ import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ParkingSpotCreated;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpots;
+import pl.cezarysanecki.parkingdomain.parking.model.VehicleId;
 
 import java.time.Instant;
 import java.util.Map;
@@ -39,6 +40,18 @@ class InMemoryParkingSpotRepository implements ParkingSpots {
     @Override
     public Option<ParkingSpot> findBy(ParkingSpotId parkingSpotId, Instant when) {
         return findBy(parkingSpotId);
+    }
+
+    @Override
+    public Option<ParkingSpot> findBy(VehicleId vehicleId) {
+        return Option.ofOptional(
+                DATABASE.values()
+                        .stream()
+                        .filter(entity -> entity.parkedVehicles.stream()
+                                .map(ParkedVehicleEntity::getVehicleId)
+                                .anyMatch(parkedVehicleId -> parkedVehicleId.equals(vehicleId.getValue())))
+                        .findFirst()
+                        .map(DomainModelMapper::map));
     }
 
     @Override

@@ -20,6 +20,7 @@ import java.util.UUID;
 import static io.vavr.API.$;
 import static io.vavr.API.Case;
 import static io.vavr.Predicates.instanceOf;
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleLeftEvents;
 
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 class ParkingSpotEntity {
@@ -46,6 +47,7 @@ class ParkingSpotEntity {
                 Case($(instanceOf(VehicleParked.class)), this::handle),
                 Case($(instanceOf(ReservationFulfilled.class)), this::handle),
                 Case($(instanceOf(VehicleLeft.class)), this::handle),
+                Case($(instanceOf(VehicleLeftEvents.class)), this::handle),
                 Case($(), () -> this));
     }
 
@@ -62,6 +64,12 @@ class ParkingSpotEntity {
 
     private ParkingSpotEntity handle(ReservationFulfilled reservationFulfilled) {
         reservation = Option.none();
+        return this;
+    }
+
+    private ParkingSpotEntity handle(VehicleLeftEvents vehicleLeftEvents) {
+        vehicleLeftEvents.getVehiclesLeft()
+                .forEach(this::handle);
         return this;
     }
 

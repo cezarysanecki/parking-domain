@@ -10,6 +10,8 @@ public interface ParkingSpots {
 
     Option<ParkingSpot> findBy(ParkingSpotId parkingSpotId, Instant when);
 
+    Option<ParkingSpot> findBy(VehicleId vehicleId);
+
     ParkingSpot publish(ParkingSpotEvent event);
 
 }
