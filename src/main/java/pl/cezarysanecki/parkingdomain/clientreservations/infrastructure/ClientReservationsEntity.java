@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleEvent;
+import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleEvent.ReservationCancelled;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleEvent.ReservationMade;
 
 import java.util.UUID;
@@ -29,11 +30,17 @@ class ClientReservationsEntity {
     void handle(ReservationScheduleEvent event) {
         API.Match(event).of(
                 Case($(instanceOf(ReservationMade.class)), this::handle),
+                Case($(instanceOf(ReservationCancelled.class)), this::handle),
                 Case($(), () -> this));
     }
 
     private ClientReservationsEntity handle(ReservationMade reservationMade) {
         this.numberOfReservations++;
+        return this;
+    }
+
+    private ClientReservationsEntity handle(ReservationCancelled reservationCancelled) {
+        this.numberOfReservations--;
         return this;
     }
 

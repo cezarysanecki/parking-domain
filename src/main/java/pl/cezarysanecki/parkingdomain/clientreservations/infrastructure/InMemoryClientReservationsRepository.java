@@ -19,6 +19,7 @@ import static io.vavr.API.$;
 import static io.vavr.API.Case;
 import static io.vavr.API.Match;
 import static io.vavr.Predicates.instanceOf;
+import static pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleEvent.ReservationCancelled;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -48,6 +49,7 @@ class InMemoryClientReservationsRepository implements ClientReservationsReposito
     public void handle(ReservationScheduleEvent event) {
         Match(event).of(
                 Case($(instanceOf(ReservationMade.class)), this::handle),
+                Case($(instanceOf(ReservationCancelled.class)), this::handle),
                 Case($(), () -> event));
     }
 
@@ -59,6 +61,17 @@ class InMemoryClientReservationsRepository implements ClientReservationsReposito
         DATABASE.put(clientId, entity);
 
         log.debug("registered made reservation for client with id {}", clientId);
+        return DomainModelMapper.map(entity);
+    }
+
+    private ClientReservations handle(ReservationCancelled reservationCancelled) {
+        ClientId clientId = reservationCancelled.getClientId();
+
+        ClientReservationsEntity entity = DATABASE.getOrDefault(clientId, new ClientReservationsEntity(clientId.getValue()));
+        entity.handle(reservationCancelled);
+        DATABASE.put(clientId, entity);
+
+        log.debug("registered cancelled reservation for client with id {}", clientId);
         return DomainModelMapper.map(entity);
     }
 

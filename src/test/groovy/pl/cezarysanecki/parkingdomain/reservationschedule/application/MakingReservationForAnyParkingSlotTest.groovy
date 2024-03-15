@@ -27,7 +27,7 @@ class MakingReservationForAnyParkingSlotTest extends Specification {
   
   def 'should successfully reserve any parking spot'() {
     given:
-      MakingParkingSlotReservation makingParkingSlotReservation = new MakingParkingSlotReservation(repository)
+      MakingReservationEventListener makingParkingSlotReservation = new MakingReservationEventListener(repository)
     and:
       def now = LocalDateTime.now()
     and:
@@ -46,7 +46,7 @@ class MakingReservationForAnyParkingSlotTest extends Specification {
   
   def 'should reject reserving any parking spot when there is reservation on that slot'() {
     given:
-      MakingParkingSlotReservation makingParkingSlotReservation = new MakingParkingSlotReservation(repository)
+      MakingReservationEventListener makingParkingSlotReservation = new MakingReservationEventListener(repository)
     and:
       def now = LocalDateTime.now()
     and:
@@ -65,7 +65,7 @@ class MakingReservationForAnyParkingSlotTest extends Specification {
   
   def 'should fail if reservation schedule does not exist'() {
     given:
-      MakingParkingSlotReservation makingParkingSlotReservation = new MakingParkingSlotReservation(repository)
+      MakingReservationEventListener makingParkingSlotReservation = new MakingReservationEventListener(repository)
     and:
       unknownReservationSchedule()
     

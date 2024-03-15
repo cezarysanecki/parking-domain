@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Profile;
 import pl.cezarysanecki.parkingdomain.commons.date.DateProvider;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 import pl.cezarysanecki.parkingdomain.reservationschedule.application.CancellingReservation;
-import pl.cezarysanecki.parkingdomain.reservationschedule.application.MakingParkingSlotReservation;
+import pl.cezarysanecki.parkingdomain.reservationschedule.application.MakingReservationEventListener;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationSchedules;
 
 @Slf4j
@@ -23,8 +23,8 @@ public class ReservationScheduleConfig {
     }
 
     @Bean
-    public MakingParkingSlotReservation makingParkingSlotReservation(ReservationSchedules reservationSchedules) {
-        return new MakingParkingSlotReservation(reservationSchedules);
+    public MakingReservationEventListener makingParkingSlotReservation(ReservationSchedules reservationSchedules) {
+        return new MakingReservationEventListener(reservationSchedules);
     }
 
     @Bean

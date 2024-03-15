@@ -24,7 +24,7 @@ import static pl.cezarysanecki.parkingdomain.reservationschedule.model.Reservati
 
 @Slf4j
 @RequiredArgsConstructor
-public class MakingParkingSlotReservation {
+public class MakingReservationEventListener {
 
     private final ReservationSchedules reservationSchedules;
 
