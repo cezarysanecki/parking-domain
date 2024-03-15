@@ -2,7 +2,11 @@ package pl.cezarysanecki.parkingdomain.parking.model;
 
 import io.vavr.collection.List;
 import io.vavr.control.Either;
+import io.vavr.control.Option;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientId;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.FullyOccupied;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ParkingFailed;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ReservationFulfilled;
@@ -18,40 +22,33 @@ import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.Rele
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleLeft;
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleParked;
 
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ParkingSpot {
 
     @Getter
     private final ParkingSpotId parkingSpotId;
     private final int capacity;
     private final Set<Vehicle> parkedVehicles;
-    private final Set<VehicleId> bookedFor;
+    private final Option<ClientId> bookedFor;
     private final boolean outOfOrder;
 
     public ParkingSpot(ParkingSpotId parkingSpotId, int capacity) {
-        this.parkingSpotId = parkingSpotId;
-        this.capacity = capacity;
-        this.parkedVehicles = Set.of();
-        this.bookedFor = Set.of();
-        this.outOfOrder = false;
+        this(parkingSpotId, capacity, Set.of(), Option.none(), false);
     }
 
-    public ParkingSpot(ParkingSpotId parkingSpotId, int capacity, Set<Vehicle> parkedVehicles, Set<VehicleId> bookedFor) {
-        this.parkingSpotId = parkingSpotId;
-        this.capacity = capacity;
-        this.parkedVehicles = parkedVehicles;
-        this.bookedFor = bookedFor;
-        this.outOfOrder = false;
+    public ParkingSpot(ParkingSpotId parkingSpotId, int capacity, ClientId bookedFor) {
+        this(parkingSpotId, capacity, Set.of(), Option.of(bookedFor), false);
     }
 
     public ParkingSpot(ParkingSpotId parkingSpotId, int capacity, Set<Vehicle> parkedVehicles, boolean outOfOrder) {
-        this.parkingSpotId = parkingSpotId;
-        this.capacity = capacity;
-        this.parkedVehicles = parkedVehicles;
-        this.bookedFor = Set.of();
-        this.outOfOrder = outOfOrder;
+        this(parkingSpotId, capacity, parkedVehicles, Option.none(), outOfOrder);
     }
 
-    public Either<ParkingFailed, VehicleParkedEvents> park(Vehicle vehicle) {
+    public ParkingSpot(ParkingSpotId parkingSpotId, int capacity, Set<Vehicle> parkedVehicles, boolean outOfOrder, ClientId bookedFor) {
+        this(parkingSpotId, capacity, parkedVehicles, Option.of(bookedFor), outOfOrder);
+    }
+
+    public Either<ParkingFailed, VehicleParkedEvents> park(ClientId clientId, Vehicle vehicle) {
         VehicleId vehicleId = vehicle.getVehicleId();
 
         if (outOfOrder) {
@@ -63,14 +60,11 @@ public class ParkingSpot {
         if (thereIsNotEnoughSpaceFor(vehicle)) {
             return announceFailure(new ParkingFailed(parkingSpotId, vehicleId, "not enough space on parking spot"));
         }
-        if (isNotReservedFor(vehicle)) {
-            return announceFailure(new ParkingFailed(parkingSpotId, vehicleId, "parking spot is not reserved for this vehicle"));
+        if (isNotReservedFor(clientId)) {
+            return announceFailure(new ParkingFailed(parkingSpotId, vehicleId, "parking spot is not reserved for this client"));
         }
 
         VehicleParked vehicleParked = new VehicleParked(parkingSpotId, vehicle);
-        if (isReservedFor(vehicle)) {
-            return announceSuccess(VehicleParkedEvents.events(parkingSpotId, vehicleParked, new ReservationFulfilled(parkingSpotId, vehicleId)));
-        }
         if (isFullyOccupied(vehicle)) {
             return announceSuccess(VehicleParkedEvents.events(parkingSpotId, vehicleParked, new FullyOccupied(parkingSpotId)));
         }
@@ -83,19 +77,33 @@ public class ParkingSpot {
                 .findFirst()
                 .orElse(null);
         if (foundVehicle == null) {
-            return announceFailure(new ReleasingFailed(parkingSpotId, vehicleId, "vehicle not park on this spot"));
+            return announceFailure(new ReleasingFailed(parkingSpotId, List.of(vehicleId), "vehicle not park on this spot"));
         }
+
         VehicleLeft vehicleLeft = new VehicleLeft(parkingSpotId, foundVehicle);
         if (isCompletelyFreedUp(foundVehicle)) {
-            return announceSuccess(VehicleLeftEvents.events(parkingSpotId, vehicleLeft, new CompletelyFreedUp(parkingSpotId)));
+            if (bookedFor.isDefined()) {
+                return announceSuccess(VehicleLeftEvents.events(parkingSpotId,
+                        List.of(vehicleLeft), new CompletelyFreedUp(parkingSpotId), new ReservationFulfilled(bookedFor.get(), parkingSpotId)));
+            }
+            return announceSuccess(VehicleLeftEvents.events(parkingSpotId, List.of(vehicleLeft), new CompletelyFreedUp(parkingSpotId)));
         }
-        return announceSuccess(VehicleLeftEvents.events(parkingSpotId, vehicleLeft));
+        return announceSuccess(VehicleLeftEvents.events(parkingSpotId, List.of(vehicleLeft)));
     }
 
-    public List<VehicleLeft> releaseAll() {
-        return List.ofAll(parkedVehicles.stream()
+    public Either<ReleasingFailed, VehicleLeftEvents> releaseAll() {
+        if (parkedVehicles.isEmpty()) {
+            return announceFailure(new ReleasingFailed(parkingSpotId, List.empty(), "parking spot is empty"));
+        }
+
+        List<VehicleLeft> vehiclesLeft = List.ofAll(parkedVehicles.stream()
                 .map(parkedVehicle -> new VehicleLeft(parkingSpotId, parkedVehicle))
                 .toList());
+        if (bookedFor.isDefined()) {
+            return announceSuccess(VehicleLeftEvents.events(parkingSpotId,
+                    vehiclesLeft, new CompletelyFreedUp(parkingSpotId), new ReservationFulfilled(bookedFor.get(), parkingSpotId)));
+        }
+        return announceSuccess(VehicleLeftEvents.events(parkingSpotId, vehiclesLeft, new CompletelyFreedUp(parkingSpotId)));
     }
 
     public boolean isEmpty() {
@@ -112,16 +120,12 @@ public class ParkingSpot {
                 .anyMatch(parkedVehicleId -> parkedVehicleId.equals(vehicleId));
     }
 
-    private boolean isNotReservedFor(Vehicle vehicle) {
-        return !bookedFor.isEmpty() && !bookedFor.contains(vehicle.getVehicleId());
+    private boolean isNotReservedFor(ClientId clientId) {
+        return !bookedFor.isEmpty() && !bookedFor.get().equals(clientId);
     }
 
     private boolean thereIsNotEnoughSpaceFor(Vehicle vehicle) {
         return currentOccupation() + vehicle.getVehicleSizeUnit().getValue() > capacity;
-    }
-
-    private boolean isReservedFor(Vehicle vehicle) {
-        return !bookedFor.isEmpty() && bookedFor.contains(vehicle.getVehicleId());
     }
 
     private boolean isFullyOccupied(Vehicle vehicle) {

@@ -1,15 +1,17 @@
 package pl.cezarysanecki.parkingdomain.parking.infrastructure;
 
 import io.vavr.API;
+import io.vavr.control.Option;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
+import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientId;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent;
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ReservationFulfilled;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleLeft;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleParked;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleParkedEvents;
 import pl.cezarysanecki.parkingdomain.parking.model.Vehicle;
-import pl.cezarysanecki.parkingdomain.parking.model.VehicleId;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -27,19 +29,22 @@ class ParkingSpotEntity {
     UUID parkingSpotId;
     int capacity;
     Set<ParkedVehicleEntity> parkedVehicles;
-    Set<VehicleId> reservations;
+    Option<ClientId> reservation;
+    boolean outOfOrder;
 
     ParkingSpotEntity(UUID parkingSpotId, int capacity) {
         this.parkingSpotId = parkingSpotId;
         this.capacity = capacity;
         this.parkedVehicles = new HashSet<>();
-        this.reservations = new HashSet<>();
+        this.reservation = Option.none();
+        this.outOfOrder = false;
     }
 
     ParkingSpotEntity handle(ParkingSpotEvent event) {
         return API.Match(event).of(
                 Case($(instanceOf(VehicleParkedEvents.class)), this::handle),
                 Case($(instanceOf(VehicleParked.class)), this::handle),
+                Case($(instanceOf(ReservationFulfilled.class)), this::handle),
                 Case($(instanceOf(VehicleLeft.class)), this::handle),
                 Case($(), () -> this));
     }
@@ -52,6 +57,11 @@ class ParkingSpotEntity {
         Vehicle vehicle = vehicleParked.getVehicle();
         parkedVehicles.add(new ParkedVehicleEntity(
                 parkingSpotId, vehicle.getVehicleId().getValue(), vehicle.getVehicleSizeUnit().getValue()));
+        return this;
+    }
+
+    private ParkingSpotEntity handle(ReservationFulfilled reservationFulfilled) {
+        reservation = Option.none();
         return this;
     }
 

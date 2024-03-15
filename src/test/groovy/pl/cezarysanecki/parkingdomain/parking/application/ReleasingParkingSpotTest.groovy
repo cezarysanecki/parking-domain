@@ -2,12 +2,18 @@ package pl.cezarysanecki.parkingdomain.parking.application
 
 import io.vavr.control.Option
 import pl.cezarysanecki.parkingdomain.commons.commands.Result
-import pl.cezarysanecki.parkingdomain.parking.application.ReleaseParkingSpotCommand
-import pl.cezarysanecki.parkingdomain.parking.application.ReleasingParkingSpot
-import pl.cezarysanecki.parkingdomain.parking.model.*
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpot
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpots
+import pl.cezarysanecki.parkingdomain.parking.model.VehicleId
 import spock.lang.Specification
 
-import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.*
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.anyParkingSpotId
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.anyVehicleId
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.emptyParkingSpotWith
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.parkingSpotWith
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.vehicleWith
 
 class ReleasingParkingSpotTest extends Specification {
   

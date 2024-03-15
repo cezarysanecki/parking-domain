@@ -1,19 +1,16 @@
-package pl.cezarysanecki.parkingdomain.parking.application;
+package pl.cezarysanecki.parkingdomain.clientreservations.application;
 
 import lombok.NonNull;
 import lombok.Value;
 import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientId;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.parking.model.Vehicle;
-
-import java.time.Instant;
+import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationSlot;
 
 @Value
-public class ParkVehicleCommand {
+public class CreateReservationRequestForChosenParkingSpotCommand {
 
     @NonNull ClientId clientId;
+    @NonNull ReservationSlot reservationSlot;
     @NonNull ParkingSpotId parkingSpotId;
-    @NonNull Vehicle vehicle;
-    @NonNull Instant when;
 
 }

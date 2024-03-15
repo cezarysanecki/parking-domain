@@ -9,21 +9,31 @@ import pl.cezarysanecki.parkingdomain.parking.model.Vehicle;
 import pl.cezarysanecki.parkingdomain.parking.model.VehicleId;
 import pl.cezarysanecki.parkingdomain.parking.model.VehicleSizeUnit;
 
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 class DomainModelMapper {
 
     static ParkingSpot map(ParkingSpotEntity entity) {
-        return new ParkingSpot(
-                ParkingSpotId.of(entity.parkingSpotId),
-                entity.capacity,
-                entity.parkedVehicles.stream()
-                        .map(vehicleEntity -> new Vehicle(
-                                VehicleId.of(vehicleEntity.vehicleId),
-                                VehicleSizeUnit.of(vehicleEntity.vehicleSizeUnit)))
-                        .collect(Collectors.toUnmodifiableSet()),
-                entity.reservations);
+        Set<Vehicle> parkedVehicles = entity.parkedVehicles.stream()
+                .map(vehicleEntity -> new Vehicle(
+                        VehicleId.of(vehicleEntity.vehicleId),
+                        VehicleSizeUnit.of(vehicleEntity.vehicleSizeUnit)))
+                .collect(Collectors.toUnmodifiableSet());
+
+        return entity.reservation
+                .map(clientId -> new ParkingSpot(
+                        ParkingSpotId.of(entity.parkingSpotId),
+                        entity.capacity,
+                        parkedVehicles,
+                        entity.outOfOrder,
+                        clientId))
+                .getOrElse(() -> new ParkingSpot(
+                        ParkingSpotId.of(entity.parkingSpotId),
+                        entity.capacity,
+                        parkedVehicles,
+                        entity.outOfOrder));
     }
 
 }

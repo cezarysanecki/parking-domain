@@ -1,18 +1,25 @@
 package pl.cezarysanecki.parkingdomain.parking.application
 
 import io.vavr.control.Option
+import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientId
 import pl.cezarysanecki.parkingdomain.commons.commands.Result
-import pl.cezarysanecki.parkingdomain.parking.application.ParkVehicleCommand
-import pl.cezarysanecki.parkingdomain.parking.application.ParkingOnParkingSpot
-import pl.cezarysanecki.parkingdomain.parking.model.*
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpot
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpots
+import pl.cezarysanecki.parkingdomain.parking.model.Vehicle
 import spock.lang.Specification
 
 import java.time.Instant
 
-import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.*
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.anyParkingSpotId
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.emptyParkingSpotWith
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.vehicleWith
+import static pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleFixture.anyClientId
 
 class ParkingOnParkingSpotTest extends Specification {
   
+  ClientId clientId = anyClientId()
   ParkingSpotId parkingSpotId = anyParkingSpotId()
   
   Vehicle alrightVehicle = vehicleWith(1)
@@ -27,7 +34,7 @@ class ParkingOnParkingSpotTest extends Specification {
       persisted(emptyParkingSpotWith(parkingSpotId, 1))
     
     when:
-      def result = parkingOnParkingSpot.park(new ParkVehicleCommand(parkingSpotId, alrightVehicle, Instant.now()))
+      def result = parkingOnParkingSpot.park(new ParkVehicleCommand(clientId, parkingSpotId, alrightVehicle, Instant.now()))
     
     then:
       result.isSuccess()
@@ -41,7 +48,7 @@ class ParkingOnParkingSpotTest extends Specification {
       persisted(emptyParkingSpotWith(parkingSpotId, 1))
     
     when:
-      def result = parkingOnParkingSpot.park(new ParkVehicleCommand(parkingSpotId, tooBigVehicle, Instant.now()))
+      def result = parkingOnParkingSpot.park(new ParkVehicleCommand(clientId, parkingSpotId, tooBigVehicle, Instant.now()))
     
     then:
       result.isSuccess()
@@ -55,7 +62,7 @@ class ParkingOnParkingSpotTest extends Specification {
       unknownParkingSpot()
     
     when:
-      def result = parkingOnParkingSpot.park(new ParkVehicleCommand(parkingSpotId, alrightVehicle, Instant.now()))
+      def result = parkingOnParkingSpot.park(new ParkVehicleCommand(clientId, parkingSpotId, alrightVehicle, Instant.now()))
     
     then:
       result.isFailure()

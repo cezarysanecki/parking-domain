@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientId;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
 import pl.cezarysanecki.parkingdomain.parking.application.ParkVehicleCommand;
 import pl.cezarysanecki.parkingdomain.parking.application.ParkingOnParkingSpot;
@@ -26,6 +27,7 @@ import pl.cezarysanecki.parkingdomain.parkingview.model.ParkingViews;
 import java.time.Instant;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -38,6 +40,7 @@ class ParkingController {
     @PostMapping("/park-on/{parkingSpotId}")
     ResponseEntity park(@PathVariable UUID parkingSpotId, @RequestBody ParkVehicleRequest request) {
         Try<Result> result = parkingOnParkingSpot.park(new ParkVehicleCommand(
+                ClientId.of(request.getClientId()),
                 ParkingSpotId.of(parkingSpotId),
                 new Vehicle(VehicleId.of(request.vehicleId), VehicleSizeUnit.of(request.vehicleSize)),
                 Instant.now()));
@@ -47,7 +50,7 @@ class ParkingController {
                     case Success -> ResponseEntity.ok().build();
                     case Rejection -> ResponseEntity.badRequest().build();
                 })
-                .getOrElse(ResponseEntity.internalServerError().build());
+                .getOrElse(() -> ResponseEntity.internalServerError().build());
     }
 
     @PostMapping("/release/{parkingSpotId}")
@@ -61,12 +64,17 @@ class ParkingController {
                     case Success -> ResponseEntity.ok().build();
                     case Rejection -> ResponseEntity.badRequest().build();
                 })
-                .getOrElse(ResponseEntity.internalServerError().build());
+                .getOrElse(() -> ResponseEntity.internalServerError().build());
     }
 
     @GetMapping("/available-parking-spots")
-    ResponseEntity<Set<AvailableParkingSpotView>> getAvailableParkingSpots() {
-        return ResponseEntity.ok(parkingViews.findAvailable().getAvailableParkingSpots());
+    ResponseEntity<Set<AvailableParkingSpot>> getAvailableParkingSpots() {
+        return ResponseEntity.ok(
+                parkingViews.findAvailable()
+                        .getAvailableParkingSpots()
+                        .stream()
+                        .map(AvailableParkingSpot::new)
+                        .collect(Collectors.toUnmodifiableSet()));
     }
 
 }
@@ -76,6 +84,7 @@ class ParkingController {
 @AllArgsConstructor
 class ParkVehicleRequest {
 
+    UUID clientId;
     UUID vehicleId;
     int vehicleSize;
 
@@ -87,5 +96,19 @@ class ParkVehicleRequest {
 class LeaveParkingSpotRequest {
 
     UUID vehicleId;
+
+}
+
+@Getter
+@NoArgsConstructor
+class AvailableParkingSpot {
+
+    UUID parkingSpotId;
+    int leftCapacity;
+
+    AvailableParkingSpot(AvailableParkingSpotView availableParkingSpotView) {
+        this.parkingSpotId = availableParkingSpotView.getParkingSpotId().getValue();
+        this.leftCapacity = availableParkingSpotView.getLeftCapacity();
+    }
 
 }

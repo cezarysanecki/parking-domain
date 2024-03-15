@@ -31,7 +31,7 @@ public class ParkingOnParkingSpot {
     public Try<Result> park(@NonNull ParkVehicleCommand command) {
         return Try.of(() -> {
             ParkingSpot parkingSpot = load(command.getParkingSpotId(), command.getWhen());
-            Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(command.getVehicle());
+            Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(command.getClientId(), command.getVehicle());
             return Match(result).of(
                     Case($Left($()), this::publishEvents),
                     Case($Right($()), this::publishEvents));

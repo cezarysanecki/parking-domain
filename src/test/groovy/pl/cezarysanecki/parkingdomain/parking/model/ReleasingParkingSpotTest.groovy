@@ -4,8 +4,14 @@ import io.vavr.collection.List
 import io.vavr.control.Either
 import spock.lang.Specification
 
-import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.*
-import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.*
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.CompletelyFreedUp
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ReleasingFailed
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleLeft
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleLeftEvents
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.emptyParkingSpotWith
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.outOfOrderParkingSpotWith
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.parkingSpotWith
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.vehicleWith
 
 class ReleasingParkingSpotTest extends Specification {
   
@@ -21,7 +27,7 @@ class ReleasingParkingSpotTest extends Specification {
     then:
       result.isRight()
       result.get().with {
-        VehicleLeft vehicleLeft = it.vehicleLeft
+        VehicleLeft vehicleLeft = it.vehiclesLeft.first()
         assert vehicleLeft.parkingSpotId == parkingSpot.parkingSpotId
         assert vehicleLeft.vehicle == vehicle
       }
@@ -39,7 +45,7 @@ class ReleasingParkingSpotTest extends Specification {
     then:
       result.isRight()
       result.get().with {
-        VehicleLeft vehicleLeft = it.vehicleLeft
+        VehicleLeft vehicleLeft = it.vehiclesLeft.first()
         assert vehicleLeft.parkingSpotId == parkingSpot.parkingSpotId
         assert vehicleLeft.vehicle == vehicle
         
@@ -60,7 +66,7 @@ class ReleasingParkingSpotTest extends Specification {
     then:
       result.isRight()
       result.get().with {
-        VehicleLeft vehicleLeft = it.vehicleLeft
+        VehicleLeft vehicleLeft = it.vehiclesLeft.first()
         assert vehicleLeft.parkingSpotId == parkingSpot.parkingSpotId
         assert vehicleLeft.vehicle == vehicle
       }
@@ -71,10 +77,31 @@ class ReleasingParkingSpotTest extends Specification {
       ParkingSpot parkingSpot = parkingSpotWith([vehicleWith(1), vehicleWith(1)])
     
     when:
-      List<VehicleLeft> result = parkingSpot.releaseAll()
+      Either<ReleasingFailed, VehicleLeftEvents> result = parkingSpot.releaseAll()
     
     then:
-      result.size() == 2
+      result.isRight()
+      result.get().with {
+        List<VehicleLeft> vehiclesLeft = it.vehiclesLeft
+        assert vehiclesLeft.size() == 2
+        
+        CompletelyFreedUp completelyFreedUp = it.completelyFreedUps.get()
+        assert completelyFreedUp.parkingSpotId == parkingSpotId
+      }
+  }
+  
+  def "reject to release empty parking spot"() {
+    given:
+      ParkingSpot parkingSpot = emptyParkingSpotWith(4)
+    
+    when:
+      Either<ReleasingFailed, VehicleLeftEvents> result = parkingSpot.releaseAll()
+    
+    then:
+      result.isLeft()
+      result.getLeft().with {
+        assert it.parkingSpotId == parkingSpotId
+      }
   }
   
   def "vehicle cannot be release from parking spot if it is not on this spot"() {
@@ -90,7 +117,7 @@ class ReleasingParkingSpotTest extends Specification {
       result.isLeft()
       result.getLeft().with {
         assert it.parkingSpotId == parkingSpot.parkingSpotId
-        assert it.vehicleId == vehicle.vehicleId
+        assert it.vehicleIds == List.ofAll([vehicle.vehicleId])
         assert it.reason == "vehicle not park on this spot"
       }
   }
