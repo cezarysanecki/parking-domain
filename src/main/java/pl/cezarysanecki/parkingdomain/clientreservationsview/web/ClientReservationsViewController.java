@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.clientreservations.web;
+package pl.cezarysanecki.parkingdomain.clientreservationsview.web;
 
 import io.vavr.control.Try;
 import lombok.AllArgsConstructor;
@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,17 +15,21 @@ import pl.cezarysanecki.parkingdomain.clientreservations.application.CreateReser
 import pl.cezarysanecki.parkingdomain.clientreservations.application.CreateReservationRequestForChosenParkingSpotCommand;
 import pl.cezarysanecki.parkingdomain.clientreservations.application.RequestingReservation;
 import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientId;
+import pl.cezarysanecki.parkingdomain.clientreservationsview.model.ClientReservationsView;
+import pl.cezarysanecki.parkingdomain.clientreservationsview.model.ClientsReservationsView;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationSlot;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-class ClientReservationsController {
+class ClientReservationsViewController {
 
+    private final ClientsReservationsView clientsReservationsView;
     private final RequestingReservation requestingReservation;
 
     @PostMapping("/client-reservation/{parkingSpotId}")
@@ -56,8 +61,14 @@ class ClientReservationsController {
                 .getOrElse(ResponseEntity.internalServerError().build());
     }
 
-}
+    @GetMapping("/client-reservation/{clientId}")
+    ResponseEntity<Set<ClientReservationsView.Reservation>> getReservationsForClient(@PathVariable UUID clientId) {
+        return ResponseEntity.ok(
+                clientsReservationsView.findFor(ClientId.of(clientId))
+                        .getReservations());
+    }
 
+}
 
 @Getter
 @NoArgsConstructor

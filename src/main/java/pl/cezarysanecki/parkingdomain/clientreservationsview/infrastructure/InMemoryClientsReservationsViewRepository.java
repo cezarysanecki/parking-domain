@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.reservationscheduleview.infrastructure;
+package pl.cezarysanecki.parkingdomain.clientreservationsview.infrastructure;
 
 import io.vavr.API;
 import lombok.AccessLevel;
@@ -8,8 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientId;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleEvent;
-import pl.cezarysanecki.parkingdomain.reservationscheduleview.model.ReservationsView;
-import pl.cezarysanecki.parkingdomain.reservationscheduleview.model.ReservationsViews;
+import pl.cezarysanecki.parkingdomain.clientreservationsview.model.ClientReservationsView;
+import pl.cezarysanecki.parkingdomain.clientreservationsview.model.ClientsReservationsView;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -27,16 +27,16 @@ import static pl.cezarysanecki.parkingdomain.reservationschedule.model.Reservati
 
 @Slf4j
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
-class InMemoryReservationsViewReadModel implements ReservationsViews {
+class InMemoryClientsReservationsViewRepository implements ClientsReservationsView {
 
-    private final Map<ClientId, ReservationsEntityViewModel> database = new ConcurrentHashMap<>();
+    private final Map<ClientId, ClientReservationsEntityViewModel> database = new ConcurrentHashMap<>();
 
     @Override
-    public ReservationsView findFor(ClientId clientId) {
-        ReservationsEntityViewModel entity = database.getOrDefault(clientId, new ReservationsEntityViewModel(new HashSet<>()));
-        return new ReservationsView(clientId.getValue(), entity.getReservations()
+    public ClientReservationsView findFor(ClientId clientId) {
+        ClientReservationsEntityViewModel entity = database.getOrDefault(clientId, new ClientReservationsEntityViewModel(new HashSet<>()));
+        return new ClientReservationsView(clientId.getValue(), entity.getReservations()
                 .stream()
-                .map(reservationEntity -> new ReservationsView.Reservation(
+                .map(reservationEntity -> new ClientReservationsView.Reservation(
                         reservationEntity.reservationId,
                         reservationEntity.since,
                         reservationEntity.until))
@@ -54,9 +54,9 @@ class InMemoryReservationsViewReadModel implements ReservationsViews {
     public ReservationScheduleEvent handle(ReservationMade reservationMade) {
         ClientId clientId = reservationMade.getClientId();
 
-        ReservationsEntityViewModel entity = database.getOrDefault(
-                clientId, new ReservationsEntityViewModel(new HashSet<>()));
-        entity.getReservations().add(new ReservationsEntityViewModel.ReservationEntity(
+        ClientReservationsEntityViewModel entity = database.getOrDefault(
+                clientId, new ClientReservationsEntityViewModel(new HashSet<>()));
+        entity.getReservations().add(new ClientReservationsEntityViewModel.ReservationEntity(
                 reservationMade.getReservationId().getValue(),
                 reservationMade.getReservationSlot().getSince(),
                 reservationMade.getReservationSlot().until()));
@@ -69,8 +69,8 @@ class InMemoryReservationsViewReadModel implements ReservationsViews {
     private ReservationScheduleEvent handle(ReservationCancelled reservationCancelled) {
         ClientId clientId = reservationCancelled.getClientId();
 
-        ReservationsEntityViewModel entity = database.getOrDefault(
-                clientId, new ReservationsEntityViewModel(new HashSet<>()));
+        ClientReservationsEntityViewModel entity = database.getOrDefault(
+                clientId, new ClientReservationsEntityViewModel(new HashSet<>()));
         entity.getReservations().removeIf(
                 reservation -> reservation.getReservationId().equals(reservationCancelled.getReservationId().getValue()));
 
@@ -81,7 +81,7 @@ class InMemoryReservationsViewReadModel implements ReservationsViews {
 
     @Data
     @AllArgsConstructor
-    private static class ReservationsEntityViewModel {
+    private static class ClientReservationsEntityViewModel {
 
         Set<ReservationEntity> reservations;
 

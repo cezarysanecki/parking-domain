@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.reservationscheduleview.model;
+package pl.cezarysanecki.parkingdomain.clientreservationsview.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,7 +11,7 @@ import java.util.UUID;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReservationsView {
+public class ClientReservationsView {
 
     UUID clientId;
     Set<Reservation> reservations;
