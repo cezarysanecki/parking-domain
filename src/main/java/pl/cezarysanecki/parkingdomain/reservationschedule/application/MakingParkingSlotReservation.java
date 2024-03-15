@@ -1,10 +1,11 @@
 package pl.cezarysanecki.parkingdomain.reservationschedule.application;
 
 import io.vavr.control.Either;
-import io.vavr.control.Try;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.event.EventListener;
+import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientId;
+import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientReservationsEvent.ReservationRequestCreated;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationSchedule;
@@ -27,24 +28,19 @@ public class MakingParkingSlotReservation {
 
     private final ReservationSchedules reservationSchedules;
 
-    public Try<Result> reserve(@NonNull ReserveParkingSpotCommand command) {
-        return Try.of(() -> {
-            ReservationSchedule reservationSchedule = load(command.getParkingSpotId());
-            Either<ReservationFailed, ReservationMade> result = reservationSchedule.reserve(command.getClientId(), command.getReservationSlot());
-            return Match(result).of(
-                    Case($Left($()), this::publishEvents),
-                    Case($Right($()), this::publishEvents));
-        }).onFailure(throwable -> log.error("Failed to reserve parking slot", throwable));
-    }
+    @EventListener
+    public void handle(ReservationRequestCreated event) {
+        ClientId clientId = event.getClientId();
+        ReservationSlot reservationSlot = event.getReservationSlot();
 
-    public Try<Result> reserve(@NonNull ReserveAnyParkingSpotCommand command) {
-        return Try.of(() -> {
-            ReservationSchedule reservationSchedule = loadFree(command.getReservationSlot());
-            Either<ReservationFailed, ReservationMade> result = reservationSchedule.reserve(command.getClientId(), command.getReservationSlot());
-            return Match(result).of(
-                    Case($Left($()), this::publishEvents),
-                    Case($Right($()), this::publishEvents));
-        }).onFailure(throwable -> log.error("Failed to reserve parking slot", throwable));
+        ReservationSchedule reservationSchedule = event.getParkingSpotId()
+                .map(this::load)
+                .getOrElse(loadFree(reservationSlot));
+
+        Either<ReservationFailed, ReservationMade> result = reservationSchedule.reserve(clientId, reservationSlot);
+        Match(result).of(
+                Case($Left($()), this::publishEvents),
+                Case($Right($()), this::publishEvents));
     }
 
     private Result publishEvents(ReservationMade reservationMade) {

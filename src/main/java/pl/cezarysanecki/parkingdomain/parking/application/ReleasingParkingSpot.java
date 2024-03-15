@@ -37,14 +37,14 @@ public class ReleasingParkingSpot {
     }
 
     private Result publishEvents(VehicleLeftEvents vehicleLeftEvents) {
-        log.debug("successfully vehicle left with id {}", vehicleLeftEvents.getVehicleLeft().getVehicle().getVehicleId());
         parkingSpots.publish(vehicleLeftEvents);
+        log.debug("successfully vehicle left with id {}", vehicleLeftEvents.getVehicleLeft().getVehicle().getVehicleId());
         return Success;
     }
 
     private Result publishEvents(ReleasingFailed releasingFailed) {
-        log.debug("rejected to leave vehicle with id {}, reason: {}", releasingFailed.getVehicleId(), releasingFailed.getReason());
         parkingSpots.publish(releasingFailed);
+        log.debug("rejected to leave vehicle with id {}, reason: {}", releasingFailed.getVehicleId(), releasingFailed.getReason());
         return Rejection;
     }
 
