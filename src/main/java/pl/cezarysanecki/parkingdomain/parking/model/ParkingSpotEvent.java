@@ -7,8 +7,6 @@ import lombok.Value;
 import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientId;
 import pl.cezarysanecki.parkingdomain.commons.events.DomainEvent;
 
-import java.time.Instant;
-
 public sealed interface ParkingSpotEvent extends DomainEvent {
 
     ParkingSpotId getParkingSpotId();
@@ -57,11 +55,6 @@ public sealed interface ParkingSpotEvent extends DomainEvent {
         @NonNull ParkingSpotId parkingSpotId;
         @NonNull VehicleParked vehicleParked;
         @NonNull Option<FullyOccupied> fullyOccupied;
-
-        @Override
-        public Instant getWhen() {
-            return vehicleParked.getWhen();
-        }
 
         public static VehicleParkedEvents events(ParkingSpotId parkingSpotId, VehicleParked vehicleParked) {
             return new VehicleParkedEvents(parkingSpotId, vehicleParked, Option.none());

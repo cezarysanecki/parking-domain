@@ -8,7 +8,7 @@ class ReservationSlotTest extends Specification {
   
   def "cannot create slot which is longer then 12 hours"() {
     when:
-      new ReservationSlot(LocalDateTime.now(), 13)
+      new ReservationSlot(LocalDateTime.of(2024, 10, 10, 10, 0), 13)
     
     then:
       thrown(IllegalArgumentException.class)

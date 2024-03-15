@@ -11,7 +11,6 @@ import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpots;
 import pl.cezarysanecki.parkingdomain.parking.model.VehicleId;
 
-import java.time.Instant;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -35,11 +34,6 @@ class InMemoryParkingSpotRepository implements ParkingSpots {
                         .filter(parkingSpot -> ParkingSpotId.of(parkingSpot.parkingSpotId).equals(parkingSpotId))
                         .findFirst()
                         .map(DomainModelMapper::map));
-    }
-
-    @Override
-    public Option<ParkingSpot> findBy(ParkingSpotId parkingSpotId, Instant when) {
-        return findBy(parkingSpotId);
     }
 
     @Override
