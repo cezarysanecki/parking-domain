@@ -3,7 +3,12 @@ package pl.cezarysanecki.parkingdomain.reservationschedule.application
 import io.vavr.control.Option
 import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientId
 import pl.cezarysanecki.parkingdomain.commons.commands.Result
-import pl.cezarysanecki.parkingdomain.reservationschedule.model.*
+import pl.cezarysanecki.parkingdomain.reservationschedule.model.Reservation
+import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationId
+import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationSchedule
+import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleEvent
+import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationSchedules
+import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationSlot
 import spock.lang.Specification
 
 import java.time.LocalDateTime
@@ -22,7 +27,7 @@ class CancellingParkingSlotReservationTest extends Specification {
     given:
       CancellingReservation cancellingReservation = new CancellingReservation(repository)
     and:
-      def now = LocalDateTime.now()
+      def now = LocalDateTime.of(2024, 10, 10, 10, 0)
     and:
       def reservationId = anyReservationId()
       def reservation = new Reservation(reservationId, new ReservationSlot(now.plusMinutes(60), 3), clientId)
@@ -41,7 +46,7 @@ class CancellingParkingSlotReservationTest extends Specification {
     given:
       CancellingReservation cancellingReservation = new CancellingReservation(repository)
     and:
-      def now = LocalDateTime.now()
+      def now = LocalDateTime.of(2024, 10, 10, 10, 0)
     and:
       def reservationId = anyReservationId()
       def reservation = new Reservation(reservationId, new ReservationSlot(now.plusMinutes(30), 3), clientId)

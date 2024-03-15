@@ -30,7 +30,7 @@ class MakingReservationForParkingSpotTest extends Specification {
     given:
       MakingReservationEventListener makingParkingSlotReservation = new MakingReservationEventListener(repository)
     and:
-      def now = LocalDateTime.now()
+      def now = LocalDateTime.of(2024, 10, 10, 10, 0)
     and:
       def reservationSlot = new ReservationSlot(now, 3)
     and:
@@ -47,7 +47,7 @@ class MakingReservationForParkingSpotTest extends Specification {
     given:
       MakingReservationEventListener makingParkingSlotReservation = new MakingReservationEventListener(repository)
     and:
-      def now = LocalDateTime.now()
+      def now = LocalDateTime.of(2024, 10, 10, 10, 0)
     and:
       def reservationSlot = new ReservationSlot(now, 3)
     and:

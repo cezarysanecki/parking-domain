@@ -10,8 +10,6 @@ import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpots;
 
-import java.time.Instant;
-
 import static io.vavr.API.$;
 import static io.vavr.API.Case;
 import static io.vavr.API.Match;
@@ -30,7 +28,7 @@ public class ParkingOnParkingSpot {
 
     public Try<Result> park(@NonNull ParkVehicleCommand command) {
         return Try.of(() -> {
-            ParkingSpot parkingSpot = load(command.getParkingSpotId(), command.getWhen());
+            ParkingSpot parkingSpot = load(command.getParkingSpotId());
             Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(command.getClientId(), command.getVehicle());
             return Match(result).of(
                     Case($Left($()), this::publishEvents),
@@ -50,8 +48,8 @@ public class ParkingOnParkingSpot {
         return Rejection;
     }
 
-    private ParkingSpot load(ParkingSpotId parkingSpotId, Instant when) {
-        return parkingSpots.findBy(parkingSpotId, when)
+    private ParkingSpot load(ParkingSpotId parkingSpotId) {
+        return parkingSpots.findBy(parkingSpotId)
                 .getOrElseThrow(() -> new IllegalArgumentException("Cannot find parking spot with id: " + parkingSpotId));
     }
 

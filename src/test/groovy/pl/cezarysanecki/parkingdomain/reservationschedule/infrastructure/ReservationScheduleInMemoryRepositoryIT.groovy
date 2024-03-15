@@ -4,11 +4,11 @@ import io.vavr.control.Option
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
+import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientId
 import pl.cezarysanecki.parkingdomain.commons.date.DateConfig
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisherTestConfig
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId
-import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientId
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationId
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationSchedule
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationSchedules
@@ -43,7 +43,8 @@ class ReservationScheduleInMemoryRepositoryIT extends Specification {
       eventPublisher.publish(new ParkingSpotCreated(parkingSpotId, 4))
     
     when:
-      reservationSchedules.publish reservationMade(new ReservationSlot(LocalDateTime.now(), 4))
+      reservationSchedules.publish reservationMade(
+          new ReservationSlot(LocalDateTime.of(2024, 10, 10, 10, 0), 4))
     
     then:
       reservationScheduleShouldHaveReservationForClient(parkingSpotId, clientId)

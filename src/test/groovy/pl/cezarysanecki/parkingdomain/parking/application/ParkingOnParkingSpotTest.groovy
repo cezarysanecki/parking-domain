@@ -10,8 +10,6 @@ import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpots
 import pl.cezarysanecki.parkingdomain.parking.model.Vehicle
 import spock.lang.Specification
 
-import java.time.Instant
-
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.anyParkingSpotId
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.emptyParkingSpotWith
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.vehicleWith
@@ -34,7 +32,7 @@ class ParkingOnParkingSpotTest extends Specification {
       persisted(emptyParkingSpotWith(parkingSpotId, 1))
     
     when:
-      def result = parkingOnParkingSpot.park(new ParkVehicleCommand(clientId, parkingSpotId, alrightVehicle, Instant.now()))
+      def result = parkingOnParkingSpot.park(new ParkVehicleCommand(clientId, parkingSpotId, alrightVehicle))
     
     then:
       result.isSuccess()
@@ -48,7 +46,7 @@ class ParkingOnParkingSpotTest extends Specification {
       persisted(emptyParkingSpotWith(parkingSpotId, 1))
     
     when:
-      def result = parkingOnParkingSpot.park(new ParkVehicleCommand(clientId, parkingSpotId, tooBigVehicle, Instant.now()))
+      def result = parkingOnParkingSpot.park(new ParkVehicleCommand(clientId, parkingSpotId, tooBigVehicle))
     
     then:
       result.isSuccess()
@@ -62,20 +60,20 @@ class ParkingOnParkingSpotTest extends Specification {
       unknownParkingSpot()
     
     when:
-      def result = parkingOnParkingSpot.park(new ParkVehicleCommand(clientId, parkingSpotId, alrightVehicle, Instant.now()))
+      def result = parkingOnParkingSpot.park(new ParkVehicleCommand(clientId, parkingSpotId, alrightVehicle))
     
     then:
       result.isFailure()
   }
   
   ParkingSpot persisted(ParkingSpot parkingSpot) {
-    repository.findBy(parkingSpot.parkingSpotId, _ as Instant) >> Option.of(parkingSpot)
+    repository.findBy(parkingSpot.parkingSpotId) >> Option.of(parkingSpot)
     repository.publish(_ as ParkingSpotEvent) >> parkingSpot
     return parkingSpot
   }
   
   ParkingSpotId unknownParkingSpot() {
-    repository.findBy(parkingSpotId, _ as Instant) >> Option.none()
+    repository.findBy(parkingSpotId) >> Option.none()
     return parkingSpotId
   }
   

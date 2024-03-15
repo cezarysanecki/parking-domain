@@ -20,9 +20,11 @@ class MakingReservationTest extends Specification {
     given:
       def clientId = anyClientId()
     and:
-      def reservationSchedule = emptyReservationSchedule(LocalDateTime.now())
+      def now = LocalDateTime.of(2024, 10, 10, 10, 0)
     and:
-      def reservationSlot = new ReservationSlot(LocalDateTime.now(), 2)
+      def reservationSchedule = emptyReservationSchedule(now)
+    and:
+      def reservationSlot = new ReservationSlot(now, 2)
     
     when:
       Either<ReservationFailed, ReservationMade> result = reservationSchedule.reserve(clientId, reservationSlot)
@@ -82,10 +84,12 @@ class MakingReservationTest extends Specification {
   
   def "cannot reserve parking spot in the same time as other reservation"() {
     given:
-      def reservationSlot = new ReservationSlot(LocalDateTime.now(), 2)
+      def now = LocalDateTime.of(2024, 10, 10, 10, 0)
+    and:
+      def reservationSlot = new ReservationSlot(now, 2)
       def reservation = new Reservation(anyReservationId(), reservationSlot, anyClientId())
     and:
-      def reservationSchedule = reservationScheduleWith(LocalDateTime.now(), reservation)
+      def reservationSchedule = reservationScheduleWith(now, reservation)
     
     when:
       Either<ReservationFailed, ReservationMade> result = reservationSchedule.reserve(anyClientId(), reservationSlot)
@@ -100,7 +104,7 @@ class MakingReservationTest extends Specification {
   
   def "cannot reserve parking spot for the same client"() {
     given:
-      def now = LocalDateTime.now()
+      def now = LocalDateTime.of(2024, 10, 10, 10, 0)
     and:
       def clientId = anyClientId()
     and:

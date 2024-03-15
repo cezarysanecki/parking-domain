@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,7 +25,6 @@ import pl.cezarysanecki.parkingdomain.parking.model.VehicleSizeUnit;
 import pl.cezarysanecki.parkingdomain.parkingview.model.AvailableParkingSpotView;
 import pl.cezarysanecki.parkingdomain.parkingview.model.ParkingViews;
 
-import java.time.Instant;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -37,13 +37,14 @@ class ParkingController {
     private final ReleasingParkingSpot releasingParkingSpot;
     private final ParkingViews parkingViews;
 
+    private final
+
     @PostMapping("/park-on/{parkingSpotId}")
     ResponseEntity park(@PathVariable UUID parkingSpotId, @RequestBody ParkVehicleRequest request) {
         Try<Result> result = parkingOnParkingSpot.park(new ParkVehicleCommand(
                 ClientId.of(request.getClientId()),
                 ParkingSpotId.of(parkingSpotId),
-                new Vehicle(VehicleId.of(request.vehicleId), VehicleSizeUnit.of(request.vehicleSize)),
-                Instant.now()));
+                new Vehicle(VehicleId.of(request.vehicleId), VehicleSizeUnit.of(request.vehicleSize))));
 
         return result
                 .map(success -> switch (success) {
@@ -53,11 +54,9 @@ class ParkingController {
                 .getOrElse(() -> ResponseEntity.internalServerError().build());
     }
 
-    @PostMapping("/release/{parkingSpotId}")
-    ResponseEntity release(@PathVariable UUID parkingSpotId, @RequestBody LeaveParkingSpotRequest request) {
-        Try<Result> result = releasingParkingSpot.release(new ReleaseParkingSpotCommand(
-                ParkingSpotId.of(parkingSpotId),
-                VehicleId.of(request.getVehicleId())));
+    @DeleteMapping("/drive-away/{vehicleId}")
+    ResponseEntity driveAway(@PathVariable UUID vehicleId) {
+        Try<Result> result = releasingParkingSpot.release(new ReleaseParkingSpotCommand(VehicleId.of(vehicleId)));
 
         return result
                 .map(success -> switch (success) {
