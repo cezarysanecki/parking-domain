@@ -36,4 +36,11 @@ public interface ClientReservationsEvent extends DomainEvent {
 
     }
 
+    @Value
+    final class ReservationRequestCancelled implements ClientReservationsEvent {
+
+        @NonNull ClientId clientId;
+
+    }
+
 }

@@ -6,6 +6,7 @@ import lombok.NonNull;
 import lombok.Value;
 import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientId;
 import pl.cezarysanecki.parkingdomain.commons.events.DomainEvent;
+import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationId;
 
 public sealed interface ParkingSpotEvent extends DomainEvent {
 
@@ -36,8 +37,9 @@ public sealed interface ParkingSpotEvent extends DomainEvent {
     @Value
     final class ReservationFulfilled implements ParkingSpotEvent {
 
-        @NonNull ClientId clientId;
         @NonNull ParkingSpotId parkingSpotId;
+        @NonNull ClientId clientId;
+        @NonNull ReservationId reservationId;
 
     }
 

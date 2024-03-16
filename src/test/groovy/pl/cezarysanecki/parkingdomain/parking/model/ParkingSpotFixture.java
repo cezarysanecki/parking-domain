@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import static pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleFixture.anyReservationId;
+
 public class ParkingSpotFixture {
 
     public static ParkingSpot emptyParkingSpotWith(int capacity) {
@@ -14,7 +16,7 @@ public class ParkingSpotFixture {
     }
 
     public static ParkingSpot reservedParkingSpotFor(ClientId clientId) {
-        return new ParkingSpot(anyParkingSpotId(), 4, clientId);
+        return new ParkingSpot(anyParkingSpotId(), 4, new ParkingSpotReservation(clientId, anyReservationId()));
     }
 
     public static ParkingSpot emptyParkingSpotWith(ParkingSpotId parkingSpotId, int capacity) {

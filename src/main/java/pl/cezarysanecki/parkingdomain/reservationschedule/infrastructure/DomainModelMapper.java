@@ -30,7 +30,7 @@ class DomainModelMapper {
                                 ))
                                 .collect(Collectors.toUnmodifiableSet())),
                 entity.noOccupation,
-                dateProvider.currentLocalDateTime());
+                dateProvider.now());
     }
 
 }

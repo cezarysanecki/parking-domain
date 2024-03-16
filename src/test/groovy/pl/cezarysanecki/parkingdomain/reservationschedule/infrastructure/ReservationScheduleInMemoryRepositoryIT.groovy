@@ -67,11 +67,11 @@ class ReservationScheduleInMemoryRepositoryIT extends Specification {
   }
   
   ReservationMade reservationMade(ReservationSlot reservationSlot) {
-    return new ReservationMade(reservationId, parkingSpotId, reservationSlot, clientId)
+    return new ReservationMade(parkingSpotId, clientId, reservationId, reservationSlot)
   }
   
   ReservationCancelled reservationCancelled() {
-    return new ReservationCancelled(reservationId, parkingSpotId, clientId)
+    return new ReservationCancelled(parkingSpotId, clientId, reservationId)
   }
   
   ReservationSchedule loadPersistedReservationSchedule(ParkingSpotId parkingSpotId) {

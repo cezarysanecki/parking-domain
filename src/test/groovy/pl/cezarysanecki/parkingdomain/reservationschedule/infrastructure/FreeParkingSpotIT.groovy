@@ -4,6 +4,7 @@ import io.vavr.control.Option
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
+import pl.cezarysanecki.parkingdomain.commons.date.DateConfig
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisherTestConfig
 import pl.cezarysanecki.parkingdomain.parking.infrastructure.ParkingSpotConfig
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpot
@@ -20,7 +21,7 @@ import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.an
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.vehicleWith
 
 @ActiveProfiles("local")
-@SpringBootTest(classes = [ParkingSpotConfig.class, EventPublisherTestConfig.class])
+@SpringBootTest(classes = [ParkingSpotConfig.class, EventPublisherTestConfig.class, DateConfig.class])
 class FreeParkingSpotIT extends Specification {
   
   ParkingSpotId parkingSpotId = anyParkingSpotId()
