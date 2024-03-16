@@ -13,10 +13,10 @@ public sealed interface ReservationScheduleEvent extends DomainEvent {
     @Value
     final class ReservationMade implements ReservationScheduleEvent {
 
-        @NonNull ReservationId reservationId;
         @NonNull ParkingSpotId parkingSpotId;
-        @NonNull ReservationSlot reservationSlot;
         @NonNull ClientId clientId;
+        @NonNull ReservationId reservationId;
+        @NonNull ReservationSlot reservationSlot;
 
     }
 
@@ -24,6 +24,7 @@ public sealed interface ReservationScheduleEvent extends DomainEvent {
     final class ReservationFailed implements ReservationScheduleEvent {
 
         @NonNull ParkingSpotId parkingSpotId;
+        @NonNull ClientId clientId;
         @NonNull String reason;
 
     }
@@ -31,9 +32,9 @@ public sealed interface ReservationScheduleEvent extends DomainEvent {
     @Value
     final class ReservationCancelled implements ReservationScheduleEvent {
 
-        @NonNull ReservationId reservationId;
         @NonNull ParkingSpotId parkingSpotId;
         @NonNull ClientId clientId;
+        @NonNull ReservationId reservationId;
 
     }
 

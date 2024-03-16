@@ -4,6 +4,9 @@ import io.vavr.API;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
+import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientReservationsEvent;
+import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientReservationsEvent.ReservationRequestCancelled;
+import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientReservationsEvent.ReservationRequestCreated;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleEvent;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleEvent.ReservationCancelled;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleEvent.ReservationMade;
@@ -27,19 +30,19 @@ class ClientReservationsEntity {
         this.numberOfReservations = 0;
     }
 
-    void handle(ReservationScheduleEvent event) {
+    void handle(ClientReservationsEvent event) {
         API.Match(event).of(
-                Case($(instanceOf(ReservationMade.class)), this::handle),
-                Case($(instanceOf(ReservationCancelled.class)), this::handle),
+                Case($(instanceOf(ReservationRequestCreated.class)), this::handle),
+                Case($(instanceOf(ReservationRequestCancelled.class)), this::handle),
                 Case($(), () -> this));
     }
 
-    private ClientReservationsEntity handle(ReservationMade reservationMade) {
+    private ClientReservationsEntity handle(ReservationRequestCreated reservationRequestCreated) {
         this.numberOfReservations++;
         return this;
     }
 
-    private ClientReservationsEntity handle(ReservationCancelled reservationCancelled) {
+    private ClientReservationsEntity handle(ReservationRequestCancelled reservationRequestCancelled) {
         this.numberOfReservations--;
         return this;
     }

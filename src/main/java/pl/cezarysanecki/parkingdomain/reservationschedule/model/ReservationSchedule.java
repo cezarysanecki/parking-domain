@@ -28,29 +28,31 @@ public class ReservationSchedule {
 
     public Either<ReservationFailed, ReservationMade> reserve(ClientId clientId, ReservationSlot reservationSlot) {
         if (reservations.intersects(reservationSlot)) {
-            return announceFailure(new ReservationFailed(parkingSpotId, "there is another reservation in that time"));
+            return announceFailure(new ReservationFailed(parkingSpotId, clientId, "there is another reservation in that time"));
         }
         if (isAlreadyReservedFor(clientId)) {
-            return announceFailure(new ReservationFailed(parkingSpotId, "it is already reserved for this client"));
+            return announceFailure(new ReservationFailed(parkingSpotId, clientId, "it is already reserved for this client"));
         }
         if (thereIsNoEnoughTimeToFreeSpot(reservationSlot)) {
-            return announceFailure(new ReservationFailed(parkingSpotId, "need to give some time to free parking spot"));
+            return announceFailure(new ReservationFailed(parkingSpotId, clientId, "need to give some time to free parking spot"));
         }
 
-        return announceSuccess(new ReservationMade(ReservationId.of(UUID.randomUUID()), parkingSpotId, reservationSlot, clientId));
+        return announceSuccess(new ReservationMade(
+                parkingSpotId, clientId, ReservationId.of(UUID.randomUUID()), reservationSlot));
     }
 
     public Either<ReservationCancellationFailed, ReservationCancelled> cancel(ReservationId reservationId) {
         Option<Reservation> reservation = reservations.findBy(reservationId);
         if (reservation.isEmpty()) {
-            return announceFailure(new ReservationCancellationFailed(parkingSpotId, reservationId, "there is no such reservation"));
+            return announceFailure(new ReservationCancellationFailed(
+                    parkingSpotId, reservationId, "there is no such reservation"));
         }
         Reservation foundReservation = reservation.get();
         long minutesToReservation = foundReservation.minutesTo(now);
         if (minutesToReservation < 60) {
             return announceFailure(new ReservationCancellationFailed(parkingSpotId, reservationId, "it is too late to cancel reservation"));
         }
-        return announceSuccess(new ReservationCancelled(reservationId, parkingSpotId, foundReservation.getClientId()));
+        return announceSuccess(new ReservationCancelled(parkingSpotId, foundReservation.getClientId(), reservationId));
     }
 
     public boolean thereIsReservationFor(ClientId clientId) {
