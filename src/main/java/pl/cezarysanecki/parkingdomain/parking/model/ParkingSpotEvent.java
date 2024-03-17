@@ -4,7 +4,6 @@ import io.vavr.collection.List;
 import io.vavr.control.Option;
 import lombok.NonNull;
 import lombok.Value;
-import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientId;
 import pl.cezarysanecki.parkingdomain.commons.events.DomainEvent;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationId;
 
@@ -21,33 +20,26 @@ public sealed interface ParkingSpotEvent extends DomainEvent {
     }
 
     @Value
-    final class FullyOccupied implements ParkingSpotEvent {
-
-        @NonNull ParkingSpotId parkingSpotId;
-
-    }
-
-    @Value
-    final class CompletelyFreedUp implements ParkingSpotEvent {
-
-        @NonNull ParkingSpotId parkingSpotId;
-
-    }
-
-    @Value
-    final class ReservationFulfilled implements ParkingSpotEvent {
-
-        @NonNull ParkingSpotId parkingSpotId;
-        @NonNull ClientId clientId;
-        @NonNull ReservationId reservationId;
-
-    }
-
-    @Value
     final class VehicleParked implements ParkingSpotEvent {
 
         @NonNull ParkingSpotId parkingSpotId;
         @NonNull Vehicle vehicle;
+        @NonNull Option<ReservationId> reservation;
+
+        public static VehicleParked with(ParkingSpotId parkingSpotId, Vehicle vehicle) {
+            return new VehicleParked(parkingSpotId, vehicle, Option.none());
+        }
+
+        public static VehicleParked with(ParkingSpotId parkingSpotId, Vehicle vehicle, ReservationId reservationId) {
+            return new VehicleParked(parkingSpotId, vehicle, Option.of(reservationId));
+        }
+
+    }
+
+    @Value
+    final class FullyOccupied implements ParkingSpotEvent {
+
+        @NonNull ParkingSpotId parkingSpotId;
 
     }
 
@@ -90,23 +82,25 @@ public sealed interface ParkingSpotEvent extends DomainEvent {
     }
 
     @Value
+    final class CompletelyFreedUp implements ParkingSpotEvent {
+
+        @NonNull ParkingSpotId parkingSpotId;
+
+    }
+
+    @Value
     final class VehicleLeftEvents implements ParkingSpotEvent {
 
         @NonNull ParkingSpotId parkingSpotId;
         @NonNull List<VehicleLeft> vehiclesLeft;
         @NonNull Option<CompletelyFreedUp> completelyFreedUps;
-        @NonNull Option<ReservationFulfilled> reservationFulfilled;
 
         public static VehicleLeftEvents events(ParkingSpotId parkingSpotId, List<VehicleLeft> vehiclesLeft) {
-            return new VehicleLeftEvents(parkingSpotId, vehiclesLeft, Option.none(), Option.none());
+            return new VehicleLeftEvents(parkingSpotId, vehiclesLeft, Option.none());
         }
 
         public static VehicleLeftEvents events(ParkingSpotId parkingSpotId, List<VehicleLeft> vehiclesLeft, CompletelyFreedUp completelyFreedUp) {
-            return new VehicleLeftEvents(parkingSpotId, vehiclesLeft, Option.of(completelyFreedUp), Option.none());
-        }
-
-        public static VehicleLeftEvents events(ParkingSpotId parkingSpotId, List<VehicleLeft> vehiclesLeft, CompletelyFreedUp completelyFreedUp, ReservationFulfilled reservationFulfilled) {
-            return new VehicleLeftEvents(parkingSpotId, vehiclesLeft, Option.of(completelyFreedUp), Option.of(reservationFulfilled));
+            return new VehicleLeftEvents(parkingSpotId, vehiclesLeft, Option.of(completelyFreedUp));
         }
 
         @Override

@@ -3,7 +3,6 @@ package pl.cezarysanecki.parkingdomain.parking.infrastructure;
 import io.vavr.control.Option;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.event.EventListener;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent;
@@ -11,6 +10,7 @@ import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ParkingSpot
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpots;
 import pl.cezarysanecki.parkingdomain.parking.model.VehicleId;
+import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationId;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -38,6 +38,17 @@ class InMemoryParkingSpotRepository implements ParkingSpots {
     }
 
     @Override
+    public Option<ParkingSpot> findBy(ReservationId reservationId) {
+        return Option.ofOptional(
+                DATABASE.values()
+                        .stream()
+                        .filter(parkingSpot -> parkingSpot.reservation.isDefined())
+                        .filter(parkingSpot -> ReservationId.of(parkingSpot.reservation.get()).equals(reservationId))
+                        .findFirst()
+                        .map(DomainModelMapper::map));
+    }
+
+    @Override
     public Option<ParkingSpot> findBy(VehicleId vehicleId) {
         return Option.ofOptional(
                 DATABASE.values()
@@ -56,19 +67,6 @@ class InMemoryParkingSpotRepository implements ParkingSpots {
                 Case($(), this::handleNextEvent));
         eventPublisher.publish(event.normalize());
         return result;
-    }
-
-    @EventListener
-    public void handle(ReservingParkingSpots.ReservationHasBecomeEffective event) {
-        log.debug("making reservation to be effective for parking spot with id {}", event.getParkingSpotId());
-
-        ParkingSpotId parkingSpotId = event.getParkingSpotId();
-
-        ParkingSpotEntity entity = DATABASE.get(parkingSpotId);
-        entity.reservation = Option.of(new ParkingSpotReservationEntity(
-                event.getClientId().getValue(),
-                event.getReservationId().getValue()));
-        DATABASE.put(parkingSpotId, entity);
     }
 
     private ParkingSpot createNewParkingSpot(ParkingSpotCreated event) {

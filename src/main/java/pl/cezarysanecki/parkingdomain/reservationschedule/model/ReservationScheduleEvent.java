@@ -47,4 +47,12 @@ public sealed interface ReservationScheduleEvent extends DomainEvent {
 
     }
 
+    @Value
+    final class ReservationBecomeEffective implements ReservationScheduleEvent {
+
+        @NonNull ParkingSpotId parkingSpotId;
+        @NonNull ReservationId reservationId;
+
+    }
+
 }

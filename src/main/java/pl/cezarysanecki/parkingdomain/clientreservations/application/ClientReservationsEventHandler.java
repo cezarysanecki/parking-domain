@@ -41,7 +41,10 @@ public class ClientReservationsEventHandler {
 
     private void removeReservationRequest(ClientId clientId) {
         clientReservationsRepository.findBy(clientId)
-                .map(clientReservations -> clientReservationsRepository.publish(new ReservationRequestCancelled(clientId)));
+                .map(clientReservations -> {
+                    log.debug("cancelling client reservation for client with id {}", clientId);
+                    return clientReservationsRepository.publish(new ReservationRequestCancelled(clientId));
+                });
     }
 
 

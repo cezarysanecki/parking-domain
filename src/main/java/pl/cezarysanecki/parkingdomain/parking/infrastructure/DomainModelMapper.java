@@ -3,10 +3,8 @@ package pl.cezarysanecki.parkingdomain.parking.infrastructure;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientId;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotReservation;
 import pl.cezarysanecki.parkingdomain.parking.model.Vehicle;
 import pl.cezarysanecki.parkingdomain.parking.model.VehicleId;
 import pl.cezarysanecki.parkingdomain.parking.model.VehicleSizeUnit;
@@ -24,17 +22,13 @@ class DomainModelMapper {
                         VehicleId.of(vehicleEntity.vehicleId),
                         VehicleSizeUnit.of(vehicleEntity.vehicleSizeUnit)))
                 .collect(Collectors.toUnmodifiableSet());
-
         return entity.reservation
                 .map(reservation -> new ParkingSpot(
                         ParkingSpotId.of(entity.parkingSpotId),
                         entity.capacity,
                         parkedVehicles,
                         entity.outOfOrder,
-                        new ParkingSpotReservation(
-                                ClientId.of(reservation.clientId),
-                                ReservationId.of(reservation.reservationId)
-                        )))
+                        ReservationId.of(reservation)))
                 .getOrElse(() -> new ParkingSpot(
                         ParkingSpotId.of(entity.parkingSpotId),
                         entity.capacity,
