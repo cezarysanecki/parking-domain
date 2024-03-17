@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleEvent;
+import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleEvent.ReservationBecomeEffective;
+import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleEvent.ReservationCancelled;
 
 import static io.vavr.API.$;
 import static io.vavr.API.Case;
@@ -23,8 +25,8 @@ public class ClientReservationViewEventHandler {
     @EventListener
     public void handle(ReservationScheduleEvent event) {
         API.Match(event).of(
-                Case($(instanceOf(ReservationScheduleEvent.ReservationMade.class)), this::handle),
-                Case($(instanceOf(ReservationScheduleEvent.ReservationCancelled.class)), this::handle),
+                Case($(instanceOf(ReservationBecomeEffective.class)), this::handle),
+                Case($(instanceOf(ReservationCancelled.class)), this::handle),
                 Case($(), () -> event));
     }
 

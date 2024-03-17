@@ -1,13 +1,11 @@
 package pl.cezarysanecki.parkingdomain.parking.model;
 
-import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientId;
+import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationId;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-
-import static pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleFixture.anyReservationId;
 
 public class ParkingSpotFixture {
 
@@ -15,8 +13,8 @@ public class ParkingSpotFixture {
         return new ParkingSpot(anyParkingSpotId(), capacity);
     }
 
-    public static ParkingSpot reservedParkingSpotFor(ClientId clientId) {
-        return new ParkingSpot(anyParkingSpotId(), 4, new ParkingSpotReservation(clientId, anyReservationId()));
+    public static ParkingSpot reservedParkingSpotFor(ReservationId reservationId) {
+        return new ParkingSpot(anyParkingSpotId(), 4, reservationId);
     }
 
     public static ParkingSpot emptyParkingSpotWith(ParkingSpotId parkingSpotId, int capacity) {

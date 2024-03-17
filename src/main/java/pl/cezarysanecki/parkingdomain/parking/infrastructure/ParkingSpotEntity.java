@@ -28,7 +28,7 @@ class ParkingSpotEntity {
     UUID parkingSpotId;
     int capacity;
     Set<ParkedVehicleEntity> parkedVehicles;
-    Option<ParkingSpotReservationEntity> reservation;
+    Option<UUID> reservation;
     boolean outOfOrder;
 
     ParkingSpotEntity(UUID parkingSpotId, int capacity) {
