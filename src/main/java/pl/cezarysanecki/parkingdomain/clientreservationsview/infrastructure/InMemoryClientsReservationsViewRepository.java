@@ -3,7 +3,6 @@ package pl.cezarysanecki.parkingdomain.clientreservationsview.infrastructure;
 import io.vavr.API;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientId;
@@ -13,11 +12,8 @@ import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ReservationFulfilled;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleEvent;
 
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -31,11 +27,11 @@ import static pl.cezarysanecki.parkingdomain.reservationschedule.model.Reservati
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 class InMemoryClientsReservationsViewRepository implements ClientsReservationsView {
 
-    private final Map<ClientId, ClientReservationsEntityViewModel> database = new ConcurrentHashMap<>();
+    private final Map<ClientId, ClientReservationsViewEntity> database = new ConcurrentHashMap<>();
 
     @Override
     public ClientReservationsView findFor(ClientId clientId) {
-        ClientReservationsEntityViewModel entity = database.getOrDefault(clientId, new ClientReservationsEntityViewModel(new HashSet<>()));
+        ClientReservationsViewEntity entity = database.getOrDefault(clientId, new ClientReservationsViewEntity(new HashSet<>()));
         return new ClientReservationsView(clientId.getValue(), entity.getReservations()
                 .stream()
                 .map(reservationEntity -> new ClientReservationsView.Reservation(
@@ -64,9 +60,9 @@ class InMemoryClientsReservationsViewRepository implements ClientsReservationsVi
     public ReservationScheduleEvent handle(ReservationMade reservationMade) {
         ClientId clientId = reservationMade.getClientId();
 
-        ClientReservationsEntityViewModel entity = database.getOrDefault(
-                clientId, new ClientReservationsEntityViewModel(new HashSet<>()));
-        entity.getReservations().add(new ClientReservationsEntityViewModel.ReservationEntity(
+        ClientReservationsViewEntity entity = database.getOrDefault(
+                clientId, new ClientReservationsViewEntity(new HashSet<>()));
+        entity.getReservations().add(new ClientReservationsViewEntity.ReservationEntity(
                 reservationMade.getReservationId().getValue(),
                 reservationMade.getParkingSpotId().getValue(),
                 reservationMade.getReservationSlot().getSince(),
@@ -80,8 +76,8 @@ class InMemoryClientsReservationsViewRepository implements ClientsReservationsVi
     private ReservationScheduleEvent handle(ReservationCancelled reservationCancelled) {
         ClientId clientId = reservationCancelled.getClientId();
 
-        ClientReservationsEntityViewModel entity = database.getOrDefault(
-                clientId, new ClientReservationsEntityViewModel(new HashSet<>()));
+        ClientReservationsViewEntity entity = database.getOrDefault(
+                clientId, new ClientReservationsViewEntity(new HashSet<>()));
         entity.getReservations().removeIf(
                 reservation -> reservation.getReservationId().equals(reservationCancelled.getReservationId().getValue()));
 
@@ -93,33 +89,14 @@ class InMemoryClientsReservationsViewRepository implements ClientsReservationsVi
     private ParkingSpotEvent handle(ReservationFulfilled reservationFulfilled) {
         ClientId clientId = reservationFulfilled.getClientId();
 
-        ClientReservationsEntityViewModel entity = database.getOrDefault(
-                clientId, new ClientReservationsEntityViewModel(new HashSet<>()));
+        ClientReservationsViewEntity entity = database.getOrDefault(
+                clientId, new ClientReservationsViewEntity(new HashSet<>()));
         entity.getReservations().removeIf(
                 reservation -> reservation.getParkingSpotId().equals(reservationFulfilled.getParkingSpotId().getValue()));
 
         database.put(clientId, entity);
         log.debug("removing reservation view for client with id {}", clientId);
         return reservationFulfilled;
-    }
-
-    @Data
-    @AllArgsConstructor
-    private static class ClientReservationsEntityViewModel {
-
-        Set<ReservationEntity> reservations;
-
-        @Data
-        @AllArgsConstructor
-        private static class ReservationEntity {
-
-            UUID reservationId;
-            UUID parkingSpotId;
-            LocalDateTime since;
-            LocalDateTime until;
-
-        }
-
     }
 
 
