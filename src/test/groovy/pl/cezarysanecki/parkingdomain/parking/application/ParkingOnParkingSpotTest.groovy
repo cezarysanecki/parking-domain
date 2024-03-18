@@ -3,7 +3,7 @@ package pl.cezarysanecki.parkingdomain.parking.application
 import io.vavr.control.Option
 import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientId
 import pl.cezarysanecki.parkingdomain.commons.commands.Result
-import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpot
+import pl.cezarysanecki.parkingdomain.parking.model.OpenParkingSpot
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpots
@@ -66,7 +66,7 @@ class ParkingOnParkingSpotTest extends Specification {
       result.isFailure()
   }
   
-  ParkingSpot persisted(ParkingSpot parkingSpot) {
+  OpenParkingSpot persisted(OpenParkingSpot parkingSpot) {
     repository.findBy(parkingSpot.parkingSpotId) >> Option.of(parkingSpot)
     repository.publish(_ as ParkingSpotEvent) >> parkingSpot
     return parkingSpot

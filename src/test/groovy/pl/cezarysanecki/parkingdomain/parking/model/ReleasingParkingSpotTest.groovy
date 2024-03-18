@@ -19,7 +19,7 @@ class ReleasingParkingSpotTest extends Specification {
     given:
       Vehicle vehicle = vehicleWith(1)
     and:
-      ParkingSpot parkingSpot = parkingSpotWith([vehicle, vehicleWith(1)])
+      OpenParkingSpot parkingSpot = parkingSpotWith([vehicle, vehicleWith(1)])
     
     when:
       Either<ReleasingFailed, VehicleLeftEvents> result = parkingSpot.releaseBy(vehicle.vehicleId)
@@ -37,7 +37,7 @@ class ReleasingParkingSpotTest extends Specification {
     given:
       Vehicle vehicle = vehicleWith(1)
     and:
-      ParkingSpot parkingSpot = parkingSpotWith(vehicle)
+      OpenParkingSpot parkingSpot = parkingSpotWith(vehicle)
     
     when:
       Either<ReleasingFailed, VehicleLeftEvents> result = parkingSpot.releaseBy(vehicle.vehicleId)
@@ -58,7 +58,7 @@ class ReleasingParkingSpotTest extends Specification {
     given:
       Vehicle vehicle = vehicleWith(1)
     and:
-      ParkingSpot parkingSpot = outOfOrderParkingSpotWith(vehicle)
+      OpenParkingSpot parkingSpot = outOfOrderParkingSpotWith(vehicle)
     
     when:
       Either<ReleasingFailed, VehicleLeftEvents> result = parkingSpot.releaseBy(vehicle.vehicleId)
@@ -74,7 +74,7 @@ class ReleasingParkingSpotTest extends Specification {
   
   def "release all parked vehicle"() {
     given:
-      ParkingSpot parkingSpot = parkingSpotWith([vehicleWith(1), vehicleWith(1)])
+      OpenParkingSpot parkingSpot = parkingSpotWith([vehicleWith(1), vehicleWith(1)])
     
     when:
       Either<ReleasingFailed, VehicleLeftEvents> result = parkingSpot.releaseAll()
@@ -92,7 +92,7 @@ class ReleasingParkingSpotTest extends Specification {
   
   def "reject to release empty parking spot"() {
     given:
-      ParkingSpot parkingSpot = emptyParkingSpotWith(4)
+      OpenParkingSpot parkingSpot = emptyParkingSpotWith(4)
     
     when:
       Either<ReleasingFailed, VehicleLeftEvents> result = parkingSpot.releaseAll()
@@ -106,7 +106,7 @@ class ReleasingParkingSpotTest extends Specification {
   
   def "vehicle cannot be release from parking spot if it is not on this spot"() {
     given:
-      ParkingSpot parkingSpot = emptyParkingSpotWith(1)
+      OpenParkingSpot parkingSpot = emptyParkingSpotWith(1)
     and:
       Vehicle vehicle = vehicleWith(1)
     

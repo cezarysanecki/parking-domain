@@ -8,7 +8,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
-import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpot;
+import pl.cezarysanecki.parkingdomain.parking.model.OccupiedParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpots;
 import pl.cezarysanecki.parkingdomain.parking.model.Vehicle;
@@ -31,12 +31,18 @@ public class ReleasingParkingSpot {
 
     public Try<Result> release(@NonNull ReleaseParkingSpotCommand command) {
         return Try.of(() -> {
-            ParkingSpot parkingSpot = find(command.getVehicleId());
+            OccupiedParkingSpot parkingSpot = find(command.getVehicleId());
             Either<ReleasingFailed, VehicleLeftEvents> result = parkingSpot.releaseBy(command.getVehicleId());
             return API.Match(result).of(
                     Case($Left($()), this::publishEvents),
                     Case($Right($()), this::publishEvents));
         }).onFailure(throwable -> log.error("Failed to park vehicle", throwable));
+    }
+
+    private Result publishEvents(ReleasingFailed releasingFailed) {
+        parkingSpots.publish(releasingFailed);
+        log.debug("rejected to leave vehicle with ids {}, reason: {}", releasingFailed.getVehicleIds(), releasingFailed.getReason());
+        return Rejection;
     }
 
     private Result publishEvents(VehicleLeftEvents vehicleLeftEvents) {
@@ -46,15 +52,9 @@ public class ReleasingParkingSpot {
         return Success;
     }
 
-    private Result publishEvents(ReleasingFailed releasingFailed) {
-        parkingSpots.publish(releasingFailed);
-        log.debug("rejected to leave vehicle with ids {}, reason: {}", releasingFailed.getVehicleIds(), releasingFailed.getReason());
-        return Rejection;
-    }
-
-    private ParkingSpot find(VehicleId vehicleId) {
+    private OccupiedParkingSpot find(VehicleId vehicleId) {
         return parkingSpots.findBy(vehicleId)
-                .getOrElseThrow(() -> new IllegalArgumentException("Cannot find parking spot for vehicle id: " + vehicleId));
+                .getOrElseThrow(() -> new IllegalArgumentException("cannot find parking spot for vehicle with id " + vehicleId));
     }
 
 }
