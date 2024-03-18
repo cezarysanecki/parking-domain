@@ -6,9 +6,10 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
-import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpot;
+import pl.cezarysanecki.parkingdomain.parking.model.OpenParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpots;
+import pl.cezarysanecki.parkingdomain.parking.model.ReservedParkingSpot;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationId;
 
 import static io.vavr.API.$;
@@ -29,7 +30,7 @@ public class ParkingOnParkingSpot {
 
     public Try<Result> park(@NonNull ParkVehicleCommand command) {
         return Try.of(() -> {
-            ParkingSpot parkingSpot = load(command.getParkingSpotId());
+            OpenParkingSpot parkingSpot = load(command.getParkingSpotId());
             Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(command.getVehicle());
             return Match(result).of(
                     Case($Left($()), this::publishEvents),
@@ -39,18 +40,12 @@ public class ParkingOnParkingSpot {
 
     public Try<Result> park(@NonNull ParkReservedVehicleCommand command) {
         return Try.of(() -> {
-            ParkingSpot parkingSpot = load(command.getReservationId());
+            ReservedParkingSpot parkingSpot = load(command.getReservationId());
             Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(command.getReservationId(), command.getVehicle());
             return Match(result).of(
                     Case($Left($()), this::publishEvents),
                     Case($Right($()), this::publishEvents));
         }).onFailure(throwable -> log.error("Failed to park vehicle", throwable));
-    }
-
-    private Result publishEvents(VehicleParkedEvents vehicleParked) {
-        parkingSpots.publish(vehicleParked);
-        log.debug("successfully parked vehicle with id {}", vehicleParked.getVehicleParked().getVehicle().getVehicleId());
-        return Success;
     }
 
     private Result publishEvents(ParkingFailed parkingFailed) {
@@ -59,14 +54,20 @@ public class ParkingOnParkingSpot {
         return Rejection;
     }
 
-    private ParkingSpot load(ReservationId reservationId) {
-        return parkingSpots.findBy(reservationId)
-                .getOrElseThrow(() -> new IllegalArgumentException("Cannot find parking spot for reservation with id: " + reservationId));
+    private Result publishEvents(VehicleParkedEvents vehicleParked) {
+        parkingSpots.publish(vehicleParked);
+        log.debug("successfully parked vehicle with id {}", vehicleParked.getVehicleParked().getVehicle().getVehicleId());
+        return Success;
     }
 
-    private ParkingSpot load(ParkingSpotId parkingSpotId) {
+    private OpenParkingSpot load(ParkingSpotId parkingSpotId) {
         return parkingSpots.findBy(parkingSpotId)
-                .getOrElseThrow(() -> new IllegalArgumentException("Cannot find parking spot with id: " + parkingSpotId));
+                .getOrElseThrow(() -> new IllegalArgumentException("cannot find open parking spot with id: " + parkingSpotId));
+    }
+
+    private ReservedParkingSpot load(ReservationId reservationId) {
+        return parkingSpots.findBy(reservationId)
+                .getOrElseThrow(() -> new IllegalArgumentException("cannot find parking spot for reservation with id: " + reservationId));
     }
 
 }

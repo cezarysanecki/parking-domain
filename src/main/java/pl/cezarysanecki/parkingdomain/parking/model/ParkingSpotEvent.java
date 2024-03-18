@@ -24,15 +24,6 @@ public sealed interface ParkingSpotEvent extends DomainEvent {
 
         @NonNull ParkingSpotId parkingSpotId;
         @NonNull Vehicle vehicle;
-        @NonNull Option<ReservationId> reservation;
-
-        public static VehicleParked with(ParkingSpotId parkingSpotId, Vehicle vehicle) {
-            return new VehicleParked(parkingSpotId, vehicle, Option.none());
-        }
-
-        public static VehicleParked with(ParkingSpotId parkingSpotId, Vehicle vehicle, ReservationId reservationId) {
-            return new VehicleParked(parkingSpotId, vehicle, Option.of(reservationId));
-        }
 
     }
 
@@ -44,23 +35,26 @@ public sealed interface ParkingSpotEvent extends DomainEvent {
     }
 
     @Value
+    final class ReservationFulfilled implements ParkingSpotEvent {
+
+        @NonNull ParkingSpotId parkingSpotId;
+        @NonNull ReservationId reservationId;
+
+    }
+
+    @Value
     final class VehicleParkedEvents implements ParkingSpotEvent {
 
         @NonNull ParkingSpotId parkingSpotId;
         @NonNull VehicleParked vehicleParked;
         @NonNull Option<FullyOccupied> fullyOccupied;
-
-        public static VehicleParkedEvents events(ParkingSpotId parkingSpotId, VehicleParked vehicleParked) {
-            return new VehicleParkedEvents(parkingSpotId, vehicleParked, Option.none());
-        }
-
-        public static VehicleParkedEvents events(ParkingSpotId parkingSpotId, VehicleParked vehicleParked, FullyOccupied fullyOccupied) {
-            return new VehicleParkedEvents(parkingSpotId, vehicleParked, Option.of(fullyOccupied));
-        }
+        @NonNull Option<ReservationFulfilled> reservationFulfilled;
 
         @Override
         public List<DomainEvent> normalize() {
-            return List.<DomainEvent>of(vehicleParked).appendAll(fullyOccupied.toList());
+            return List.<DomainEvent>of(vehicleParked)
+                    .appendAll(fullyOccupied.toList())
+                    .appendAll(reservationFulfilled.toList());
         }
     }
 
