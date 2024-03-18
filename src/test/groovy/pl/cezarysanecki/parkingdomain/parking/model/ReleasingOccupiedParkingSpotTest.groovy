@@ -13,13 +13,31 @@ import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.ou
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.parkingSpotWith
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.vehicleWith
 
-class ReleasingParkingSpotTest extends Specification {
+class ReleasingOccupiedParkingSpotTest extends Specification {
   
-  def "can release parked vehicle"() {
+  def "vehicle cannot release occupied parking spot if it is not on this spot"() {
+    given:
+      OccupiedParkingSpot parkingSpot = ParkingSpotFactory.createOccupied(emptyParkingSpotWith(1))
+    and:
+      Vehicle vehicle = vehicleWith(1)
+    
+    when:
+      Either<ReleasingFailed, VehicleLeftEvents> result = parkingSpot.releaseBy(vehicle.vehicleId)
+    
+    then:
+      result.isLeft()
+      result.getLeft().with {
+        assert it.parkingSpotId == parkingSpot.base.parkingSpotId
+        assert it.vehicleIds == List.ofAll([vehicle.vehicleId])
+        assert it.reason == "vehicle not park on this spot"
+      }
+  }
+  
+  def "vehicle can release occupied parking spot if it is on it"() {
     given:
       Vehicle vehicle = vehicleWith(1)
     and:
-      OpenParkingSpot parkingSpot = parkingSpotWith([vehicle, vehicleWith(1)])
+      OccupiedParkingSpot parkingSpot = ParkingSpotFactory.createOccupied(parkingSpotWith([vehicle, vehicleWith(1)]))
     
     when:
       Either<ReleasingFailed, VehicleLeftEvents> result = parkingSpot.releaseBy(vehicle.vehicleId)
@@ -28,16 +46,16 @@ class ReleasingParkingSpotTest extends Specification {
       result.isRight()
       result.get().with {
         VehicleLeft vehicleLeft = it.vehiclesLeft.first()
-        assert vehicleLeft.parkingSpotId == parkingSpot.parkingSpotId
+        assert vehicleLeft.parkingSpotId == parkingSpot.base.parkingSpotId
         assert vehicleLeft.vehicle == vehicle
       }
   }
   
-  def "can release parked vehicle and free it"() {
+  def "can release out of order occupied parking spot"() {
     given:
       Vehicle vehicle = vehicleWith(1)
     and:
-      OpenParkingSpot parkingSpot = parkingSpotWith(vehicle)
+      OccupiedParkingSpot parkingSpot = ParkingSpotFactory.createOccupied(outOfOrderParkingSpotWith(vehicle))
     
     when:
       Either<ReleasingFailed, VehicleLeftEvents> result = parkingSpot.releaseBy(vehicle.vehicleId)
@@ -46,35 +64,49 @@ class ReleasingParkingSpotTest extends Specification {
       result.isRight()
       result.get().with {
         VehicleLeft vehicleLeft = it.vehiclesLeft.first()
-        assert vehicleLeft.parkingSpotId == parkingSpot.parkingSpotId
+        assert vehicleLeft.parkingSpotId == parkingSpot.base.parkingSpotId
+        assert vehicleLeft.vehicle == vehicle
+      }
+  }
+  
+  def "vehicle can release occupied parking spot and free it up"() {
+    given:
+      Vehicle vehicle = vehicleWith(1)
+    and:
+      OccupiedParkingSpot parkingSpot = ParkingSpotFactory.createOccupied(parkingSpotWith([vehicle]))
+    
+    when:
+      Either<ReleasingFailed, VehicleLeftEvents> result = parkingSpot.releaseBy(vehicle.vehicleId)
+    
+    then:
+      result.isRight()
+      result.get().with {
+        VehicleLeft vehicleLeft = it.vehiclesLeft.first()
+        assert vehicleLeft.parkingSpotId == parkingSpot.base.parkingSpotId
         assert vehicleLeft.vehicle == vehicle
         
         CompletelyFreedUp completelyFreedUp = it.completelyFreedUps.get()
-        assert completelyFreedUp.parkingSpotId == parkingSpot.parkingSpotId
+        assert completelyFreedUp.parkingSpotId == parkingSpot.base.parkingSpotId
       }
   }
   
-  def "can release out of order parking spot"() {
+  def "reject to release empty parking spot"() {
     given:
-      Vehicle vehicle = vehicleWith(1)
-    and:
-      OpenParkingSpot parkingSpot = outOfOrderParkingSpotWith(vehicle)
+      OccupiedParkingSpot parkingSpot = ParkingSpotFactory.createOccupied(emptyParkingSpotWith(4))
     
     when:
-      Either<ReleasingFailed, VehicleLeftEvents> result = parkingSpot.releaseBy(vehicle.vehicleId)
+      Either<ReleasingFailed, VehicleLeftEvents> result = parkingSpot.releaseAll()
     
     then:
-      result.isRight()
-      result.get().with {
-        VehicleLeft vehicleLeft = it.vehiclesLeft.first()
-        assert vehicleLeft.parkingSpotId == parkingSpot.parkingSpotId
-        assert vehicleLeft.vehicle == vehicle
+      result.isLeft()
+      result.getLeft().with {
+        assert it.parkingSpotId == parkingSpotId
       }
   }
   
-  def "release all parked vehicle"() {
+  def "release all parked vehicle on occupied parking spot"() {
     given:
-      OpenParkingSpot parkingSpot = parkingSpotWith([vehicleWith(1), vehicleWith(1)])
+      OccupiedParkingSpot parkingSpot = ParkingSpotFactory.createOccupied(parkingSpotWith([vehicleWith(1), vehicleWith(1)]))
     
     when:
       Either<ReleasingFailed, VehicleLeftEvents> result = parkingSpot.releaseAll()
@@ -87,38 +119,6 @@ class ReleasingParkingSpotTest extends Specification {
         
         CompletelyFreedUp completelyFreedUp = it.completelyFreedUps.get()
         assert completelyFreedUp.parkingSpotId == parkingSpotId
-      }
-  }
-  
-  def "reject to release empty parking spot"() {
-    given:
-      OpenParkingSpot parkingSpot = emptyParkingSpotWith(4)
-    
-    when:
-      Either<ReleasingFailed, VehicleLeftEvents> result = parkingSpot.releaseAll()
-    
-    then:
-      result.isLeft()
-      result.getLeft().with {
-        assert it.parkingSpotId == parkingSpotId
-      }
-  }
-  
-  def "vehicle cannot be release from parking spot if it is not on this spot"() {
-    given:
-      OpenParkingSpot parkingSpot = emptyParkingSpotWith(1)
-    and:
-      Vehicle vehicle = vehicleWith(1)
-    
-    when:
-      Either<ReleasingFailed, VehicleLeftEvents> result = parkingSpot.releaseBy(vehicle.vehicleId)
-    
-    then:
-      result.isLeft()
-      result.getLeft().with {
-        assert it.parkingSpotId == parkingSpot.parkingSpotId
-        assert it.vehicleIds == List.ofAll([vehicle.vehicleId])
-        assert it.reason == "vehicle not park on this spot"
       }
   }
   

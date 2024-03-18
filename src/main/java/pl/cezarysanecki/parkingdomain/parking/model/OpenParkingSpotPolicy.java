@@ -11,7 +11,7 @@ interface OpenParkingSpotPolicy extends Function2<OpenParkingSpot, Vehicle, Eith
     static List<OpenParkingSpotPolicy> allCurrentPolicies() {
         return ParkingSpotBasePolicy.allCurrentPolicies()
                 .map(parkingSpotBasePolicy -> (OpenParkingSpotPolicy) (openParkingSpot, vehicle) ->
-                        parkingSpotBasePolicy.apply(openParkingSpot.getParkingSpot(), vehicle))
+                        parkingSpotBasePolicy.apply(openParkingSpot.getBase(), vehicle))
                 .toList();
     }
 

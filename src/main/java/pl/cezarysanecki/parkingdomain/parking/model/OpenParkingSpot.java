@@ -19,17 +19,17 @@ import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.Vehi
 public class OpenParkingSpot implements ParkingSpot {
 
     @Getter
-    private final ParkingSpotBase parkingSpot;
+    private final ParkingSpotBase base;
 
     private final List<OpenParkingSpotPolicy> parkingPolicies;
 
     public Either<ParkingFailed, VehicleParkedEvents> park(Vehicle vehicle) {
-        ParkingSpotId parkingSpotId = parkingSpot.getParkingSpotId();
+        ParkingSpotId parkingSpotId = base.getParkingSpotId();
 
         Option<Rejection> rejection = vehicleCanPark(vehicle);
         if (rejection.isEmpty()) {
             VehicleParked vehicleParked = new VehicleParked(parkingSpotId, vehicle);
-            if (parkingSpot.isFullyOccupiedWith(vehicle)) {
+            if (base.isFullyOccupiedWith(vehicle)) {
                 return announceSuccess(new VehicleParkedEvents(parkingSpotId, vehicleParked, Option.of(new FullyOccupied(parkingSpotId)), Option.none()));
             }
             return announceSuccess(new VehicleParkedEvents(parkingSpotId, vehicleParked, Option.none(), Option.none()));

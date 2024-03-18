@@ -14,4 +14,8 @@ public class ParkingSpotCapacity {
         this.value = value;
     }
 
+    public static ParkingSpotCapacity matchFor(VehicleSizeUnit vehicleSizeUnit) {
+        return new ParkingSpotCapacity(vehicleSizeUnit.getValue());
+    }
+
 }

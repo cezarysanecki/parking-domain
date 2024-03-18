@@ -12,6 +12,10 @@ public class ParkedVehicles {
 
     private final Set<Vehicle> collection;
 
+    public static ParkedVehicles empty() {
+        return new ParkedVehicles(Set.of());
+    }
+
     public boolean contains(VehicleId vehicleId) {
         return collection.stream()
                 .map(Vehicle::getVehicleId)

@@ -18,30 +18,28 @@ import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.Rese
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleParked;
 
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-public class ReservedParkingSpot {
+public class ReservedParkingSpot implements ParkingSpot {
 
     @Getter
-    private final ParkingSpotBase parkingSpot;
+    private final ParkingSpotBase base;
     private final ReservationId reservation;
 
     private final List<ReservedParkingSpotPolicy> parkingPolicies;
 
     public Either<ParkingFailed, VehicleParkedEvents> park(ReservationId reservationId, Vehicle vehicle) {
-        ParkingSpotId parkingSpotId = parkingSpot.getParkingSpotId();
+        ParkingSpotId parkingSpotId = base.getParkingSpotId();
 
         Option<Rejection> rejection = vehicleCanPark(reservationId, vehicle);
         if (rejection.isEmpty()) {
             Option<FullyOccupied> fullyOccupied = Option.none();
-            if (parkingSpot.isFullyOccupiedWith(vehicle)) {
+            if (base.isFullyOccupiedWith(vehicle)) {
                 fullyOccupied = Option.of(new FullyOccupied(parkingSpotId));
             }
-
-            Option<ReservationFulfilled> reservationFulfilled = Option.none();
-            if (isReservedFor(reservationId)) {
-                reservationFulfilled = Option.of(new ReservationFulfilled(parkingSpotId, reservationId));
-            }
-
-            return announceSuccess(new VehicleParkedEvents(parkingSpotId, new VehicleParked(parkingSpotId, vehicle), fullyOccupied, reservationFulfilled));
+            return announceSuccess(new VehicleParkedEvents(
+                    parkingSpotId,
+                    new VehicleParked(parkingSpotId, vehicle),
+                    fullyOccupied,
+                    Option.of(new ReservationFulfilled(parkingSpotId, reservationId))));
         }
         return announceFailure(new ParkingFailed(parkingSpotId, vehicle.getVehicleId(), rejection.get().getReason().getReason()));
     }

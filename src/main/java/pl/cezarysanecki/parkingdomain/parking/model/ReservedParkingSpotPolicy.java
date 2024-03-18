@@ -22,7 +22,7 @@ interface ReservedParkingSpotPolicy extends Function3<ReservedParkingSpot, Reser
     static List<ReservedParkingSpotPolicy> allCurrentPolicies() {
         return ParkingSpotBasePolicy.allCurrentPolicies()
                 .map(parkingSpotPolicy -> (ReservedParkingSpotPolicy) (parkingSpot, reservationId, vehicle) ->
-                        parkingSpotPolicy.apply(parkingSpot.getParkingSpot(), vehicle))
+                        parkingSpotPolicy.apply(parkingSpot.getBase(), vehicle))
                 .toList()
                 .append(cannotParkOnlyOnOwnReservedParkingSpotPolicy);
     }

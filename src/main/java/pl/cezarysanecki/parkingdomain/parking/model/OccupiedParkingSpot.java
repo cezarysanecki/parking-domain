@@ -18,11 +18,11 @@ import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announc
 public class OccupiedParkingSpot implements ParkingSpot {
 
     @Getter
-    private final ParkingSpotBase parkingSpot;
+    private final ParkingSpotBase base;
 
     public Either<ReleasingFailed, VehicleLeftEvents> releaseBy(VehicleId vehicleId) {
-        ParkingSpotId parkingSpotId = parkingSpot.getParkingSpotId();
-        ParkedVehicles parkedVehicles = parkingSpot.getParkedVehicles();
+        ParkingSpotId parkingSpotId = base.getParkingSpotId();
+        ParkedVehicles parkedVehicles = base.getParkedVehicles();
 
         Option<Vehicle> parkedVehicle = parkedVehicles.findBy(vehicleId);
         if (parkedVehicle.isEmpty()) {
@@ -39,8 +39,8 @@ public class OccupiedParkingSpot implements ParkingSpot {
     }
 
     public Either<ReleasingFailed, VehicleLeftEvents> releaseAll() {
-        ParkingSpotId parkingSpotId = parkingSpot.getParkingSpotId();
-        ParkedVehicles parkedVehicles = parkingSpot.getParkedVehicles();
+        ParkingSpotId parkingSpotId = base.getParkingSpotId();
+        ParkedVehicles parkedVehicles = base.getParkedVehicles();
 
         if (parkedVehicles.isEmpty()) {
             return announceFailure(new ReleasingFailed(parkingSpotId, List.empty(), "parking spot is empty"));
@@ -53,7 +53,7 @@ public class OccupiedParkingSpot implements ParkingSpot {
     }
 
     private boolean isCompletelyFreedUp(VehicleSizeUnit vehicleSizeUnit) {
-        return parkingSpot.getParkedVehicles().occupation() - vehicleSizeUnit.getValue() == 0;
+        return base.getParkedVehicles().occupation() - vehicleSizeUnit.getValue() == 0;
     }
 
 }
