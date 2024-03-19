@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.parking.application;
+package pl.cezarysanecki.parkingdomain.parking.application.releasing;
 
 import lombok.NonNull;
 import lombok.Value;

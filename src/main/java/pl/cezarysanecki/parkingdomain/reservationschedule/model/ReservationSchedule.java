@@ -10,7 +10,9 @@ import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationSched
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleEvent.ReservationMade;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announceFailure;
 import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announceSuccess;
@@ -25,6 +27,10 @@ public class ReservationSchedule {
     private final Reservations reservations;
     private final boolean noOccupation;
     private final LocalDateTime now;
+
+    public ReservationSchedule(ParkingSpotId parkingSpotId, LocalDateTime now) {
+        this(parkingSpotId, Reservations.none(), false, now);
+    }
 
     public Either<ReservationFailed, ReservationMade> reserve(ClientId clientId, ReservationSlot reservationSlot) {
         if (reservations.intersects(reservationSlot)) {
@@ -61,6 +67,14 @@ public class ReservationSchedule {
 
     public boolean isEmpty() {
         return reservations.isEmpty();
+    }
+
+    public Set<ReservationId> findReservationsFor(ClientId clientId) {
+        return reservations.getCollection()
+                .stream()
+                .filter(reservation -> reservation.getClientId().equals(clientId))
+                .map(Reservation::getReservationId)
+                .collect(Collectors.toUnmodifiableSet());
     }
 
     private boolean thereIsNoEnoughTimeToFreeSpot(ReservationSlot reservationSlot) {

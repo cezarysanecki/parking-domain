@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.parking.application;
+package pl.cezarysanecki.parkingdomain.parking.application.parking;
 
 import io.vavr.control.Either;
 import io.vavr.control.Try;
@@ -6,10 +6,10 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
-import pl.cezarysanecki.parkingdomain.parking.model.OpenParkingSpot;
-import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpots;
-import pl.cezarysanecki.parkingdomain.parking.model.ReservedParkingSpot;
+import pl.cezarysanecki.parkingdomain.parking.model.VehicleSizeUnit;
+import pl.cezarysanecki.parkingdomain.parking.model.parking.OpenParkingSpot;
+import pl.cezarysanecki.parkingdomain.parking.model.parking.ReservedParkingSpot;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationId;
 
 import static io.vavr.API.$;
@@ -30,7 +30,7 @@ public class ParkingOnParkingSpot {
 
     public Try<Result> park(@NonNull ParkVehicleCommand command) {
         return Try.of(() -> {
-            OpenParkingSpot parkingSpot = load(command.getParkingSpotId());
+            OpenParkingSpot parkingSpot = load(command.getVehicle().getVehicleSizeUnit());
             Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(command.getVehicle());
             return Match(result).of(
                     Case($Left($()), this::publishEvents),
@@ -60,9 +60,9 @@ public class ParkingOnParkingSpot {
         return Success;
     }
 
-    private OpenParkingSpot load(ParkingSpotId parkingSpotId) {
-        return parkingSpots.findBy(parkingSpotId)
-                .getOrElseThrow(() -> new IllegalArgumentException("cannot find open parking spot with id: " + parkingSpotId));
+    private OpenParkingSpot load(VehicleSizeUnit vehicleSizeUnit) {
+        return parkingSpots.findBy(vehicleSizeUnit)
+                .getOrElseThrow(() -> new IllegalArgumentException("cannot find open parking spot for vehicle size: " + vehicleSizeUnit));
     }
 
     private ReservedParkingSpot load(ReservationId reservationId) {

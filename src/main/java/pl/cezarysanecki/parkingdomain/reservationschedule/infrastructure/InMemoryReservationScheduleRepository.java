@@ -1,26 +1,20 @@
 package pl.cezarysanecki.parkingdomain.reservationschedule.infrastructure;
 
-import io.vavr.API;
 import io.vavr.control.Option;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.event.EventListener;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ParkingSpotCreated;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleEvent;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationId;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationSchedule;
+import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleEvent;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationSchedules;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationSlot;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import static io.vavr.API.$;
-import static io.vavr.API.Case;
-import static io.vavr.Predicates.instanceOf;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -30,11 +24,19 @@ class InMemoryReservationScheduleRepository implements ReservationSchedules {
     private final DomainModelMapper domainModelMapper;
     private final EventPublisher eventPublisher;
 
-    @EventListener
-    public void handle(ParkingSpotEvent event) {
-        API.Match(event).of(
-                Case($(instanceOf(ParkingSpotCreated.class)), this::handle),
-                Case($(), this::handleNextEvent));
+    @Override
+    public ReservationSchedule createFor(ParkingSpotId parkingSpotId) {
+        ReservationsEntity entity = new ReservationsEntity(parkingSpotId.getValue());
+        DATABASE.put(parkingSpotId, entity);
+        log.debug("creating reservation schedule for parking spot with id {}", parkingSpotId);
+        return domainModelMapper.map(entity);
+    }
+
+    @Override
+    public ReservationSchedule markOccupation(ParkingSpotId parkingSpotId, boolean occupied) {
+        ReservationsEntity entity = DATABASE.get(parkingSpotId);
+        entity = entity.changeOccupation(occupied);
+        return domainModelMapper.map(entity);
     }
 
     @Override
@@ -74,21 +76,6 @@ class InMemoryReservationScheduleRepository implements ReservationSchedules {
         ReservationsEntity entity = DATABASE.get(event.getParkingSpotId());
         entity = entity.handle(event);
         DATABASE.put(event.getParkingSpotId(), entity);
-        return domainModelMapper.map(entity);
-    }
-
-    private ReservationSchedule handle(ParkingSpotCreated parkingSpotCreated) {
-        ParkingSpotId parkingSpotId = parkingSpotCreated.getParkingSpotId();
-        ReservationsEntity entity = new ReservationsEntity(parkingSpotId.getValue());
-        DATABASE.put(parkingSpotId, entity);
-        log.debug("creating reservation schedule for parking spot with id {}", parkingSpotId);
-        return domainModelMapper.map(entity);
-    }
-
-    private ReservationSchedule handleNextEvent(ParkingSpotEvent parkingSpotEvent) {
-        ParkingSpotId parkingSpotId = parkingSpotEvent.getParkingSpotId();
-        ReservationsEntity entity = DATABASE.get(parkingSpotId);
-        entity = entity.handle(parkingSpotEvent);
         return domainModelMapper.map(entity);
     }
 

@@ -4,6 +4,7 @@ import io.vavr.API;
 import io.vavr.control.Option;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.annotation.Id;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleLeft;
@@ -20,6 +21,7 @@ import static io.vavr.API.Case;
 import static io.vavr.Predicates.instanceOf;
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleLeftEvents;
 
+@Slf4j
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 class ParkingSpotEntity {
 
@@ -56,6 +58,7 @@ class ParkingSpotEntity {
         Vehicle vehicle = vehicleParked.getVehicle();
         parkedVehicles.add(new ParkedVehicleEntity(
                 parkingSpotId, vehicle.getVehicleId().getValue(), vehicle.getVehicleSizeUnit().getValue()));
+        log.debug("parked vehicle with id {}", vehicle.getVehicleId());
         return this;
     }
 
@@ -75,6 +78,7 @@ class ParkingSpotEntity {
                 .filter(entity -> entity.is(parkingSpotId, vehicleId))
                 .findAny()
                 .ifPresent(entity -> parkedVehicles.remove(entity));
+        log.debug("released vehicle with id {}", vehicleId);
         return this;
     }
 

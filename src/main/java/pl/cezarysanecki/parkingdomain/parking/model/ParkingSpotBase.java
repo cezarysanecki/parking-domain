@@ -14,12 +14,20 @@ public class ParkingSpotBase {
         return parkedVehicles.contains(vehicleId);
     }
 
-    public boolean thereIsEnoughSpaceFor(Vehicle vehicle) {
-        return parkedVehicles.occupation() + vehicle.getVehicleSizeUnit().getValue() <= capacity.getValue();
+    public boolean isExceededWith(Vehicle vehicle) {
+        return parkedVehicles.occupation() + vehicle.getVehicleSizeUnit().getValue() > capacity.getValue();
     }
 
     public boolean isFullyOccupiedWith(Vehicle vehicle) {
         return parkedVehicles.occupation() + vehicle.getVehicleSizeUnit().getValue() == capacity.getValue();
+    }
+
+    public boolean isEmpty() {
+        return parkedVehicles.isEmpty();
+    }
+
+    public boolean isFull() {
+        return parkedVehicles.occupation() == capacity.getValue();
     }
 
 }

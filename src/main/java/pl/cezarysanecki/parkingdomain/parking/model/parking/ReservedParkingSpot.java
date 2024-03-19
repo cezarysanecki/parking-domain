@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.parking.model;
+package pl.cezarysanecki.parkingdomain.parking.model.parking;
 
 import io.vavr.collection.List;
 import io.vavr.control.Either;
@@ -7,9 +7,13 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import pl.cezarysanecki.parkingdomain.commons.policy.Rejection;
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpot;
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotBase;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.FullyOccupied;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ParkingFailed;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleParkedEvents;
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
+import pl.cezarysanecki.parkingdomain.parking.model.Vehicle;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationId;
 
 import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announceFailure;

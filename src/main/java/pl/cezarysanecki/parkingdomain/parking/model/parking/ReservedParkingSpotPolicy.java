@@ -1,10 +1,12 @@
-package pl.cezarysanecki.parkingdomain.parking.model;
+package pl.cezarysanecki.parkingdomain.parking.model.parking;
 
 import io.vavr.Function3;
 import io.vavr.collection.List;
 import io.vavr.control.Either;
 import pl.cezarysanecki.parkingdomain.commons.policy.Allowance;
 import pl.cezarysanecki.parkingdomain.commons.policy.Rejection;
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotBasePolicy;
+import pl.cezarysanecki.parkingdomain.parking.model.Vehicle;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationId;
 
 import static io.vavr.control.Either.left;
