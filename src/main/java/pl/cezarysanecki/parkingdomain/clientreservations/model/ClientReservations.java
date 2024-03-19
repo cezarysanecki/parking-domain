@@ -1,6 +1,7 @@
 package pl.cezarysanecki.parkingdomain.clientreservations.model;
 
 import io.vavr.control.Either;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationSlot;
@@ -13,6 +14,7 @@ import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announc
 @RequiredArgsConstructor
 public class ClientReservations {
 
+    @Getter
     private final ClientId clientId;
     private final int numberOfReservations;
 
