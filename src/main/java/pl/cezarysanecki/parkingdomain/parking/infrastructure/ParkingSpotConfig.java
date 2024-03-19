@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import pl.cezarysanecki.parkingdomain.commons.date.DateProvider;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 import pl.cezarysanecki.parkingdomain.parking.application.parking.ParkingOnParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.application.releasing.ReleasingParkingSpot;
@@ -23,7 +22,6 @@ import java.util.UUID;
 @EnableScheduling
 public class ParkingSpotConfig {
 
-    private final DateProvider dateProvider;
     private final EventPublisher eventPublisher;
 
     @Bean
@@ -34,11 +32,6 @@ public class ParkingSpotConfig {
     @Bean
     public ReleasingParkingSpot releasingParkingSpot(ParkingSpots parkingSpots) {
         return new ReleasingParkingSpot(parkingSpots);
-    }
-
-    @Bean
-    ReservingParkingSpots reservingParkingSpots() {
-        return new ReservingParkingSpots(dateProvider, eventPublisher);
     }
 
     @Bean

@@ -8,6 +8,7 @@ import pl.cezarysanecki.parkingdomain.commons.date.DateProvider;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 import pl.cezarysanecki.parkingdomain.reservationschedule.application.CancellingReservation;
 import pl.cezarysanecki.parkingdomain.reservationschedule.application.MakingReservationEventListener;
+import pl.cezarysanecki.parkingdomain.reservationschedule.application.ParkingSpotReservationEventListener;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationSchedules;
 
 @Slf4j
@@ -20,6 +21,11 @@ public class ReservationScheduleConfig {
     public ReservationScheduleConfig(EventPublisher eventPublisher, DateProvider dateProvider) {
         this.eventPublisher = eventPublisher;
         this.domainModelMapper = new DomainModelMapper(dateProvider);
+    }
+
+    @Bean
+    public ParkingSpotReservationEventListener parkingSpotReservationEventListener(ReservationSchedules reservationSchedules) {
+        return new ParkingSpotReservationEventListener(reservationSchedules);
     }
 
     @Bean
