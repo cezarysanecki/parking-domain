@@ -21,23 +21,23 @@ public class ParkingSpotReservationEventListener {
     @EventListener
     public void handle(ParkingSpotEvent event) {
         API.Match(event).of(
-                Case($(instanceOf(ParkingSpotCreated.class)), this::handle),
-                Case($(instanceOf(VehicleParked.class)), this::handle),
-                Case($(instanceOf(CompletelyFreedUp.class)), this::handle),
+                Case($(instanceOf(ParkingSpotCreated.class)), this::handleEvent),
+                Case($(instanceOf(VehicleParked.class)), this::handleEvent),
+                Case($(instanceOf(CompletelyFreedUp.class)), this::handleEvent),
                 Case($(), () -> event));
     }
 
-    private ParkingSpotEvent handle(ParkingSpotCreated parkingSpotCreated) {
+    private ParkingSpotEvent handleEvent(ParkingSpotCreated parkingSpotCreated) {
         reservationSchedules.createFor(parkingSpotCreated.getParkingSpotId());
         return parkingSpotCreated;
     }
 
-    private ParkingSpotEvent handle(VehicleParked vehicleParked) {
+    private ParkingSpotEvent handleEvent(VehicleParked vehicleParked) {
         reservationSchedules.markOccupation(vehicleParked.getParkingSpotId(), true);
         return vehicleParked;
     }
 
-    private ParkingSpotEvent handle(CompletelyFreedUp completelyFreedUp) {
+    private ParkingSpotEvent handleEvent(CompletelyFreedUp completelyFreedUp) {
         reservationSchedules.markOccupation(completelyFreedUp.getParkingSpotId(), false);
         return completelyFreedUp;
     }
