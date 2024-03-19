@@ -39,8 +39,4 @@ public class ReservationScheduleFixture {
         return ReservationId.of(UUID.randomUUID());
     }
 
-    public static ClientId anyClientId() {
-        return ClientId.of(UUID.randomUUID());
-    }
-
 }
