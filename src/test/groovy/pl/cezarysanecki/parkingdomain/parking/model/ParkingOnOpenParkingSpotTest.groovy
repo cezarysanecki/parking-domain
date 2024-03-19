@@ -2,6 +2,7 @@ package pl.cezarysanecki.parkingdomain.parking.model
 
 import io.vavr.control.Either
 import pl.cezarysanecki.parkingdomain.parking.model.parking.OpenParkingSpot
+import pl.cezarysanecki.parkingdomain.parking.model.parking.OpenParkingSpotFactory
 import spock.lang.Specification
 
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.FullyOccupied
@@ -19,7 +20,7 @@ class ParkingOnOpenParkingSpotTest extends Specification {
     given:
       Vehicle vehicle = vehicleWith(1)
     and:
-      OpenParkingSpot parkingSpot = ParkingSpotFactory.create(outOfOrderParkingSpot())
+      OpenParkingSpot parkingSpot = OpenParkingSpotFactory.create(outOfOrderParkingSpot())
     
     when:
       Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(vehicle)
@@ -37,7 +38,7 @@ class ParkingOnOpenParkingSpotTest extends Specification {
     given:
       Vehicle vehicle = vehicleWith(2)
     and:
-      OpenParkingSpot parkingSpot = ParkingSpotFactory.create(parkingSpotWith(vehicle))
+      OpenParkingSpot parkingSpot = OpenParkingSpotFactory.create(parkingSpotWith(vehicle))
     
     when:
       Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(vehicle)
@@ -53,7 +54,7 @@ class ParkingOnOpenParkingSpotTest extends Specification {
   
   def "cannot park on open parking spot by too big vehicle"() {
     given:
-      OpenParkingSpot parkingSpot = ParkingSpotFactory.create(emptyParkingSpotWith(1))
+      OpenParkingSpot parkingSpot = OpenParkingSpotFactory.create(emptyParkingSpotWith(1))
     and:
       Vehicle vehicle = vehicleWith(2)
     
@@ -71,7 +72,7 @@ class ParkingOnOpenParkingSpotTest extends Specification {
   
   def "vehicle can park on open parking spot if there is enough space"() {
     given:
-      OpenParkingSpot openParkingSpot = ParkingSpotFactory.create(emptyParkingSpotWith(4))
+      OpenParkingSpot openParkingSpot = OpenParkingSpotFactory.create(emptyParkingSpotWith(4))
     and:
       Vehicle vehicle = vehicleWith(1)
     
@@ -89,7 +90,7 @@ class ParkingOnOpenParkingSpotTest extends Specification {
   
   def "vehicle can park fully occupying open parking spot"() {
     given:
-      OpenParkingSpot parkingSpot = ParkingSpotFactory.create(emptyParkingSpotWith(1))
+      OpenParkingSpot parkingSpot = OpenParkingSpotFactory.create(emptyParkingSpotWith(1))
     and:
       Vehicle vehicle = vehicleWith(1)
     

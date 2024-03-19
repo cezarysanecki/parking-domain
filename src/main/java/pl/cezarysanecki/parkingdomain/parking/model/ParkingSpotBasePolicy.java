@@ -20,13 +20,13 @@ public interface ParkingSpotBasePolicy extends Function2<ParkingSpotBase, Vehicl
 
     ParkingSpotBasePolicy theSameVehicleCannotParkOnParkingSpotPolicy = (ParkingSpotBase parkingSpot, Vehicle vehicle) -> {
         if (parkingSpot.isParked(vehicle.getVehicleId())) {
-            return left(Rejection.withReason("parking on out of order parking spot is forbidden"));
+            return left(Rejection.withReason("vehicle is already parked on parking spot"));
         }
         return right(new Allowance());
     };
 
     ParkingSpotBasePolicy thereShouldBeEnoughSpaceForVehiclePolicy = (ParkingSpotBase parkingSpot, Vehicle vehicle) -> {
-        if (parkingSpot.thereIsEnoughSpaceFor(vehicle)) {
+        if (parkingSpot.isExceededWith(vehicle)) {
             return left(Rejection.withReason("not enough space on parking spot"));
         }
         return right(new Allowance());
