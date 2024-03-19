@@ -16,4 +16,9 @@ class ClientReservationsViewEntity {
     UUID clientId;
     Set<ClientReservationViewEntity> reservations;
 
+    ClientReservationsViewEntity(UUID clientId, Set<ClientReservationViewEntity> reservations) {
+        this.clientId = clientId;
+        this.reservations = reservations;
+    }
+
 }

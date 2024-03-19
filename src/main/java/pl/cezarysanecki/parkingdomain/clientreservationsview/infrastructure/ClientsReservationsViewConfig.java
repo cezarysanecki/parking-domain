@@ -10,8 +10,8 @@ import pl.cezarysanecki.parkingdomain.clientreservationsview.model.ClientsReserv
 public class ClientsReservationsViewConfig {
 
     @Bean
-    public ClientReservationViewEventHandler clientReservationViewEventHandler() {
-        return new ClientReservationViewEventHandler();
+    public ClientReservationViewEventHandler clientReservationViewEventHandler(ClientsReservationsView clientsReservationsView) {
+        return new ClientReservationViewEventHandler(clientsReservationsView);
     }
 
     @Bean
