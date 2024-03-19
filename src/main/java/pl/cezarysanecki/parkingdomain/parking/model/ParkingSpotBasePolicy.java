@@ -9,7 +9,7 @@ import pl.cezarysanecki.parkingdomain.commons.policy.Rejection;
 import static io.vavr.control.Either.left;
 import static io.vavr.control.Either.right;
 
-interface ParkingSpotBasePolicy extends Function2<ParkingSpotBase, Vehicle, Either<Rejection, Allowance>> {
+public interface ParkingSpotBasePolicy extends Function2<ParkingSpotBase, Vehicle, Either<Rejection, Allowance>> {
 
     ParkingSpotBasePolicy cannotParkOnOutOfOrderParkingSpotPolicy = (ParkingSpotBase parkingSpot, Vehicle vehicle) -> {
         if (parkingSpot.isOutOfOrder()) {

@@ -2,6 +2,7 @@ package pl.cezarysanecki.parkingdomain.parking.model
 
 import io.vavr.collection.List
 import io.vavr.control.Either
+import pl.cezarysanecki.parkingdomain.parking.model.releasing.OccupiedParkingSpot
 import spock.lang.Specification
 
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.CompletelyFreedUp
@@ -17,7 +18,7 @@ class ReleasingOccupiedParkingSpotTest extends Specification {
   
   def "vehicle cannot release occupied parking spot if it is not on this spot"() {
     given:
-      OccupiedParkingSpot parkingSpot = ParkingSpotFactory.createOccupied(emptyParkingSpotWith(1))
+      OccupiedParkingSpot parkingSpot = ParkingSpotFactory.create(emptyParkingSpotWith(1))
     and:
       Vehicle vehicle = vehicleWith(1)
     
@@ -37,7 +38,7 @@ class ReleasingOccupiedParkingSpotTest extends Specification {
     given:
       Vehicle vehicle = vehicleWith(1)
     and:
-      OccupiedParkingSpot parkingSpot = ParkingSpotFactory.createOccupied(parkingSpotWith([vehicle, vehicleWith(1)]))
+      OccupiedParkingSpot parkingSpot = ParkingSpotFactory.create(parkingSpotWith([vehicle, vehicleWith(1)]))
     
     when:
       Either<ReleasingFailed, VehicleLeftEvents> result = parkingSpot.releaseBy(vehicle.vehicleId)
@@ -55,7 +56,7 @@ class ReleasingOccupiedParkingSpotTest extends Specification {
     given:
       Vehicle vehicle = vehicleWith(1)
     and:
-      OccupiedParkingSpot parkingSpot = ParkingSpotFactory.createOccupied(outOfOrderParkingSpotWith(vehicle))
+      OccupiedParkingSpot parkingSpot = ParkingSpotFactory.create(outOfOrderParkingSpotWith(vehicle))
     
     when:
       Either<ReleasingFailed, VehicleLeftEvents> result = parkingSpot.releaseBy(vehicle.vehicleId)
@@ -73,7 +74,7 @@ class ReleasingOccupiedParkingSpotTest extends Specification {
     given:
       Vehicle vehicle = vehicleWith(1)
     and:
-      OccupiedParkingSpot parkingSpot = ParkingSpotFactory.createOccupied(parkingSpotWith([vehicle]))
+      OccupiedParkingSpot parkingSpot = ParkingSpotFactory.create(parkingSpotWith([vehicle]))
     
     when:
       Either<ReleasingFailed, VehicleLeftEvents> result = parkingSpot.releaseBy(vehicle.vehicleId)
@@ -92,7 +93,7 @@ class ReleasingOccupiedParkingSpotTest extends Specification {
   
   def "reject to release empty parking spot"() {
     given:
-      OccupiedParkingSpot parkingSpot = ParkingSpotFactory.createOccupied(emptyParkingSpotWith(4))
+      OccupiedParkingSpot parkingSpot = ParkingSpotFactory.create(emptyParkingSpotWith(4))
     
     when:
       Either<ReleasingFailed, VehicleLeftEvents> result = parkingSpot.releaseAll()
@@ -106,7 +107,7 @@ class ReleasingOccupiedParkingSpotTest extends Specification {
   
   def "release all parked vehicle on occupied parking spot"() {
     given:
-      OccupiedParkingSpot parkingSpot = ParkingSpotFactory.createOccupied(parkingSpotWith([vehicleWith(1), vehicleWith(1)]))
+      OccupiedParkingSpot parkingSpot = ParkingSpotFactory.create(parkingSpotWith([vehicleWith(1), vehicleWith(1)]))
     
     when:
       Either<ReleasingFailed, VehicleLeftEvents> result = parkingSpot.releaseAll()

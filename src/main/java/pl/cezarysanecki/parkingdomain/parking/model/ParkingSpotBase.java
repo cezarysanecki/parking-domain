@@ -1,6 +1,11 @@
 package pl.cezarysanecki.parkingdomain.parking.model;
 
 import lombok.Value;
+import pl.cezarysanecki.parkingdomain.parking.model.ParkedVehicles;
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotCapacity;
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
+import pl.cezarysanecki.parkingdomain.parking.model.Vehicle;
+import pl.cezarysanecki.parkingdomain.parking.model.VehicleId;
 
 @Value
 public class ParkingSpotBase {

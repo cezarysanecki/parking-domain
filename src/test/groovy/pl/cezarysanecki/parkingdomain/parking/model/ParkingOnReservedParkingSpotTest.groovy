@@ -1,6 +1,7 @@
 package pl.cezarysanecki.parkingdomain.parking.model
 
 import io.vavr.control.Either
+import pl.cezarysanecki.parkingdomain.parking.model.parking.ReservedParkingSpot
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationId
 import spock.lang.Specification
 
@@ -23,7 +24,7 @@ class ParkingOnReservedParkingSpotTest extends Specification {
     given:
       Vehicle vehicle = vehicleWith(1)
     and:
-      ReservedParkingSpot parkingSpot = ParkingSpotFactory.createReserved(outOfOrderParkingSpot(), reservationId)
+      ReservedParkingSpot parkingSpot = ParkingSpotFactory.create(outOfOrderParkingSpot(), reservationId)
     
     when:
       Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(reservationId, vehicle)
@@ -41,7 +42,7 @@ class ParkingOnReservedParkingSpotTest extends Specification {
     given:
       Vehicle vehicle = vehicleWith(2)
     and:
-      ReservedParkingSpot parkingSpot = ParkingSpotFactory.createReserved(parkingSpotWith(vehicle), reservationId)
+      ReservedParkingSpot parkingSpot = ParkingSpotFactory.create(parkingSpotWith(vehicle), reservationId)
     
     when:
       Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(reservationId, vehicle)
@@ -57,7 +58,7 @@ class ParkingOnReservedParkingSpotTest extends Specification {
   
   def "cannot park on reserved parking spot by too big vehicle"() {
     given:
-      ReservedParkingSpot parkingSpot = ParkingSpotFactory.createReserved(emptyParkingSpotWith(1), reservationId)
+      ReservedParkingSpot parkingSpot = ParkingSpotFactory.create(emptyParkingSpotWith(1), reservationId)
     and:
       Vehicle vehicle = vehicleWith(2)
     
@@ -75,7 +76,7 @@ class ParkingOnReservedParkingSpotTest extends Specification {
   
   def "cannot park on reserved parking spot without proper reservation"() {
     given:
-      ReservedParkingSpot parkingSpot = ParkingSpotFactory.createReserved(emptyParkingSpotWith(1), reservationId)
+      ReservedParkingSpot parkingSpot = ParkingSpotFactory.create(emptyParkingSpotWith(1), reservationId)
     and:
       Vehicle vehicle = vehicleWith(2)
     
@@ -93,7 +94,7 @@ class ParkingOnReservedParkingSpotTest extends Specification {
   
   def "vehicle can park on reserved parking spot if there is enough space fulfilling reservation"() {
     given:
-      ReservedParkingSpot parkingSpot = ParkingSpotFactory.createReserved(emptyParkingSpotWith(4), reservationId)
+      ReservedParkingSpot parkingSpot = ParkingSpotFactory.create(emptyParkingSpotWith(4), reservationId)
     and:
       Vehicle vehicle = vehicleWith(1)
     
@@ -115,7 +116,7 @@ class ParkingOnReservedParkingSpotTest extends Specification {
   
   def "vehicle can park fully occupying reserved parking spot fulfilling reservation"() {
     given:
-      ReservedParkingSpot parkingSpot = ParkingSpotFactory.createReserved(emptyParkingSpotWith(1), reservationId)
+      ReservedParkingSpot parkingSpot = ParkingSpotFactory.create(emptyParkingSpotWith(1), reservationId)
     and:
       Vehicle vehicle = vehicleWith(1)
     

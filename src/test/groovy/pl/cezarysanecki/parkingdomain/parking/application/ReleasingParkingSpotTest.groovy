@@ -2,7 +2,9 @@ package pl.cezarysanecki.parkingdomain.parking.application
 
 import io.vavr.control.Option
 import pl.cezarysanecki.parkingdomain.commons.commands.Result
-import pl.cezarysanecki.parkingdomain.parking.model.OpenParkingSpot
+import pl.cezarysanecki.parkingdomain.parking.application.releasing.ReleaseParkingSpotCommand
+import pl.cezarysanecki.parkingdomain.parking.application.releasing.ReleasingParkingSpot
+import pl.cezarysanecki.parkingdomain.parking.model.parking.OpenParkingSpot
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpots

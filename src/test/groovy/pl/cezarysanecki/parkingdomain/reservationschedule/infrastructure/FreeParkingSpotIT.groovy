@@ -7,7 +7,7 @@ import org.springframework.test.context.ActiveProfiles
 import pl.cezarysanecki.parkingdomain.commons.date.DateConfig
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisherTestConfig
 import pl.cezarysanecki.parkingdomain.parking.infrastructure.ParkingSpotConfig
-import pl.cezarysanecki.parkingdomain.parking.model.OpenParkingSpot
+import pl.cezarysanecki.parkingdomain.parking.model.parking.OpenParkingSpot
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpots
 import pl.cezarysanecki.parkingdomain.parking.model.Vehicle
