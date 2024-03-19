@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientId;
 import pl.cezarysanecki.parkingdomain.clientreservationsview.model.ClientReservationsView;
-import pl.cezarysanecki.parkingdomain.clientreservationsview.model.ClientsReservationsView;
+import pl.cezarysanecki.parkingdomain.clientreservationsview.model.ClientsReservationsViews;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationId;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationSlot;
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
-class InMemoryClientsReservationsViewRepository implements ClientsReservationsView {
+class InMemoryClientsReservationsViewsRepository implements ClientsReservationsViews {
 
     private static final Map<ClientId, ClientReservationsViewEntity> DATABASE = new ConcurrentHashMap<>();
 

@@ -16,7 +16,7 @@ import pl.cezarysanecki.parkingdomain.clientreservations.application.CreateReser
 import pl.cezarysanecki.parkingdomain.clientreservations.application.RequestingReservation;
 import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientId;
 import pl.cezarysanecki.parkingdomain.clientreservationsview.model.ClientReservationsView;
-import pl.cezarysanecki.parkingdomain.clientreservationsview.model.ClientsReservationsView;
+import pl.cezarysanecki.parkingdomain.clientreservationsview.model.ClientsReservationsViews;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationSlot;
@@ -29,7 +29,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 class ClientReservationsViewController {
 
-    private final ClientsReservationsView clientsReservationsView;
+    private final ClientsReservationsViews clientsReservationsViews;
     private final RequestingReservation requestingReservation;
 
     @PostMapping("/client-reservation/{parkingSpotId}")
@@ -64,7 +64,7 @@ class ClientReservationsViewController {
     @GetMapping("/client-reservation/{clientId}")
     ResponseEntity<Set<ClientReservationsView.Reservation>> getReservationsForClient(@PathVariable UUID clientId) {
         return ResponseEntity.ok(
-                clientsReservationsView.findFor(ClientId.of(clientId))
+                clientsReservationsViews.findFor(ClientId.of(clientId))
                         .getReservations());
     }
 

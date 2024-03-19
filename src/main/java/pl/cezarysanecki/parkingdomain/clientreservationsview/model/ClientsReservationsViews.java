@@ -5,7 +5,7 @@ import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationId;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationSlot;
 
-public interface ClientsReservationsView {
+public interface ClientsReservationsViews {
 
     ClientReservationsView findFor(ClientId clientId);
 

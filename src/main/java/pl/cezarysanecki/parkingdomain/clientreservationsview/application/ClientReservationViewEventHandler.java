@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientId;
 import pl.cezarysanecki.parkingdomain.clientreservationsview.model.ClientReservationsView;
-import pl.cezarysanecki.parkingdomain.clientreservationsview.model.ClientsReservationsView;
+import pl.cezarysanecki.parkingdomain.clientreservationsview.model.ClientsReservationsViews;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleEvent;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleEvent.ReservationCancelled;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleEvent.ReservationMade;
@@ -19,7 +19,7 @@ import static io.vavr.Predicates.instanceOf;
 @RequiredArgsConstructor
 public class ClientReservationViewEventHandler {
 
-    private final ClientsReservationsView clientsReservationsView;
+    private final ClientsReservationsViews clientsReservationsViews;
 
     @EventListener
     public void handle(ReservationScheduleEvent event) {
@@ -33,7 +33,7 @@ public class ClientReservationViewEventHandler {
         ClientId clientId = reservationMade.getClientId();
 
         log.debug("creating reservation view for client with id {}", clientId);
-        return clientsReservationsView.addReservation(
+        return clientsReservationsViews.addReservation(
                 reservationMade.getClientId(),
                 reservationMade.getParkingSpotId(),
                 reservationMade.getReservationId(),
@@ -44,7 +44,7 @@ public class ClientReservationViewEventHandler {
         ClientId clientId = reservationCancelled.getClientId();
 
         log.debug("removing reservation view for client with id {}", clientId);
-        return clientsReservationsView.removeReservation(
+        return clientsReservationsViews.removeReservation(
                 reservationCancelled.getClientId(),
                 reservationCancelled.getReservationId());
     }

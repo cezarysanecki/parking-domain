@@ -7,7 +7,7 @@ import org.springframework.test.context.ActiveProfiles
 import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientId
 import pl.cezarysanecki.parkingdomain.clientreservationsview.infrastructure.ClientsReservationsViewConfig
 import pl.cezarysanecki.parkingdomain.clientreservationsview.model.ClientReservationsView
-import pl.cezarysanecki.parkingdomain.clientreservationsview.model.ClientsReservationsView
+import pl.cezarysanecki.parkingdomain.clientreservationsview.model.ClientsReservationsViews
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisherTestConfig
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId
@@ -34,7 +34,7 @@ class CreatingClientReservationViewTest extends Specification {
   @Autowired
   EventPublisher eventPublisher
   @Autowired
-  ClientsReservationsView clientsReservationsView
+  ClientsReservationsViews clientsReservationsView
   
   def "reservation request is erased if reservation is cancelled"() {
     when:
