@@ -10,16 +10,18 @@ import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ParkingSpot
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpots;
 import pl.cezarysanecki.parkingdomain.parking.model.VehicleId;
-import pl.cezarysanecki.parkingdomain.parking.model.releasing.OccupiedParkingSpot;
-import pl.cezarysanecki.parkingdomain.parking.model.releasing.OccupiedParkingSpotFactory;
+import pl.cezarysanecki.parkingdomain.parking.model.VehicleSizeUnit;
 import pl.cezarysanecki.parkingdomain.parking.model.parking.OpenParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.model.parking.OpenParkingSpotFactory;
 import pl.cezarysanecki.parkingdomain.parking.model.parking.ReservedParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.model.parking.ReservedParkingSpotFactory;
+import pl.cezarysanecki.parkingdomain.parking.model.releasing.OccupiedParkingSpot;
+import pl.cezarysanecki.parkingdomain.parking.model.releasing.OccupiedParkingSpotFactory;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationId;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Predicate;
 
 import static io.vavr.API.$;
 import static io.vavr.API.Case;
@@ -34,41 +36,42 @@ class InMemoryParkingSpotRepository implements ParkingSpots {
     private final EventPublisher eventPublisher;
 
     @Override
-    public Option<OpenParkingSpot> findBy(ParkingSpotId parkingSpotId) {
-        return Option.ofOptional(
-                DATABASE.values()
-                        .stream()
-                        .filter(parkingSpot -> ParkingSpotId.of(parkingSpot.parkingSpotId).equals(parkingSpotId))
-                        .findFirst()
-                        .map(DomainModelMapper::map)
-                        .map(OpenParkingSpotFactory::create));
+    public Option<ParkingSpot> findBy(ParkingSpotId parkingSpotId) {
+        return find(entity -> entity.parkingSpotId.equals(parkingSpotId.getValue()))
+                .map(entity -> entity.reservation
+                        .map(reservationId -> ReservedParkingSpotFactory.create(
+                                DomainModelMapper.map(entity), ReservationId.of(reservationId)))
+                        .map(ParkingSpot.class::cast)
+                        .getOrElse(() -> OpenParkingSpotFactory.create(DomainModelMapper.map(entity))));
+    }
+
+    @Override
+    public Option<OpenParkingSpot> findBy(VehicleSizeUnit vehicleSizeUnit) {
+        return find(entity -> {
+            Integer currentOccupation = entity.parkedVehicles.stream()
+                    .map(ParkedVehicleEntity::getVehicleSizeUnit)
+                    .reduce(0, Integer::sum);
+            boolean hasEnoughSpace = entity.capacity - currentOccupation >= vehicleSizeUnit.getValue();
+
+            return entity.reservation.isEmpty() && hasEnoughSpace;
+        }).map(DomainModelMapper::map).map(OpenParkingSpotFactory::create);
     }
 
     @Override
     public Option<ReservedParkingSpot> findBy(ReservationId reservationId) {
-        return Option.ofOptional(
-                DATABASE.values()
-                        .stream()
-                        .filter(parkingSpot -> parkingSpot.reservation.isDefined())
-                        .filter(parkingSpot -> ReservationId.of(parkingSpot.reservation.get()).equals(reservationId))
-                        .findFirst()
-                        .map(entity -> ReservedParkingSpotFactory.create(
-                                DomainModelMapper.map(entity),
-                                ReservationId.of(entity.reservation.get())
-                        )));
+        return find(entity -> entity.reservation.isDefined()
+                && ReservationId.of(entity.reservation.get()).equals(reservationId)
+        ).map(DomainModelMapper::map).map(parkingSpotBase -> ReservedParkingSpotFactory.create(
+                parkingSpotBase,
+                reservationId));
     }
 
     @Override
     public Option<OccupiedParkingSpot> findBy(VehicleId vehicleId) {
-        return Option.ofOptional(
-                DATABASE.values()
-                        .stream()
-                        .filter(entity -> entity.parkedVehicles.stream()
-                                .map(ParkedVehicleEntity::getVehicleId)
-                                .anyMatch(parkedVehicleId -> parkedVehicleId.equals(vehicleId.getValue())))
-                        .findFirst()
-                        .map(DomainModelMapper::map)
-                        .map(OccupiedParkingSpotFactory::create));
+        return find(entity -> entity.parkedVehicles.stream()
+                .map(ParkedVehicleEntity::getVehicleId)
+                .anyMatch(parkedVehicleId -> parkedVehicleId.equals(vehicleId.getValue()))
+        ).map(DomainModelMapper::map).map(OccupiedParkingSpotFactory::create);
     }
 
     @Override
@@ -99,6 +102,14 @@ class InMemoryParkingSpotRepository implements ParkingSpots {
                         DomainModelMapper.map(finalEntity),
                         ReservationId.of(reservationId)))
                 .getOrElse(() -> OpenParkingSpotFactory.create(DomainModelMapper.map(finalEntity)));
+    }
+
+    private Option<ParkingSpotEntity> find(Predicate<ParkingSpotEntity> filter) {
+        return Option.ofOptional(
+                DATABASE.values()
+                        .stream()
+                        .filter(filter)
+                        .findFirst());
     }
 
 }

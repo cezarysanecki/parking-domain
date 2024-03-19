@@ -6,10 +6,11 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import pl.cezarysanecki.parkingdomain.commons.date.DateConfig
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisherTestConfig
-import pl.cezarysanecki.parkingdomain.parking.model.parking.OpenParkingSpot
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpot
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpots
 import pl.cezarysanecki.parkingdomain.parking.model.Vehicle
+import pl.cezarysanecki.parkingdomain.parking.model.parking.OpenParkingSpot
 import spock.lang.Specification
 
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ParkingSpotCreated
@@ -28,7 +29,7 @@ class FreeParkingSpotIT extends Specification {
   @Autowired
   ParkingSpots parkingSpots
   
-  def 'persistence in database should work'() {
+  def 'parking spot should be free when all vehicles are gone'() {
     given:
       parkingSpots.publish parkingSpotCreated(4)
     
@@ -78,9 +79,9 @@ class FreeParkingSpotIT extends Specification {
     return new VehicleLeft(parkingSpotId, vehicle)
   }
   
-  OpenParkingSpot loadPersistedParkingSpot(ParkingSpotId parkingSpotId) {
-    Option<OpenParkingSpot> loaded = parkingSpots.findBy(parkingSpotId)
-    OpenParkingSpot parkingSpot = loaded.getOrElseThrow({
+  ParkingSpot loadPersistedParkingSpot(ParkingSpotId parkingSpotId) {
+    Option<ParkingSpot> loaded = parkingSpots.findBy(parkingSpotId)
+    ParkingSpot parkingSpot = loaded.getOrElseThrow({
       new IllegalStateException("should have been persisted")
     })
     return parkingSpot

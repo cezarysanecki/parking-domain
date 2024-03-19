@@ -6,7 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import pl.cezarysanecki.parkingdomain.commons.date.DateConfig
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisherTestConfig
-import pl.cezarysanecki.parkingdomain.parking.model.parking.OpenParkingSpot
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpot
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpots
 import pl.cezarysanecki.parkingdomain.parking.model.Vehicle
@@ -52,7 +52,7 @@ class ParkingSpotInMemoryRepositoryIT extends Specification {
   
   void parkingSpotShouldContainParkedVehicle(ParkingSpotId parkingSpotId, VehicleId vehicleId) {
     def parkingSpot = loadPersistedParkingSpot(parkingSpotId)
-    assert parkingSpot.isParked(vehicleId)
+    assert parkingSpot.base.isParked(vehicleId)
   }
   
   ParkingSpotCreated parkingSpotCreated() {
@@ -63,9 +63,9 @@ class ParkingSpotInMemoryRepositoryIT extends Specification {
     return new VehicleParked(parkingSpotId, vehicle)
   }
   
-  OpenParkingSpot loadPersistedParkingSpot(ParkingSpotId parkingSpotId) {
-    Option<OpenParkingSpot> loaded = parkingSpots.findBy(parkingSpotId)
-    OpenParkingSpot parkingSpot = loaded.getOrElseThrow({
+  ParkingSpot loadPersistedParkingSpot(ParkingSpotId parkingSpotId) {
+    Option<ParkingSpot> loaded = parkingSpots.findBy(parkingSpotId)
+    ParkingSpot parkingSpot = loaded.getOrElseThrow({
       new IllegalStateException("should have been persisted")
     })
     return parkingSpot
