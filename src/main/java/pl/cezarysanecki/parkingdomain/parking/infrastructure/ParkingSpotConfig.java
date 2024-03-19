@@ -6,7 +6,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 import pl.cezarysanecki.parkingdomain.parking.application.parking.ParkingOnParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.application.releasing.ReleasingParkingSpot;
@@ -19,7 +18,6 @@ import java.util.UUID;
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
-@EnableScheduling
 public class ParkingSpotConfig {
 
     private final EventPublisher eventPublisher;
