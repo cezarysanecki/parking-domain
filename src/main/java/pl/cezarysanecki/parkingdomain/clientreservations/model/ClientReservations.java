@@ -36,6 +36,10 @@ public class ClientReservations {
         return announceSuccess(ReservationRequestCreated.with(clientId, reservationSlot));
     }
 
+    public boolean isEmpty() {
+        return numberOfReservations == 0;
+    }
+
     private boolean hasTooManyReservations() {
         return numberOfReservations >= 1;
     }
