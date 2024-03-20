@@ -25,6 +25,7 @@ public class ClientReservationsView {
         UUID parkingSpotId;
         LocalDateTime since;
         LocalDateTime until;
+        ClientReservationStatus status;
 
     }
 

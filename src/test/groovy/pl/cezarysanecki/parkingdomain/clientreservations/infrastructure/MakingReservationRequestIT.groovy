@@ -10,6 +10,7 @@ import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientReservation
 import pl.cezarysanecki.parkingdomain.commons.date.DateConfig
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisherTestConfig
+import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationId
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationSlot
 import spock.lang.Specification
 
@@ -19,7 +20,6 @@ import static pl.cezarysanecki.parkingdomain.clientreservations.model.ClientRese
 import static pl.cezarysanecki.parkingdomain.clientreservations.model.ClientReservationsFixture.anyClientId
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.anyParkingSpotId
 import static pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleEvent.ReservationCancelled
-import static pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleFixture.anyReservationId
 
 @ActiveProfiles("local")
 @SpringBootTest(classes = [ClientReservationsConfig.class, EventPublisherTestConfig.class, DateConfig.class])
@@ -33,15 +33,16 @@ class MakingReservationRequestIT extends Specification {
   ClientReservationsRepository clientReservationsRepository
   
   def "reservation request is erased if reservation is cancelled"() {
-    when:
-      clientReservationsRepository.publish reservationRequestCreated()
+    given:
+      def reservationRequestCreated = reservationRequestCreated()
     
+    when:
+      clientReservationsRepository.publish reservationRequestCreated
     then:
       clientReservationsShouldNotBeEmpty(clientId)
     
     when:
-      eventPublisher.publish reservationCancelled()
-    
+      eventPublisher.publish reservationCancelled(reservationRequestCreated.reservationId)
     then:
       clientReservationsShouldBeEmpty(clientId)
   }
@@ -60,16 +61,12 @@ class MakingReservationRequestIT extends Specification {
     return new ReservationRequestCreated(clientId, new ReservationSlot(LocalDateTime.now(), 3), Option.none())
   }
   
-  ReservationCancelled reservationCancelled() {
-    return new ReservationCancelled(anyParkingSpotId(), clientId, anyReservationId())
+  ReservationCancelled reservationCancelled(ReservationId reservationId) {
+    return new ReservationCancelled(anyParkingSpotId(), clientId, reservationId)
   }
   
   ClientReservations loadPersistedClientReservations(ClientId clientId) {
-    Option<ClientReservations> loaded = clientReservationsRepository.findBy(clientId)
-    ClientReservations clientReservations = loaded.getOrElseThrow({
-      new IllegalStateException("should have been persisted")
-    })
-    return clientReservations
+    return clientReservationsRepository.findBy(clientId)
   }
   
 }

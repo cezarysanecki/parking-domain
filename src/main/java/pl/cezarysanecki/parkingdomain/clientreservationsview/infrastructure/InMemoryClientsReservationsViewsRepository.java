@@ -1,9 +1,11 @@
 package pl.cezarysanecki.parkingdomain.clientreservationsview.infrastructure;
 
+import io.vavr.control.Option;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientId;
+import pl.cezarysanecki.parkingdomain.clientreservationsview.model.ClientReservationStatus;
 import pl.cezarysanecki.parkingdomain.clientreservationsview.model.ClientReservationsView;
 import pl.cezarysanecki.parkingdomain.clientreservationsview.model.ClientsReservationsViews;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
@@ -28,13 +30,31 @@ class InMemoryClientsReservationsViewsRepository implements ClientsReservationsV
     }
 
     @Override
-    public ClientReservationsView addReservation(ClientId clientId, ParkingSpotId parkingSpotId, ReservationId reservationId, ReservationSlot reservationSlot) {
+    public ClientReservationsView approveReservation(ClientId clientId, ParkingSpotId parkingSpotId, ReservationId reservationId) {
+        ClientReservationsViewEntity entity = DATABASE.getOrDefault(clientId, new ClientReservationsViewEntity(clientId.getValue(), new HashSet<>()));
+
+        entity.getReservations()
+                .stream()
+                .filter(reservation -> reservation.reservationId.equals(reservationId.getValue()))
+                .findFirst()
+                .ifPresent(reservation -> {
+                    reservation.parkingSpotId = parkingSpotId.getValue();
+                    reservation.status = ClientReservationStatus.Approved;
+                });
+        DATABASE.put(clientId, entity);
+
+        return map(entity);
+    }
+
+    @Override
+    public ClientReservationsView addPendingReservation(ClientId clientId, Option<ParkingSpotId> parkingSpotId, ReservationId reservationId, ReservationSlot reservationSlot) {
         ClientReservationsViewEntity entity = DATABASE.getOrDefault(clientId, new ClientReservationsViewEntity(clientId.getValue(), new HashSet<>()));
 
         entity.getReservations()
                 .add(new ClientReservationViewEntity(
                         reservationId.getValue(),
-                        parkingSpotId.getValue(),
+                        parkingSpotId.map(ParkingSpotId::getValue).getOrNull(),
+                        ClientReservationStatus.Pending,
                         reservationSlot.getSince(),
                         reservationSlot.until()));
         DATABASE.put(clientId, entity);
@@ -43,11 +63,14 @@ class InMemoryClientsReservationsViewsRepository implements ClientsReservationsV
     }
 
     @Override
-    public ClientReservationsView removeReservation(ClientId clientId, ReservationId reservationId) {
+    public ClientReservationsView cancelReservation(ClientId clientId, ReservationId reservationId) {
         ClientReservationsViewEntity entity = DATABASE.getOrDefault(clientId, new ClientReservationsViewEntity(clientId.getValue(), new HashSet<>()));
 
         entity.getReservations()
-                .removeIf(reservation -> reservation.getReservationId().equals(reservationId.getValue()));
+                .stream()
+                .filter(reservation -> reservation.reservationId.equals(reservationId.getValue()))
+                .findFirst()
+                .ifPresent(reservation -> reservation.status = ClientReservationStatus.Cancelled);
         DATABASE.put(clientId, entity);
 
         return map(entity);
@@ -60,7 +83,8 @@ class InMemoryClientsReservationsViewsRepository implements ClientsReservationsV
                         reservationEntity.reservationId,
                         reservationEntity.parkingSpotId,
                         reservationEntity.since,
-                        reservationEntity.until))
+                        reservationEntity.until,
+                        reservationEntity.status))
                 .collect(Collectors.toUnmodifiableSet()));
     }
 

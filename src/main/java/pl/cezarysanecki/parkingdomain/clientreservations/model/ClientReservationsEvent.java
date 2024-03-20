@@ -5,16 +5,21 @@ import lombok.NonNull;
 import lombok.Value;
 import pl.cezarysanecki.parkingdomain.commons.events.DomainEvent;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
+import pl.cezarysanecki.parkingdomain.reservationschedule.application.ReservationRequestHasOccurred;
+import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationId;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationSlot;
+
+import java.util.UUID;
 
 public interface ClientReservationsEvent extends DomainEvent {
 
     ClientId getClientId();
 
     @Value
-    final class ReservationRequestCreated implements ClientReservationsEvent {
+    final class ReservationRequestCreated implements ClientReservationsEvent, ReservationRequestHasOccurred {
 
         @NonNull ClientId clientId;
+        @NonNull ReservationId reservationId = ReservationId.of(UUID.randomUUID());
         @NonNull ReservationSlot reservationSlot;
         @NonNull Option<ParkingSpotId> parkingSpotId;
 
@@ -37,9 +42,18 @@ public interface ClientReservationsEvent extends DomainEvent {
     }
 
     @Value
+    final class ReservationRequestApproved implements ClientReservationsEvent {
+
+        @NonNull ClientId clientId;
+        @NonNull ReservationId reservationId;
+
+    }
+
+    @Value
     final class ReservationRequestCancelled implements ClientReservationsEvent {
 
         @NonNull ClientId clientId;
+        @NonNull ReservationId reservationId;
 
     }
 

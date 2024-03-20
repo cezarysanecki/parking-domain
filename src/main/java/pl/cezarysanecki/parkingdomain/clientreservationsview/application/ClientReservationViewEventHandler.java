@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientId;
+import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientReservationsEvent;
+import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientReservationsEvent.ReservationRequestCreated;
 import pl.cezarysanecki.parkingdomain.clientreservationsview.model.ClientReservationsView;
 import pl.cezarysanecki.parkingdomain.clientreservationsview.model.ClientsReservationsViews;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleEvent;
@@ -22,6 +24,13 @@ public class ClientReservationViewEventHandler {
     private final ClientsReservationsViews clientsReservationsViews;
 
     @EventListener
+    public void handle(ClientReservationsEvent event) {
+        API.Match(event).of(
+                Case($(instanceOf(ReservationRequestCreated.class)), this::handle),
+                Case($(), () -> event));
+    }
+
+    @EventListener
     public void handle(ReservationScheduleEvent event) {
         API.Match(event).of(
                 Case($(instanceOf(ReservationMade.class)), this::handle),
@@ -29,22 +38,32 @@ public class ClientReservationViewEventHandler {
                 Case($(), () -> event));
     }
 
+    public ClientReservationsView handle(ReservationRequestCreated reservationRequestCreated) {
+        ClientId clientId = reservationRequestCreated.getClientId();
+
+        log.debug("creating reservation view for client with id {}", clientId);
+        return clientsReservationsViews.addPendingReservation(
+                reservationRequestCreated.getClientId(),
+                reservationRequestCreated.getParkingSpotId(),
+                reservationRequestCreated.getReservationId(),
+                reservationRequestCreated.getReservationSlot());
+    }
+
     public ClientReservationsView handle(ReservationMade reservationMade) {
         ClientId clientId = reservationMade.getClientId();
 
         log.debug("creating reservation view for client with id {}", clientId);
-        return clientsReservationsViews.addReservation(
+        return clientsReservationsViews.approveReservation(
                 reservationMade.getClientId(),
                 reservationMade.getParkingSpotId(),
-                reservationMade.getReservationId(),
-                reservationMade.getReservationSlot());
+                reservationMade.getReservationId());
     }
 
     private ClientReservationsView handle(ReservationCancelled reservationCancelled) {
         ClientId clientId = reservationCancelled.getClientId();
 
         log.debug("removing reservation view for client with id {}", clientId);
-        return clientsReservationsViews.removeReservation(
+        return clientsReservationsViews.cancelReservation(
                 reservationCancelled.getClientId(),
                 reservationCancelled.getReservationId());
     }

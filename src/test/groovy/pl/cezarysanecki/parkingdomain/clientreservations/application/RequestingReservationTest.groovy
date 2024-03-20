@@ -1,6 +1,5 @@
 package pl.cezarysanecki.parkingdomain.clientreservations.application
 
-import io.vavr.control.Option
 import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientId
 import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientReservations
 import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientReservationsEvent
@@ -16,11 +15,15 @@ import static pl.cezarysanecki.parkingdomain.clientreservations.model.ClientRese
 import static pl.cezarysanecki.parkingdomain.clientreservations.model.ClientReservationsFixture.noReservations
 import static pl.cezarysanecki.parkingdomain.clientreservations.model.ClientReservationsFixture.reservationsWith
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.anyParkingSpotId
+import static pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleFixture.anyReservationId
 
 class RequestingReservationTest extends Specification {
   
   ClientId clientId = anyClientId()
   ParkingSpotId parkingSpotId = anyParkingSpotId()
+  
+  LocalDateTime now = LocalDateTime.now()
+  LocalDateTime properSinceReservation = now.plusDays(1)
   
   ClientReservationsRepository repository = Stub()
   
@@ -28,11 +31,11 @@ class RequestingReservationTest extends Specification {
     given:
       RequestingReservation requestingReservation = new RequestingReservation(repository)
     and:
-      persisted(noReservations(clientId))
+      persisted(noReservations(clientId, now))
     
     when:
       def result = requestingReservation.createReservationRequest(
-          new CreateReservationRequestCommand(clientId, new ReservationSlot(LocalDateTime.now(), 3)))
+          new CreateReservationRequestCommand(clientId, new ReservationSlot(properSinceReservation, 3)))
     
     then:
       result.isSuccess()
@@ -43,11 +46,11 @@ class RequestingReservationTest extends Specification {
     given:
       RequestingReservation requestingReservation = new RequestingReservation(repository)
     and:
-      persisted(reservationsWith(clientId, 1))
+      persisted(reservationsWith(clientId, anyReservationId(), now))
     
     when:
       def result = requestingReservation.createReservationRequest(
-          new CreateReservationRequestCommand(clientId, new ReservationSlot(LocalDateTime.now(), 3)))
+          new CreateReservationRequestCommand(clientId, new ReservationSlot(now.plusHours(10), 3)))
     
     then:
       result.isSuccess()
@@ -58,11 +61,11 @@ class RequestingReservationTest extends Specification {
     given:
       RequestingReservation requestingReservation = new RequestingReservation(repository)
     and:
-      persisted(noReservations(clientId))
+      persisted(noReservations(clientId, now))
     
     when:
       def result = requestingReservation.createReservationRequest(
-          new CreateReservationRequestForChosenParkingSpotCommand(clientId, new ReservationSlot(LocalDateTime.now(), 3), parkingSpotId))
+          new CreateReservationRequestForChosenParkingSpotCommand(clientId, new ReservationSlot(properSinceReservation, 3), parkingSpotId))
     
     then:
       result.isSuccess()
@@ -73,11 +76,11 @@ class RequestingReservationTest extends Specification {
     given:
       RequestingReservation requestingReservation = new RequestingReservation(repository)
     and:
-      persisted(reservationsWith(clientId, 1))
+      persisted(reservationsWith(clientId, anyReservationId(), now))
     
     when:
       def result = requestingReservation.createReservationRequest(
-          new CreateReservationRequestForChosenParkingSpotCommand(clientId, new ReservationSlot(LocalDateTime.now(), 3), parkingSpotId))
+          new CreateReservationRequestForChosenParkingSpotCommand(clientId, new ReservationSlot(properSinceReservation, 3), parkingSpotId))
     
     then:
       result.isSuccess()
@@ -88,11 +91,11 @@ class RequestingReservationTest extends Specification {
     given:
       RequestingReservation requestingReservation = new RequestingReservation(repository)
     and:
-      notPersisted(reservationsWith(clientId, 1))
+      notPersisted(reservationsWith(clientId, anyReservationId(), now))
     
     when:
       def result = requestingReservation.createReservationRequest(
-          new CreateReservationRequestCommand(clientId, new ReservationSlot(LocalDateTime.now(), 3)))
+          new CreateReservationRequestCommand(clientId, new ReservationSlot(properSinceReservation, 3)))
     
     then:
       result.isSuccess()
@@ -100,13 +103,13 @@ class RequestingReservationTest extends Specification {
   }
   
   ClientReservations persisted(ClientReservations clientReservations) {
-    repository.findBy(clientReservations.clientId) >> Option.of(clientReservations)
+    repository.findBy(clientReservations.clientId) >> clientReservations
     repository.publish(_ as ClientReservationsEvent) >> clientReservations
     return clientReservations
   }
   
   ClientReservations notPersisted(ClientReservations clientReservations) {
-    repository.findBy(clientReservations.clientId) >> Option.none()
+    repository.findBy(clientReservations.clientId) >> ClientReservations.empty(clientId, now)
     repository.publish(_ as ClientReservationsEvent) >> clientReservations
     return clientReservations
   }
