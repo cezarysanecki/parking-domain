@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientId;
 import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientReservations;
 import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientReservationsEvent;
+import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientReservationsFactory;
 import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientReservationsRepository;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 
@@ -18,11 +19,13 @@ class InMemoryClientReservationsRepository implements ClientReservationsReposito
 
     private static final Map<ClientId, ClientReservationsEntity> DATABASE = new ConcurrentHashMap<>();
     private final EventPublisher eventPublisher;
+    private final ClientReservationsFactory factory;
 
     @Override
-    public Option<ClientReservations> findBy(ClientId clientId) {
+    public ClientReservations findBy(ClientId clientId) {
         return Option.of(DATABASE.get(clientId))
-                .map(DomainModelMapper::map);
+                .map(DomainModelMapper::map)
+                .getOrElse(() -> factory.createEmpty(clientId));
     }
 
     @Override

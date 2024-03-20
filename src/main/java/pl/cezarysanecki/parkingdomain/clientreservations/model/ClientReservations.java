@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationSlot;
 
+import java.time.LocalDateTime;
+
 import static pl.cezarysanecki.parkingdomain.clientreservations.model.ClientReservationsEvent.ReservationRequestCreated;
 import static pl.cezarysanecki.parkingdomain.clientreservations.model.ClientReservationsEvent.ReservationRequestFailed;
 import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announceFailure;
@@ -17,10 +19,7 @@ public class ClientReservations {
     @Getter
     private final ClientId clientId;
     private final int numberOfReservations;
-
-    public static ClientReservations empty(ClientId clientId) {
-        return new ClientReservations(clientId, 0);
-    }
+    private final LocalDateTime now;
 
     public Either<ReservationRequestFailed, ReservationRequestCreated> requestReservation(ParkingSpotId parkingSpotId, ReservationSlot reservationSlot) {
         if (hasTooManyReservations()) {
