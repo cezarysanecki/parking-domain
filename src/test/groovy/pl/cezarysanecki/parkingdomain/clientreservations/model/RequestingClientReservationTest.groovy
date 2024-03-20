@@ -16,12 +16,15 @@ import static pl.cezarysanecki.parkingdomain.reservationschedule.model.Reservati
 
 class RequestingClientReservationTest extends Specification {
   
-  private static final ClientId clientId = anyClientId()
+  ClientId clientId = anyClientId()
+  
+  LocalDateTime now = LocalDateTime.now()
+  LocalDateTime properSinceReservation = now.plusDays(1)
   
   def "can make reservation for random parking spot"() {
     given:
-      def clientReservations = noReservations(clientId)
-      def reservationSlot = new ReservationSlot(LocalDateTime.now(), 2)
+      def clientReservations = noReservations(clientId, now)
+      def reservationSlot = new ReservationSlot(properSinceReservation, 2)
     
     when:
       Either<ReservationRequestFailed, ReservationRequestCreated> result = clientReservations.requestReservation(reservationSlot)
@@ -37,8 +40,8 @@ class RequestingClientReservationTest extends Specification {
   
   def "cannot make reservation for random parking spot when there is too many made reservations"() {
     given:
-      def clientReservations = reservationsWith(clientId, anyReservationId())
-      def reservationSlot = new ReservationSlot(LocalDateTime.now(), 2)
+      def clientReservations = reservationsWith(clientId, anyReservationId(), now)
+      def reservationSlot = new ReservationSlot(properSinceReservation, 2)
     
     when:
       Either<ReservationRequestFailed, ReservationRequestCreated> result = clientReservations.requestReservation(reservationSlot)
@@ -51,10 +54,28 @@ class RequestingClientReservationTest extends Specification {
       }
   }
   
+  def "cannot make reservation for random parking spot when reservation is too soon"() {
+    given:
+      def tooSoonReservation = now.plusHours(2).plusMinutes(59)
+    and:
+      def clientReservations = reservationsWith(clientId, now)
+      def reservationSlot = new ReservationSlot(tooSoonReservation, 2)
+    
+    when:
+      Either<ReservationRequestFailed, ReservationRequestCreated> result = clientReservations.requestReservation(reservationSlot)
+    
+    then:
+      result.isLeft()
+      result.getLeft().with {
+        assert it.clientId == clientId
+        assert it.reason == "reservation is too soon from now"
+      }
+  }
+  
   def "can make reservation for chosen parking spot"() {
     given:
-      def clientReservations = noReservations(clientId)
-      def reservationSlot = new ReservationSlot(LocalDateTime.now(), 2)
+      def clientReservations = noReservations(clientId, now)
+      def reservationSlot = new ReservationSlot(properSinceReservation, 2)
       def parkingSpotId = anyParkingSpotId()
     
     when:
@@ -71,8 +92,8 @@ class RequestingClientReservationTest extends Specification {
   
   def "cannot make reservation for chosen parking spot when there is too many made reservations"() {
     given:
-      def clientReservations = reservationsWith(clientId, anyReservationId())
-      def reservationSlot = new ReservationSlot(LocalDateTime.now(), 2)
+      def clientReservations = reservationsWith(clientId, anyReservationId(), now)
+      def reservationSlot = new ReservationSlot(properSinceReservation, 2)
     
     when:
       Either<ReservationRequestFailed, ReservationRequestCreated> result = clientReservations.requestReservation(anyParkingSpotId(), reservationSlot)
@@ -82,6 +103,24 @@ class RequestingClientReservationTest extends Specification {
       result.getLeft().with {
         assert it.clientId == clientId
         assert it.reason == "cannot have more reservations"
+      }
+  }
+  
+  def "cannot make reservation for chosen parking spot when reservation is too soon"() {
+    given:
+      def tooSoonReservation = now.plusHours(2).plusMinutes(59)
+    and:
+      def clientReservations = reservationsWith(clientId, now)
+      def reservationSlot = new ReservationSlot(tooSoonReservation, 2)
+    
+    when:
+      Either<ReservationRequestFailed, ReservationRequestCreated> result = clientReservations.requestReservation(anyParkingSpotId(), reservationSlot)
+    
+    then:
+      result.isLeft()
+      result.getLeft().with {
+        assert it.clientId == clientId
+        assert it.reason == "reservation is too soon from now"
       }
   }
   

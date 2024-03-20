@@ -11,12 +11,16 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ClientReservationsFixture {
 
-    public static ClientReservations noReservations(ClientId clientId) {
-        return new ClientReservations(clientId, Set.of(), LocalDateTime.now());
+    public static ClientReservations noReservations(ClientId clientId, LocalDateTime now) {
+        return new ClientReservations(clientId, Set.of(), now);
     }
 
-    public static ClientReservations reservationsWith(ClientId clientId, ReservationId reservationId) {
-        return new ClientReservations(clientId, Set.of(reservationId), LocalDateTime.now());
+    public static ClientReservations reservationsWith(ClientId clientId, ReservationId reservationId, LocalDateTime now) {
+        return new ClientReservations(clientId, Set.of(reservationId), now);
+    }
+
+    public static ClientReservations reservationsWith(ClientId clientId, LocalDateTime now) {
+        return new ClientReservations(clientId, Set.of(), now);
     }
 
     public static ClientId anyClientId() {

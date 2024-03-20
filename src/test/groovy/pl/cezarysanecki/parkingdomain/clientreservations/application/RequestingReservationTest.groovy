@@ -22,17 +22,20 @@ class RequestingReservationTest extends Specification {
   ClientId clientId = anyClientId()
   ParkingSpotId parkingSpotId = anyParkingSpotId()
   
+  LocalDateTime now = LocalDateTime.now()
+  LocalDateTime properSinceReservation = now.plusDays(1)
+  
   ClientReservationsRepository repository = Stub()
   
   def 'should successfully make reservation for random parking spot if there is no others'() {
     given:
       RequestingReservation requestingReservation = new RequestingReservation(repository)
     and:
-      persisted(noReservations(clientId))
+      persisted(noReservations(clientId, now))
     
     when:
       def result = requestingReservation.createReservationRequest(
-          new CreateReservationRequestCommand(clientId, new ReservationSlot(LocalDateTime.now(), 3)))
+          new CreateReservationRequestCommand(clientId, new ReservationSlot(properSinceReservation, 3)))
     
     then:
       result.isSuccess()
@@ -43,11 +46,11 @@ class RequestingReservationTest extends Specification {
     given:
       RequestingReservation requestingReservation = new RequestingReservation(repository)
     and:
-      persisted(reservationsWith(clientId, anyReservationId()))
+      persisted(reservationsWith(clientId, anyReservationId(), now))
     
     when:
       def result = requestingReservation.createReservationRequest(
-          new CreateReservationRequestCommand(clientId, new ReservationSlot(LocalDateTime.now(), 3)))
+          new CreateReservationRequestCommand(clientId, new ReservationSlot(now.plusHours(10), 3)))
     
     then:
       result.isSuccess()
@@ -58,11 +61,11 @@ class RequestingReservationTest extends Specification {
     given:
       RequestingReservation requestingReservation = new RequestingReservation(repository)
     and:
-      persisted(noReservations(clientId))
+      persisted(noReservations(clientId, now))
     
     when:
       def result = requestingReservation.createReservationRequest(
-          new CreateReservationRequestForChosenParkingSpotCommand(clientId, new ReservationSlot(LocalDateTime.now(), 3), parkingSpotId))
+          new CreateReservationRequestForChosenParkingSpotCommand(clientId, new ReservationSlot(properSinceReservation, 3), parkingSpotId))
     
     then:
       result.isSuccess()
@@ -73,11 +76,11 @@ class RequestingReservationTest extends Specification {
     given:
       RequestingReservation requestingReservation = new RequestingReservation(repository)
     and:
-      persisted(reservationsWith(clientId, anyReservationId()))
+      persisted(reservationsWith(clientId, anyReservationId(), now))
     
     when:
       def result = requestingReservation.createReservationRequest(
-          new CreateReservationRequestForChosenParkingSpotCommand(clientId, new ReservationSlot(LocalDateTime.now(), 3), parkingSpotId))
+          new CreateReservationRequestForChosenParkingSpotCommand(clientId, new ReservationSlot(properSinceReservation, 3), parkingSpotId))
     
     then:
       result.isSuccess()
@@ -88,11 +91,11 @@ class RequestingReservationTest extends Specification {
     given:
       RequestingReservation requestingReservation = new RequestingReservation(repository)
     and:
-      notPersisted(reservationsWith(clientId, anyReservationId()))
+      notPersisted(reservationsWith(clientId, anyReservationId(), now))
     
     when:
       def result = requestingReservation.createReservationRequest(
-          new CreateReservationRequestCommand(clientId, new ReservationSlot(LocalDateTime.now(), 3)))
+          new CreateReservationRequestCommand(clientId, new ReservationSlot(properSinceReservation, 3)))
     
     then:
       result.isSuccess()
@@ -106,7 +109,7 @@ class RequestingReservationTest extends Specification {
   }
   
   ClientReservations notPersisted(ClientReservations clientReservations) {
-    repository.findBy(clientReservations.clientId) >> ClientReservations.empty(clientId, LocalDateTime.now())
+    repository.findBy(clientReservations.clientId) >> ClientReservations.empty(clientId, now)
     repository.publish(_ as ClientReservationsEvent) >> clientReservations
     return clientReservations
   }

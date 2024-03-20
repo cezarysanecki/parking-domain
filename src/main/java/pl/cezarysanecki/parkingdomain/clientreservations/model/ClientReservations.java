@@ -34,12 +34,18 @@ public class ClientReservations {
         if (hasTooManyReservations()) {
             return announceFailure(new ReservationRequestFailed(clientId, "cannot have more reservations"));
         }
+        if (isTooSoon(reservationSlot)) {
+            return announceFailure(new ReservationRequestFailed(clientId, "reservation is too soon from now"));
+        }
         return announceSuccess(ReservationRequestCreated.with(clientId, reservationSlot, parkingSpotId));
     }
 
     public Either<ReservationRequestFailed, ReservationRequestCreated> requestReservation(ReservationSlot reservationSlot) {
         if (hasTooManyReservations()) {
             return announceFailure(new ReservationRequestFailed(clientId, "cannot have more reservations"));
+        }
+        if (isTooSoon(reservationSlot)) {
+            return announceFailure(new ReservationRequestFailed(clientId, "reservation is too soon from now"));
         }
         return announceSuccess(ReservationRequestCreated.with(clientId, reservationSlot));
     }
@@ -64,6 +70,10 @@ public class ClientReservations {
 
     private boolean hasTooManyReservations() {
         return reservations.size() >= 1;
+    }
+
+    private boolean isTooSoon(ReservationSlot reservationSlot) {
+        return now.plusHours(3).isAfter(reservationSlot.getSince());
     }
 
 }
