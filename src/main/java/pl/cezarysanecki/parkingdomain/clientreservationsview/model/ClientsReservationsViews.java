@@ -1,5 +1,6 @@
 package pl.cezarysanecki.parkingdomain.clientreservationsview.model;
 
+import io.vavr.control.Option;
 import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientId;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationId;
@@ -9,8 +10,10 @@ public interface ClientsReservationsViews {
 
     ClientReservationsView findFor(ClientId clientId);
 
-    ClientReservationsView addReservation(ClientId clientId, ParkingSpotId parkingSpotId, ReservationId reservationId, ReservationSlot reservationSlot);
+    ClientReservationsView addPendingReservation(ClientId clientId, Option<ParkingSpotId> parkingSpotId, ReservationId reservationId, ReservationSlot reservationSlot);
 
-    ClientReservationsView removeReservation(ClientId clientId, ReservationId reservationIde);
+    ClientReservationsView approveReservation(ClientId clientId, ParkingSpotId parkingSpotId, ReservationId reservationId);
+
+    ClientReservationsView cancelReservation(ClientId clientId, ReservationId reservationIde);
 
 }
