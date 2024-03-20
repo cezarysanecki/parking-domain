@@ -9,6 +9,7 @@ import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientReservation
 import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientReservationsRepository
 import pl.cezarysanecki.parkingdomain.commons.date.DateConfig
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisherTestConfig
+import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationId
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationSlot
 import spock.lang.Specification
 
@@ -28,15 +29,16 @@ class ClientReservationsInMemoryRepositoryIT extends Specification {
   ClientReservationsRepository clientReservationsRepository
   
   def 'persistence in database should work'() {
-    when:
-      clientReservationsRepository.publish reservationRequestCreated()
+    given:
+      def reservationRequestCreated = reservationRequestCreated()
     
+    when:
+      clientReservationsRepository.publish reservationRequestCreated
     then:
       clientReservationsShouldNotBeEmpty(clientId)
     
     when:
-      clientReservationsRepository.publish reservationRequestCancelled()
-    
+      clientReservationsRepository.publish reservationRequestCancelled(reservationRequestCreated.reservationId)
     then:
       clientReservationsShouldBeEmpty(clientId)
   }
@@ -55,16 +57,12 @@ class ClientReservationsInMemoryRepositoryIT extends Specification {
     return new ReservationRequestCreated(clientId, new ReservationSlot(LocalDateTime.now(), 3), Option.none())
   }
   
-  ReservationRequestCancelled reservationRequestCancelled() {
-    return new ReservationRequestCancelled(clientId)
+  ReservationRequestCancelled reservationRequestCancelled(ReservationId reservationId) {
+    return new ReservationRequestCancelled(clientId, reservationId)
   }
   
   ClientReservations loadPersistedClientReservations(ClientId clientId) {
-    Option<ClientReservations> loaded = clientReservationsRepository.findBy(clientId)
-    ClientReservations clientReservations = loaded.getOrElseThrow({
-      new IllegalStateException("should have been persisted")
-    })
-    return clientReservations
+    return clientReservationsRepository.findBy(clientId)
   }
   
 }

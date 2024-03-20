@@ -6,15 +6,11 @@ import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationId;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationSlot;
 
-import java.util.UUID;
-
 public interface ReservationRequestHasOccurred {
 
     ClientId getClientId();
 
-    default ReservationId getReservationId() {
-        return ReservationId.of(UUID.randomUUID());
-    }
+    ReservationId getReservationId();
 
     ReservationSlot getReservationSlot();
 

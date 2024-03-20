@@ -15,6 +15,7 @@ import static pl.cezarysanecki.parkingdomain.clientreservations.model.ClientRese
 import static pl.cezarysanecki.parkingdomain.clientreservations.model.ClientReservationsFixture.noReservations
 import static pl.cezarysanecki.parkingdomain.clientreservations.model.ClientReservationsFixture.reservationsWith
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.anyParkingSpotId
+import static pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleFixture.anyReservationId
 
 class RequestingReservationTest extends Specification {
   
@@ -42,7 +43,7 @@ class RequestingReservationTest extends Specification {
     given:
       RequestingReservation requestingReservation = new RequestingReservation(repository)
     and:
-      persisted(reservationsWith(clientId, 1))
+      persisted(reservationsWith(clientId, anyReservationId()))
     
     when:
       def result = requestingReservation.createReservationRequest(
@@ -72,7 +73,7 @@ class RequestingReservationTest extends Specification {
     given:
       RequestingReservation requestingReservation = new RequestingReservation(repository)
     and:
-      persisted(reservationsWith(clientId, 1))
+      persisted(reservationsWith(clientId, anyReservationId()))
     
     when:
       def result = requestingReservation.createReservationRequest(
@@ -87,7 +88,7 @@ class RequestingReservationTest extends Specification {
     given:
       RequestingReservation requestingReservation = new RequestingReservation(repository)
     and:
-      notPersisted(reservationsWith(clientId, 1))
+      notPersisted(reservationsWith(clientId, anyReservationId()))
     
     when:
       def result = requestingReservation.createReservationRequest(

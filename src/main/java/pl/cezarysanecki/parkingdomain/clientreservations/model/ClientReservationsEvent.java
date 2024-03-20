@@ -9,6 +9,8 @@ import pl.cezarysanecki.parkingdomain.reservationschedule.application.Reservatio
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationId;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationSlot;
 
+import java.util.UUID;
+
 public interface ClientReservationsEvent extends DomainEvent {
 
     ClientId getClientId();
@@ -17,6 +19,7 @@ public interface ClientReservationsEvent extends DomainEvent {
     final class ReservationRequestCreated implements ClientReservationsEvent, ReservationRequestHasOccurred {
 
         @NonNull ClientId clientId;
+        @NonNull ReservationId reservationId = ReservationId.of(UUID.randomUUID());
         @NonNull ReservationSlot reservationSlot;
         @NonNull Option<ParkingSpotId> parkingSpotId;
 

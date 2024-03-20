@@ -12,6 +12,7 @@ import static pl.cezarysanecki.parkingdomain.clientreservations.model.ClientRese
 import static pl.cezarysanecki.parkingdomain.clientreservations.model.ClientReservationsFixture.noReservations
 import static pl.cezarysanecki.parkingdomain.clientreservations.model.ClientReservationsFixture.reservationsWith
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.anyParkingSpotId
+import static pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleFixture.anyReservationId
 
 class RequestingClientReservationTest extends Specification {
   
@@ -36,7 +37,7 @@ class RequestingClientReservationTest extends Specification {
   
   def "cannot make reservation for random parking spot when there is too many made reservations"() {
     given:
-      def clientReservations = reservationsWith(clientId, 1)
+      def clientReservations = reservationsWith(clientId, anyReservationId())
       def reservationSlot = new ReservationSlot(LocalDateTime.now(), 2)
     
     when:
@@ -70,7 +71,7 @@ class RequestingClientReservationTest extends Specification {
   
   def "cannot make reservation for chosen parking spot when there is too many made reservations"() {
     given:
-      def clientReservations = reservationsWith(clientId, 1)
+      def clientReservations = reservationsWith(clientId, anyReservationId())
       def reservationSlot = new ReservationSlot(LocalDateTime.now(), 2)
     
     when:
