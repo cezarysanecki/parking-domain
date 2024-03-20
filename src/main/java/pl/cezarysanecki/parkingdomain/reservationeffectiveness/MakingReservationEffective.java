@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.reservationschedule.application;
+package pl.cezarysanecki.parkingdomain.reservationeffectiveness;
 
 import org.springframework.scheduling.annotation.Scheduled;
 

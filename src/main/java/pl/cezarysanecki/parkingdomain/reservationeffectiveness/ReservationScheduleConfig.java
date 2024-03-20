@@ -1,18 +1,22 @@
-package pl.cezarysanecki.parkingdomain.reservationschedule.infrastructure;
+package pl.cezarysanecki.parkingdomain.reservationeffectiveness;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import pl.cezarysanecki.parkingdomain.commons.date.DateProvider;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 import pl.cezarysanecki.parkingdomain.reservationschedule.application.CancellingReservation;
 import pl.cezarysanecki.parkingdomain.reservationschedule.application.MakingReservationEventListener;
 import pl.cezarysanecki.parkingdomain.reservationschedule.application.ParkingSpotReservationEventListener;
+import pl.cezarysanecki.parkingdomain.reservationschedule.infrastructure.DomainModelMapper;
+import pl.cezarysanecki.parkingdomain.reservationschedule.infrastructure.InMemoryReservationScheduleRepository;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationSchedules;
 
 @Slf4j
 @Configuration
+@EnableScheduling
 public class ReservationScheduleConfig {
 
     private final EventPublisher eventPublisher;
@@ -36,6 +40,11 @@ public class ReservationScheduleConfig {
     @Bean
     public CancellingReservation cancellingReservation(ReservationSchedules reservationSchedules) {
         return new CancellingReservation(reservationSchedules);
+    }
+
+    @Bean
+    public MakingReservationEffective makingReservationEffective() {
+        return new MakingReservationEffective();
     }
 
     @Bean
