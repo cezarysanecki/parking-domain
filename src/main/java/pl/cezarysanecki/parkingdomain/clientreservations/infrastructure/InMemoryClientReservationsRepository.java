@@ -19,12 +19,13 @@ class InMemoryClientReservationsRepository implements ClientReservationsReposito
 
     private static final Map<ClientId, ClientReservationsEntity> DATABASE = new ConcurrentHashMap<>();
     private final EventPublisher eventPublisher;
+    private final DomainModelMapper domainModelMapper;
     private final ClientReservationsFactory factory;
 
     @Override
     public ClientReservations findBy(ClientId clientId) {
         return Option.of(DATABASE.get(clientId))
-                .map(DomainModelMapper::map)
+                .map(domainModelMapper::map)
                 .getOrElse(() -> factory.createEmpty(clientId));
     }
 
@@ -38,7 +39,7 @@ class InMemoryClientReservationsRepository implements ClientReservationsReposito
 
         eventPublisher.publish(clientReservationsEvent);
 
-        return DomainModelMapper.map(entity);
+        return domainModelMapper.map(entity);
     }
 
 }

@@ -16,6 +16,8 @@ import static pl.cezarysanecki.parkingdomain.reservationschedule.model.Reservati
 
 class MakingReservationTest extends Specification {
   
+  ReservationId reservationId = anyReservationId()
+  
   def "can reserve when there are no other reservations"() {
     given:
       def clientId = anyClientId()
@@ -27,7 +29,7 @@ class MakingReservationTest extends Specification {
       def reservationSlot = new ReservationSlot(now, 2)
     
     when:
-      Either<ReservationFailed, ReservationMade> result = reservationSchedule.reserve(clientId, reservationSlot)
+      Either<ReservationFailed, ReservationMade> result = reservationSchedule.reserve(clientId, reservationSlot, reservationId)
     
     then:
       result.isRight()
@@ -35,6 +37,7 @@ class MakingReservationTest extends Specification {
         assert it.parkingSpotId == reservationSchedule.parkingSpotId
         assert it.reservationSlot == reservationSlot
         assert it.clientId == clientId
+        assert it.reservationId == reservationId
       }
   }
   
@@ -49,7 +52,7 @@ class MakingReservationTest extends Specification {
       def clientId = anyClientId()
     
     when:
-      Either<ReservationFailed, ReservationMade> result = reservationSchedule.reserve(clientId, reservationSlot)
+      Either<ReservationFailed, ReservationMade> result = reservationSchedule.reserve(clientId, reservationSlot, reservationId)
     
     then:
       result.isRight()
@@ -57,6 +60,7 @@ class MakingReservationTest extends Specification {
         assert it.parkingSpotId == reservationSchedule.parkingSpotId
         assert it.reservationSlot == reservationSlot
         assert it.clientId == clientId
+        assert it.reservationId == reservationId
       }
   }
   
@@ -71,7 +75,7 @@ class MakingReservationTest extends Specification {
       def reservationSlot = new ReservationSlot(now.plusHours(3), 2)
     
     when:
-      Either<ReservationFailed, ReservationMade> result = reservationSchedule.reserve(clientId, reservationSlot)
+      Either<ReservationFailed, ReservationMade> result = reservationSchedule.reserve(clientId, reservationSlot, reservationId)
     
     then:
       result.isRight()
@@ -79,6 +83,7 @@ class MakingReservationTest extends Specification {
         assert it.parkingSpotId == reservationSchedule.parkingSpotId
         assert it.reservationSlot == reservationSlot
         assert it.clientId == clientId
+        assert it.reservationId == reservationId
       }
   }
   
@@ -92,12 +97,14 @@ class MakingReservationTest extends Specification {
       def reservationSchedule = reservationScheduleWith(now, reservation)
     
     when:
-      Either<ReservationFailed, ReservationMade> result = reservationSchedule.reserve(anyClientId(), reservationSlot)
+      Either<ReservationFailed, ReservationMade> result = reservationSchedule.reserve(anyClientId(), reservationSlot, reservationId)
     
     then:
       result.isLeft()
       result.getLeft().with {
         assert it.parkingSpotId == reservationSchedule.parkingSpotId
+        assert it.clientId == clientId
+        assert it.reservationId == reservationId
         assert it.getReason().contains("there is another reservation in that time")
       }
   }
@@ -114,12 +121,14 @@ class MakingReservationTest extends Specification {
       def reservationSchedule = reservationScheduleWith(now, reservation)
     
     when:
-      Either<ReservationFailed, ReservationMade> result = reservationSchedule.reserve(clientId, reservationSlot.moveBy(2))
+      Either<ReservationFailed, ReservationMade> result = reservationSchedule.reserve(clientId, reservationSlot.moveBy(2), reservationId)
     
     then:
       result.isLeft()
       result.getLeft().with {
         assert it.parkingSpotId == reservationSchedule.parkingSpotId
+        assert it.clientId == clientId
+        assert it.reservationId == reservationId
         assert it.getReason().contains("it is already reserved for this client")
       }
   }
@@ -132,12 +141,14 @@ class MakingReservationTest extends Specification {
     
     when:
       Either<ReservationFailed, ReservationMade> result = reservationSchedule.reserve(
-          anyClientId(), new ReservationSlot(now.plusHours(2), 2))
+          anyClientId(), new ReservationSlot(now.plusHours(2), 2), reservationId)
     
     then:
       result.isLeft()
       result.getLeft().with {
         assert it.parkingSpotId == reservationSchedule.parkingSpotId
+        assert it.clientId == clientId
+        assert it.reservationId == reservationId
         assert it.getReason().contains("need to give some time to free parking spot")
       }
   }

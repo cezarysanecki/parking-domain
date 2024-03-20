@@ -1,6 +1,5 @@
 package pl.cezarysanecki.parkingdomain.clientreservations.application
 
-import io.vavr.control.Option
 import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientId
 import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientReservations
 import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientReservationsEvent
@@ -100,13 +99,13 @@ class RequestingReservationTest extends Specification {
   }
   
   ClientReservations persisted(ClientReservations clientReservations) {
-    repository.findBy(clientReservations.clientId) >> Option.of(clientReservations)
+    repository.findBy(clientReservations.clientId) >> clientReservations
     repository.publish(_ as ClientReservationsEvent) >> clientReservations
     return clientReservations
   }
   
   ClientReservations notPersisted(ClientReservations clientReservations) {
-    repository.findBy(clientReservations.clientId) >> Option.none()
+    repository.findBy(clientReservations.clientId) >> ClientReservations.empty(clientId, LocalDateTime.now())
     repository.publish(_ as ClientReservationsEvent) >> clientReservations
     return clientReservations
   }

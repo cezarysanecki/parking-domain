@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientId;
-import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientReservationsEvent.ReservationRequestCreated;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationSchedule;
@@ -29,7 +28,7 @@ public class MakingReservationEventListener {
     private final ReservationSchedules reservationSchedules;
 
     @EventListener
-    public void handle(ReservationRequestCreated event) {
+    public void handle(ReservationRequestHasOccurred event) {
         ClientId clientId = event.getClientId();
         ReservationSlot reservationSlot = event.getReservationSlot();
 
@@ -37,7 +36,7 @@ public class MakingReservationEventListener {
                 .map(this::load)
                 .getOrElse(() -> loadFree(reservationSlot));
 
-        Either<ReservationFailed, ReservationMade> result = reservationSchedule.reserve(clientId, reservationSlot);
+        Either<ReservationFailed, ReservationMade> result = reservationSchedule.reserve(clientId, reservationSlot, event.getReservationId());
         Match(result).of(
                 Case($Left($()), this::publishEvents),
                 Case($Right($()), this::publishEvents));

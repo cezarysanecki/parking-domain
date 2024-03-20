@@ -11,7 +11,6 @@ import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationSched
 
 import java.time.LocalDateTime;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announceFailure;
@@ -32,19 +31,22 @@ public class ReservationSchedule {
         this(parkingSpotId, Reservations.none(), false, now);
     }
 
-    public Either<ReservationFailed, ReservationMade> reserve(ClientId clientId, ReservationSlot reservationSlot) {
+    public Either<ReservationFailed, ReservationMade> reserve(
+            ClientId clientId,
+            ReservationSlot reservationSlot,
+            ReservationId reservationId
+    ) {
         if (reservations.intersects(reservationSlot)) {
-            return announceFailure(new ReservationFailed(parkingSpotId, clientId, "there is another reservation in that time"));
+            return announceFailure(new ReservationFailed(parkingSpotId, clientId, reservationId, "there is another reservation in that time"));
         }
         if (isAlreadyReservedFor(clientId)) {
-            return announceFailure(new ReservationFailed(parkingSpotId, clientId, "it is already reserved for this client"));
+            return announceFailure(new ReservationFailed(parkingSpotId, clientId, reservationId, "it is already reserved for this client"));
         }
         if (thereIsNoEnoughTimeToFreeSpot(reservationSlot)) {
-            return announceFailure(new ReservationFailed(parkingSpotId, clientId, "need to give some time to free parking spot"));
+            return announceFailure(new ReservationFailed(parkingSpotId, clientId, reservationId, "need to give some time to free parking spot"));
         }
 
-        return announceSuccess(new ReservationMade(
-                parkingSpotId, clientId, ReservationId.of(UUID.randomUUID()), reservationSlot));
+        return announceSuccess(new ReservationMade(parkingSpotId, clientId, reservationId, reservationSlot));
     }
 
     public Either<ReservationCancellationFailed, ReservationCancelled> cancel(ReservationId reservationId) {

@@ -16,12 +16,14 @@ import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 public class ClientReservationsConfig {
 
     private final EventPublisher eventPublisher;
+    private final DateProvider dateProvider;
     private final ClientReservationsFactory clientReservationsFactory;
 
     public ClientReservationsConfig(
             EventPublisher eventPublisher,
             DateProvider dateProvider) {
         this.eventPublisher = eventPublisher;
+        this.dateProvider = dateProvider;
         this.clientReservationsFactory = new ClientReservationsFactory(dateProvider);
     }
 
@@ -38,8 +40,10 @@ public class ClientReservationsConfig {
     @Bean
     @Profile("local")
     public ClientReservationsRepository inMemoryClientReservationsRepository() {
+        DomainModelMapper domainModelMapper = new DomainModelMapper(dateProvider);
         return new InMemoryClientReservationsRepository(
                 eventPublisher,
+                domainModelMapper,
                 clientReservationsFactory);
     }
 

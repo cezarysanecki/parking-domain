@@ -7,10 +7,9 @@ import org.springframework.data.annotation.Id;
 import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientReservationsEvent;
 import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientReservationsEvent.ReservationRequestCancelled;
 import pl.cezarysanecki.parkingdomain.clientreservations.model.ClientReservationsEvent.ReservationRequestCreated;
-import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleEvent;
-import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleEvent.ReservationCancelled;
-import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleEvent.ReservationMade;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import static io.vavr.API.$;
@@ -23,11 +22,11 @@ class ClientReservationsEntity {
     @Id
     Long id;
     UUID clientId;
-    int numberOfReservations;
+    Set<UUID> reservations;
 
     ClientReservationsEntity(UUID clientId) {
         this.clientId = clientId;
-        this.numberOfReservations = 0;
+        this.reservations = new HashSet<>();
     }
 
     void handle(ClientReservationsEvent event) {
@@ -38,12 +37,12 @@ class ClientReservationsEntity {
     }
 
     private ClientReservationsEntity handle(ReservationRequestCreated reservationRequestCreated) {
-        this.numberOfReservations++;
+        this.reservations.add(reservationRequestCreated.getReservationId().getValue());
         return this;
     }
 
     private ClientReservationsEntity handle(ReservationRequestCancelled reservationRequestCancelled) {
-        this.numberOfReservations--;
+        this.reservations.remove(reservationRequestCancelled.getReservationId().getValue());
         return this;
     }
 

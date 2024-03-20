@@ -12,7 +12,7 @@ public class ClientReservationsFactory {
 
     public ClientReservations createEmpty(ClientId clientId) {
         LocalDateTime now = dateProvider.now();
-        return new ClientReservations(clientId, 0, now);
+        return ClientReservations.empty(clientId, now);
     }
 
 }
