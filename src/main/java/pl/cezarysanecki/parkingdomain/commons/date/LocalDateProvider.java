@@ -2,7 +2,7 @@ package pl.cezarysanecki.parkingdomain.commons.date;
 
 import java.time.LocalDateTime;
 
-class LocalDateProvider implements DateProvider {
+public class LocalDateProvider implements DateProvider {
 
     private LocalDateTime currentDateTime = LocalDateTime.now();
 
@@ -11,12 +11,17 @@ class LocalDateProvider implements DateProvider {
         return currentDateTime;
     }
 
-    LocalDateTime passHours(int hours) {
+    public LocalDateTime setCurrentDate(LocalDateTime localDateTime) {
+        currentDateTime = localDateTime;
+        return currentDateTime;
+    }
+
+    public LocalDateTime passHours(int hours) {
         currentDateTime = currentDateTime.plusHours(hours);
         return currentDateTime;
     }
 
-    LocalDateTime passMinutes(int minutes) {
+    public LocalDateTime passMinutes(int minutes) {
         currentDateTime = currentDateTime.plusMinutes(minutes);
         return currentDateTime;
     }
