@@ -34,18 +34,19 @@ public class ReservedParkingSpot implements ParkingSpot {
         ParkingSpotId parkingSpotId = base.getParkingSpotId();
 
         Option<Rejection> rejection = vehicleCanPark(reservationId, vehicle);
-        if (rejection.isEmpty()) {
-            Option<FullyOccupied> fullyOccupied = Option.none();
-            if (base.isFullyOccupiedWith(vehicle)) {
-                fullyOccupied = Option.of(new FullyOccupied(parkingSpotId));
-            }
-            return announceSuccess(new VehicleParkedEvents(
-                    parkingSpotId,
-                    new VehicleParked(parkingSpotId, vehicle),
-                    fullyOccupied,
-                    Option.of(new ReservationFulfilled(parkingSpotId, reservationId))));
+        if (rejection.isDefined()) {
+            return announceFailure(new ParkingFailed(parkingSpotId, vehicle.getVehicleId(), rejection.get().getReason().getReason()));
         }
-        return announceFailure(new ParkingFailed(parkingSpotId, vehicle.getVehicleId(), rejection.get().getReason().getReason()));
+
+        Option<FullyOccupied> fullyOccupied = Option.none();
+        if (base.isFullyOccupiedWith(vehicle)) {
+            fullyOccupied = Option.of(new FullyOccupied(parkingSpotId));
+        }
+        return announceSuccess(new VehicleParkedEvents(
+                parkingSpotId,
+                new VehicleParked(parkingSpotId, vehicle),
+                fullyOccupied,
+                Option.of(new ReservationFulfilled(parkingSpotId, reservationId))));
     }
 
     private Option<Rejection> vehicleCanPark(ReservationId reservationId, Vehicle vehicle) {
