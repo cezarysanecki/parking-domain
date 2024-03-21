@@ -31,14 +31,15 @@ public class OpenParkingSpot implements ParkingSpot {
         ParkingSpotId parkingSpotId = base.getParkingSpotId();
 
         Option<Rejection> rejection = vehicleCanPark(vehicle);
-        if (rejection.isEmpty()) {
-            VehicleParked vehicleParked = new VehicleParked(parkingSpotId, vehicle);
-            if (base.isFullyOccupiedWith(vehicle)) {
-                return announceSuccess(new VehicleParkedEvents(parkingSpotId, vehicleParked, Option.of(new FullyOccupied(parkingSpotId)), Option.none()));
-            }
-            return announceSuccess(new VehicleParkedEvents(parkingSpotId, vehicleParked, Option.none(), Option.none()));
+        if (rejection.isDefined()) {
+            return announceFailure(new ParkingFailed(parkingSpotId, vehicle.getVehicleId(), rejection.get().getReason().getReason()));
         }
-        return announceFailure(new ParkingFailed(parkingSpotId, vehicle.getVehicleId(), rejection.get().getReason().getReason()));
+
+        VehicleParked vehicleParked = new VehicleParked(parkingSpotId, vehicle);
+        if (base.isFullyOccupiedWith(vehicle)) {
+            return announceSuccess(new VehicleParkedEvents(parkingSpotId, vehicleParked, Option.of(new FullyOccupied(parkingSpotId)), Option.none()));
+        }
+        return announceSuccess(new VehicleParkedEvents(parkingSpotId, vehicleParked, Option.none(), Option.none()));
     }
 
     private Option<Rejection> vehicleCanPark(Vehicle vehicle) {

@@ -10,7 +10,6 @@ import pl.cezarysanecki.parkingdomain.views.parking.model.ParkingViews;
 import static io.vavr.API.$;
 import static io.vavr.API.Case;
 import static io.vavr.Predicates.instanceOf;
-import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.FullyOccupied;
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ParkingSpotCreated;
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleLeft;
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleParked;
@@ -27,12 +26,11 @@ public class ParkingSpotViewEventHandler {
                 Case($(instanceOf(ParkingSpotCreated.class)), this::handle),
                 Case($(instanceOf(VehicleLeft.class)), this::handle),
                 Case($(instanceOf(VehicleParked.class)), this::handle),
-                Case($(instanceOf(FullyOccupied.class)), this::handle),
                 Case($(), () -> event));
     }
 
     private ParkingSpotEvent handle(ParkingSpotCreated parkingSpotCreated) {
-        parkingViews.addParkingSpot(parkingSpotCreated.getParkingSpotId(), parkingSpotCreated.getCapacity());
+        parkingViews.addParkingSpot(parkingSpotCreated.getParkingSpotId(), parkingSpotCreated.getParkingSpotType(), parkingSpotCreated.getCapacity());
         return parkingSpotCreated;
     }
 
@@ -44,11 +42,6 @@ public class ParkingSpotViewEventHandler {
     private ParkingSpotEvent handle(VehicleParked vehicleParked) {
         parkingViews.decreaseCapacity(vehicleParked.getParkingSpotId(), vehicleParked.getVehicle().getVehicleSizeUnit().getValue());
         return vehicleParked;
-    }
-
-    private ParkingSpotEvent handle(FullyOccupied fullyOccupied) {
-        parkingViews.removeParkingSpot(fullyOccupied.getParkingSpotId());
-        return fullyOccupied;
     }
 
 }

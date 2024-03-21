@@ -18,6 +18,7 @@ import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.Vehi
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.anyParkingSpotId
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.anyVehicleId
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.vehicleWith
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotType.Gold
 
 @ActiveProfiles("local")
 @SpringBootTest(classes = [ParkingSpotConfig.class, EventPublisherTestConfig.class, DateConfig.class])
@@ -56,7 +57,7 @@ class ParkingSpotInMemoryRepositoryIT extends Specification {
   }
   
   ParkingSpotCreated parkingSpotCreated() {
-    return new ParkingSpotCreated(parkingSpotId, 4)
+    return new ParkingSpotCreated(parkingSpotId, Gold, 4)
   }
   
   VehicleParked vehicleParked() {

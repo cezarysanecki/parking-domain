@@ -11,7 +11,6 @@ import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.Vehi
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleParkedEvents
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.emptyParkingSpotWith
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.outOfOrderParkingSpot
-import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.parkingSpotWith
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.vehicleWith
 
 class ParkingOnOpenParkingSpotTest extends Specification {
@@ -31,24 +30,6 @@ class ParkingOnOpenParkingSpotTest extends Specification {
         assert it.parkingSpotId == parkingSpot.base.parkingSpotId
         assert it.vehicleId == vehicle.vehicleId
         assert it.reason.contains("parking on out of order parking spot is forbidden")
-      }
-  }
-  
-  def "cannot park on open parking spot by the same vehicle"() {
-    given:
-      Vehicle vehicle = vehicleWith(2)
-    and:
-      OpenParkingSpot parkingSpot = OpenParkingSpotFactory.create(parkingSpotWith(vehicle))
-    
-    when:
-      Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(vehicle)
-    
-    then:
-      result.isLeft()
-      result.getLeft().with {
-        assert it.parkingSpotId == parkingSpot.base.parkingSpotId
-        assert it.vehicleId == vehicle.vehicleId
-        assert it.reason.contains("vehicle is already parked on parking spot")
       }
   }
   

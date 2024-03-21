@@ -8,9 +8,9 @@ import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationId;
 
 public interface ParkingSpots {
 
-    Option<ParkingSpot> findBy(ParkingSpotId parkingSpotId);
+    Option<OpenParkingSpot> findBy(ParkingSpotType parkingSpotType, VehicleSizeUnit vehicleSizeUnit);
 
-    Option<OpenParkingSpot> findBy(VehicleSizeUnit vehicleSizeUnit);
+    Option<ParkingSpot> findBy(ParkingSpotId parkingSpotId);
 
     Option<ReservedParkingSpot> findBy(ReservationId reservationId);
 

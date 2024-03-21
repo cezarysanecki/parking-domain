@@ -45,20 +45,6 @@ public class OccupiedParkingSpot implements ParkingSpot {
         return announceSuccess(VehicleLeftEvents.events(parkingSpotId, List.of(vehicleLeft)));
     }
 
-    public Either<ReleasingFailed, VehicleLeftEvents> releaseAll() {
-        ParkingSpotId parkingSpotId = base.getParkingSpotId();
-        ParkedVehicles parkedVehicles = base.getParkedVehicles();
-
-        if (parkedVehicles.isEmpty()) {
-            return announceFailure(new ReleasingFailed(parkingSpotId, List.empty(), "parking spot is empty"));
-        }
-
-        List<VehicleLeft> vehiclesLeft = List.ofAll(parkedVehicles.getCollection().stream()
-                .map(parkedVehicle -> new VehicleLeft(parkingSpotId, parkedVehicle))
-                .toList());
-        return announceSuccess(VehicleLeftEvents.events(parkingSpotId, vehiclesLeft, new CompletelyFreedUp(parkingSpotId)));
-    }
-
     private boolean isCompletelyFreedUp(VehicleSizeUnit vehicleSizeUnit) {
         return base.getParkedVehicles().occupation() - vehicleSizeUnit.getValue() == 0;
     }

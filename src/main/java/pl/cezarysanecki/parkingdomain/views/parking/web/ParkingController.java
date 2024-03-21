@@ -13,14 +13,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
+import pl.cezarysanecki.parkingdomain.parking.application.parking.ParkReservedVehicleCommand;
 import pl.cezarysanecki.parkingdomain.parking.application.parking.ParkVehicleCommand;
 import pl.cezarysanecki.parkingdomain.parking.application.parking.ParkingOnParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.application.releasing.ReleaseParkingSpotCommand;
 import pl.cezarysanecki.parkingdomain.parking.application.releasing.ReleasingParkingSpot;
-import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotType;
 import pl.cezarysanecki.parkingdomain.parking.model.Vehicle;
 import pl.cezarysanecki.parkingdomain.parking.model.VehicleId;
 import pl.cezarysanecki.parkingdomain.parking.model.VehicleSizeUnit;
+import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationId;
 import pl.cezarysanecki.parkingdomain.views.parking.model.AvailableParkingSpotView;
 import pl.cezarysanecki.parkingdomain.views.parking.model.ParkingViews;
 
@@ -36,12 +38,24 @@ class ParkingController {
     private final ReleasingParkingSpot releasingParkingSpot;
     private final ParkingViews parkingViews;
 
-    private final
-
-    @PostMapping("/park-on/{parkingSpotId}")
-    ResponseEntity park(@PathVariable UUID parkingSpotId, @RequestBody ParkVehicleRequest request) {
+    @PostMapping("/park")
+    ResponseEntity park(@RequestBody ParkVehicleRequest request) {
         Try<Result> result = parkingOnParkingSpot.park(new ParkVehicleCommand(
-                ParkingSpotId.of(parkingSpotId),
+                request.parkingSpotType,
+                new Vehicle(VehicleId.of(request.vehicleId), VehicleSizeUnit.of(request.vehicleSize))));
+
+        return result
+                .map(success -> switch (success) {
+                    case Success -> ResponseEntity.ok().build();
+                    case Rejection -> ResponseEntity.badRequest().build();
+                })
+                .getOrElse(() -> ResponseEntity.internalServerError().build());
+    }
+
+    @PostMapping("/park/reservation")
+    ResponseEntity parkOnReserved(@RequestBody ParkVehicleUsingReservationRequest request) {
+        Try<Result> result = parkingOnParkingSpot.park(new ParkReservedVehicleCommand(
+                ReservationId.of(request.reservationId),
                 new Vehicle(VehicleId.of(request.vehicleId), VehicleSizeUnit.of(request.vehicleSize))));
 
         return result
@@ -81,7 +95,18 @@ class ParkingController {
 @AllArgsConstructor
 class ParkVehicleRequest {
 
-    UUID clientId;
+    ParkingSpotType parkingSpotType;
+    UUID vehicleId;
+    int vehicleSize;
+
+}
+
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+class ParkVehicleUsingReservationRequest {
+
+    UUID reservationId;
     UUID vehicleId;
     int vehicleSize;
 
@@ -101,10 +126,12 @@ class LeaveParkingSpotRequest {
 class AvailableParkingSpot {
 
     UUID parkingSpotId;
+    ParkingSpotType parkingSpotType;
     int leftCapacity;
 
     AvailableParkingSpot(AvailableParkingSpotView availableParkingSpotView) {
         this.parkingSpotId = availableParkingSpotView.getParkingSpotId().getValue();
+        this.parkingSpotType = availableParkingSpotView.getParkingSpotType();
         this.leftCapacity = availableParkingSpotView.getLeftCapacity();
     }
 

@@ -10,16 +10,16 @@ public class ParkingSpotBase {
     ParkedVehicles parkedVehicles;
     boolean outOfOrder;
 
-    public boolean isParked(VehicleId vehicleId) {
-        return parkedVehicles.contains(vehicleId);
-    }
-
     public boolean isExceededWith(Vehicle vehicle) {
         return parkedVehicles.occupation() + vehicle.getVehicleSizeUnit().getValue() > capacity.getValue();
     }
 
     public boolean isFullyOccupiedWith(Vehicle vehicle) {
         return parkedVehicles.occupation() + vehicle.getVehicleSizeUnit().getValue() == capacity.getValue();
+    }
+
+    public boolean isParked(VehicleId vehicleId) {
+        return parkedVehicles.findBy(vehicleId).isDefined();
     }
 
     public boolean isEmpty() {

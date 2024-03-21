@@ -11,6 +11,7 @@ import pl.cezarysanecki.parkingdomain.parking.application.parking.ParkingOnParki
 import pl.cezarysanecki.parkingdomain.parking.application.releasing.ReleasingParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ParkingSpotCreated;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotType;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpots;
 
 import java.util.UUID;
@@ -42,9 +43,9 @@ public class ParkingSpotConfig {
     @Bean
     CommandLineRunner init(ParkingSpots parkingSpots) {
         return args -> {
-            parkingSpots.publish(new ParkingSpotCreated(ParkingSpotId.of(UUID.randomUUID()), 4));
-            parkingSpots.publish(new ParkingSpotCreated(ParkingSpotId.of(UUID.randomUUID()), 4));
-            parkingSpots.publish(new ParkingSpotCreated(ParkingSpotId.of(UUID.randomUUID()), 4));
+            parkingSpots.publish(new ParkingSpotCreated(ParkingSpotId.of(UUID.randomUUID()), ParkingSpotType.Bronze, 4));
+            parkingSpots.publish(new ParkingSpotCreated(ParkingSpotId.of(UUID.randomUUID()), ParkingSpotType.Silver, 4));
+            parkingSpots.publish(new ParkingSpotCreated(ParkingSpotId.of(UUID.randomUUID()), ParkingSpotType.Gold, 4));
         };
     }
 

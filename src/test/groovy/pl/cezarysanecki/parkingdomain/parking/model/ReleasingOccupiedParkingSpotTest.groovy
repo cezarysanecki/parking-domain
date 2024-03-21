@@ -92,36 +92,4 @@ class ReleasingOccupiedParkingSpotTest extends Specification {
       }
   }
   
-  def "reject to release empty parking spot"() {
-    given:
-      OccupiedParkingSpot parkingSpot = OccupiedParkingSpotFactory.create(emptyParkingSpotWith(4))
-    
-    when:
-      Either<ReleasingFailed, VehicleLeftEvents> result = parkingSpot.releaseAll()
-    
-    then:
-      result.isLeft()
-      result.getLeft().with {
-        assert it.parkingSpotId == parkingSpotId
-      }
-  }
-  
-  def "release all parked vehicle on occupied parking spot"() {
-    given:
-      OccupiedParkingSpot parkingSpot = OccupiedParkingSpotFactory.create(parkingSpotWith([vehicleWith(1), vehicleWith(1)]))
-    
-    when:
-      Either<ReleasingFailed, VehicleLeftEvents> result = parkingSpot.releaseAll()
-    
-    then:
-      result.isRight()
-      result.get().with {
-        List<VehicleLeft> vehiclesLeft = it.vehiclesLeft
-        assert vehiclesLeft.size() == 2
-        
-        CompletelyFreedUp completelyFreedUp = it.completelyFreedUps.get()
-        assert completelyFreedUp.parkingSpotId == parkingSpotId
-      }
-  }
-  
 }

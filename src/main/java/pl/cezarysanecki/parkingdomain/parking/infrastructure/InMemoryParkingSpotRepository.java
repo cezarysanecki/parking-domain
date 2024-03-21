@@ -8,6 +8,7 @@ import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ParkingSpotCreated;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotType;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpots;
 import pl.cezarysanecki.parkingdomain.parking.model.VehicleId;
 import pl.cezarysanecki.parkingdomain.parking.model.VehicleSizeUnit;
@@ -36,6 +37,14 @@ class InMemoryParkingSpotRepository implements ParkingSpots {
     private final EventPublisher eventPublisher;
 
     @Override
+    public Option<OpenParkingSpot> findBy(ParkingSpotType parkingSpotType, VehicleSizeUnit vehicleSizeUnit) {
+        return find(entity -> entity.reservation.isEmpty()
+                && entity.parkingSpotType == parkingSpotType
+                && entity.hasEnoughSpace(vehicleSizeUnit)
+        ).map(DomainModelMapper::map).map(OpenParkingSpotFactory::create);
+    }
+
+    @Override
     public Option<ParkingSpot> findBy(ParkingSpotId parkingSpotId) {
         return find(entity -> entity.parkingSpotId.equals(parkingSpotId.getValue()))
                 .map(entity -> entity.reservation
@@ -43,18 +52,6 @@ class InMemoryParkingSpotRepository implements ParkingSpots {
                                 DomainModelMapper.map(entity), ReservationId.of(reservationId)))
                         .map(ParkingSpot.class::cast)
                         .getOrElse(() -> OpenParkingSpotFactory.create(DomainModelMapper.map(entity))));
-    }
-
-    @Override
-    public Option<OpenParkingSpot> findBy(VehicleSizeUnit vehicleSizeUnit) {
-        return find(entity -> {
-            Integer currentOccupation = entity.parkedVehicles.stream()
-                    .map(ParkedVehicleEntity::getVehicleSizeUnit)
-                    .reduce(0, Integer::sum);
-            boolean hasEnoughSpace = entity.capacity - currentOccupation >= vehicleSizeUnit.getValue();
-
-            return entity.reservation.isEmpty() && hasEnoughSpace;
-        }).map(DomainModelMapper::map).map(OpenParkingSpotFactory::create);
     }
 
     @Override
@@ -85,7 +82,7 @@ class InMemoryParkingSpotRepository implements ParkingSpots {
 
     private ParkingSpot createNewParkingSpot(ParkingSpotCreated event) {
         ParkingSpotId parkingSpotId = event.getParkingSpotId();
-        ParkingSpotEntity entity = new ParkingSpotEntity(parkingSpotId.getValue(), event.getCapacity());
+        ParkingSpotEntity entity = new ParkingSpotEntity(parkingSpotId.getValue(), event.getParkingSpotType(), event.getCapacity());
         DATABASE.put(parkingSpotId, entity);
         log.debug("creating parking spot with id {}", parkingSpotId);
         return OpenParkingSpotFactory.create(DomainModelMapper.map(entity));

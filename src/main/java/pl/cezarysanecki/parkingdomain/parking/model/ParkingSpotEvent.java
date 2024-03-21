@@ -15,6 +15,7 @@ public sealed interface ParkingSpotEvent extends DomainEvent {
     final class ParkingSpotCreated implements ParkingSpotEvent {
 
         @NonNull ParkingSpotId parkingSpotId;
+        @NonNull ParkingSpotType parkingSpotType;
         int capacity;
 
     }
