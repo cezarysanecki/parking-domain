@@ -10,7 +10,6 @@ import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpot
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpots
 import pl.cezarysanecki.parkingdomain.parking.model.Vehicle
-import pl.cezarysanecki.parkingdomain.parking.model.parking.OpenParkingSpot
 import spock.lang.Specification
 
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ParkingSpotCreated
@@ -19,6 +18,7 @@ import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.Vehi
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.anyParkingSpotId
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.anyVehicleId
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.vehicleWith
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotType.Silver
 
 @ActiveProfiles("local")
 @SpringBootTest(classes = [ParkingSpotConfig.class, EventPublisherTestConfig.class, DateConfig.class])
@@ -68,7 +68,7 @@ class FreeParkingSpotIT extends Specification {
   }
   
   ParkingSpotCreated parkingSpotCreated(int capacity) {
-    return new ParkingSpotCreated(parkingSpotId, capacity)
+    return new ParkingSpotCreated(parkingSpotId, Silver, capacity)
   }
   
   VehicleParked vehicleParked(Vehicle vehicle) {

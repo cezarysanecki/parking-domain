@@ -131,7 +131,7 @@ class AvailableParkingSpot {
 
     AvailableParkingSpot(AvailableParkingSpotView availableParkingSpotView) {
         this.parkingSpotId = availableParkingSpotView.getParkingSpotId().getValue();
-        this.parkingSpotType = availableParkingSpotView.
+        this.parkingSpotType = availableParkingSpotView.getParkingSpotType();
         this.leftCapacity = availableParkingSpotView.getLeftCapacity();
     }
 

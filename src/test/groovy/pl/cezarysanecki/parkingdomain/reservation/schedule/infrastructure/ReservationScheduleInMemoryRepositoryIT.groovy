@@ -17,11 +17,12 @@ import spock.lang.Specification
 
 import java.time.LocalDateTime
 
+import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationsFixture.anyClientId
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ParkingSpotCreated
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.anyParkingSpotId
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotType.Bronze
 import static pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationScheduleEvent.ReservationCancelled
 import static pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationScheduleEvent.ReservationMade
-import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationsFixture.anyClientId
 import static pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationScheduleFixture.anyReservationId
 
 @ActiveProfiles("local")
@@ -40,7 +41,7 @@ class ReservationScheduleInMemoryRepositoryIT extends Specification {
   
   def 'persistence in database should work'() {
     given:
-      eventPublisher.publish(new ParkingSpotCreated(parkingSpotId, 4))
+      eventPublisher.publish(new ParkingSpotCreated(parkingSpotId, Bronze, 4))
     
     when:
       reservationSchedules.publish reservationMade(

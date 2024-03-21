@@ -26,6 +26,7 @@ class InMemoryParkingViewReadModel implements ParkingViews {
     public AvailableParkingSpotsView findAvailable() {
         return new AvailableParkingSpotsView(DATABASE.values()
                 .stream()
+                .filter(entity -> entity.leftCapacity > 0)
                 .map(entity -> new AvailableParkingSpotView(
                         ParkingSpotId.of(entity.parkingSpotId),
                         entity.parkingSpotType,
@@ -52,18 +53,9 @@ class InMemoryParkingViewReadModel implements ParkingViews {
     public void decreaseCapacity(ParkingSpotId parkingSpotId, int delta) {
         ParkingSpotViewEntityModel entity = DATABASE.get(parkingSpotId);
         entity.leftCapacity -= delta;
-        if (entity.leftCapacity > 0) {
-            DATABASE.put(parkingSpotId, entity);
-            log.debug("decreasing parking spot view capacity with id {}", parkingSpotId);
-        } else {
-            removeParkingSpot(parkingSpotId);
-        }
-    }
 
-    @Override
-    public void removeParkingSpot(ParkingSpotId parkingSpotId) {
-        DATABASE.values().removeIf(entity -> entity.parkingSpotId.equals(parkingSpotId.getValue()));
-        log.debug("removing parking spot view with id {}", parkingSpotId);
+        DATABASE.put(parkingSpotId, entity);
+        log.debug("decreasing parking spot view capacity with id {}", parkingSpotId);
     }
 
     @Data

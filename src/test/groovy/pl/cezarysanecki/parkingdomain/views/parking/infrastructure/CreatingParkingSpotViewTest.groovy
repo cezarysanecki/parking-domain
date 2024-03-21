@@ -12,12 +12,12 @@ import pl.cezarysanecki.parkingdomain.views.parking.model.AvailableParkingSpotVi
 import pl.cezarysanecki.parkingdomain.views.parking.model.ParkingViews
 import spock.lang.Specification
 
-import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.FullyOccupied
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ParkingSpotCreated
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleLeft
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleParked
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.anyParkingSpotId
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.vehicleWith
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotType.Gold
 
 @ActiveProfiles("local")
 @SpringBootTest(classes = [ParkingViewConfig.class, EventPublisherTestConfig.class])
@@ -55,11 +55,6 @@ class CreatingParkingSpotViewTest extends Specification {
       eventPublisher.publish vehicleLeft(vehicleWith(2))
     then:
       thereIsParkingSpotWithLeftCapacity(parkingSpotId, 4)
-    
-    when:
-      eventPublisher.publish fullyOccupied()
-    then:
-      parkingSpotIsAbsent(parkingSpotId)
   }
   
   void thereIsParkingSpotWithLeftCapacity(ParkingSpotId parkingSpotId, int leftCapacity) {
@@ -74,7 +69,7 @@ class CreatingParkingSpotViewTest extends Specification {
   }
   
   ParkingSpotCreated parkingSpotCreated(int capacity) {
-    return new ParkingSpotCreated(parkingSpotId, capacity)
+    return new ParkingSpotCreated(parkingSpotId, Gold, capacity)
   }
   
   VehicleLeft vehicleLeft(Vehicle vehicle) {
@@ -83,10 +78,6 @@ class CreatingParkingSpotViewTest extends Specification {
   
   VehicleParked vehicleParked(Vehicle vehicle) {
     return new VehicleParked(parkingSpotId, vehicle)
-  }
-  
-  FullyOccupied fullyOccupied() {
-    return new FullyOccupied(parkingSpotId)
   }
   
   Option<AvailableParkingSpotView> loadPersistedAvailableParkingSpotView(ParkingSpotId parkingSpotId) {

@@ -1,7 +1,6 @@
 package pl.cezarysanecki.parkingdomain.reservation.schedule.application
 
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId
-import pl.cezarysanecki.parkingdomain.reservation.schedule.application.ParkingSpotReservationEventListener
 import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationSchedules
 import spock.lang.Specification
 
@@ -10,6 +9,7 @@ import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.Park
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleParked
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.anyParkingSpotId
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.vehicleWith
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotType.Bronze
 
 class HandlingOccupationForParkingSpotReservationTest extends Specification {
   
@@ -22,7 +22,7 @@ class HandlingOccupationForParkingSpotReservationTest extends Specification {
       ParkingSpotReservationEventListener parkingSpotReservationEventListener = new ParkingSpotReservationEventListener(repository)
     
     when:
-      parkingSpotReservationEventListener.handle(new ParkingSpotCreated(parkingSpotId, 4))
+      parkingSpotReservationEventListener.handle(new ParkingSpotCreated(parkingSpotId, Bronze, 4))
     
     then:
       1 * repository.createFor(parkingSpotId)

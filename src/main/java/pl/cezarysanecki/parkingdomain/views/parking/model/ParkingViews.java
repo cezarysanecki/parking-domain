@@ -13,6 +13,4 @@ public interface ParkingViews {
 
     void decreaseCapacity(ParkingSpotId parkingSpotId, int delta);
 
-    void removeParkingSpot(ParkingSpotId parkingSpotId);
-
 }

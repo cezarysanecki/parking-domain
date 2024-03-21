@@ -21,6 +21,7 @@ import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.Cli
 import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationsFixture.anyClientId
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ParkingSpotCreated
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.anyParkingSpotId
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotType.Bronze
 import static pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationScheduleEvent.ReservationCancelled
 
 @ActiveProfiles("local")
@@ -62,7 +63,7 @@ class HandlingClientReservationRequestIT extends Specification {
   }
   
   ParkingSpotCreated parkingSpotCreated() {
-    return new ParkingSpotCreated(parkingSpotId, 4)
+    return new ParkingSpotCreated(parkingSpotId, Bronze, 4)
   }
   
   ReservationRequestCreated reservationRequestCreated() {

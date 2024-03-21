@@ -7,7 +7,7 @@ import pl.cezarysanecki.parkingdomain.parking.application.parking.ParkVehicleCom
 import pl.cezarysanecki.parkingdomain.parking.application.parking.ParkingOnParkingSpot
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpot
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent
-import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotType
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpots
 import pl.cezarysanecki.parkingdomain.parking.model.Vehicle
 import pl.cezarysanecki.parkingdomain.parking.model.parking.OpenParkingSpotFactory
@@ -15,15 +15,15 @@ import pl.cezarysanecki.parkingdomain.parking.model.parking.ReservedParkingSpotF
 import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationId
 import spock.lang.Specification
 
-import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.anyParkingSpotId
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.emptyParkingSpotWith
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.vehicleWith
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotType.Gold
 import static pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationScheduleFixture.anyReservationId
 
 class ParkingOnParkingSpotTest extends Specification {
   
   ReservationId reservationId = anyReservationId()
-  ParkingSpotId parkingSpotId = anyParkingSpotId()
+  ParkingSpotType parkingSpotType = Gold
   
   Vehicle alrightVehicle = vehicleWith(1)
   Vehicle tooBigVehicle = vehicleWith(2)
@@ -37,7 +37,7 @@ class ParkingOnParkingSpotTest extends Specification {
       persistedOpen(alrightVehicle, OpenParkingSpotFactory.create(emptyParkingSpotWith(1)))
     
     when:
-      def result = parkingOnParkingSpot.park(new ParkVehicleCommand(parkingSpotId, alrightVehicle))
+      def result = parkingOnParkingSpot.park(new ParkVehicleCommand(parkingSpotType, alrightVehicle))
     
     then:
       result.isSuccess()
@@ -51,7 +51,7 @@ class ParkingOnParkingSpotTest extends Specification {
       persistedOpen(tooBigVehicle, OpenParkingSpotFactory.create(emptyParkingSpotWith(1)))
     
     when:
-      def result = parkingOnParkingSpot.park(new ParkVehicleCommand(parkingSpotId, tooBigVehicle))
+      def result = parkingOnParkingSpot.park(new ParkVehicleCommand(parkingSpotType, tooBigVehicle))
     
     then:
       result.isSuccess()
@@ -65,7 +65,7 @@ class ParkingOnParkingSpotTest extends Specification {
       unknownParkingSpot(alrightVehicle)
     
     when:
-      def result = parkingOnParkingSpot.park(new ParkVehicleCommand(parkingSpotId, alrightVehicle))
+      def result = parkingOnParkingSpot.park(new ParkVehicleCommand(parkingSpotType, alrightVehicle))
     
     then:
       result.isFailure()
@@ -113,7 +113,7 @@ class ParkingOnParkingSpotTest extends Specification {
   }
   
   ParkingSpot persistedOpen(Vehicle vehicle, ParkingSpot parkingSpot) {
-    repository.findBy(vehicle.vehicleSizeUnit) >> Option.of(parkingSpot)
+    repository.findBy(parkingSpotType, vehicle.vehicleSizeUnit) >> Option.of(parkingSpot)
     repository.publish(_ as ParkingSpotEvent) >> parkingSpot
     return parkingSpot
   }
@@ -124,14 +124,12 @@ class ParkingOnParkingSpotTest extends Specification {
     return parkingSpot
   }
   
-  ParkingSpotId unknownParkingSpot(Vehicle vehicle) {
-    repository.findBy(vehicle.vehicleSizeUnit) >> Option.none()
-    return parkingSpotId
+  void unknownParkingSpot(Vehicle vehicle) {
+    repository.findBy(parkingSpotType, vehicle.vehicleSizeUnit) >> Option.none()
   }
   
-  ParkingSpotId unknownParkingSpot(ReservationId reservationId) {
+  void unknownParkingSpot(ReservationId reservationId) {
     repository.findBy(reservationId) >> Option.none()
-    return parkingSpotId
   }
   
 }

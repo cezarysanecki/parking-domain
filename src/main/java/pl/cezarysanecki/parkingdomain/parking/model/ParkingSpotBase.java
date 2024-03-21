@@ -18,6 +18,10 @@ public class ParkingSpotBase {
         return parkedVehicles.occupation() + vehicle.getVehicleSizeUnit().getValue() == capacity.getValue();
     }
 
+    public boolean isParked(VehicleId vehicleId) {
+        return parkedVehicles.findBy(vehicleId).isDefined();
+    }
+
     public boolean isEmpty() {
         return parkedVehicles.isEmpty();
     }
