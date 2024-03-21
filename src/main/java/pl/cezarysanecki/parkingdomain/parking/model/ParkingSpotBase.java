@@ -10,10 +10,6 @@ public class ParkingSpotBase {
     ParkedVehicles parkedVehicles;
     boolean outOfOrder;
 
-    public boolean isParked(VehicleId vehicleId) {
-        return parkedVehicles.contains(vehicleId);
-    }
-
     public boolean isExceededWith(Vehicle vehicle) {
         return parkedVehicles.occupation() + vehicle.getVehicleSizeUnit().getValue() > capacity.getValue();
     }
