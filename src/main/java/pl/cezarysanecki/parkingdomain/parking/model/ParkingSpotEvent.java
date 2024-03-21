@@ -5,7 +5,7 @@ import io.vavr.control.Option;
 import lombok.NonNull;
 import lombok.Value;
 import pl.cezarysanecki.parkingdomain.commons.events.DomainEvent;
-import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationId;
+import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationId;
 
 public sealed interface ParkingSpotEvent extends DomainEvent {
 

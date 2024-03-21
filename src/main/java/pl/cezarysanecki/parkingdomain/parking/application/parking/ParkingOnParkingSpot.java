@@ -10,7 +10,7 @@ import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpots;
 import pl.cezarysanecki.parkingdomain.parking.model.VehicleSizeUnit;
 import pl.cezarysanecki.parkingdomain.parking.model.parking.OpenParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.model.parking.ReservedParkingSpot;
-import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationId;
+import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationId;
 
 import static io.vavr.API.$;
 import static io.vavr.API.Case;

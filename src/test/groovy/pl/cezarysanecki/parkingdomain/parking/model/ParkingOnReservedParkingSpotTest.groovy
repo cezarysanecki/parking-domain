@@ -3,7 +3,7 @@ package pl.cezarysanecki.parkingdomain.parking.model
 import io.vavr.control.Either
 import pl.cezarysanecki.parkingdomain.parking.model.parking.ReservedParkingSpot
 import pl.cezarysanecki.parkingdomain.parking.model.parking.ReservedParkingSpotFactory
-import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationId
+import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationId
 import spock.lang.Specification
 
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.FullyOccupied
@@ -15,7 +15,7 @@ import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.em
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.outOfOrderParkingSpot
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.parkingSpotWith
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.vehicleWith
-import static pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleFixture.anyReservationId
+import static pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationScheduleFixture.anyReservationId
 
 class ParkingOnReservedParkingSpotTest extends Specification {
   
