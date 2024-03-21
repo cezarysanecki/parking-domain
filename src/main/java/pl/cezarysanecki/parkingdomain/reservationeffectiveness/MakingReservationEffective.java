@@ -23,7 +23,7 @@ public class MakingReservationEffective {
     private final EventPublisher eventPublisher;
     private final ReservationToMakeEffectiveRepository repository;
 
-    @Scheduled(fixedRate = 5_000L)
+    @Scheduled(fixedRateString = "${parking-domain.scheduled.makingReservationEffective.fixedRate:5000}")
     public void makeReservationsEffective() {
         LocalDateTime now = dateProvider.now();
 
@@ -35,6 +35,7 @@ public class MakingReservationEffective {
                                 ParkingSpotId.of(entity.parkingSpotId),
                                 ReservationId.of(entity.reservationId)))
                         .collect(Collectors.toUnmodifiableSet()));
+        repository.deleteAll(entities.stream().map(entity -> ReservationId.of(entity.reservationId)).collect(Collectors.toUnmodifiableSet()));
 
         eventPublisher.publish(events);
     }

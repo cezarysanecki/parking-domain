@@ -14,7 +14,11 @@ interface ReservationToMakeEffectiveRepository {
 
     void delete(ReservationId reservationId);
 
+    boolean contains(ReservationId reservationId);
+
     Set<ReservationToMakeEffectiveEntity> findValidSince(LocalDateTime dateTime);
+
+    void deleteAll(Set<ReservationId> reservations);
 
     class InMemoryReservationToMakeEffectiveRepository implements ReservationToMakeEffectiveRepository {
 
@@ -31,12 +35,23 @@ interface ReservationToMakeEffectiveRepository {
         }
 
         @Override
+        public boolean contains(ReservationId reservationId) {
+            return DATABASE.get(reservationId) != null;
+        }
+
+        @Override
         public Set<ReservationToMakeEffectiveEntity> findValidSince(LocalDateTime dateTime) {
             return DATABASE.values()
                     .stream()
                     .filter(entity -> entity.validSince.isBefore(dateTime))
                     .collect(Collectors.toUnmodifiableSet());
         }
+
+        @Override
+        public void deleteAll(Set<ReservationId> reservations) {
+            reservations.forEach(DATABASE::remove);
+        }
+
     }
 
 }
