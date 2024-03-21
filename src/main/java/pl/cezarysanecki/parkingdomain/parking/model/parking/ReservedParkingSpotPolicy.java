@@ -7,7 +7,7 @@ import pl.cezarysanecki.parkingdomain.commons.policy.Allowance;
 import pl.cezarysanecki.parkingdomain.commons.policy.Rejection;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotBasePolicy;
 import pl.cezarysanecki.parkingdomain.parking.model.Vehicle;
-import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationId;
+import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationId;
 
 import static io.vavr.control.Either.left;
 import static io.vavr.control.Either.right;

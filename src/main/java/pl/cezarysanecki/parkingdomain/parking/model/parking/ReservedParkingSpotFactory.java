@@ -3,7 +3,7 @@ package pl.cezarysanecki.parkingdomain.parking.model.parking;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotBase;
-import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationId;
+import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationId;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ReservedParkingSpotFactory {
