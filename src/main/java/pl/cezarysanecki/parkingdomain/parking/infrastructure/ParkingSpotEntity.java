@@ -10,7 +10,9 @@ import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleLeft;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleParked;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleParkedEvents;
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotType;
 import pl.cezarysanecki.parkingdomain.parking.model.Vehicle;
+import pl.cezarysanecki.parkingdomain.parking.model.VehicleSizeUnit;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -28,13 +30,15 @@ class ParkingSpotEntity {
     @Id
     Long id;
     UUID parkingSpotId;
+    ParkingSpotType parkingSpotType;
     int capacity;
     Set<ParkedVehicleEntity> parkedVehicles;
     Option<UUID> reservation;
     boolean outOfOrder;
 
-    ParkingSpotEntity(UUID parkingSpotId, int capacity) {
+    ParkingSpotEntity(UUID parkingSpotId, ParkingSpotType parkingSpotType, int capacity) {
         this.parkingSpotId = parkingSpotId;
+        this.parkingSpotType = parkingSpotType;
         this.capacity = capacity;
         this.parkedVehicles = new HashSet<>();
         this.reservation = Option.none();
@@ -48,6 +52,13 @@ class ParkingSpotEntity {
                 Case($(instanceOf(VehicleLeft.class)), this::handle),
                 Case($(instanceOf(VehicleLeftEvents.class)), this::handle),
                 Case($(), () -> this));
+    }
+
+    boolean hasEnoughSpace(final VehicleSizeUnit vehicleSizeUnit) {
+        Integer currentOccupation = parkedVehicles.stream()
+                .map(ParkedVehicleEntity::getVehicleSizeUnit)
+                .reduce(0, Integer::sum);
+        return capacity - currentOccupation >= vehicleSizeUnit.getValue();
     }
 
     private ParkingSpotEntity handle(VehicleParkedEvents vehicleParkedEvents) {

@@ -6,7 +6,9 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotType;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpots;
+import pl.cezarysanecki.parkingdomain.parking.model.Vehicle;
 import pl.cezarysanecki.parkingdomain.parking.model.VehicleSizeUnit;
 import pl.cezarysanecki.parkingdomain.parking.model.parking.OpenParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.model.parking.ReservedParkingSpot;
@@ -29,9 +31,12 @@ public class ParkingOnParkingSpot {
     private final ParkingSpots parkingSpots;
 
     public Try<Result> park(@NonNull ParkVehicleCommand command) {
+        Vehicle vehicle = command.getVehicle();
+        ParkingSpotType parkingSpotType = command.getParkingSpotType();
+
         return Try.of(() -> {
-            OpenParkingSpot parkingSpot = load(command.getVehicle().getVehicleSizeUnit());
-            Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(command.getVehicle());
+            OpenParkingSpot parkingSpot = load(parkingSpotType, vehicle.getVehicleSizeUnit());
+            Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(vehicle);
             return Match(result).of(
                     Case($Left($()), this::publishEvents),
                     Case($Right($()), this::publishEvents));
@@ -60,9 +65,9 @@ public class ParkingOnParkingSpot {
         return Success;
     }
 
-    private OpenParkingSpot load(VehicleSizeUnit vehicleSizeUnit) {
-        return parkingSpots.findBy(vehicleSizeUnit)
-                .getOrElseThrow(() -> new IllegalArgumentException("cannot find open parking spot for vehicle size: " + vehicleSizeUnit));
+    private OpenParkingSpot load(ParkingSpotType parkingSpotType, VehicleSizeUnit vehicleSizeUnit) {
+        return parkingSpots.findBy(parkingSpotType, vehicleSizeUnit)
+                .getOrElseThrow(() -> new IllegalArgumentException("cannot find available parking spot " + parkingSpotType + " for vehicle size: " + vehicleSizeUnit));
     }
 
     private ReservedParkingSpot load(ReservationId reservationId) {
