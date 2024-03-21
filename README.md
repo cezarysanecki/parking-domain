@@ -26,6 +26,7 @@ not the goal in itself.
 - [Lombok](https://projectlombok.org/)
 - [Bruno](https://www.usebruno.com/)
 - [vavr](https://docs.vavr.io/)
+- [Awaitility](http://www.awaitility.org/)
 
 ## FAQ
 
