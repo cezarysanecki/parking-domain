@@ -32,7 +32,7 @@ public class ParkingSpotViewEventHandler {
     }
 
     private ParkingSpotEvent handle(ParkingSpotCreated parkingSpotCreated) {
-        parkingViews.addParkingSpot(parkingSpotCreated.getParkingSpotId(), parkingSpotCreated.getCapacity());
+        parkingViews.addParkingSpot(parkingSpotCreated.getParkingSpotId(), parkingSpotCreated.getParkingSpotType(), parkingSpotCreated.getCapacity());
         return parkingSpotCreated;
     }
 

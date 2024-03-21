@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotType;
 
 @Getter
 @NoArgsConstructor
@@ -13,6 +14,7 @@ public class AvailableParkingSpotView {
 
     @NonNull
     ParkingSpotId parkingSpotId;
+    ParkingSpotType parkingSpotType;
     int leftCapacity;
 
 }
