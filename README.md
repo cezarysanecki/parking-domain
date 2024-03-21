@@ -82,7 +82,7 @@ with existing legacy code and explore tools from the JVM ecosystem (but not excl
 
 - Parking is available 24/7
 - Parking spots have their own identity
-- Parking spots have their class (BRONZE, SILVER, GOLD)
+- Parking spots are assigned to groups: BRONZE, SILVER, GOLD (attractiveness spot)
 - Parking spots can be occupied (for now) by: cars, motorcycles and scooters
 - Every parking spot has its own capacity (for now it is 4 units)
 - On parking spot can park different combinations of vehicle types f.ex.
@@ -97,14 +97,20 @@ with existing legacy code and explore tools from the JVM ecosystem (but not excl
     - any parking spot
         - from class (BRONZE, SILVER, GOLD)
         - for specified vehicle type
-        - at least one hour before
     - chosen parking spot
         - from class (BRONZE, SILVER, GOLD)
-        - for additional fee
         - whole spot
         - last until all vehicles drive away
-        - at least three hours before
-- Reservation is valid for 30 minutes
+- Making reservation on chosen parking spot is available for additional fee
+- Reservations can be made for next day (until 10pm of current day)
+- Reservation can be made for
+  - morning (7:00-17:00)
+  - evening (18:00-24:00)
+  - whole day (7:00-24:00)
+- Reservation can be extended to whole day
+- Reservation until
+  - 9:00 (morning reservation)
+  - 18:30 (evening reservation)
 - Client can have only one valid reservation
 
 ### Reservation fulfillment
