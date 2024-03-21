@@ -7,6 +7,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import pl.cezarysanecki.parkingdomain.commons.date.DateProvider;
 import pl.cezarysanecki.parkingdomain.commons.events.DomainEvent;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationId;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleEvent.ReservationCancelled;
 import pl.cezarysanecki.parkingdomain.reservationschedule.model.ReservationScheduleEvent.ReservationMade;
@@ -30,7 +31,9 @@ public class MakingReservationEffective {
 
         List<DomainEvent> events = List.ofAll(
                 entities.stream()
-                        .map(entity -> new ReservationBecomeEffective(ReservationId.of(entity.reservationId)))
+                        .map(entity -> new ReservationBecomeEffective(
+                                ParkingSpotId.of(entity.parkingSpotId),
+                                ReservationId.of(entity.reservationId)))
                         .collect(Collectors.toUnmodifiableSet()));
 
         eventPublisher.publish(events);
@@ -40,6 +43,7 @@ public class MakingReservationEffective {
     public void handle(ReservationMade reservationMade) {
         repository.save(new ReservationToMakeEffectiveEntity(
                 reservationMade.getReservationId().getValue(),
+                reservationMade.getParkingSpotId().getValue(),
                 reservationMade.getReservationSlot().getSince().minusHours(3)));
     }
 

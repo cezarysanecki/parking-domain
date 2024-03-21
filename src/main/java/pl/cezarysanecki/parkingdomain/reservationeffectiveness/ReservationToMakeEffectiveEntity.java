@@ -10,6 +10,7 @@ import java.util.UUID;
 class ReservationToMakeEffectiveEntity {
 
     @NonNull UUID reservationId;
+    @NonNull UUID parkingSpotId;
     @NonNull LocalDateTime validSince;
 
 }
