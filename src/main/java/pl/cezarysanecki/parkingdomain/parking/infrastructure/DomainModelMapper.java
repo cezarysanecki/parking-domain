@@ -4,7 +4,6 @@ package pl.cezarysanecki.parkingdomain.parking.infrastructure;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkedVehicles;
-import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotBase;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotCapacity;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.model.Vehicle;

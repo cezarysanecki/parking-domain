@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import pl.cezarysanecki.parkingdomain.client.reservationrequest.application.CreateReservationRequestCommand;
-import pl.cezarysanecki.parkingdomain.client.reservationrequest.application.CreateReservationRequestForChosenParkingSpotCommand;
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.application.ReserveAnyParkingSpotCommand;
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.application.ReserveChosenParkingSpotCommand;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.application.RequestingReservation;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientId;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
@@ -39,7 +39,7 @@ class ClientReservationsViewController {
 
     @PostMapping("/client-reservation/{parkingSpotId}")
     ResponseEntity reserveParkingSpot(@PathVariable UUID parkingSpotId, @RequestBody CreateRequestForReservationRequest request) {
-        Try<Result> result = requestingReservation.createReservationRequest(new CreateReservationRequestForChosenParkingSpotCommand(
+        Try<Result> result = requestingReservation.createReservationRequest(new ReserveChosenParkingSpotCommand(
                 ClientId.of(request.clientId),
                 new ReservationSlot(request.since, request.hours),
                 ParkingSpotId.of(parkingSpotId)));
@@ -54,7 +54,7 @@ class ClientReservationsViewController {
 
     @PostMapping("/client-reservation")
     ResponseEntity reserveAnyParkingSpot(@RequestBody CreateRequestForReservationRequest request) {
-        Try<Result> result = requestingReservation.createReservationRequest(new CreateReservationRequestCommand(
+        Try<Result> result = requestingReservation.createReservationRequest(new ReserveAnyParkingSpotCommand(
                 ClientId.of(request.clientId),
                 new ReservationSlot(request.since, request.hours)));
 

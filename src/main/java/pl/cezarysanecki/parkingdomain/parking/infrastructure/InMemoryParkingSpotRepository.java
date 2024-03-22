@@ -4,7 +4,6 @@ import io.vavr.control.Option;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
-import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ParkingSpotCreated;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
@@ -12,10 +11,7 @@ import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotType;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpots;
 import pl.cezarysanecki.parkingdomain.parking.model.VehicleId;
 import pl.cezarysanecki.parkingdomain.parking.model.VehicleSizeUnit;
-import pl.cezarysanecki.parkingdomain.parking.model.parking.OpenParkingSpot;
-import pl.cezarysanecki.parkingdomain.parking.model.parking.OpenParkingSpotFactory;
-import pl.cezarysanecki.parkingdomain.parking.model.parking.ReservedParkingSpot;
-import pl.cezarysanecki.parkingdomain.parking.model.parking.ReservedParkingSpotFactory;
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.model.releasing.OccupiedParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.model.releasing.OccupiedParkingSpotFactory;
 import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationId;
@@ -37,7 +33,7 @@ class InMemoryParkingSpotRepository implements ParkingSpots {
     private final EventPublisher eventPublisher;
 
     @Override
-    public Option<OpenParkingSpot> findBy(ParkingSpotType parkingSpotType, VehicleSizeUnit vehicleSizeUnit) {
+    public Option<ParkingSpot> findBy(ParkingSpotType parkingSpotType, VehicleSizeUnit vehicleSizeUnit) {
         return find(entity -> entity.reservation.isEmpty()
                 && entity.parkingSpotType == parkingSpotType
                 && entity.hasEnoughSpace(vehicleSizeUnit)
@@ -45,12 +41,12 @@ class InMemoryParkingSpotRepository implements ParkingSpots {
     }
 
     @Override
-    public Option<ParkingSpot> findBy(ParkingSpotId parkingSpotId) {
+    public Option<pl.cezarysanecki.parkingdomain.parking.model.ParkingSpot> findBy(ParkingSpotId parkingSpotId) {
         return find(entity -> entity.parkingSpotId.equals(parkingSpotId.getValue()))
                 .map(entity -> entity.reservation
                         .map(reservationId -> ReservedParkingSpotFactory.create(
                                 DomainModelMapper.map(entity), ReservationId.of(reservationId)))
-                        .map(ParkingSpot.class::cast)
+                        .map(pl.cezarysanecki.parkingdomain.parking.model.ParkingSpot.class::cast)
                         .getOrElse(() -> OpenParkingSpotFactory.create(DomainModelMapper.map(entity))));
     }
 
@@ -72,15 +68,15 @@ class InMemoryParkingSpotRepository implements ParkingSpots {
     }
 
     @Override
-    public ParkingSpot publish(ParkingSpotEvent event) {
-        ParkingSpot result = Match(event).of(
+    public pl.cezarysanecki.parkingdomain.parking.model.ParkingSpot publish(ParkingSpotEvent event) {
+        pl.cezarysanecki.parkingdomain.parking.model.ParkingSpot result = Match(event).of(
                 Case($(instanceOf(ParkingSpotCreated.class)), this::createNewParkingSpot),
                 Case($(), this::handleNextEvent));
         eventPublisher.publish(event.normalize());
         return result;
     }
 
-    private ParkingSpot createNewParkingSpot(ParkingSpotCreated event) {
+    private pl.cezarysanecki.parkingdomain.parking.model.ParkingSpot createNewParkingSpot(ParkingSpotCreated event) {
         ParkingSpotId parkingSpotId = event.getParkingSpotId();
         ParkingSpotEntity entity = new ParkingSpotEntity(parkingSpotId.getValue(), event.getParkingSpotType(), event.getCapacity());
         DATABASE.put(parkingSpotId, entity);
@@ -88,14 +84,14 @@ class InMemoryParkingSpotRepository implements ParkingSpots {
         return OpenParkingSpotFactory.create(DomainModelMapper.map(entity));
     }
 
-    private ParkingSpot handleNextEvent(ParkingSpotEvent event) {
+    private pl.cezarysanecki.parkingdomain.parking.model.ParkingSpot handleNextEvent(ParkingSpotEvent event) {
         ParkingSpotEntity entity = DATABASE.get(event.getParkingSpotId());
         entity = entity.handle(event);
         DATABASE.put(event.getParkingSpotId(), entity);
 
         ParkingSpotEntity finalEntity = entity;
         return entity.reservation
-                .map(reservationId -> (ParkingSpot) ReservedParkingSpotFactory.create(
+                .map(reservationId -> (pl.cezarysanecki.parkingdomain.parking.model.ParkingSpot) ReservedParkingSpotFactory.create(
                         DomainModelMapper.map(finalEntity),
                         ReservationId.of(reservationId)))
                 .getOrElse(() -> OpenParkingSpotFactory.create(DomainModelMapper.map(finalEntity)));

@@ -6,12 +6,11 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotType;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpots;
 import pl.cezarysanecki.parkingdomain.parking.model.Vehicle;
 import pl.cezarysanecki.parkingdomain.parking.model.VehicleSizeUnit;
-import pl.cezarysanecki.parkingdomain.parking.model.parking.OpenParkingSpot;
-import pl.cezarysanecki.parkingdomain.parking.model.parking.ReservedParkingSpot;
 import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationId;
 
 import static io.vavr.API.$;
@@ -35,7 +34,7 @@ public class ParkingOnParkingSpot {
         ParkingSpotType parkingSpotType = command.getParkingSpotType();
 
         return Try.of(() -> {
-            OpenParkingSpot parkingSpot = load(parkingSpotType, vehicle.getVehicleSizeUnit());
+            ParkingSpot parkingSpot = load(parkingSpotType, vehicle.getVehicleSizeUnit());
             Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(vehicle);
             return Match(result).of(
                     Case($Left($()), this::publishEvents),
@@ -45,8 +44,8 @@ public class ParkingOnParkingSpot {
 
     public Try<Result> park(@NonNull ParkReservedVehicleCommand command) {
         return Try.of(() -> {
-            ReservedParkingSpot parkingSpot = load(command.getReservationId());
-            Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(command.getReservationId(), command.getVehicle());
+            ParkingSpot parkingSpot = load(command.getReservationId());
+            Either<ParkingFailed, VehicleParkedEvents> result = parkingSpot.park(command.getVehicle());
             return Match(result).of(
                     Case($Left($()), this::publishEvents),
                     Case($Right($()), this::publishEvents));
@@ -65,12 +64,12 @@ public class ParkingOnParkingSpot {
         return Success;
     }
 
-    private OpenParkingSpot load(ParkingSpotType parkingSpotType, VehicleSizeUnit vehicleSizeUnit) {
+    private ParkingSpot load(ParkingSpotType parkingSpotType, VehicleSizeUnit vehicleSizeUnit) {
         return parkingSpots.findBy(parkingSpotType, vehicleSizeUnit)
                 .getOrElseThrow(() -> new IllegalArgumentException("cannot find available parking spot " + parkingSpotType + " for vehicle size: " + vehicleSizeUnit));
     }
 
-    private ReservedParkingSpot load(ReservationId reservationId) {
+    private ParkingSpot load(ReservationId reservationId) {
         return parkingSpots.findBy(reservationId)
                 .getOrElseThrow(() -> new IllegalArgumentException("cannot find parking spot for reservation with id: " + reservationId));
     }

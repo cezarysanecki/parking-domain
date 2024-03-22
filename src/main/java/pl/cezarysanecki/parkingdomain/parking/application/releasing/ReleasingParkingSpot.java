@@ -8,7 +8,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
-import pl.cezarysanecki.parkingdomain.parking.model.releasing.OccupiedParkingSpot;
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpots;
 import pl.cezarysanecki.parkingdomain.parking.model.Vehicle;
@@ -31,8 +31,8 @@ public class ReleasingParkingSpot {
 
     public Try<Result> release(@NonNull ReleaseParkingSpotCommand command) {
         return Try.of(() -> {
-            OccupiedParkingSpot parkingSpot = find(command.getVehicleId());
-            Either<ReleasingFailed, VehicleLeftEvents> result = parkingSpot.releaseBy(command.getVehicleId());
+            ParkingSpot parkingSpot = find(command.getVehicleId());
+            Either<ReleasingFailed, VehicleLeftEvents> result = parkingSpot.driveAway(command.getVehicleId());
             return API.Match(result).of(
                     Case($Left($()), this::publishEvents),
                     Case($Right($()), this::publishEvents));
@@ -52,7 +52,7 @@ public class ReleasingParkingSpot {
         return Success;
     }
 
-    private OccupiedParkingSpot find(VehicleId vehicleId) {
+    private ParkingSpot find(VehicleId vehicleId) {
         return parkingSpots.findBy(vehicleId)
                 .getOrElseThrow(() -> new IllegalArgumentException("cannot find parking spot for vehicle with id " + vehicleId));
     }

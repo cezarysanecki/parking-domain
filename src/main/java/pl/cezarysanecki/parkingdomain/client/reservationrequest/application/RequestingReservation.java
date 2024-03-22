@@ -26,7 +26,7 @@ public class RequestingReservation {
 
     private final ClientReservationsRepository clientReservationsRepository;
 
-    public Try<Result> createReservationRequest(@NonNull CreateReservationRequestCommand command) {
+    public Try<Result> createReservationRequest(@NonNull ReserveAnyParkingSpotCommand command) {
         return Try.of(() -> {
             ClientReservations clientReservations = load(command.getClientId());
             Either<ReservationRequestFailed, ReservationRequestCreated> result = clientReservations.requestReservation(command.getReservationSlot());
@@ -36,7 +36,7 @@ public class RequestingReservation {
         }).onFailure(throwable -> log.error("Failed to reserve parking slot", throwable));
     }
 
-    public Try<Result> createReservationRequest(@NonNull CreateReservationRequestForChosenParkingSpotCommand command) {
+    public Try<Result> createReservationRequest(@NonNull ReserveChosenParkingSpotCommand command) {
         return Try.of(() -> {
             ClientReservations clientReservations = load(command.getClientId());
             Either<ReservationRequestFailed, ReservationRequestCreated> result = clientReservations.requestReservation(

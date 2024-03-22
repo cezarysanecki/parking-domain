@@ -5,7 +5,6 @@ import io.vavr.control.Option;
 import lombok.NonNull;
 import lombok.Value;
 import pl.cezarysanecki.parkingdomain.commons.events.DomainEvent;
-import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationId;
 
 public sealed interface ParkingSpotEvent extends DomainEvent {
 
@@ -36,26 +35,23 @@ public sealed interface ParkingSpotEvent extends DomainEvent {
     }
 
     @Value
-    final class ReservationFulfilled implements ParkingSpotEvent {
-
-        @NonNull ParkingSpotId parkingSpotId;
-        @NonNull ReservationId reservationId;
-
-    }
-
-    @Value
     final class VehicleParkedEvents implements ParkingSpotEvent {
 
         @NonNull ParkingSpotId parkingSpotId;
         @NonNull VehicleParked vehicleParked;
         @NonNull Option<FullyOccupied> fullyOccupied;
-        @NonNull Option<ReservationFulfilled> reservationFulfilled;
+
+        public static VehicleParkedEvents events(ParkingSpotId parkingSpotId, VehicleParked vehicleParked) {
+            return new VehicleParkedEvents(parkingSpotId, vehicleParked, Option.none());
+        }
+
+        public static VehicleParkedEvents events(ParkingSpotId parkingSpotId, VehicleParked vehicleParked, FullyOccupied fullyOccupied) {
+            return new VehicleParkedEvents(parkingSpotId, vehicleParked, Option.of(fullyOccupied));
+        }
 
         @Override
         public List<DomainEvent> normalize() {
-            return List.<DomainEvent>of(vehicleParked)
-                    .appendAll(fullyOccupied.toList())
-                    .appendAll(reservationFulfilled.toList());
+            return List.<DomainEvent>of(vehicleParked).appendAll(fullyOccupied.toList());
         }
     }
 
@@ -87,20 +83,20 @@ public sealed interface ParkingSpotEvent extends DomainEvent {
     final class VehicleLeftEvents implements ParkingSpotEvent {
 
         @NonNull ParkingSpotId parkingSpotId;
-        @NonNull List<VehicleLeft> vehiclesLeft;
+        @NonNull VehicleLeft vehiclesLeft;
         @NonNull Option<CompletelyFreedUp> completelyFreedUps;
 
-        public static VehicleLeftEvents events(ParkingSpotId parkingSpotId, List<VehicleLeft> vehiclesLeft) {
-            return new VehicleLeftEvents(parkingSpotId, vehiclesLeft, Option.none());
+        public static VehicleLeftEvents events(ParkingSpotId parkingSpotId, VehicleLeft vehicleLeft) {
+            return new VehicleLeftEvents(parkingSpotId, vehicleLeft, Option.none());
         }
 
-        public static VehicleLeftEvents events(ParkingSpotId parkingSpotId, List<VehicleLeft> vehiclesLeft, CompletelyFreedUp completelyFreedUp) {
-            return new VehicleLeftEvents(parkingSpotId, vehiclesLeft, Option.of(completelyFreedUp));
+        public static VehicleLeftEvents events(ParkingSpotId parkingSpotId, VehicleLeft vehicleLeft, CompletelyFreedUp completelyFreedUp) {
+            return new VehicleLeftEvents(parkingSpotId, vehicleLeft, Option.of(completelyFreedUp));
         }
 
         @Override
         public List<DomainEvent> normalize() {
-            return List.<DomainEvent>ofAll(vehiclesLeft).appendAll(completelyFreedUps.toList());
+            return List.<DomainEvent>of(vehiclesLeft).appendAll(completelyFreedUps.toList());
         }
 
     }

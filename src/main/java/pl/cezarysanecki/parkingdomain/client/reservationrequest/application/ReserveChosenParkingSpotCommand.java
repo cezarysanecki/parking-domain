@@ -3,14 +3,14 @@ package pl.cezarysanecki.parkingdomain.client.reservationrequest.application;
 import lombok.NonNull;
 import lombok.Value;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientId;
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ReservationType;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationSlot;
 
 @Value
-public class CreateReservationRequestForChosenParkingSpotCommand {
+public class ReserveChosenParkingSpotCommand {
 
     @NonNull ClientId clientId;
-    @NonNull ReservationSlot reservationSlot;
     @NonNull ParkingSpotId parkingSpotId;
+    @NonNull ReservationType reservationType;
 
 }

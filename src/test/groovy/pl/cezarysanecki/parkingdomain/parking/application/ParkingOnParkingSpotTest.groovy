@@ -10,8 +10,6 @@ import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotType
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpots
 import pl.cezarysanecki.parkingdomain.parking.model.Vehicle
-import pl.cezarysanecki.parkingdomain.parking.model.parking.OpenParkingSpotFactory
-import pl.cezarysanecki.parkingdomain.parking.model.parking.ReservedParkingSpotFactory
 import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationId
 import spock.lang.Specification
 
@@ -34,7 +32,7 @@ class ParkingOnParkingSpotTest extends Specification {
     given:
       ParkingOnParkingSpot parkingOnParkingSpot = new ParkingOnParkingSpot(repository)
     and:
-      persistedOpen(alrightVehicle, OpenParkingSpotFactory.create(emptyParkingSpotWith(1)))
+      persistedOpen(alrightVehicle, emptyParkingSpotWith(1))
     
     when:
       def result = parkingOnParkingSpot.park(new ParkVehicleCommand(parkingSpotType, alrightVehicle))
@@ -48,7 +46,7 @@ class ParkingOnParkingSpotTest extends Specification {
     given:
       ParkingOnParkingSpot parkingOnParkingSpot = new ParkingOnParkingSpot(repository)
     and:
-      persistedOpen(tooBigVehicle, OpenParkingSpotFactory.create(emptyParkingSpotWith(1)))
+      persistedOpen(tooBigVehicle, emptyParkingSpotWith(1))
     
     when:
       def result = parkingOnParkingSpot.park(new ParkVehicleCommand(parkingSpotType, tooBigVehicle))
@@ -75,7 +73,7 @@ class ParkingOnParkingSpotTest extends Specification {
     given:
       ParkingOnParkingSpot parkingOnParkingSpot = new ParkingOnParkingSpot(repository)
     and:
-      persistedReserved(ReservedParkingSpotFactory.create(emptyParkingSpotWith(1), reservationId))
+      persistedReserved(emptyParkingSpotWith(1))
     
     when:
       def result = parkingOnParkingSpot.park(new ParkReservedVehicleCommand(reservationId, alrightVehicle))
@@ -89,7 +87,7 @@ class ParkingOnParkingSpotTest extends Specification {
     given:
       ParkingOnParkingSpot parkingOnParkingSpot = new ParkingOnParkingSpot(repository)
     and:
-      persistedReserved(ReservedParkingSpotFactory.create(emptyParkingSpotWith(1), reservationId))
+      persistedReserved(emptyParkingSpotWith(1))
     
     when:
       def result = parkingOnParkingSpot.park(new ParkReservedVehicleCommand(reservationId, tooBigVehicle))
