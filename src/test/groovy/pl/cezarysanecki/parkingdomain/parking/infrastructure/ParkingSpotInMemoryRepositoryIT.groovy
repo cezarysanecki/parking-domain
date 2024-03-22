@@ -53,7 +53,7 @@ class ParkingSpotInMemoryRepositoryIT extends Specification {
   
   void parkingSpotShouldContainParkedVehicle(ParkingSpotId parkingSpotId, VehicleId vehicleId) {
     def parkingSpot = loadPersistedParkingSpot(parkingSpotId)
-    assert parkingSpot.base.isParked(vehicleId)
+    assert parkingSpot.isParked(vehicleId)
   }
   
   ParkingSpotCreated parkingSpotCreated() {

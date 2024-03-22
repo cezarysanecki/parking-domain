@@ -7,11 +7,11 @@ import org.springframework.context.event.EventListener;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientId;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationsEvent;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationsEvent.ReservationRequestCreated;
-import pl.cezarysanecki.parkingdomain.views.client.model.ClientReservationsView;
-import pl.cezarysanecki.parkingdomain.views.client.model.ClientsReservationsViews;
 import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationScheduleEvent;
 import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationScheduleEvent.ReservationCancelled;
 import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationScheduleEvent.ReservationMade;
+import pl.cezarysanecki.parkingdomain.views.client.model.ClientReservationsView;
+import pl.cezarysanecki.parkingdomain.views.client.model.ClientsReservationsViews;
 
 import static io.vavr.API.$;
 import static io.vavr.API.Case;
@@ -45,8 +45,7 @@ public class ClientReservationViewEventHandler {
         return clientsReservationsViews.addPendingReservation(
                 reservationRequestCreated.getClientId(),
                 reservationRequestCreated.getParkingSpotId(),
-                reservationRequestCreated.getReservationId(),
-                reservationRequestCreated.getReservationSlot());
+                reservationRequestCreated.getReservationId());
     }
 
     public ClientReservationsView handle(ReservationMade reservationMade) {

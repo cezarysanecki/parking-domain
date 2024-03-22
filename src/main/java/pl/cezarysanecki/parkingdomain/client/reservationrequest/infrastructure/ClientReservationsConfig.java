@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import pl.cezarysanecki.parkingdomain.client.reservationrequest.application.ClientReservationsEventHandler;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.application.RequestingReservation;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationsFactory;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationsRepository;
@@ -30,11 +29,6 @@ public class ClientReservationsConfig {
     @Bean
     public RequestingReservation reservation(ClientReservationsRepository clientReservationsRepository) {
         return new RequestingReservation(clientReservationsRepository);
-    }
-
-    @Bean
-    public ClientReservationsEventHandler clientReservationsEventHandler(ClientReservationsRepository clientReservationsRepository) {
-        return new ClientReservationsEventHandler(clientReservationsRepository);
     }
 
     @Bean

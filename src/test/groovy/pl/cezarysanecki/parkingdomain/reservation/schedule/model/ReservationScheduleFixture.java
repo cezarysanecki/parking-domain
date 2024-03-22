@@ -2,11 +2,6 @@ package pl.cezarysanecki.parkingdomain.reservation.schedule.model;
 
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientId;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.reservation.schedule.model.Reservation;
-import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationId;
-import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationSchedule;
-import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationSlot;
-import pl.cezarysanecki.parkingdomain.reservation.schedule.model.Reservations;
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -36,8 +31,8 @@ public class ReservationScheduleFixture {
         return new ReservationSchedule(anyParkingSpotId(), Reservations.none(), false, now);
     }
 
-    public static Reservation reservationWith(ReservationSlot reservationSlot, ClientId clientId) {
-        return new Reservation(anyReservationId(), reservationSlot, clientId);
+    public static Reservation reservationWith(ClientId clientId) {
+        return new Reservation(anyReservationId(), clientId);
     }
 
     public static ReservationId anyReservationId() {

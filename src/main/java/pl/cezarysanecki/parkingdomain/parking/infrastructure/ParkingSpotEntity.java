@@ -74,9 +74,7 @@ class ParkingSpotEntity {
     }
 
     private ParkingSpotEntity handle(VehicleLeftEvents vehicleLeftEvents) {
-        vehicleLeftEvents.getVehiclesLeft()
-                .forEach(this::handle);
-        return this;
+        return handle(vehicleLeftEvents.getVehiclesLeft());
     }
 
     private ParkingSpotEntity handle(VehicleLeft vehicleLeft) {

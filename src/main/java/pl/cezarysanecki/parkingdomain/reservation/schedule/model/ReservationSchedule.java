@@ -29,20 +29,13 @@ public class ReservationSchedule {
 
     public Either<ReservationScheduleEvent.ReservationFailed, ReservationScheduleEvent.ReservationMade> reserve(
             ClientId clientId,
-            ReservationSlot reservationSlot,
             ReservationId reservationId
     ) {
-        if (reservations.intersects(reservationSlot)) {
-            return announceFailure(new ReservationScheduleEvent.ReservationFailed(parkingSpotId, clientId, reservationId, "there is another reservation in that time"));
-        }
         if (isAlreadyReservedFor(clientId)) {
             return announceFailure(new ReservationScheduleEvent.ReservationFailed(parkingSpotId, clientId, reservationId, "it is already reserved for this client"));
         }
-        if (thereIsNoEnoughTimeToFreeSpot(reservationSlot)) {
-            return announceFailure(new ReservationScheduleEvent.ReservationFailed(parkingSpotId, clientId, reservationId, "need to give some time to free parking spot"));
-        }
 
-        return announceSuccess(new ReservationScheduleEvent.ReservationMade(parkingSpotId, clientId, reservationId, reservationSlot));
+        return announceSuccess(new ReservationScheduleEvent.ReservationMade(parkingSpotId, clientId, reservationId));
     }
 
     public Either<ReservationScheduleEvent.ReservationCancellationFailed, ReservationScheduleEvent.ReservationCancelled> cancel(ReservationId reservationId) {
@@ -52,10 +45,6 @@ public class ReservationSchedule {
                     parkingSpotId, reservationId, "there is no such reservation"));
         }
         Reservation foundReservation = reservation.get();
-        long minutesToReservation = foundReservation.minutesTo(now);
-        if (minutesToReservation < 60) {
-            return announceFailure(new ReservationScheduleEvent.ReservationCancellationFailed(parkingSpotId, reservationId, "it is too late to cancel reservation"));
-        }
         return announceSuccess(new ReservationScheduleEvent.ReservationCancelled(parkingSpotId, foundReservation.getClientId(), reservationId));
     }
 

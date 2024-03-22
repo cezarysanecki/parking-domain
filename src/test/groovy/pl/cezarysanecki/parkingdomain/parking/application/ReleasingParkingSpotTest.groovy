@@ -9,7 +9,6 @@ import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpots
 import pl.cezarysanecki.parkingdomain.parking.model.VehicleId
-import pl.cezarysanecki.parkingdomain.parking.model.releasing.OccupiedParkingSpotFactory
 import spock.lang.Specification
 
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.anyParkingSpotId
@@ -29,7 +28,7 @@ class ReleasingParkingSpotTest extends Specification {
     given:
       ReleasingParkingSpot releasingParkingSpot = new ReleasingParkingSpot(repository)
     and:
-      persisted(OccupiedParkingSpotFactory.create(parkingSpotWith(vehicleWith(vehicleId))))
+      persisted(parkingSpotWith(vehicleWith(vehicleId)))
     
     when:
       def result = releasingParkingSpot.release(new ReleaseParkingSpotCommand(vehicleId))
@@ -43,7 +42,7 @@ class ReleasingParkingSpotTest extends Specification {
     given:
       ReleasingParkingSpot releasingParkingSpot = new ReleasingParkingSpot(repository)
     and:
-      persisted(OccupiedParkingSpotFactory.create(emptyParkingSpotWith(1)))
+      persisted(emptyParkingSpotWith(1))
     
     when:
       def result = releasingParkingSpot.release(new ReleaseParkingSpotCommand(vehicleId))

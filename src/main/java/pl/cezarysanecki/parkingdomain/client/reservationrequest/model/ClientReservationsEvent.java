@@ -7,7 +7,6 @@ import pl.cezarysanecki.parkingdomain.commons.events.DomainEvent;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.reservation.schedule.application.ReservationRequestHasOccurred;
 import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationId;
-import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationSlot;
 
 import java.util.UUID;
 
@@ -20,15 +19,14 @@ public interface ClientReservationsEvent extends DomainEvent {
 
         @NonNull ClientId clientId;
         @NonNull ReservationId reservationId = ReservationId.of(UUID.randomUUID());
-        @NonNull ReservationSlot reservationSlot;
         @NonNull Option<ParkingSpotId> parkingSpotId;
 
-        public static ReservationRequestCreated with(ClientId clientId, ReservationSlot reservationSlot) {
-            return new ReservationRequestCreated(clientId, reservationSlot, Option.none());
+        public static ReservationRequestCreated with(ClientId clientId) {
+            return new ReservationRequestCreated(clientId, Option.none());
         }
 
-        public static ReservationRequestCreated with(ClientId clientId, ReservationSlot reservationSlot, ParkingSpotId parkingSpotId) {
-            return new ReservationRequestCreated(clientId, reservationSlot, Option.of(parkingSpotId));
+        public static ReservationRequestCreated with(ClientId clientId, ParkingSpotId parkingSpotId) {
+            return new ReservationRequestCreated(clientId, Option.of(parkingSpotId));
         }
 
     }

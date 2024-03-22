@@ -22,24 +22,14 @@ import static pl.cezarysanecki.parkingdomain.commons.commands.Result.Success;
 
 @Slf4j
 @RequiredArgsConstructor
-public class RequestingReservation {
+public class CancellingClientReservation {
 
     private final ClientReservationsRepository clientReservationsRepository;
 
     public Try<Result> createReservationRequest(@NonNull ReserveChosenParkingSpotCommand command) {
         return Try.of(() -> {
             ClientReservations clientReservations = load(command.getClientId());
-            Either<ReservationRequestFailed, ReservationRequestCreated> result = clientReservations.requestReservation();
-            return Match(result).of(
-                    Case($Left($()), this::publishEvents),
-                    Case($Right($()), this::publishEvents));
-        }).onFailure(throwable -> log.error("Failed to reserve parking slot", throwable));
-    }
-
-    public Try<Result> createReservationRequest(@NonNull ReserveAnyParkingSpotCommand command) {
-        return Try.of(() -> {
-            ClientReservations clientReservations = load(command.getClientId());
-            Either<ReservationRequestFailed, ReservationRequestCreated> result = clientReservations.requestReservation();
+            Either<ReservationRequestFailed, ReservationRequestCreated> result = clientReservations.requestReservation(command.getParkingSpotId());
             return Match(result).of(
                     Case($Left($()), this::publishEvents),
                     Case($Right($()), this::publishEvents));

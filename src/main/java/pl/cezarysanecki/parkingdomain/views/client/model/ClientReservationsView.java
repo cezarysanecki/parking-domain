@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
 
@@ -23,8 +22,6 @@ public class ClientReservationsView {
 
         UUID reservationId;
         UUID parkingSpotId;
-        LocalDateTime since;
-        LocalDateTime until;
         ClientReservationStatus status;
 
     }

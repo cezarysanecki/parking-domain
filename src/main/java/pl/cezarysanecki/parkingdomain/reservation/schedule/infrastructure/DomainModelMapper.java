@@ -25,7 +25,6 @@ class DomainModelMapper {
                         entity.collection.stream()
                                 .map(reservationEntity -> new Reservation(
                                         ReservationId.of(reservationEntity.reservationId),
-                                        new ReservationSlot(reservationEntity.since, (int) ChronoUnit.HOURS.between(reservationEntity.since, reservationEntity.until)),
                                         ClientId.of(reservationEntity.clientId)
                                 ))
                                 .collect(Collectors.toUnmodifiableSet())),

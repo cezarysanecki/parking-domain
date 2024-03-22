@@ -36,7 +36,7 @@ class RequestingReservationTest extends Specification {
     
     when:
       def result = requestingReservation.createReservationRequest(
-          new CreateReservationRequestCommand(clientId, new ReservationSlot(properSinceReservation, 3)))
+          new ReserveAnyParkingSpotCommand(clientId, new ReservationSlot(properSinceReservation, 3)))
     
     then:
       result.isSuccess()
@@ -51,7 +51,7 @@ class RequestingReservationTest extends Specification {
     
     when:
       def result = requestingReservation.createReservationRequest(
-          new CreateReservationRequestCommand(clientId, new ReservationSlot(now.plusHours(10), 3)))
+          new ReserveAnyParkingSpotCommand(clientId, new ReservationSlot(now.plusHours(10), 3)))
     
     then:
       result.isSuccess()
@@ -66,7 +66,7 @@ class RequestingReservationTest extends Specification {
     
     when:
       def result = requestingReservation.createReservationRequest(
-          new CreateReservationRequestForChosenParkingSpotCommand(clientId, new ReservationSlot(properSinceReservation, 3), parkingSpotId))
+          new ReserveChosenParkingSpotCommand(clientId, new ReservationSlot(properSinceReservation, 3), parkingSpotId))
     
     then:
       result.isSuccess()
@@ -81,7 +81,7 @@ class RequestingReservationTest extends Specification {
     
     when:
       def result = requestingReservation.createReservationRequest(
-          new CreateReservationRequestForChosenParkingSpotCommand(clientId, new ReservationSlot(properSinceReservation, 3), parkingSpotId))
+          new ReserveChosenParkingSpotCommand(clientId, new ReservationSlot(properSinceReservation, 3), parkingSpotId))
     
     then:
       result.isSuccess()
@@ -96,7 +96,7 @@ class RequestingReservationTest extends Specification {
     
     when:
       def result = requestingReservation.createReservationRequest(
-          new CreateReservationRequestCommand(clientId, new ReservationSlot(properSinceReservation, 3)))
+          new ReserveAnyParkingSpotCommand(clientId, new ReservationSlot(properSinceReservation, 3)))
     
     then:
       result.isSuccess()

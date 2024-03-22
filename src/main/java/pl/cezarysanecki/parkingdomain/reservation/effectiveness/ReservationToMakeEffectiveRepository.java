@@ -43,7 +43,6 @@ interface ReservationToMakeEffectiveRepository {
         public Set<ReservationToMakeEffectiveEntity> findValidSince(LocalDateTime dateTime) {
             return DATABASE.values()
                     .stream()
-                    .filter(entity -> entity.validSince.isBefore(dateTime))
                     .collect(Collectors.toUnmodifiableSet());
         }
 

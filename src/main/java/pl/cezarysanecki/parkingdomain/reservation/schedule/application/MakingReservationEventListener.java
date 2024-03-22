@@ -30,13 +30,12 @@ public class MakingReservationEventListener {
     @EventListener
     public void handle(ReservationRequestHasOccurred event) {
         ClientId clientId = event.getClientId();
-        ReservationSlot reservationSlot = event.getReservationSlot();
 
         ReservationSchedule reservationSchedule = event.getParkingSpotId()
                 .map(this::load)
-                .getOrElse(() -> loadFree(reservationSlot));
+                .getOrElseThrow(IllegalArgumentException::new);
 
-        Either<ReservationFailed, ReservationMade> result = reservationSchedule.reserve(clientId, reservationSlot, event.getReservationId());
+        Either<ReservationFailed, ReservationMade> result = reservationSchedule.reserve(clientId, event.getReservationId());
         Match(result).of(
                 Case($Left($()), this::publishEvents),
                 Case($Right($()), this::publishEvents));
