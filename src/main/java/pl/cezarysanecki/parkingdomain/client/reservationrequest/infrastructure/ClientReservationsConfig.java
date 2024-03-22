@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import pl.cezarysanecki.parkingdomain.client.reservationrequest.application.RequestingReservation;
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.application.MakingReservation;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationsFactory;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationsRepository;
 import pl.cezarysanecki.parkingdomain.commons.date.DateProvider;
@@ -27,8 +27,8 @@ public class ClientReservationsConfig {
     }
 
     @Bean
-    public RequestingReservation reservation(ClientReservationsRepository clientReservationsRepository) {
-        return new RequestingReservation(clientReservationsRepository);
+    public MakingReservation reservation(ClientReservationsRepository clientReservationsRepository) {
+        return new MakingReservation(clientReservationsRepository);
     }
 
     @Bean

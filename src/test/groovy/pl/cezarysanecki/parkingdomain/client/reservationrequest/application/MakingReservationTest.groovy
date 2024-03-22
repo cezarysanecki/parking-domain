@@ -18,7 +18,7 @@ import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.Cli
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.anyParkingSpotId
 import static pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationScheduleFixture.anyReservationId
 
-class RequestingReservationTest extends Specification {
+class MakingReservationTest extends Specification {
   
   ClientId clientId = anyClientId()
   ParkingSpotId parkingSpotId = anyParkingSpotId()
@@ -30,7 +30,7 @@ class RequestingReservationTest extends Specification {
   
   def 'should successfully make reservation for random parking spot if there is no others'() {
     given:
-      RequestingReservation requestingReservation = new RequestingReservation(repository)
+      MakingReservation requestingReservation = new MakingReservation(repository)
     and:
       persisted(noReservations(clientId, now))
     
@@ -45,7 +45,7 @@ class RequestingReservationTest extends Specification {
   
   def 'should reject making reservation for random parking spot if there is too many of them'() {
     given:
-      RequestingReservation requestingReservation = new RequestingReservation(repository)
+      MakingReservation requestingReservation = new MakingReservation(repository)
     and:
       persisted(reservationsWith(clientId, anyReservationId(), now))
     
@@ -60,7 +60,7 @@ class RequestingReservationTest extends Specification {
   
   def 'should successfully make reservation for chosen parking spot if there is no others'() {
     given:
-      RequestingReservation requestingReservation = new RequestingReservation(repository)
+      MakingReservation requestingReservation = new MakingReservation(repository)
     and:
       persisted(noReservations(clientId, now))
     
@@ -75,7 +75,7 @@ class RequestingReservationTest extends Specification {
   
   def 'should reject making reservation for chosen parking spot if there is too many of them'() {
     given:
-      RequestingReservation requestingReservation = new RequestingReservation(repository)
+      MakingReservation requestingReservation = new MakingReservation(repository)
     and:
       persisted(reservationsWith(clientId, anyReservationId(), now))
     
@@ -90,7 +90,7 @@ class RequestingReservationTest extends Specification {
   
   def 'should make reservation for any parking spot even if there is not stored client reservations'() {
     given:
-      RequestingReservation requestingReservation = new RequestingReservation(repository)
+      MakingReservation requestingReservation = new MakingReservation(repository)
     and:
       notPersisted(reservationsWith(clientId, anyReservationId(), now))
     

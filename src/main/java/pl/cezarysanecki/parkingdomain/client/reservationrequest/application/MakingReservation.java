@@ -22,7 +22,7 @@ import static pl.cezarysanecki.parkingdomain.commons.commands.Result.Success;
 
 @Slf4j
 @RequiredArgsConstructor
-public class RequestingReservation {
+public class MakingReservation {
 
     private final ClientReservationsRepository clientReservationsRepository;
 
