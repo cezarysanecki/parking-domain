@@ -44,8 +44,7 @@ public class MakingReservationEffective {
     public void handle(ReservationMade reservationMade) {
         repository.save(new ReservationToMakeEffectiveEntity(
                 reservationMade.getReservationId().getValue(),
-                reservationMade.getParkingSpotId().getValue(),
-                reservationMade.getReservationSlot().getSince().minusHours(3)));
+                reservationMade.getParkingSpotId().getValue()));
     }
 
     @EventListener

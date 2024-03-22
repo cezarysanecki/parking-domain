@@ -3,7 +3,6 @@ package pl.cezarysanecki.parkingdomain.parking.model;
 import io.vavr.collection.List;
 import io.vavr.control.Either;
 import io.vavr.control.Option;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.CompletelyFreedUp;
@@ -17,7 +16,7 @@ import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.Vehi
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleParked;
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleParkedEvents.events;
 
-@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
+@RequiredArgsConstructor
 public class ParkingSpot {
 
     @Getter

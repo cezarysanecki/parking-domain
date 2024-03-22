@@ -16,7 +16,6 @@ public sealed interface ReservationScheduleEvent extends DomainEvent {
         @NonNull ParkingSpotId parkingSpotId;
         @NonNull ClientId clientId;
         @NonNull ReservationId reservationId;
-        @NonNull ReservationSlot reservationSlot;
 
     }
 

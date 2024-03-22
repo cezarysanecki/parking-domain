@@ -25,11 +25,6 @@ public class Reservations {
                 .anyMatch(clientId::equals);
     }
 
-    public boolean intersects(ReservationSlot slot) {
-        return collection.stream()
-                .anyMatch(reservation -> reservation.intersects(slot));
-    }
-
     public Option<Reservation> findBy(ReservationId reservationId) {
         return Option.ofOptional(collection.stream()
                 .filter(reservation -> reservation.getReservationId().equals(reservationId))

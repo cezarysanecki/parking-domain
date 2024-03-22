@@ -1,7 +1,6 @@
 package pl.cezarysanecki.parkingdomain.parking.application.releasing;
 
 import io.vavr.API;
-import io.vavr.collection.List;
 import io.vavr.control.Either;
 import io.vavr.control.Try;
 import lombok.NonNull;
@@ -9,9 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpot;
-import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpots;
-import pl.cezarysanecki.parkingdomain.parking.model.Vehicle;
 import pl.cezarysanecki.parkingdomain.parking.model.VehicleId;
 
 import static io.vavr.API.$;
@@ -47,8 +44,8 @@ public class ReleasingParkingSpot {
 
     private Result publishEvents(VehicleLeftEvents vehicleLeftEvents) {
         parkingSpots.publish(vehicleLeftEvents);
-        List<VehicleId> vehicleIds = vehicleLeftEvents.getVehiclesLeft().map(ParkingSpotEvent.VehicleLeft::getVehicle).map(Vehicle::getVehicleId);
-        log.debug("successfully vehicle left with ids {}", vehicleIds);
+        VehicleId vehicleId = vehicleLeftEvents.getVehiclesLeft().getVehicle().getVehicleId();
+        log.debug("successfully vehicle left with id {}", vehicleId);
         return Success;
     }
 

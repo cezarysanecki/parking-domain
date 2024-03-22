@@ -43,8 +43,6 @@ class ReservationsEntity {
     private ReservationsEntity handle(ReservationMade reservationMade) {
         collection.add(new ReservationEntity(
                 reservationMade.getReservationId().getValue(),
-                reservationMade.getReservationSlot().getSince(),
-                reservationMade.getReservationSlot().until(),
                 reservationMade.getClientId().getValue()));
         return this;
     }
