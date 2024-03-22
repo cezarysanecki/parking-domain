@@ -1,7 +1,7 @@
 package pl.cezarysanecki.parkingdomain.views.client.model;
 
 import io.vavr.control.Option;
-import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientId;
+import pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientId;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationId;
 
