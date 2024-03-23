@@ -13,8 +13,8 @@ import spock.lang.Specification
 import java.time.LocalDateTime
 
 import static pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientReservationsFixture.anyClientId
-import static pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientReservationsFixture.noReservations
-import static pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientReservationsFixture.reservationsWith
+import static pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientReservationsFixture.noReservationRequests
+import static pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientReservationsFixture.reservationRequestsWith
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.anyParkingSpotId
 import static pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationScheduleFixture.anyReservationId
 
@@ -32,7 +32,7 @@ class CreatingReservationRequestTest extends Specification {
     given:
       CreatingReservationRequest requestingReservation = new CreatingReservationRequest(repository)
     and:
-      persisted(noReservations(clientId, now))
+      persisted(noReservationRequests(clientId, now))
     
     when:
       def result = requestingReservation.createReservationRequest(
@@ -47,7 +47,7 @@ class CreatingReservationRequestTest extends Specification {
     given:
       CreatingReservationRequest requestingReservation = new CreatingReservationRequest(repository)
     and:
-      persisted(reservationsWith(clientId, anyReservationId(), now))
+      persisted(reservationRequestsWith(clientId, anyReservationId(), now))
     
     when:
       def result = requestingReservation.createReservationRequest(
@@ -62,7 +62,7 @@ class CreatingReservationRequestTest extends Specification {
     given:
       CreatingReservationRequest requestingReservation = new CreatingReservationRequest(repository)
     and:
-      persisted(noReservations(clientId, now))
+      persisted(noReservationRequests(clientId, now))
     
     when:
       def result = requestingReservation.createReservationRequest(
@@ -77,7 +77,7 @@ class CreatingReservationRequestTest extends Specification {
     given:
       CreatingReservationRequest requestingReservation = new CreatingReservationRequest(repository)
     and:
-      persisted(reservationsWith(clientId, anyReservationId(), now))
+      persisted(reservationRequestsWith(clientId, anyReservationId(), now))
     
     when:
       def result = requestingReservation.createReservationRequest(
@@ -92,7 +92,7 @@ class CreatingReservationRequestTest extends Specification {
     given:
       CreatingReservationRequest requestingReservation = new CreatingReservationRequest(repository)
     and:
-      notPersisted(reservationsWith(clientId, anyReservationId(), now))
+      notPersisted(reservationRequestsWith(clientId, anyReservationId(), now))
     
     when:
       def result = requestingReservation.createReservationRequest(

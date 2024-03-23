@@ -13,6 +13,9 @@ import java.util.UUID;
 import static io.vavr.API.$;
 import static io.vavr.API.Case;
 import static io.vavr.Predicates.instanceOf;
+import static pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientReservationRequestsEvent.AnyParkingSpotReservationRequested;
+import static pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientReservationRequestsEvent.ChosenParkingSpotReservationRequested;
+import static pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientReservationRequestsEvent.ReservationRequestCancelled;
 
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 class ClientReservationsEntity {
@@ -20,27 +23,33 @@ class ClientReservationsEntity {
     @Id
     Long id;
     UUID clientId;
-    Set<UUID> reservations;
+    Set<UUID> clientReservationRequests;
 
     ClientReservationsEntity(UUID clientId) {
         this.clientId = clientId;
-        this.reservations = new HashSet<>();
+        this.clientReservationRequests = new HashSet<>();
     }
 
     void handle(ClientReservationRequestsEvent event) {
         API.Match(event).of(
-                API.Case(API.$(instanceOf(ClientReservationRequestsEvent.ReservationRequestCreated.class)), this::handle),
-                API.Case(API.$(instanceOf(ClientReservationRequestsEvent.ReservationRequestCancelled.class)), this::handle),
+                API.Case(API.$(instanceOf(ChosenParkingSpotReservationRequested.class)), this::handle),
+                API.Case(API.$(instanceOf(AnyParkingSpotReservationRequested.class)), this::handle),
+                API.Case(API.$(instanceOf(ReservationRequestCancelled.class)), this::handle),
                 Case($(), () -> this));
     }
 
-    private ClientReservationsEntity handle(ClientReservationRequestsEvent.ReservationRequestCreated reservationRequestCreated) {
-        this.reservations.add(reservationRequestCreated.getReservationId().getValue());
+    private ClientReservationsEntity handle(ChosenParkingSpotReservationRequested chosenParkingSpotReservationRequested) {
+        this.clientReservationRequests.add(chosenParkingSpotReservationRequested.getClientReservationRequestId().getValue());
         return this;
     }
 
-    private ClientReservationsEntity handle(ClientReservationRequestsEvent.ReservationRequestCancelled reservationRequestCancelled) {
-        this.reservations.remove(reservationRequestCancelled.getReservationId().getValue());
+    private ClientReservationsEntity handle(AnyParkingSpotReservationRequested anyParkingSpotReservationRequested) {
+        this.clientReservationRequests.add(anyParkingSpotReservationRequested.getClientReservationRequestId().getValue());
+        return this;
+    }
+
+    private ClientReservationsEntity handle(ReservationRequestCancelled reservationRequestCancelled) {
+        this.clientReservationRequests.remove(reservationRequestCancelled.getClientReservationRequestId().getValue());
         return this;
     }
 

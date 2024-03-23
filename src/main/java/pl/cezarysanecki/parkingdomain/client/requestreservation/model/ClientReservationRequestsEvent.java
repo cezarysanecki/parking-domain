@@ -6,16 +6,20 @@ import pl.cezarysanecki.parkingdomain.commons.events.DomainEvent;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotType;
 import pl.cezarysanecki.parkingdomain.parking.model.VehicleSizeUnit;
-import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationId;
+
+import java.util.UUID;
 
 public interface ClientReservationRequestsEvent extends DomainEvent {
 
     ClientId getClientId();
 
+    ClientReservationRequestId getClientReservationRequestId();
+
     @Value
     final class ChosenParkingSpotReservationRequested implements ClientReservationRequestsEvent {
 
         @NonNull ClientId clientId;
+        @NonNull ClientReservationRequestId clientReservationRequestId = ClientReservationRequestId.of(UUID.randomUUID());
         @NonNull ReservationType reservationType;
         @NonNull ParkingSpotId parkingSpotId;
 
@@ -25,6 +29,7 @@ public interface ClientReservationRequestsEvent extends DomainEvent {
     final class AnyParkingSpotReservationRequested implements ClientReservationRequestsEvent {
 
         @NonNull ClientId clientId;
+        @NonNull ClientReservationRequestId clientReservationRequestId = ClientReservationRequestId.of(UUID.randomUUID());
         @NonNull ReservationType reservationType;
         @NonNull ParkingSpotType parkingSpotType;
         @NonNull VehicleSizeUnit vehicleSizeUnit;
@@ -35,6 +40,7 @@ public interface ClientReservationRequestsEvent extends DomainEvent {
     final class ReservationRequestFailed implements ClientReservationRequestsEvent {
 
         @NonNull ClientId clientId;
+        @NonNull ClientReservationRequestId clientReservationRequestId = ClientReservationRequestId.of(UUID.randomUUID());
         @NonNull String reason;
 
     }
@@ -43,7 +49,7 @@ public interface ClientReservationRequestsEvent extends DomainEvent {
     final class ReservationRequestCancelled implements ClientReservationRequestsEvent {
 
         @NonNull ClientId clientId;
-        @NonNull ReservationId reservationId;
+        @NonNull ClientReservationRequestId clientReservationRequestId;
 
     }
 
@@ -51,7 +57,7 @@ public interface ClientReservationRequestsEvent extends DomainEvent {
     final class CancellationOfReservationRequestFailed implements ClientReservationRequestsEvent {
 
         @NonNull ClientId clientId;
-        @NonNull ReservationId reservationId;
+        @NonNull ClientReservationRequestId clientReservationRequestId;
         @NonNull String reason;
 
     }

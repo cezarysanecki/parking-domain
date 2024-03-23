@@ -1,12 +1,12 @@
 package pl.cezarysanecki.parkingdomain.client.requestreservation.model;
 
 import io.vavr.control.Either;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotType;
 import pl.cezarysanecki.parkingdomain.parking.model.VehicleSizeUnit;
-import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationId;
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -19,12 +19,12 @@ import static pl.cezarysanecki.parkingdomain.client.requestreservation.model.Cli
 import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announceFailure;
 import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announceSuccess;
 
-@RequiredArgsConstructor
+@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 public class ClientReservationRequests {
 
     @Getter
     private final ClientId clientId;
-    private final Set<ReservationId> reservations;
+    private final Set<ClientReservationRequestId> clientReservationRequests;
     private final LocalDateTime now;
 
     public static ClientReservationRequests empty(ClientId clientId, LocalDateTime now) {
@@ -45,23 +45,23 @@ public class ClientReservationRequests {
         return announceSuccess(new AnyParkingSpotReservationRequested(clientId, reservationType, parkingSpotType, vehicleSizeUnit));
     }
 
-    public Either<CancellationOfReservationRequestFailed, ReservationRequestCancelled> cancel(ReservationId reservationId) {
-        if (doesNotContain(reservationId)) {
-            return announceFailure(new CancellationOfReservationRequestFailed(clientId, reservationId, "does not have this reservation"));
+    public Either<CancellationOfReservationRequestFailed, ReservationRequestCancelled> cancel(ClientReservationRequestId clientReservationRequestId) {
+        if (doesNotContain(clientReservationRequestId)) {
+            return announceFailure(new CancellationOfReservationRequestFailed(clientId, clientReservationRequestId, "does not have this reservation"));
         }
-        return announceSuccess(new ReservationRequestCancelled(clientId, reservationId));
+        return announceSuccess(new ReservationRequestCancelled(clientId, clientReservationRequestId));
     }
 
     public boolean isEmpty() {
-        return reservations.isEmpty();
+        return clientReservationRequests.isEmpty();
     }
 
     private boolean hasTooManyReservations() {
-        return reservations.size() >= 1;
+        return clientReservationRequests.size() >= 1;
     }
 
-    private boolean doesNotContain(ReservationId reservationId) {
-        return !reservations.contains(reservationId);
+    private boolean doesNotContain(ClientReservationRequestId clientReservationRequestId) {
+        return !clientReservationRequests.contains(clientReservationRequestId);
     }
 
 }

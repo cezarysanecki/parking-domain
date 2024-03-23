@@ -6,11 +6,10 @@ import spock.lang.Specification
 
 import java.time.LocalDateTime
 
-import static ClientReservationRequestsEvent.ReservationRequestCreated
 import static ClientReservationRequestsEvent.ReservationRequestFailed
 import static ClientReservationsFixture.anyClientId
-import static ClientReservationsFixture.noReservations
-import static ClientReservationsFixture.reservationsWith
+import static ClientReservationsFixture.noReservationRequests
+import static ClientReservationsFixture.reservationRequestsWith
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.anyParkingSpotId
 import static pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationScheduleFixture.anyReservationId
 
@@ -23,7 +22,7 @@ class RequestingClientReservationTest extends Specification {
   
   def "can make reservation for random parking spot"() {
     given:
-      def clientReservations = noReservations(clientId, now)
+      def clientReservations = noReservationRequests(clientId, now)
       def reservationSlot = new ReservationSlot(properSinceReservation, 2)
     
     when:
@@ -40,7 +39,7 @@ class RequestingClientReservationTest extends Specification {
   
   def "cannot make reservation for random parking spot when there is too many made reservations"() {
     given:
-      def clientReservations = reservationsWith(clientId, anyReservationId(), now)
+      def clientReservations = reservationRequestsWith(clientId, anyReservationId(), now)
       def reservationSlot = new ReservationSlot(properSinceReservation, 2)
     
     when:
@@ -58,7 +57,7 @@ class RequestingClientReservationTest extends Specification {
     given:
       def tooSoonReservation = now.plusHours(2).plusMinutes(59)
     and:
-      def clientReservations = reservationsWith(clientId, now)
+      def clientReservations = reservationRequestsWith(clientId, now)
       def reservationSlot = new ReservationSlot(tooSoonReservation, 2)
     
     when:
@@ -74,7 +73,7 @@ class RequestingClientReservationTest extends Specification {
   
   def "can make reservation for chosen parking spot"() {
     given:
-      def clientReservations = noReservations(clientId, now)
+      def clientReservations = noReservationRequests(clientId, now)
       def reservationSlot = new ReservationSlot(properSinceReservation, 2)
       def parkingSpotId = anyParkingSpotId()
     
@@ -92,7 +91,7 @@ class RequestingClientReservationTest extends Specification {
   
   def "cannot make reservation for chosen parking spot when there is too many made reservations"() {
     given:
-      def clientReservations = reservationsWith(clientId, anyReservationId(), now)
+      def clientReservations = reservationRequestsWith(clientId, anyReservationId(), now)
       def reservationSlot = new ReservationSlot(properSinceReservation, 2)
     
     when:
@@ -110,7 +109,7 @@ class RequestingClientReservationTest extends Specification {
     given:
       def tooSoonReservation = now.plusHours(2).plusMinutes(59)
     and:
-      def clientReservations = reservationsWith(clientId, now)
+      def clientReservations = reservationRequestsWith(clientId, now)
       def reservationSlot = new ReservationSlot(tooSoonReservation, 2)
     
     when:
