@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import pl.cezarysanecki.parkingdomain.client.reservationrequest.application.RequestingReservation;
-import pl.cezarysanecki.parkingdomain.client.reservationrequest.application.ReserveAnyParkingSpotCommand;
-import pl.cezarysanecki.parkingdomain.client.reservationrequest.application.ReserveChosenParkingSpotCommand;
-import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientId;
-import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ReservationType;
+import pl.cezarysanecki.parkingdomain.client.requestreservation.application.CreatingReservationRequest;
+import pl.cezarysanecki.parkingdomain.client.requestreservation.application.CreateReservationRequestForAnyParkingSpotCommand;
+import pl.cezarysanecki.parkingdomain.client.requestreservation.application.CreateReservationRequestForChosenParkingSpotCommand;
+import pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientId;
+import pl.cezarysanecki.parkingdomain.client.requestreservation.model.ReservationType;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotType;
@@ -35,12 +35,12 @@ import java.util.UUID;
 class ClientReservationsViewController {
 
     private final ClientsReservationsViews clientsReservationsViews;
-    private final RequestingReservation requestingReservation;
+    private final CreatingReservationRequest creatingReservationRequest;
     private final CancellingReservation cancellingReservation;
 
     @PostMapping("/client-reservation/{parkingSpotId}")
     ResponseEntity reserveParkingSpot(@PathVariable UUID parkingSpotId, @RequestBody CreateRequestForReservationRequest request) {
-        Try<Result> result = requestingReservation.createReservationRequest(new ReserveChosenParkingSpotCommand(
+        Try<Result> result = creatingReservationRequest.createReservationRequest(new CreateReservationRequestForChosenParkingSpotCommand(
                 ClientId.of(request.clientId),
                 ParkingSpotId.of(parkingSpotId),
                 ReservationType.WholeDay));
@@ -55,7 +55,7 @@ class ClientReservationsViewController {
 
     @PostMapping("/client-reservation")
     ResponseEntity reserveAnyParkingSpot(@RequestBody CreateRequestForReservationRequest request) {
-        Try<Result> result = requestingReservation.createReservationRequest(new ReserveAnyParkingSpotCommand(
+        Try<Result> result = creatingReservationRequest.createReservationRequest(new CreateReservationRequestForAnyParkingSpotCommand(
                 ClientId.of(request.clientId),
                 ParkingSpotType.Gold,
                 null, null));

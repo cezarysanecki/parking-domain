@@ -4,7 +4,7 @@ import io.vavr.control.Either;
 import io.vavr.control.Option;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientId;
+import pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientId;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 
 import java.time.LocalDateTime;
