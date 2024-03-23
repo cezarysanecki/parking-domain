@@ -11,7 +11,10 @@ import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationId;
 import java.time.LocalDateTime;
 import java.util.Set;
 
-import static pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientReservationRequestsEvent.ReservationRequestCreated;
+import static pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientReservationRequestsEvent.AnyParkingSpotReservationRequested;
+import static pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientReservationRequestsEvent.CancellationOfReservationRequestFailed;
+import static pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientReservationRequestsEvent.ChosenParkingSpotReservationRequested;
+import static pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientReservationRequestsEvent.ReservationRequestCancelled;
 import static pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientReservationRequestsEvent.ReservationRequestFailed;
 import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announceFailure;
 import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announceSuccess;
@@ -28,25 +31,25 @@ public class ClientReservationRequests {
         return new ClientReservationRequests(clientId, Set.of(), now);
     }
 
-    public Either<ReservationRequestFailed, ReservationRequestCreated> reserve(ReservationType reservationType, ParkingSpotId parkingSpotId) {
+    public Either<ReservationRequestFailed, ChosenParkingSpotReservationRequested> reserve(ReservationType reservationType, ParkingSpotId parkingSpotId) {
         if (hasTooManyReservations()) {
             return announceFailure(new ReservationRequestFailed(clientId, "cannot have more reservations"));
         }
-        return announceSuccess(ReservationRequestCreated.with(clientId, parkingSpotId));
+        return announceSuccess(new ChosenParkingSpotReservationRequested(clientId, reservationType, parkingSpotId));
     }
 
-    public Either<ReservationRequestFailed, ReservationRequestCreated> reserve(ReservationType reservationType, ParkingSpotType parkingSpotType, VehicleSizeUnit vehicleSizeUnit) {
+    public Either<ReservationRequestFailed, AnyParkingSpotReservationRequested> reserve(ReservationType reservationType, ParkingSpotType parkingSpotType, VehicleSizeUnit vehicleSizeUnit) {
         if (hasTooManyReservations()) {
             return announceFailure(new ReservationRequestFailed(clientId, "cannot have more reservations"));
         }
-        return announceSuccess(ReservationRequestCreated.with(clientId));
+        return announceSuccess(new AnyParkingSpotReservationRequested(clientId, reservationType, parkingSpotType, vehicleSizeUnit));
     }
 
-    public Either<ReservationRequestFailed, ReservationRequestCreated> cancel(ReservationId reservationId) {
+    public Either<CancellationOfReservationRequestFailed, ReservationRequestCancelled> cancel(ReservationId reservationId) {
         if (doesNotContain(reservationId)) {
-            return announceFailure(new ReservationRequestFailed(clientId, "does not have this reservation"));
+            return announceFailure(new CancellationOfReservationRequestFailed(clientId, reservationId, "does not have this reservation"));
         }
-        return announceSuccess(ReservationRequestCreated.with(clientId));
+        return announceSuccess(new ReservationRequestCancelled(clientId, reservationId));
     }
 
     public boolean isEmpty() {

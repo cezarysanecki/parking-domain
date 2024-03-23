@@ -15,8 +15,8 @@ import static io.vavr.API.Case;
 import static io.vavr.API.Match;
 import static io.vavr.Patterns.$Left;
 import static io.vavr.Patterns.$Right;
-import static pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientReservationRequestsEvent.ReservationRequestCreated;
-import static pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientReservationRequestsEvent.ReservationRequestFailed;
+import static pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientReservationRequestsEvent.CancellationOfReservationRequestFailed;
+import static pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientReservationRequestsEvent.ReservationRequestCancelled;
 import static pl.cezarysanecki.parkingdomain.commons.commands.Result.Rejection;
 import static pl.cezarysanecki.parkingdomain.commons.commands.Result.Success;
 
@@ -29,22 +29,23 @@ public class CancellingReservationRequest {
     public Try<Result> cancelRequest(@NonNull CancelReservationRequestCommand command) {
         return Try.of(() -> {
             ClientReservationRequests clientReservationRequests = load(command.getClientId());
-            Either<ReservationRequestFailed, ReservationRequestCreated> result = clientReservationRequests.cancel(command.getReservationId());
+            Either<CancellationOfReservationRequestFailed, ReservationRequestCancelled> result = clientReservationRequests.cancel(command.getReservationId());
             return Match(result).of(
                     Case($Left($()), this::publishEvents),
                     Case($Right($()), this::publishEvents));
         }).onFailure(throwable -> log.error("Failed to reserve parking slot", throwable));
     }
 
-    private Result publishEvents(ReservationRequestCreated reservationRequestCreated) {
-        clientReservationRequestsRepository.publish(reservationRequestCreated);
-        log.debug("successfully requested reservation for client with id {}", reservationRequestCreated.getClientId());
+    private Result publishEvents(ReservationRequestCancelled reservationRequestCancelled) {
+        clientReservationRequestsRepository.publish(reservationRequestCancelled);
+        log.debug("successfully cancelled reservation request for client with id {}", reservationRequestCancelled.getClientId());
         return Success;
     }
 
-    private Result publishEvents(ReservationRequestFailed reservationRequestFailed) {
-        clientReservationRequestsRepository.publish(reservationRequestFailed);
-        log.debug("rejected to request reservation for client with id {}, reason: {}", reservationRequestFailed.getClientId(), reservationRequestFailed.getReason());
+    private Result publishEvents(CancellationOfReservationRequestFailed cancellationOfReservationRequestFailed) {
+        clientReservationRequestsRepository.publish(cancellationOfReservationRequestFailed);
+        log.debug("rejected to cancel reservation request for client with id {}, reason: {}",
+                cancellationOfReservationRequestFailed.getClientId(), cancellationOfReservationRequestFailed.getReason());
         return Rejection;
     }
 

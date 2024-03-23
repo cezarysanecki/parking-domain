@@ -15,7 +15,8 @@ import static io.vavr.API.Case;
 import static io.vavr.API.Match;
 import static io.vavr.Patterns.$Left;
 import static io.vavr.Patterns.$Right;
-import static pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientReservationRequestsEvent.ReservationRequestCreated;
+import static pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientReservationRequestsEvent.AnyParkingSpotReservationRequested;
+import static pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientReservationRequestsEvent.ChosenParkingSpotReservationRequested;
 import static pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientReservationRequestsEvent.ReservationRequestFailed;
 import static pl.cezarysanecki.parkingdomain.commons.commands.Result.Rejection;
 import static pl.cezarysanecki.parkingdomain.commons.commands.Result.Success;
@@ -29,7 +30,7 @@ public class CreatingReservationRequest {
     public Try<Result> createRequest(@NonNull CreateReservationRequestForChosenParkingSpotCommand command) {
         return Try.of(() -> {
             ClientReservationRequests clientReservationRequests = load(command.getClientId());
-            Either<ReservationRequestFailed, ReservationRequestCreated> result = clientReservationRequests.reserve(
+            Either<ReservationRequestFailed, ChosenParkingSpotReservationRequested> result = clientReservationRequests.reserve(
                     command.getReservationType(),
                     command.getParkingSpotId());
             return Match(result).of(
@@ -41,7 +42,7 @@ public class CreatingReservationRequest {
     public Try<Result> reserve(@NonNull CreateReservationRequestForAnyParkingSpotCommand command) {
         return Try.of(() -> {
             ClientReservationRequests clientReservationRequests = load(command.getClientId());
-            Either<ReservationRequestFailed, ReservationRequestCreated> result = clientReservationRequests.reserve(
+            Either<ReservationRequestFailed, AnyParkingSpotReservationRequested> result = clientReservationRequests.reserve(
                     command.getReservationType(),
                     command.getParkingSpotType(),
                     command.getVehicleSizeUnit());
@@ -51,9 +52,15 @@ public class CreatingReservationRequest {
         }).onFailure(throwable -> log.error("Failed to reserve parking slot", throwable));
     }
 
-    private Result publishEvents(ReservationRequestCreated reservationRequestCreated) {
-        clientReservationRequestsRepository.publish(reservationRequestCreated);
-        log.debug("successfully requested reservation for client with id {}", reservationRequestCreated.getClientId());
+    private Result publishEvents(ChosenParkingSpotReservationRequested chosenParkingSpotReservationRequested) {
+        clientReservationRequestsRepository.publish(chosenParkingSpotReservationRequested);
+        log.debug("successfully created reservation request for client with id {}", chosenParkingSpotReservationRequested.getClientId());
+        return Success;
+    }
+
+    private Result publishEvents(AnyParkingSpotReservationRequested anyParkingSpotReservationRequested) {
+        clientReservationRequestsRepository.publish(anyParkingSpotReservationRequested);
+        log.debug("successfully created reservation request for client with id {}", anyParkingSpotReservationRequested.getClientId());
         return Success;
     }
 
