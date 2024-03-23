@@ -1,10 +1,10 @@
-package pl.cezarysanecki.parkingdomain.client.requestreservation.application
+package pl.cezarysanecki.parkingdomain.client.reservationrequest.application
 
 
-import pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientId
-import pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientReservationRequests
-import pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientReservationRequestsEvent
-import pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientReservationRequestsRepository
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientId
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequests
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsEvent
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsRepository
 import pl.cezarysanecki.parkingdomain.commons.commands.Result
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationSlot
@@ -12,9 +12,9 @@ import spock.lang.Specification
 
 import java.time.LocalDateTime
 
-import static pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientReservationsFixture.anyClientId
-import static pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientReservationsFixture.noReservationRequests
-import static pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientReservationsFixture.reservationRequestsWith
+import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationsFixture.anyClientId
+import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationsFixture.noReservationRequests
+import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationsFixture.reservationRequestsWith
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.anyParkingSpotId
 import static pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationScheduleFixture.anyReservationId
 

@@ -1,7 +1,7 @@
 package pl.cezarysanecki.parkingdomain.reservation.schedule.application
 
 import io.vavr.control.Option
-import pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientId
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientId
 import pl.cezarysanecki.parkingdomain.commons.commands.Result
 import pl.cezarysanecki.parkingdomain.reservation.schedule.model.Reservation
 import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationId
@@ -13,7 +13,7 @@ import spock.lang.Specification
 
 import java.time.LocalDateTime
 
-import static pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientReservationsFixture.anyClientId
+import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationsFixture.anyClientId
 import static pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationScheduleFixture.anyReservationId
 import static pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationScheduleFixture.reservationScheduleWith
 

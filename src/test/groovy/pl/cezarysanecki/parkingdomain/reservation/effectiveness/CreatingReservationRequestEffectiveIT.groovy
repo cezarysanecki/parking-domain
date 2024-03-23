@@ -3,7 +3,7 @@ package pl.cezarysanecki.parkingdomain.reservation.effectiveness
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
-import pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientId
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientId
 import pl.cezarysanecki.parkingdomain.commons.date.DateConfig
 import pl.cezarysanecki.parkingdomain.commons.date.LocalDateProvider
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher
@@ -17,7 +17,7 @@ import java.time.Duration
 import java.time.LocalDateTime
 
 import static org.awaitility.Awaitility.await
-import static pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientReservationsFixture.anyClientId
+import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationsFixture.anyClientId
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.anyParkingSpotId
 import static pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationScheduleEvent.ReservationMade
 import static pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationScheduleFixture.anyReservationId

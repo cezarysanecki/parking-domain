@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.client.requestreservation.model;
+package pl.cezarysanecki.parkingdomain.client.reservationrequest.model;
 
 import lombok.NonNull;
 import lombok.Value;

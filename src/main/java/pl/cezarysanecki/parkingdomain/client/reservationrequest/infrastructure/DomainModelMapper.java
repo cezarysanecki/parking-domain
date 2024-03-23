@@ -1,11 +1,11 @@
-package pl.cezarysanecki.parkingdomain.client.requestreservation.infrastructure;
+package pl.cezarysanecki.parkingdomain.client.reservationrequest.infrastructure;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientId;
-import pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientReservationRequestId;
-import pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientReservationRequests;
-import pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientReservationRequestsFactory;
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientId;
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestId;
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequests;
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsFactory;
 
 import java.util.stream.Collectors;
 

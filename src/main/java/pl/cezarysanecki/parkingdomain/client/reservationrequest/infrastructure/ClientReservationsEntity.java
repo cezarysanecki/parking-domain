@@ -1,10 +1,10 @@
-package pl.cezarysanecki.parkingdomain.client.requestreservation.infrastructure;
+package pl.cezarysanecki.parkingdomain.client.reservationrequest.infrastructure;
 
 import io.vavr.API;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
-import pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientReservationRequestsEvent;
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsEvent;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -13,9 +13,9 @@ import java.util.UUID;
 import static io.vavr.API.$;
 import static io.vavr.API.Case;
 import static io.vavr.Predicates.instanceOf;
-import static pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientReservationRequestsEvent.AnyParkingSpotReservationRequested;
-import static pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientReservationRequestsEvent.ChosenParkingSpotReservationRequested;
-import static pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientReservationRequestsEvent.ReservationRequestCancelled;
+import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsEvent.AnyParkingSpotReservationRequested;
+import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsEvent.ChosenParkingSpotReservationRequested;
+import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsEvent.ReservationRequestCancelled;
 
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 class ClientReservationsEntity {
