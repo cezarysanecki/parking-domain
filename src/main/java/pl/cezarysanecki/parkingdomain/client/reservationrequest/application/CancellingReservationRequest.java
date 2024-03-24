@@ -1,13 +1,13 @@
-package pl.cezarysanecki.parkingdomain.client.requestreservation.application;
+package pl.cezarysanecki.parkingdomain.client.reservationrequest.application;
 
 import io.vavr.control.Either;
 import io.vavr.control.Try;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientId;
-import pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientReservationRequests;
-import pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientReservationRequestsRepository;
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientId;
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequests;
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsRepository;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
 
 import static io.vavr.API.$;
@@ -15,8 +15,8 @@ import static io.vavr.API.Case;
 import static io.vavr.API.Match;
 import static io.vavr.Patterns.$Left;
 import static io.vavr.Patterns.$Right;
-import static pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientReservationRequestsEvent.CancellationOfReservationRequestFailed;
-import static pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientReservationRequestsEvent.ReservationRequestCancelled;
+import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsEvent.CancellationOfReservationRequestFailed;
+import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsEvent.ReservationRequestCancelled;
 import static pl.cezarysanecki.parkingdomain.commons.commands.Result.Rejection;
 import static pl.cezarysanecki.parkingdomain.commons.commands.Result.Success;
 
@@ -29,7 +29,7 @@ public class CancellingReservationRequest {
     public Try<Result> cancelRequest(@NonNull CancelReservationRequestCommand command) {
         return Try.of(() -> {
             ClientReservationRequests clientReservationRequests = load(command.getClientId());
-            Either<CancellationOfReservationRequestFailed, ReservationRequestCancelled> result = clientReservationRequests.cancel(command.getClientReservationRequestId());
+            Either<CancellationOfReservationRequestFailed, ReservationRequestCancelled> result = clientReservationRequests.cancel(command.getReservationId());
             return Match(result).of(
                     Case($Left($()), this::publishEvents),
                     Case($Right($()), this::publishEvents));

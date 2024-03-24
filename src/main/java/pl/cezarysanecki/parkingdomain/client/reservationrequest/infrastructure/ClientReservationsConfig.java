@@ -1,12 +1,12 @@
-package pl.cezarysanecki.parkingdomain.client.requestreservation.infrastructure;
+package pl.cezarysanecki.parkingdomain.client.reservationrequest.infrastructure;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import pl.cezarysanecki.parkingdomain.client.requestreservation.application.CreatingReservationRequest;
-import pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientReservationRequestsFactory;
-import pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientReservationRequestsRepository;
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.application.CreatingReservationRequest;
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsFactory;
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsRepository;
 import pl.cezarysanecki.parkingdomain.commons.date.DateProvider;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 

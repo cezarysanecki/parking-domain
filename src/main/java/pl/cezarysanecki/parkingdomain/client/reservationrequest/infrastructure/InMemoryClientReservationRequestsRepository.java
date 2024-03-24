@@ -1,13 +1,13 @@
-package pl.cezarysanecki.parkingdomain.client.requestreservation.infrastructure;
+package pl.cezarysanecki.parkingdomain.client.reservationrequest.infrastructure;
 
 import io.vavr.control.Option;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientId;
-import pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientReservationRequests;
-import pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientReservationRequestsEvent;
-import pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientReservationRequestsFactory;
-import pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientReservationRequestsRepository;
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientId;
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequests;
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsEvent;
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsFactory;
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsRepository;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 
 import java.util.Map;

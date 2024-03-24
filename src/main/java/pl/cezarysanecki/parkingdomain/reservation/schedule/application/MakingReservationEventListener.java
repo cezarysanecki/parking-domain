@@ -4,7 +4,7 @@ import io.vavr.control.Either;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
-import pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientId;
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientId;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationSchedule;

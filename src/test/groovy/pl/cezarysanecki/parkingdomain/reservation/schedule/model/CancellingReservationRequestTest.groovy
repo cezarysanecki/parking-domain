@@ -7,7 +7,7 @@ import java.time.LocalDateTime
 
 import static pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationScheduleEvent.ReservationCancellationFailed
 import static pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationScheduleEvent.ReservationCancelled
-import static pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientReservationsFixture.anyClientId
+import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationsFixture.anyClientId
 import static ReservationScheduleFixture.anyReservationId
 import static ReservationScheduleFixture.reservationScheduleWith
 

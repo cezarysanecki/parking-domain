@@ -1,13 +1,13 @@
-package pl.cezarysanecki.parkingdomain.client.requestreservation.application;
+package pl.cezarysanecki.parkingdomain.client.reservationrequest.application;
 
 import io.vavr.control.Either;
 import io.vavr.control.Try;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientId;
-import pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientReservationRequests;
-import pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientReservationRequestsRepository;
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientId;
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequests;
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsRepository;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
 
 import static io.vavr.API.$;
@@ -15,9 +15,9 @@ import static io.vavr.API.Case;
 import static io.vavr.API.Match;
 import static io.vavr.Patterns.$Left;
 import static io.vavr.Patterns.$Right;
-import static pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientReservationRequestsEvent.AnyParkingSpotReservationRequested;
-import static pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientReservationRequestsEvent.ChosenParkingSpotReservationRequested;
-import static pl.cezarysanecki.parkingdomain.client.requestreservation.model.ClientReservationRequestsEvent.ReservationRequestFailed;
+import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsEvent.AnyParkingSpotReservationRequested;
+import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsEvent.ChosenParkingSpotReservationRequested;
+import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsEvent.ReservationRequestFailed;
 import static pl.cezarysanecki.parkingdomain.commons.commands.Result.Rejection;
 import static pl.cezarysanecki.parkingdomain.commons.commands.Result.Success;
 
@@ -36,10 +36,10 @@ public class CreatingReservationRequest {
             return Match(result).of(
                     Case($Left($()), this::publishEvents),
                     Case($Right($()), this::publishEvents));
-        }).onFailure(throwable -> log.error("Failed to reserve parking slot", throwable));
+        }).onFailure(throwable -> log.error("Failed to create reservation request", throwable));
     }
 
-    public Try<Result> reserve(@NonNull CreateReservationRequestForAnyParkingSpotCommand command) {
+    public Try<Result> createRequest(@NonNull CreateReservationRequestForAnyParkingSpotCommand command) {
         return Try.of(() -> {
             ClientReservationRequests clientReservationRequests = load(command.getClientId());
             Either<ReservationRequestFailed, AnyParkingSpotReservationRequested> result = clientReservationRequests.reserve(
@@ -49,7 +49,7 @@ public class CreatingReservationRequest {
             return Match(result).of(
                     Case($Left($()), this::publishEvents),
                     Case($Right($()), this::publishEvents));
-        }).onFailure(throwable -> log.error("Failed to reserve parking slot", throwable));
+        }).onFailure(throwable -> log.error("Failed to create reservation request", throwable));
     }
 
     private Result publishEvents(ChosenParkingSpotReservationRequested chosenParkingSpotReservationRequested) {
