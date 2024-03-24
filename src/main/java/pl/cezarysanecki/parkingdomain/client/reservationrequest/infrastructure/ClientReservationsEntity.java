@@ -23,11 +23,11 @@ class ClientReservationsEntity {
     @Id
     Long id;
     UUID clientId;
-    Set<UUID> clientReservationRequests;
+    Set<UUID> clientReservations;
 
     ClientReservationsEntity(UUID clientId) {
         this.clientId = clientId;
-        this.clientReservationRequests = new HashSet<>();
+        this.clientReservations = new HashSet<>();
     }
 
     void handle(ClientReservationRequestsEvent event) {
@@ -39,17 +39,17 @@ class ClientReservationsEntity {
     }
 
     private ClientReservationsEntity handle(ChosenParkingSpotReservationRequested chosenParkingSpotReservationRequested) {
-        this.clientReservationRequests.add(chosenParkingSpotReservationRequested.getClientReservationRequestId().getValue());
+        this.clientReservations.add(chosenParkingSpotReservationRequested.getReservationId().getValue());
         return this;
     }
 
     private ClientReservationsEntity handle(AnyParkingSpotReservationRequested anyParkingSpotReservationRequested) {
-        this.clientReservationRequests.add(anyParkingSpotReservationRequested.getClientReservationRequestId().getValue());
+        this.clientReservations.add(anyParkingSpotReservationRequested.getReservationId().getValue());
         return this;
     }
 
     private ClientReservationsEntity handle(ReservationRequestCancelled reservationRequestCancelled) {
-        this.clientReservationRequests.remove(reservationRequestCancelled.getClientReservationRequestId().getValue());
+        this.clientReservations.remove(reservationRequestCancelled.getReservationId().getValue());
         return this;
     }
 

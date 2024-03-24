@@ -3,9 +3,9 @@ package pl.cezarysanecki.parkingdomain.client.reservationrequest.infrastructure;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientId;
-import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestId;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequests;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsFactory;
+import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationId;
 
 import java.util.stream.Collectors;
 
@@ -17,8 +17,8 @@ class DomainModelMapper {
     ClientReservationRequests map(ClientReservationsEntity entity) {
         return clientReservationRequestsFactory.create(
                 ClientId.of(entity.clientId),
-                entity.clientReservationRequests.stream()
-                        .map(ClientReservationRequestId::of)
+                entity.clientReservations.stream()
+                        .map(ReservationId::of)
                         .collect(Collectors.toUnmodifiableSet()));
     }
 
