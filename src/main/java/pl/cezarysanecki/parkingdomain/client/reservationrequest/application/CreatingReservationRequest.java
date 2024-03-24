@@ -36,10 +36,10 @@ public class CreatingReservationRequest {
             return Match(result).of(
                     Case($Left($()), this::publishEvents),
                     Case($Right($()), this::publishEvents));
-        }).onFailure(throwable -> log.error("Failed to reserve parking slot", throwable));
+        }).onFailure(throwable -> log.error("Failed to create reservation request", throwable));
     }
 
-    public Try<Result> reserve(@NonNull CreateReservationRequestForAnyParkingSpotCommand command) {
+    public Try<Result> createRequest(@NonNull CreateReservationRequestForAnyParkingSpotCommand command) {
         return Try.of(() -> {
             ClientReservationRequests clientReservationRequests = load(command.getClientId());
             Either<ReservationRequestFailed, AnyParkingSpotReservationRequested> result = clientReservationRequests.reserve(
@@ -49,7 +49,7 @@ public class CreatingReservationRequest {
             return Match(result).of(
                     Case($Left($()), this::publishEvents),
                     Case($Right($()), this::publishEvents));
-        }).onFailure(throwable -> log.error("Failed to reserve parking slot", throwable));
+        }).onFailure(throwable -> log.error("Failed to create reservation request", throwable));
     }
 
     private Result publishEvents(ChosenParkingSpotReservationRequested chosenParkingSpotReservationRequested) {
