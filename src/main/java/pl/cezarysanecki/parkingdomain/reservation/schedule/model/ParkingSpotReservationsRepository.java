@@ -13,6 +13,8 @@ public interface ParkingSpotReservationsRepository {
 
     Option<ParkingSpotReservations> findFor(ParkingSpotType parkingSpotType, VehicleSizeUnit vehicleSizeUnit);
 
+    Option<ReservationId> deleteBy(ReservationId reservationId);
+
     ParkingSpotReservations publish(ParkingSpotReservationsEvent event);
 
 }

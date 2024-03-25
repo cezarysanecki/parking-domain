@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
+import pl.cezarysanecki.parkingdomain.reservation.schedule.application.CancellingReservationEventListener;
 import pl.cezarysanecki.parkingdomain.reservation.schedule.application.MakingReservationEventListener;
 import pl.cezarysanecki.parkingdomain.reservation.schedule.application.ParkingSpotReservationEventListener;
 import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ParkingSpotReservationsRepository;
@@ -13,7 +14,7 @@ import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ParkingSpotRese
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
-public class ReservationScheduleConfig {
+public class ParkingSpotReservationsConfig {
 
     private final EventPublisher eventPublisher;
 
@@ -25,6 +26,11 @@ public class ReservationScheduleConfig {
     @Bean
     public MakingReservationEventListener makingParkingSlotReservation(ParkingSpotReservationsRepository parkingSpotReservationsRepository) {
         return new MakingReservationEventListener(parkingSpotReservationsRepository);
+    }
+
+    @Bean
+    public CancellingReservationEventListener cancellingReservationEventListener(ParkingSpotReservationsRepository parkingSpotReservationsRepository) {
+        return new CancellingReservationEventListener(parkingSpotReservationsRepository);
     }
 
     @Bean

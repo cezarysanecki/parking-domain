@@ -22,11 +22,10 @@ import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.Park
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.anyParkingSpotId
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotType.Bronze
 import static pl.cezarysanecki.parkingdomain.reservation.schedule.model.ParkingSpotReservationsEvent.ReservationCancelled
-import static pl.cezarysanecki.parkingdomain.reservation.schedule.model.ParkingSpotReservationsEvent.ReservationMade
 import static pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationScheduleFixture.anyReservationId
 
 @ActiveProfiles("local")
-@SpringBootTest(classes = [ReservationScheduleConfig.class, EventPublisherTestConfig.class, DateConfig.class])
+@SpringBootTest(classes = [ParkingSpotReservationsConfig.class, EventPublisherTestConfig.class, DateConfig.class])
 class ReservationScheduleInMemoryRepositoryIT extends Specification {
   
   ParkingSpotId parkingSpotId = anyParkingSpotId()

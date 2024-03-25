@@ -24,7 +24,7 @@ import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotType.Bronz
 import static pl.cezarysanecki.parkingdomain.reservation.schedule.model.ParkingSpotReservationsEvent.ReservationCancelled
 
 @ActiveProfiles("local")
-@SpringBootTest(classes = [ReservationScheduleConfig.class, EventPublisherTestConfig.class, DateConfig.class])
+@SpringBootTest(classes = [ParkingSpotReservationsConfig.class, EventPublisherTestConfig.class, DateConfig.class])
 class HandlingClientReservationRequestIT extends Specification {
   
   ClientId clientId = anyClientId()
