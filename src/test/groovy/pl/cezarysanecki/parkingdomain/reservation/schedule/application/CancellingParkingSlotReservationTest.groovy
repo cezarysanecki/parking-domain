@@ -5,10 +5,10 @@ import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientId
 import pl.cezarysanecki.parkingdomain.commons.commands.Result
 import pl.cezarysanecki.parkingdomain.reservation.schedule.model.Reservation
 import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationId
-import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationSchedule
-import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationScheduleEvent
-import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationSchedules
-import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationSlot
+
+import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ParkingSpotReservationsEvent
+import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ParkingSpotReservationsRepository
+
 import spock.lang.Specification
 
 import java.time.LocalDateTime
@@ -21,7 +21,7 @@ class CancellingParkingSlotReservationTest extends Specification {
   
   ClientId clientId = anyClientId()
   
-  ReservationSchedules repository = Stub()
+  ParkingSpotReservationsRepository repository = Stub()
   
   def 'should successfully cancel reservation'() {
     given:
@@ -78,7 +78,7 @@ class CancellingParkingSlotReservationTest extends Specification {
   
   ReservationSchedule persisted(ReservationId reservationId, ReservationSchedule reservationSchedule) {
     repository.findBy(reservationId) >> Option.of(reservationSchedule)
-    repository.publish(_ as ReservationScheduleEvent) >> reservationSchedule
+    repository.publish(_ as ParkingSpotReservationsEvent) >> reservationSchedule
     return reservationSchedule
   }
   

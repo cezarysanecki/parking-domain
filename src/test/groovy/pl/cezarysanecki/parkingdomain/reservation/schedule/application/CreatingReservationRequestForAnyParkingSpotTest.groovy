@@ -3,17 +3,16 @@ package pl.cezarysanecki.parkingdomain.reservation.schedule.application
 import io.vavr.control.Option
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientId
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId
-import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationSchedule
-import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationSchedules
-import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationSlot
-import pl.cezarysanecki.parkingdomain.reservation.schedule.model.Reservations
+
+import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ParkingSpotReservationsRepository
+
 import spock.lang.Specification
 
 import java.time.LocalDateTime
 
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.anyParkingSpotId
-import static pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationScheduleEvent.ReservationFailed
-import static pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationScheduleEvent.ReservationMade
+import static pl.cezarysanecki.parkingdomain.reservation.schedule.model.ParkingSpotReservationsEvent.ReservationFailed
+import static pl.cezarysanecki.parkingdomain.reservation.schedule.model.ParkingSpotReservationsEvent.ReservationMade
 import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationsFixture.anyClientId
 import static pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationScheduleFixture.reservationScheduleWith
 import static pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationScheduleFixture.reservationWith
@@ -23,7 +22,7 @@ class CreatingReservationRequestForAnyParkingSpotTest extends Specification {
   ClientId clientId = anyClientId()
   ParkingSpotId parkingSpotId = anyParkingSpotId()
   
-  ReservationSchedules repository = Mock()
+  ParkingSpotReservationsRepository repository = Mock()
   
   def 'should successfully reserve any parking spot'() {
     given:
@@ -60,7 +59,7 @@ class CreatingReservationRequestForAnyParkingSpotTest extends Specification {
   }
   
   ReservationSchedule persistedEmpty(ReservationSlot reservationSlot, LocalDateTime now) {
-    def reservationSchedule = new ReservationSchedule(parkingSpotId, Reservations.none(), true, now)
+    def reservationSchedule = new ReservationSchedule(parkingSpotId, ParkingSpotReservations.none(), true, now)
     repository.findFreeFor(reservationSlot) >> Option.of(reservationSchedule)
     return reservationSchedule
   }

@@ -1,12 +1,24 @@
 package pl.cezarysanecki.parkingdomain.reservation.schedule.model;
 
+import lombok.NonNull;
 import lombok.Value;
-import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientId;
 
-@Value
-public class Reservation {
+public interface Reservation {
 
-    ReservationId reservationId;
-    ClientId clientId;
+    ReservationId getReservationId();
+
+    @Value
+    class Individual implements Reservation {
+
+        @NonNull ReservationId reservationId;
+
+    }
+
+    @Value
+    class Collective implements Reservation {
+
+        @NonNull ReservationId reservationId;
+
+    }
 
 }

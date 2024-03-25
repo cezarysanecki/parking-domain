@@ -1,7 +1,7 @@
 package pl.cezarysanecki.parkingdomain.reservation.schedule.application
 
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId
-import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationSchedules
+import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ParkingSpotReservationsRepository
 import spock.lang.Specification
 
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.CompletelyFreedUp
@@ -15,7 +15,7 @@ class HandlingOccupationForParkingSpotReservationTest extends Specification {
   
   ParkingSpotId parkingSpotId = anyParkingSpotId()
   
-  ReservationSchedules repository = Mock()
+  ParkingSpotReservationsRepository repository = Mock()
   
   def 'should successfully create parking spot reservation schedule'() {
     given:

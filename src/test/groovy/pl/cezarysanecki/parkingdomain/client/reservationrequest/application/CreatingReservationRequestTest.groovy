@@ -7,7 +7,7 @@ import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientRese
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsRepository
 import pl.cezarysanecki.parkingdomain.commons.commands.Result
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId
-import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationSlot
+
 import spock.lang.Specification
 
 import java.time.LocalDateTime

@@ -7,6 +7,7 @@ import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotType;
 import pl.cezarysanecki.parkingdomain.parking.model.VehicleSizeUnit;
 import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationId;
+import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationPeriod;
 
 import java.util.UUID;
 
@@ -21,7 +22,7 @@ public interface ClientReservationRequestsEvent extends DomainEvent {
 
         @NonNull ClientId clientId;
         @NonNull ReservationId reservationId = ReservationId.of(UUID.randomUUID());
-        @NonNull ReservationType reservationType;
+        @NonNull ReservationPeriod reservationPeriod;
         @NonNull ParkingSpotId parkingSpotId;
 
     }
@@ -31,7 +32,7 @@ public interface ClientReservationRequestsEvent extends DomainEvent {
 
         @NonNull ClientId clientId;
         @NonNull ReservationId reservationId = ReservationId.of(UUID.randomUUID());
-        @NonNull ReservationType reservationType;
+        @NonNull ReservationPeriod reservationPeriod;
         @NonNull ParkingSpotType parkingSpotType;
         @NonNull VehicleSizeUnit vehicleSizeUnit;
 
