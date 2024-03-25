@@ -11,9 +11,9 @@ public interface ParkingSpotReservationsRepository {
 
     Option<ParkingSpotReservations> findBy(ParkingSpotId parkingSpotId);
 
-    Option<ParkingSpotReservations> findFor(ParkingSpotType parkingSpotType, VehicleSizeUnit vehicleSizeUnit);
+    Option<ParkingSpotReservations> findBy(ReservationId reservationId);
 
-    Option<ReservationId> deleteBy(ReservationId reservationId);
+    Option<ParkingSpotReservations> findFor(ParkingSpotType parkingSpotType, VehicleSizeUnit vehicleSizeUnit);
 
     ParkingSpotReservations publish(ParkingSpotReservationsEvent event);
 

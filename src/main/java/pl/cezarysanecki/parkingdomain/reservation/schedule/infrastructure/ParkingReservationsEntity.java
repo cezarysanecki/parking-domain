@@ -4,6 +4,7 @@ import io.vavr.API;
 import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotType;
 import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ParkingSpotReservationsEvent;
+import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ParkingSpotReservationsEvent.ReservationCancelled;
 import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ParkingSpotReservationsEvent.ReservationForWholeParkingSpotMade;
 
 import java.util.HashSet;
@@ -34,6 +35,7 @@ class ParkingReservationsEntity {
         return API.Match(event).of(
                 Case($(instanceOf(ReservationForWholeParkingSpotMade.class)), this::handle),
                 Case($(instanceOf(ReservationForPartOfParkingSpotMade.class)), this::handle),
+                Case($(instanceOf(ReservationCancelled.class)), this::handle),
                 Case($(), () -> this));
     }
 
@@ -50,6 +52,11 @@ class ParkingReservationsEntity {
                 reservationForPartOfParkingSpotMade.getReservationPeriod().getDayParts(),
                 reservationForPartOfParkingSpotMade.getVehicleSizeUnit().getValue()));
         capacity -= reservationForPartOfParkingSpotMade.getVehicleSizeUnit().getValue();
+        return this;
+    }
+
+    private ParkingReservationsEntity handle(ReservationCancelled reservationCancelled) {
+        collection.removeIf(reservationEntity -> reservationEntity.reservationId.equals(reservationCancelled.getReservationId().getValue()));
         return this;
     }
 

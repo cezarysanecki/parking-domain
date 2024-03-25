@@ -1,7 +1,6 @@
 package pl.cezarysanecki.parkingdomain.reservation.schedule.model;
 
 import io.vavr.control.Either;
-import io.vavr.control.Option;
 import lombok.Value;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.model.VehicleSizeUnit;
@@ -26,14 +25,14 @@ public class ParkingSpotReservations {
 
     public Either<ReservationFailed, ReservationForWholeParkingSpotMade> reserveWhole(ReservationId reservationId, ReservationPeriod period) {
         if (isReservationFor(period)) {
-            return announceFailure(new ReservationFailed(reservationId, period, Option.of(parkingSpotId), "there is any reservation for that period"));
+            return announceFailure(new ReservationFailed(reservationId, period, parkingSpotId, "there is any reservation for that period"));
         }
         return announceSuccess(new ReservationForWholeParkingSpotMade(reservationId, period, parkingSpotId));
     }
 
     public Either<ReservationFailed, ReservationForPartOfParkingSpotMade> reservePart(ReservationId reservationId, ReservationPeriod period, VehicleSizeUnit vehicleSizeUnit) {
         if (isAnyIndividualReservationFor(period)) {
-            return announceFailure(new ReservationFailed(reservationId, period, Option.of(parkingSpotId), "there is an individual reservation for that period"));
+            return announceFailure(new ReservationFailed(reservationId, period, parkingSpotId, "there is an individual reservation for that period"));
         }
         return announceSuccess(new ReservationForPartOfParkingSpotMade(reservationId, period, parkingSpotId, vehicleSizeUnit));
     }

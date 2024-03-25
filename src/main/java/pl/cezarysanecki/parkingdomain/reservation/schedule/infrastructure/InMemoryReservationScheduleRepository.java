@@ -10,6 +10,7 @@ import pl.cezarysanecki.parkingdomain.parking.model.VehicleSizeUnit;
 import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ParkingSpotReservations;
 import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ParkingSpotReservationsEvent;
 import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ParkingSpotReservationsRepository;
+import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationId;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -47,10 +48,21 @@ class InMemoryReservationScheduleRepository implements ParkingSpotReservationsRe
     }
 
     @Override
+    public Option<ParkingSpotReservations> findBy(ReservationId reservationId) {
+        return Option.ofOptional(
+                DATABASE.values()
+                        .stream()
+                        .filter(parkingReservationsEntity -> parkingReservationsEntity.collection.stream()
+                                .anyMatch(reservationEntity -> reservationEntity.reservationId.equals(reservationId.getValue())))
+                        .findFirst()
+                        .map(DomainModelMapper::map));
+    }
+
+    @Override
     public ParkingSpotReservations publish(ParkingSpotReservationsEvent event) {
-        ParkingSpotReservations result = handle(event);
+        ParkingSpotReservations parkingSpotReservations = handle(event);
         eventPublisher.publish(event.normalize());
-        return result;
+        return parkingSpotReservations;
     }
 
     private ParkingSpotReservations handle(ParkingSpotReservationsEvent event) {

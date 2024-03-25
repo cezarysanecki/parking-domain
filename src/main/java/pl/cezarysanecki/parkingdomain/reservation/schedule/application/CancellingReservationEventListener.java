@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsEvent.ReservationRequestCancelled;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
+import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ParkingSpotReservations;
 import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ParkingSpotReservationsEvent.ReservationCancelled;
 import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ParkingSpotReservationsRepository;
 import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationId;
@@ -23,19 +24,19 @@ public class CancellingReservationEventListener {
     public void handle(ReservationRequestCancelled event) {
         ReservationId reservationId = event.getReservationId();
 
-        Try.of(() -> deleteBy(reservationId).map(this::publishEvents))
+        Try.of(() -> load(reservationId).map(parkingSpotReservations -> publishEvents(parkingSpotReservations, reservationId)))
                 .onFailure(throwable -> log.error("Failed to cancel reservation", throwable));
     }
 
-    private Result publishEvents(ReservationId reservationId) {
-        parkingSpotReservationsRepository.publish(new ReservationCancelled(reservationId));
+    private Result publishEvents(ParkingSpotReservations parkingSpotReservations, ReservationId reservationId) {
+        parkingSpotReservationsRepository.publish(new ReservationCancelled(parkingSpotReservations.getParkingSpotId(), reservationId));
         log.debug("successfully cancelled reservation with id {}", reservationId);
         return Success;
     }
 
-    private Option<ReservationId> deleteBy(ReservationId reservationId) {
-        return parkingSpotReservationsRepository.deleteBy(reservationId)
-                .onEmpty(() -> log.error("cannot find reservation with id {}", reservationId));
+    private Option<ParkingSpotReservations> load(ReservationId reservationId) {
+        return parkingSpotReservationsRepository.findBy(reservationId)
+                .onEmpty(() -> log.error("cannot find reservations with reservation id {}", reservationId));
     }
 
 }

@@ -1,6 +1,5 @@
 package pl.cezarysanecki.parkingdomain.reservation.schedule.model;
 
-import io.vavr.control.Option;
 import lombok.NonNull;
 import lombok.Value;
 import pl.cezarysanecki.parkingdomain.commons.events.DomainEvent;
@@ -9,7 +8,7 @@ import pl.cezarysanecki.parkingdomain.parking.model.VehicleSizeUnit;
 
 public sealed interface ParkingSpotReservationsEvent extends DomainEvent {
 
-    ReservationId getReservationId();
+    ParkingSpotId getParkingSpotId();
 
     @Value
     final class ReservationForWholeParkingSpotMade implements ParkingSpotReservationsEvent {
@@ -35,7 +34,7 @@ public sealed interface ParkingSpotReservationsEvent extends DomainEvent {
 
         @NonNull ReservationId reservationId;
         @NonNull ReservationPeriod reservationPeriod;
-        @NonNull Option<ParkingSpotId> parkingSpotId;
+        @NonNull ParkingSpotId parkingSpotId;
         @NonNull String reason;
 
     }
@@ -43,6 +42,7 @@ public sealed interface ParkingSpotReservationsEvent extends DomainEvent {
     @Value
     final class ReservationCancelled implements ParkingSpotReservationsEvent {
 
+        @NonNull ParkingSpotId parkingSpotId;
         @NonNull ReservationId reservationId;
 
     }
