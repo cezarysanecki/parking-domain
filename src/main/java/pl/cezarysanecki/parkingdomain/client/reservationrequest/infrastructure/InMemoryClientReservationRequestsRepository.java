@@ -9,6 +9,7 @@ import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientRese
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsFactory;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsRepository;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
+import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationId;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -27,6 +28,16 @@ class InMemoryClientReservationRequestsRepository implements ClientReservationRe
         return Option.of(DATABASE.get(clientId))
                 .map(domainModelMapper::map)
                 .getOrElse(() -> factory.createEmpty(clientId));
+    }
+
+    @Override
+    public Option<ClientReservationRequests> findBy(ReservationId reservationId) {
+        return Option.ofOptional(
+                DATABASE.values().stream()
+                        .filter(entity -> entity.clientReservations.stream()
+                                .anyMatch(reservation -> reservation.equals(reservationId.getValue())))
+                        .findFirst()
+                        .map(domainModelMapper::map));
     }
 
     @Override

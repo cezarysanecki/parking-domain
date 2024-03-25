@@ -5,10 +5,10 @@ import io.vavr.control.Try;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientId;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequests;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsRepository;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
+import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationId;
 
 import static io.vavr.API.$;
 import static io.vavr.API.Case;
@@ -28,7 +28,7 @@ public class CancellingReservationRequest {
 
     public Try<Result> cancelRequest(@NonNull CancelReservationRequestCommand command) {
         return Try.of(() -> {
-            ClientReservationRequests clientReservationRequests = load(command.getClientId());
+            ClientReservationRequests clientReservationRequests = load(command.getReservationId());
             Either<CancellationOfReservationRequestFailed, ReservationRequestCancelled> result = clientReservationRequests.cancel(command.getReservationId());
             return Match(result).of(
                     Case($Left($()), this::publishEvents),
@@ -49,8 +49,9 @@ public class CancellingReservationRequest {
         return Rejection;
     }
 
-    private ClientReservationRequests load(ClientId clientId) {
-        return clientReservationRequestsRepository.findBy(clientId);
+    private ClientReservationRequests load(ReservationId reservationId) {
+        return clientReservationRequestsRepository.findBy(reservationId)
+                .getOrElseThrow(() -> new IllegalArgumentException("cannot find client reservation for reservation id " + reservationId));
     }
 
 }

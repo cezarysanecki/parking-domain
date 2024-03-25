@@ -11,7 +11,7 @@ public interface ClientsReservationsViews {
 
     ClientReservationsView addPendingReservation(ClientId clientId, Option<ParkingSpotId> parkingSpotId, ReservationId reservationId);
 
-    ClientReservationsView approveReservation(ClientId clientId, ParkingSpotId parkingSpotId, ReservationId reservationId);
+    ClientReservationsView approveReservation(ReservationId reservationId, ParkingSpotId parkingSpotId);
 
     ClientReservationsView cancelReservation(ClientId clientId, ReservationId reservationIde);
 

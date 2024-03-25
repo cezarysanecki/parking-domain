@@ -29,8 +29,12 @@ class InMemoryClientsReservationsViewsRepository implements ClientsReservationsV
     }
 
     @Override
-    public ClientReservationsView approveReservation(ClientId clientId, ParkingSpotId parkingSpotId, ReservationId reservationId) {
-        ClientReservationsViewEntity entity = DATABASE.getOrDefault(clientId, new ClientReservationsViewEntity(clientId.getValue(), new HashSet<>()));
+    public ClientReservationsView approveReservation(ReservationId reservationId, ParkingSpotId parkingSpotId) {
+        ClientReservationsViewEntity entity = DATABASE.values().stream()
+                .filter(clientReservationsViewEntity -> clientReservationsViewEntity.reservations.stream()
+                        .anyMatch(clientReservationViewEntity -> clientReservationViewEntity.getReservationId().equals(reservationId.getValue())))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("there should be reservation with id " + reservationId));
 
         entity.getReservations()
                 .stream()
@@ -40,7 +44,7 @@ class InMemoryClientsReservationsViewsRepository implements ClientsReservationsV
                     reservation.parkingSpotId = parkingSpotId.getValue();
                     reservation.status = ClientReservationStatus.Approved;
                 });
-        DATABASE.put(clientId, entity);
+        DATABASE.put(ClientId.of(entity.clientId), entity);
 
         return map(entity);
     }

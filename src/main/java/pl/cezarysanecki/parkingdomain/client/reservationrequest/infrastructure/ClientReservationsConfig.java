@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.application.CancellingReservationRequest;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.application.CreatingReservationRequest;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsFactory;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsRepository;
@@ -27,14 +28,19 @@ public class ClientReservationsConfig {
     }
 
     @Bean
-    public CreatingReservationRequest reservation(ClientReservationRequestsRepository clientReservationRequestsRepository) {
+    public CreatingReservationRequest creatingReservationRequest(ClientReservationRequestsRepository clientReservationRequestsRepository) {
         return new CreatingReservationRequest(clientReservationRequestsRepository);
+    }
+
+    @Bean
+    public CancellingReservationRequest cancellingReservationRequest(ClientReservationRequestsRepository clientReservationRequestsRepository) {
+        return new CancellingReservationRequest(clientReservationRequestsRepository);
     }
 
     @Bean
     @Profile("local")
     public ClientReservationRequestsRepository inMemoryClientReservationsRepository() {
-        DomainModelMapper domainModelMapper = new DomainModelMapper(dateProvider);
+        DomainModelMapper domainModelMapper = new DomainModelMapper(clientReservationRequestsFactory);
         return new InMemoryClientReservationRequestsRepository(
                 eventPublisher,
                 domainModelMapper,
