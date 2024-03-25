@@ -1,6 +1,6 @@
 package pl.cezarysanecki.parkingdomain.reservation.schedule.model
 
-import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationSlot
+
 import spock.lang.Specification
 
 import java.time.LocalDateTime

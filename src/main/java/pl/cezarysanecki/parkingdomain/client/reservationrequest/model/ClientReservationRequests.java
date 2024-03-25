@@ -8,6 +8,7 @@ import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotType;
 import pl.cezarysanecki.parkingdomain.parking.model.VehicleSizeUnit;
 import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationId;
+import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationPeriod;
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -32,18 +33,18 @@ public class ClientReservationRequests {
         return new ClientReservationRequests(clientId, Set.of(), now);
     }
 
-    public Either<ReservationRequestFailed, ChosenParkingSpotReservationRequested> reserve(ReservationType reservationType, ParkingSpotId parkingSpotId) {
+    public Either<ReservationRequestFailed, ChosenParkingSpotReservationRequested> reserve(ReservationPeriod reservationPeriod, ParkingSpotId parkingSpotId) {
         if (hasTooManyReservations()) {
             return announceFailure(new ReservationRequestFailed(clientId, "cannot have more reservations"));
         }
-        return announceSuccess(new ChosenParkingSpotReservationRequested(clientId, reservationType, parkingSpotId));
+        return announceSuccess(new ChosenParkingSpotReservationRequested(clientId, reservationPeriod, parkingSpotId));
     }
 
-    public Either<ReservationRequestFailed, AnyParkingSpotReservationRequested> reserve(ReservationType reservationType, ParkingSpotType parkingSpotType, VehicleSizeUnit vehicleSizeUnit) {
+    public Either<ReservationRequestFailed, AnyParkingSpotReservationRequested> reserve(ReservationPeriod reservationPeriod, ParkingSpotType parkingSpotType, VehicleSizeUnit vehicleSizeUnit) {
         if (hasTooManyReservations()) {
             return announceFailure(new ReservationRequestFailed(clientId, "cannot have more reservations"));
         }
-        return announceSuccess(new AnyParkingSpotReservationRequested(clientId, reservationType, parkingSpotType, vehicleSizeUnit));
+        return announceSuccess(new AnyParkingSpotReservationRequested(clientId, reservationPeriod, parkingSpotType, vehicleSizeUnit));
     }
 
     public Either<CancellationOfReservationRequestFailed, ReservationRequestCancelled> cancel(ReservationId reservationId) {

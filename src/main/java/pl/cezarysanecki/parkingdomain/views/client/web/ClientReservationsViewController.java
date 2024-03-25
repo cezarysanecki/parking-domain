@@ -12,17 +12,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import pl.cezarysanecki.parkingdomain.client.reservationrequest.application.CreatingReservationRequest;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.application.CreateReservationRequestForAnyParkingSpotCommand;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.application.CreateReservationRequestForChosenParkingSpotCommand;
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.application.CreatingReservationRequest;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientId;
-import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ReservationType;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotType;
-import pl.cezarysanecki.parkingdomain.reservation.schedule.application.CancelReservationCommand;
-import pl.cezarysanecki.parkingdomain.reservation.schedule.application.CancellingReservation;
 import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationId;
+import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationPeriod;
 import pl.cezarysanecki.parkingdomain.views.client.model.ClientReservationsView;
 import pl.cezarysanecki.parkingdomain.views.client.model.ClientsReservationsViews;
 
@@ -43,7 +41,7 @@ class ClientReservationsViewController {
         Try<Result> result = creatingReservationRequest.createReservationRequest(new CreateReservationRequestForChosenParkingSpotCommand(
                 ClientId.of(request.clientId),
                 ParkingSpotId.of(parkingSpotId),
-                ReservationType.WholeDay));
+                ReservationPeriod.Whole));
 
         return result
                 .map(success -> switch (success) {

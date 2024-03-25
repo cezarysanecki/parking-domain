@@ -31,7 +31,7 @@ public class CreatingReservationRequest {
         return Try.of(() -> {
             ClientReservationRequests clientReservationRequests = load(command.getClientId());
             Either<ReservationRequestFailed, ChosenParkingSpotReservationRequested> result = clientReservationRequests.reserve(
-                    command.getReservationType(),
+                    command.getReservationPeriod(),
                     command.getParkingSpotId());
             return Match(result).of(
                     Case($Left($()), this::publishEvents),
@@ -43,7 +43,7 @@ public class CreatingReservationRequest {
         return Try.of(() -> {
             ClientReservationRequests clientReservationRequests = load(command.getClientId());
             Either<ReservationRequestFailed, AnyParkingSpotReservationRequested> result = clientReservationRequests.reserve(
-                    command.getReservationType(),
+                    command.getReservationPeriod(),
                     command.getParkingSpotType(),
                     command.getVehicleSizeUnit());
             return Match(result).of(

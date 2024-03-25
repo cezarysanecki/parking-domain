@@ -7,9 +7,9 @@ import org.springframework.context.event.EventListener;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientId;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsEvent;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsEvent.ReservationRequestCreated;
-import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationScheduleEvent;
-import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationScheduleEvent.ReservationCancelled;
-import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationScheduleEvent.ReservationMade;
+import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ParkingSpotReservationsEvent;
+import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ParkingSpotReservationsEvent.ReservationCancelled;
+import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ParkingSpotReservationsEvent.ReservationMade;
 import pl.cezarysanecki.parkingdomain.views.client.model.ClientReservationsView;
 import pl.cezarysanecki.parkingdomain.views.client.model.ClientsReservationsViews;
 
@@ -31,7 +31,7 @@ public class ClientReservationViewEventHandler {
     }
 
     @EventListener
-    public void handle(ReservationScheduleEvent event) {
+    public void handle(ParkingSpotReservationsEvent event) {
         API.Match(event).of(
                 Case($(instanceOf(ReservationMade.class)), this::handle),
                 Case($(instanceOf(ReservationCancelled.class)), this::handle),

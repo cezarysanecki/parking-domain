@@ -3,16 +3,16 @@ package pl.cezarysanecki.parkingdomain.reservation.schedule.application
 import io.vavr.control.Option
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientId
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId
-import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationSchedule
-import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationSchedules
-import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationSlot
+
+import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ParkingSpotReservationsRepository
+
 import spock.lang.Specification
 
 import java.time.LocalDateTime
 
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.anyParkingSpotId
-import static pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationScheduleEvent.ReservationFailed
-import static pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationScheduleEvent.ReservationMade
+import static pl.cezarysanecki.parkingdomain.reservation.schedule.model.ParkingSpotReservationsEvent.ReservationFailed
+import static pl.cezarysanecki.parkingdomain.reservation.schedule.model.ParkingSpotReservationsEvent.ReservationMade
 import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationsFixture.anyClientId
 import static pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationScheduleFixture.emptyReservationSchedule
 import static pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationScheduleFixture.reservationScheduleWith
@@ -23,7 +23,7 @@ class CreatingReservationRequestForParkingSpotTest extends Specification {
   ParkingSpotId parkingSpotId = anyParkingSpotId()
   ClientId clientId = anyClientId()
   
-  ReservationSchedules repository = Mock()
+  ParkingSpotReservationsRepository repository = Mock()
   
   def 'should successfully reserve parking spot'() {
     given:

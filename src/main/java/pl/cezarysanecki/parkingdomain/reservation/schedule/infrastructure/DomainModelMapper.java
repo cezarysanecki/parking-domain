@@ -6,8 +6,6 @@ import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientId;
 import pl.cezarysanecki.parkingdomain.reservation.schedule.model.Reservation;
 import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationId;
-import pl.cezarysanecki.parkingdomain.reservation.schedule.model.Reservations;
-import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationSchedule;
 
 import java.util.stream.Collectors;
 
@@ -16,10 +14,10 @@ class DomainModelMapper {
 
     private final DateProvider dateProvider;
 
-    ReservationSchedule map(ReservationsEntity entity) {
+    ReservationSchedule map(ParkingReservationsEntity entity) {
         return new ReservationSchedule(
                 ParkingSpotId.of(entity.parkingSpotId),
-                new Reservations(
+                new ParkingSpotReservations(
                         entity.collection.stream()
                                 .map(reservationEntity -> new Reservation(
                                         ReservationId.of(reservationEntity.reservationId),

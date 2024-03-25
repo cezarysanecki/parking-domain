@@ -7,9 +7,8 @@ import org.springframework.context.annotation.Profile;
 import pl.cezarysanecki.parkingdomain.commons.date.DateProvider;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 import pl.cezarysanecki.parkingdomain.reservation.schedule.application.ParkingSpotReservationEventListener;
-import pl.cezarysanecki.parkingdomain.reservation.schedule.application.CancellingReservation;
 import pl.cezarysanecki.parkingdomain.reservation.schedule.application.MakingReservationEventListener;
-import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationSchedules;
+import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ParkingSpotReservationsRepository;
 
 @Slf4j
 @Configuration
@@ -24,23 +23,23 @@ public class ReservationScheduleConfig {
     }
 
     @Bean
-    public ParkingSpotReservationEventListener parkingSpotReservationEventListener(ReservationSchedules reservationSchedules) {
-        return new ParkingSpotReservationEventListener(reservationSchedules);
+    public ParkingSpotReservationEventListener parkingSpotReservationEventListener(ParkingSpotReservationsRepository parkingSpotReservationsRepository) {
+        return new ParkingSpotReservationEventListener(parkingSpotReservationsRepository);
     }
 
     @Bean
-    public MakingReservationEventListener makingParkingSlotReservation(ReservationSchedules reservationSchedules) {
-        return new MakingReservationEventListener(reservationSchedules);
+    public MakingReservationEventListener makingParkingSlotReservation(ParkingSpotReservationsRepository parkingSpotReservationsRepository) {
+        return new MakingReservationEventListener(parkingSpotReservationsRepository);
     }
 
     @Bean
-    public CancellingReservation cancellingReservation(ReservationSchedules reservationSchedules) {
-        return new CancellingReservation(reservationSchedules);
+    public CancellingReservation cancellingReservation(ParkingSpotReservationsRepository parkingSpotReservationsRepository) {
+        return new CancellingReservation(parkingSpotReservationsRepository);
     }
 
     @Bean
     @Profile("local")
-    public ReservationSchedules inMemoryReservationSchedules() {
+    public ParkingSpotReservationsRepository inMemoryReservationSchedules() {
         return new InMemoryReservationScheduleRepository(domainModelMapper, eventPublisher);
     }
 

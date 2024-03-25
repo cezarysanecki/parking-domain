@@ -1,7 +1,7 @@
 package pl.cezarysanecki.parkingdomain.client.reservationrequest.model
 
 import io.vavr.control.Either
-import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationSlot
+
 import spock.lang.Specification
 
 import java.time.LocalDateTime
