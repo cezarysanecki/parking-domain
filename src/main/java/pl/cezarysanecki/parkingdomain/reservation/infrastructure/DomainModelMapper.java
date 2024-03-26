@@ -29,7 +29,7 @@ class DomainModelMapper {
         } else {
             reservation = new Reservation.Collective(ReservationId.of(reservationEntity.reservationId));
         }
-        return new ParkingSpotReservation(new ReservationPeriod(reservationEntity.dayParts), reservation);
+        return new ParkingSpotReservation(reservation, new ReservationPeriod(reservationEntity.dayParts));
     }
 
 }

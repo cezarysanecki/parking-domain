@@ -1,14 +1,12 @@
 package pl.cezarysanecki.parkingdomain.reservation.model;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.Value;
 
-@RequiredArgsConstructor
+@Value
 public class ParkingSpotReservation {
 
-    @Getter
-    private final ReservationPeriod reservationPeriod;
-    private final Reservation reservation;
+    Reservation reservation;
+    ReservationPeriod reservationPeriod;
 
     public boolean isIndividual() {
         return reservation instanceof Reservation.Individual;

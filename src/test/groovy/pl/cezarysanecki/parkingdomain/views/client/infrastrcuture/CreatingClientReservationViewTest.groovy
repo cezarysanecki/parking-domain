@@ -1,29 +1,28 @@
 package pl.cezarysanecki.parkingdomain.views.client.infrastrcuture
 
-import io.vavr.control.Option
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientId
-import pl.cezarysanecki.parkingdomain.views.client.infrastructure.ClientsReservationsViewConfig
-import pl.cezarysanecki.parkingdomain.views.client.model.ClientReservationStatus
-import pl.cezarysanecki.parkingdomain.views.client.model.ClientReservationsView
-import pl.cezarysanecki.parkingdomain.views.client.model.ClientsReservationsViews
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisherTestConfig
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.reservation.model.ReservationId
-
+import pl.cezarysanecki.parkingdomain.reservation.model.ReservationPeriod
+import pl.cezarysanecki.parkingdomain.views.client.infrastructure.ClientsReservationsViewConfig
+import pl.cezarysanecki.parkingdomain.views.client.model.ClientReservationStatus
+import pl.cezarysanecki.parkingdomain.views.client.model.ClientReservationsView
+import pl.cezarysanecki.parkingdomain.views.client.model.ClientsReservationsViews
 import spock.lang.Specification
 
-import java.time.LocalDateTime
-
+import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsEvent.ChosenParkingSpotReservationRequested
 import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsFixture.anyClientId
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.anyParkingSpotId
+import static pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsEvent.ReservationCancelled
+import static pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsEvent.ReservationForWholeParkingSpotMade
 import static pl.cezarysanecki.parkingdomain.views.client.model.ClientReservationStatus.Approved
 import static pl.cezarysanecki.parkingdomain.views.client.model.ClientReservationStatus.Cancelled
 import static pl.cezarysanecki.parkingdomain.views.client.model.ClientReservationStatus.Pending
-import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.anyParkingSpotId
-import static pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsEvent.ReservationCancelled
 
 @ActiveProfiles("local")
 @SpringBootTest(classes = [ClientsReservationsViewConfig.class, EventPublisherTestConfig.class])
@@ -31,6 +30,7 @@ class CreatingClientReservationViewTest extends Specification {
   
   ClientId clientId = anyClientId()
   ParkingSpotId parkingSpotId = anyParkingSpotId()
+  ReservationPeriod reservationPeriod = ReservationPeriod.evening()
   
   @Autowired
   EventPublisher eventPublisher
@@ -39,17 +39,17 @@ class CreatingClientReservationViewTest extends Specification {
   
   def "reservation request should have proper status as process goes on"() {
     given:
-      def reservationRequestCreated = reservationRequestCreated()
+      def chosenParkingSpotReservationRequested = chosenParkingSpotReservationRequested()
     and:
-      def reservationId = reservationRequestCreated.reservationId
+      def reservationId = chosenParkingSpotReservationRequested.reservationId
     
     when:
-      eventPublisher.publish reservationRequestCreated
+      eventPublisher.publish chosenParkingSpotReservationRequested
     then:
       reservationShouldBeInSpecificStatus(clientId, reservationId, Pending)
     
     when:
-      eventPublisher.publish reservationMade(reservationId)
+      eventPublisher.publish reservationForWholeParkingSpotMade(reservationId)
     
     then:
       reservationShouldBeInSpecificStatus(clientId, reservationId, Approved)
@@ -67,16 +67,16 @@ class CreatingClientReservationViewTest extends Specification {
         .any { it.reservationId == reservationId.value && it.status == status }
   }
   
-  ReservationRequestCreated reservationRequestCreated() {
-    return new ReservationRequestCreated(clientId, new ReservationSlot(LocalDateTime.now(), 3), Option.of(parkingSpotId))
+  ChosenParkingSpotReservationRequested chosenParkingSpotReservationRequested() {
+    return new ChosenParkingSpotReservationRequested(clientId, reservationPeriod, parkingSpotId)
   }
   
-  ReservationMade reservationMade(ReservationId reservationId) {
-    return new ReservationMade(parkingSpotId, clientId, reservationId, new ReservationSlot(LocalDateTime.now(), 3))
+  ReservationForWholeParkingSpotMade reservationForWholeParkingSpotMade(ReservationId reservationId) {
+    return new ReservationForWholeParkingSpotMade(reservationId, reservationPeriod, parkingSpotId)
   }
   
   ReservationCancelled reservationCancelled(ReservationId reservationId) {
-    return new ReservationCancelled(parkingSpotId, clientId, reservationId)
+    return new ReservationCancelled(parkingSpotId, reservationId)
   }
   
   ClientReservationsView loadPersistedClientReservationsView(ClientId clientId) {

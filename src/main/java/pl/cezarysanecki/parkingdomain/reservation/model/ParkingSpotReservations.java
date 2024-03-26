@@ -61,6 +61,17 @@ public class ParkingSpotReservations {
         return announceSuccess(new ReservationForPartOfParkingSpotMade(reservationId, period, parkingSpotId, vehicleSizeUnit));
     }
 
+    public boolean isEmpty() {
+        return dayPartReservations.isEmpty();
+    }
+
+    public boolean contains(ReservationId reservationId) {
+        return dayPartReservations.values()
+                .stream()
+                .flatMap(Collection::stream)
+                .anyMatch(reservation -> reservation.getReservation().getReservationId().equals(reservationId));
+    }
+
     private boolean isReservationFor(ReservationPeriod reservationPeriod) {
         return reservationPeriod.getDayParts()
                 .stream()
