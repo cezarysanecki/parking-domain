@@ -14,11 +14,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.application.CancelReservationRequestCommand;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.application.CancellingReservationRequest;
-import pl.cezarysanecki.parkingdomain.client.reservationrequest.application.CreateReservationRequestForPartOfAnyParkingSpotCommand;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.application.CreateReservationRequestForChosenParkingSpotCommand;
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.application.CreateReservationRequestForPartOfAnyParkingSpotCommand;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.application.CreatingReservationRequest;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientId;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
+import pl.cezarysanecki.parkingdomain.commons.date.DateProvider;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotType;
 import pl.cezarysanecki.parkingdomain.parking.model.VehicleSizeUnit;
@@ -37,13 +38,15 @@ class ClientReservationsViewController {
     private final ClientsReservationsViews clientsReservationsViews;
     private final CreatingReservationRequest creatingReservationRequest;
     private final CancellingReservationRequest cancellingReservationRequest;
+    private final DateProvider dateProvider;
 
     @PostMapping("/client-reservation/{parkingSpotId}")
     ResponseEntity reserveParkingSpot(@PathVariable UUID parkingSpotId, @RequestBody CreateReservationRequestForWholeParkingSpotRequest request) {
         Try<Result> result = creatingReservationRequest.createRequest(new CreateReservationRequestForChosenParkingSpotCommand(
                 ClientId.of(request.clientId),
                 ParkingSpotId.of(parkingSpotId),
-                request.reservationPeriod));
+                request.reservationPeriod,
+                dateProvider.now()));
 
         return result
                 .map(success -> switch (success) {
@@ -72,7 +75,8 @@ class ClientReservationsViewController {
     @DeleteMapping("/client-reservation/{reservationId}")
     ResponseEntity cancelReservation(@PathVariable UUID reservationId) {
         Try<Result> result = cancellingReservationRequest.cancelRequest(new CancelReservationRequestCommand(
-                ReservationId.of(reservationId)));
+                ReservationId.of(reservationId),
+                dateProvider.now()));
 
         return result
                 .map(success -> switch (success) {
