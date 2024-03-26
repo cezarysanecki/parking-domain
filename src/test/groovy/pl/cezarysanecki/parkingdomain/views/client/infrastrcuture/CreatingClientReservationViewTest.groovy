@@ -18,13 +18,12 @@ import spock.lang.Specification
 
 import java.time.LocalDateTime
 
-import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationsFixture.anyClientId
+import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsFixture.anyClientId
 import static pl.cezarysanecki.parkingdomain.views.client.model.ClientReservationStatus.Approved
 import static pl.cezarysanecki.parkingdomain.views.client.model.ClientReservationStatus.Cancelled
 import static pl.cezarysanecki.parkingdomain.views.client.model.ClientReservationStatus.Pending
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.anyParkingSpotId
 import static pl.cezarysanecki.parkingdomain.reservation.schedule.model.ParkingSpotReservationsEvent.ReservationCancelled
-import static pl.cezarysanecki.parkingdomain.reservation.schedule.model.ParkingSpotReservationsEvent.ReservationMade
 
 @ActiveProfiles("local")
 @SpringBootTest(classes = [ClientsReservationsViewConfig.class, EventPublisherTestConfig.class])
