@@ -2,23 +2,27 @@ package pl.cezarysanecki.parkingdomain.reservation.application
 
 import io.vavr.control.Option
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientId
-import pl.cezarysanecki.parkingdomain.commons.commands.Result
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId
+import pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservation
 import pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservations
 import pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsEvent
 import pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsRepository
-import pl.cezarysanecki.parkingdomain.reservation.model.Reservation
 import pl.cezarysanecki.parkingdomain.reservation.model.ReservationId
+import pl.cezarysanecki.parkingdomain.reservation.model.ReservationPeriod
 import spock.lang.Specification
-
-import java.time.LocalDateTime
 
 import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsEvent.ReservationRequestCancelled
 import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsFixture.anyClientId
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.anyParkingSpotId
+import static pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsEvent.ReservationCancelled
 import static pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsFixture.anyReservationId
+import static pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsFixture.individual
+import static pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsFixture.parkingSpotReservationsWith
 
 class CancellingParkingSlotReservationTest extends Specification {
   
   ClientId clientId = anyClientId()
+  ParkingSpotId parkingSpotId = anyParkingSpotId()
   ReservationId reservationId = anyReservationId()
   
   ParkingSpotReservationsRepository repository = Stub()
@@ -28,30 +32,25 @@ class CancellingParkingSlotReservationTest extends Specification {
       CancellingReservationEventListener cancellingReservationEventListener = new CancellingReservationEventListener(repository)
     
     when:
-      def result = cancellingReservationEventListener.handle(new ReservationRequestCancelled(clientId, reservationId))
+      cancellingReservationEventListener.handle(new ReservationRequestCancelled(clientId, reservationId))
     
     then:
-      result.isSuccess()
-      result.get() == Result.Success
+      1 * repository.publish(new ReservationCancelled(parkingSpotId, reservationId))
   }
   
-  def 'should reject cancelling reservation when its to late'() {
+  def 'should reject cancelling reservation when it is not present'() {
     given:
-      CancellingReservation cancellingReservation = new CancellingReservation(repository)
+      CancellingReservationEventListener cancellingReservationEventListener = new CancellingReservationEventListener(repository)
     and:
-      def now = LocalDateTime.of(2024, 10, 10, 10, 0)
+      def dayPartReservations = new ParkingSpotReservation(ReservationPeriod.evening(), individual(reservationId))
     and:
-      def reservationId = anyReservationId()
-      def reservation = new pl.cezarysanecki.parkingdomain.reservation.model.Reservation(reservationId, new ReservationSlot(now.plusMinutes(30), 3), clientId)
-    and:
-      persisted(reservationId, reservationScheduleWith(now, reservation))
+      persisted(reservationId, parkingSpotReservationsWith(parkingSpotId, dayPartReservations))
     
     when:
-      def result = cancellingReservation.cancel(new CancelReservationCommand(reservationId))
+      cancellingReservationEventListener.handle(new ReservationRequestCancelled(clientId, reservationId))
     
     then:
-      result.isSuccess()
-      result.get() == Result.Rejection
+      1 * repository.publish(new ReservationCancelled(parkingSpotId, reservationId))
   }
   
   ParkingSpotReservations persisted(ReservationId reservationId, ParkingSpotReservations parkingSpotReservations) {
@@ -60,7 +59,7 @@ class CancellingParkingSlotReservationTest extends Specification {
     return parkingSpotReservations
   }
   
-  void unknownReservationSchedule(ReservationId reservationId) {
+  void unknownParkingSpotReservations(ReservationId reservationId) {
     repository.findBy(reservationId) >> Option.none()
   }
   

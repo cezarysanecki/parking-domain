@@ -11,7 +11,7 @@ import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.an
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.vehicleWith
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotType.Bronze
 
-class HandlingOccupationForParkingSpotReservationTest extends Specification {
+class HandlingOccupationForParkingSpotReservationsTest extends Specification {
   
   ParkingSpotId parkingSpotId = anyParkingSpotId()
   

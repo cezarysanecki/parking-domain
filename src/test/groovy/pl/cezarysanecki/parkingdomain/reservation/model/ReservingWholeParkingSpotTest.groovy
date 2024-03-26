@@ -5,12 +5,12 @@ import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId
 import spock.lang.Specification
 
 import static ParkingSpotReservationsEvent.ReservationFailed
-import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.anyParkingSpotId
 import static ParkingSpotReservationsEvent.ReservationForWholeParkingSpotMade
 import static ParkingSpotReservationsFixture.anyReservationId
 import static ParkingSpotReservationsFixture.collective
 import static ParkingSpotReservationsFixture.emptyParkingSpotReservations
 import static ParkingSpotReservationsFixture.parkingSpotReservationsWith
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.anyParkingSpotId
 
 class ReservingWholeParkingSpotTest extends Specification {
   
@@ -39,11 +39,10 @@ class ReservingWholeParkingSpotTest extends Specification {
     given:
       def reservationPeriod = ReservationPeriod.evening()
     and:
-      def dayPart = ReservationPeriod.DayPart.Evening
-      def dayPartReservations = new DayPartReservations(dayPart, Set.of(collective(anyReservationId())))
+      def dayPartReservations = new ParkingSpotReservation(ReservationPeriod.morning(), collective(anyReservationId()))
     
     and:
-      def parkingSpotReservations = parkingSpotReservationsWith(parkingSpotId, dayPart, dayPartReservations)
+      def parkingSpotReservations = parkingSpotReservationsWith(parkingSpotId, dayPartReservations)
     
     when:
       Either<ReservationFailed, ReservationForWholeParkingSpotMade> result = parkingSpotReservations.reserveWhole(reservationId, reservationPeriod)

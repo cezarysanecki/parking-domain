@@ -4,18 +4,18 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 
-import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ParkingSpotReservationsFixture {
 
     public static ParkingSpotReservations emptyParkingSpotReservations(ParkingSpotId parkingSpotId) {
-        return new ParkingSpotReservations(parkingSpotId, Map.of());
+        return ParkingSpotReservations.none(parkingSpotId);
     }
 
-    public static ParkingSpotReservations parkingSpotReservationsWith(ParkingSpotId parkingSpotId, ReservationPeriod.DayPart dayPart, DayPartReservations dayPartReservations) {
-        return new ParkingSpotReservations(parkingSpotId, Map.of(dayPart, dayPartReservations));
+    public static ParkingSpotReservations parkingSpotReservationsWith(ParkingSpotId parkingSpotId, ParkingSpotReservation parkingSpotReservation) {
+        return ParkingSpotReservations.of(parkingSpotId, Set.of(parkingSpotReservation));
     }
 
     public static Reservation individual(ReservationId reservationId) {

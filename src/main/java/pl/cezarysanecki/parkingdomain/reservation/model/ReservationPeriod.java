@@ -1,6 +1,5 @@
 package pl.cezarysanecki.parkingdomain.reservation.model;
 
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 
@@ -10,7 +9,7 @@ import static pl.cezarysanecki.parkingdomain.reservation.model.ReservationPeriod
 import static pl.cezarysanecki.parkingdomain.reservation.model.ReservationPeriod.DayPart.Morning;
 
 @Value
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 public class ReservationPeriod {
 
     Set<DayPart> dayParts;
@@ -25,15 +24,6 @@ public class ReservationPeriod {
 
     public static ReservationPeriod wholeDay() {
         return new ReservationPeriod(Set.of(Morning, Evening));
-    }
-
-    public boolean isPartOf(ReservationPeriod reservationPeriod) {
-        return dayParts.stream()
-                .anyMatch(reservationPeriod.dayParts::contains);
-    }
-
-    public boolean isPartOf(DayPart dayPart) {
-        return dayParts.contains(dayPart);
     }
 
     public enum DayPart {
