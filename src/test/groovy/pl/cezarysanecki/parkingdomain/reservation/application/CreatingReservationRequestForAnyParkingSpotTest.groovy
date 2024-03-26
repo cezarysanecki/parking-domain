@@ -19,7 +19,6 @@ import static pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReserv
 
 class CreatingReservationRequestForAnyParkingSpotTest extends Specification {
   
-  ReservationId reservationId = anyReservationId()
   ParkingSpotId parkingSpotId = anyParkingSpotId()
   
   ParkingSpotReservationsRepository repository = Mock()
@@ -28,12 +27,15 @@ class CreatingReservationRequestForAnyParkingSpotTest extends Specification {
     given:
       MakingReservationEventListener makingParkingSlotReservation = new MakingReservationEventListener(repository)
     and:
-      ReservationPeriod reservationPeriod = ReservationPeriod.morning()
+      def event = reservingWholeParkingSpotRequestHasOccurred(parkingSpotId, ReservationPeriod.morning())
+      def reservationId = event.reservationId
+      def reservationPeriod = event.reservationPeriod
     and:
       persisted(emptyParkingSpotReservations(parkingSpotId))
     
+    
     when:
-      makingParkingSlotReservation.handle(reservingWholeParkingSpotRequestHasOccurred(ReservationPeriod.morning()))
+      makingParkingSlotReservation.handle(event)
     
     then:
       1 * repository.publish(new ReservationForWholeParkingSpotMade(reservationId, reservationPeriod, parkingSpotId))
@@ -43,12 +45,14 @@ class CreatingReservationRequestForAnyParkingSpotTest extends Specification {
     given:
       MakingReservationEventListener makingParkingSlotReservation = new MakingReservationEventListener(repository)
     and:
-      ReservationPeriod reservationPeriod = ReservationPeriod.morning()
+      def event = reservingWholeParkingSpotRequestHasOccurred(parkingSpotId, ReservationPeriod.morning())
+      def reservationId = event.reservationId
+      def reservationPeriod = event.reservationPeriod
     and:
       unknownParkingSpotReservations()
     
     when:
-      makingParkingSlotReservation.handle(reservingWholeParkingSpotRequestHasOccurred(ReservationPeriod.morning()))
+      makingParkingSlotReservation.handle(event)
     
     then:
       1 * repository.publish(new ReservationForWholeParkingSpotMade(reservationId, reservationPeriod, parkingSpotId))
@@ -61,7 +65,7 @@ class CreatingReservationRequestForAnyParkingSpotTest extends Specification {
       persisted(parkingSpotReservationsWith(parkingSpotId, new ParkingSpotReservation(individual(anyReservationId()), ReservationPeriod.morning())))
     
     when:
-      makingParkingSlotReservation.handle(reservingWholeParkingSpotRequestHasOccurred(ReservationPeriod.morning()))
+      makingParkingSlotReservation.handle(reservingWholeParkingSpotRequestHasOccurred(parkingSpotId, ReservationPeriod.morning()))
     
     then:
       1 * repository.publish(_ as ReservationFailed)
@@ -76,7 +80,8 @@ class CreatingReservationRequestForAnyParkingSpotTest extends Specification {
     repository.findBy(parkingSpotId) >> Option.none()
   }
   
-  ReservingWholeParkingSpotRequestHasOccurred reservingWholeParkingSpotRequestHasOccurred(ReservationPeriod reservationPeriod) {
+  ReservingWholeParkingSpotRequestHasOccurred reservingWholeParkingSpotRequestHasOccurred(ParkingSpotId parkingSpotId, ReservationPeriod reservationPeriod) {
+    ReservationId reservationId = ReservationId.of(UUID.randomUUID())
     return new ReservingWholeParkingSpotRequestHasOccurred() {
       @Override
       ReservationId getReservationId() {

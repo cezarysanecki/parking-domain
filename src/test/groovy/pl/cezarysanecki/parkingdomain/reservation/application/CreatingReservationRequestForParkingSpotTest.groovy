@@ -21,9 +21,7 @@ import static pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReserv
 
 class CreatingReservationRequestForParkingSpotTest extends Specification {
   
-  ReservationId reservationId = anyReservationId()
   ParkingSpotId parkingSpotId = anyParkingSpotId()
-  VehicleSizeUnit vehicleSizeUnit = VehicleSizeUnit.of(2)
   
   ParkingSpotReservationsRepository repository = Mock()
   
@@ -31,55 +29,66 @@ class CreatingReservationRequestForParkingSpotTest extends Specification {
     given:
       MakingReservationEventListener makingParkingSlotReservation = new MakingReservationEventListener(repository)
     and:
-      ReservationPeriod reservationPeriod = ReservationPeriod.morning()
+      def event = reservingPartOfParkingSpotRequestHasOccurred()
+      def reservationId = event.reservationId
+      def reservationPeriod = event.reservationPeriod
+      def vehicleSizeUnit = event.vehicleSizeUnit
+      def parkingSpotType = event.parkingSpotType
     and:
-      persisted(emptyParkingSpotReservations(parkingSpotId))
+      persisted(emptyParkingSpotReservations(parkingSpotId), parkingSpotType, vehicleSizeUnit)
     
     when:
-      makingParkingSlotReservation.handle(reservingPartOfParkingSpotRequestHasOccurred(ReservationPeriod.morning()))
+      makingParkingSlotReservation.handle(event)
     
     then:
       1 * repository.publish(new ReservationForPartOfParkingSpotMade(reservationId, reservationPeriod, parkingSpotId, vehicleSizeUnit))
   }
   
-  def 'should successfully reserve part of any parking spot even it is not persisted'() {
+  def 'should fail to reserve part of any parking spot when there is no empty parking spot'() {
     given:
       MakingReservationEventListener makingParkingSlotReservation = new MakingReservationEventListener(repository)
     and:
-      ReservationPeriod reservationPeriod = ReservationPeriod.morning()
+      def event = reservingPartOfParkingSpotRequestHasOccurred()
+      def vehicleSizeUnit = event.vehicleSizeUnit
+      def parkingSpotType = event.parkingSpotType
     and:
-      unknownParkingSpotReservations()
+      unknownParkingSpotReservations(parkingSpotType, vehicleSizeUnit)
     
     when:
-      makingParkingSlotReservation.handle(reservingPartOfParkingSpotRequestHasOccurred(ReservationPeriod.morning()))
+      makingParkingSlotReservation.handle(event)
     
     then:
-      1 * repository.publish(new ReservationForPartOfParkingSpotMade(reservationId, reservationPeriod, parkingSpotId, vehicleSizeUnit))
+      0 * repository.publish(_ as ReservationForPartOfParkingSpotMade)
   }
   
   def 'should reject reserving part of any parking spot when there is reservation on that slot'() {
     given:
       MakingReservationEventListener makingParkingSlotReservation = new MakingReservationEventListener(repository)
     and:
-      persisted(parkingSpotReservationsWith(parkingSpotId, new ParkingSpotReservation(individual(anyReservationId()), ReservationPeriod.morning())))
+      def event = reservingPartOfParkingSpotRequestHasOccurred()
+      def vehicleSizeUnit = event.vehicleSizeUnit
+      def parkingSpotType = event.parkingSpotType
+    and:
+      persisted(parkingSpotReservationsWith(parkingSpotId, new ParkingSpotReservation(individual(anyReservationId()), ReservationPeriod.morning())), parkingSpotType, vehicleSizeUnit)
     
     when:
-      makingParkingSlotReservation.handle(reservingPartOfParkingSpotRequestHasOccurred(ReservationPeriod.morning()))
+      makingParkingSlotReservation.handle(event)
     
     then:
       1 * repository.publish(_ as ReservationFailed)
   }
   
-  ParkingSpotReservations persisted(ParkingSpotReservations parkingSpotReservations) {
-    repository.findBy(parkingSpotId) >> Option.of(parkingSpotReservations)
+  ParkingSpotReservations persisted(ParkingSpotReservations parkingSpotReservations, ParkingSpotType parkingSpotType, VehicleSizeUnit vehicleSizeUnit) {
+    repository.findFor(parkingSpotType, vehicleSizeUnit) >> Option.of(parkingSpotReservations)
     return parkingSpotReservations
   }
   
-  void unknownParkingSpotReservations() {
-    repository.findBy(parkingSpotId) >> Option.none()
+  void unknownParkingSpotReservations(ParkingSpotType parkingSpotType, VehicleSizeUnit vehicleSizeUnit) {
+    repository.findFor(parkingSpotType, vehicleSizeUnit) >> Option.none()
   }
   
-  ReservingPartOfParkingSpotRequestHasOccurred reservingPartOfParkingSpotRequestHasOccurred(ReservationPeriod reservationPeriod) {
+  ReservingPartOfParkingSpotRequestHasOccurred reservingPartOfParkingSpotRequestHasOccurred() {
+    ReservationId reservationId = ReservationId.of(UUID.randomUUID())
     return new ReservingPartOfParkingSpotRequestHasOccurred() {
       @Override
       ReservationId getReservationId() {
@@ -88,12 +97,12 @@ class CreatingReservationRequestForParkingSpotTest extends Specification {
       
       @Override
       ReservationPeriod getReservationPeriod() {
-        return reservationPeriod
+        return ReservationPeriod.morning()
       }
       
       @Override
       VehicleSizeUnit getVehicleSizeUnit() {
-        return vehicleSizeUnit
+        return VehicleSizeUnit.of(2)
       }
       
       @Override

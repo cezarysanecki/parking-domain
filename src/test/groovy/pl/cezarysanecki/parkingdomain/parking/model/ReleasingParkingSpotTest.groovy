@@ -45,7 +45,7 @@ class ReleasingParkingSpotTest extends Specification {
     then:
       result.isRight()
       result.get().with {
-        VehicleLeft vehicleLeft = it.vehiclesLeft.first()
+        VehicleLeft vehicleLeft = it.vehiclesLeft
         assert vehicleLeft.parkingSpotId == parkingSpot.parkingSpotId
         assert vehicleLeft.vehicle == vehicle
       }
