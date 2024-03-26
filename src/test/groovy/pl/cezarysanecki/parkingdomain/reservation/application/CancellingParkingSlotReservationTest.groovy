@@ -3,12 +3,10 @@ package pl.cezarysanecki.parkingdomain.reservation.application
 import io.vavr.control.Option
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientId
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId
-import pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservation
 import pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservations
 import pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsEvent
 import pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsRepository
 import pl.cezarysanecki.parkingdomain.reservation.model.ReservationId
-import pl.cezarysanecki.parkingdomain.reservation.model.ReservationPeriod
 import spock.lang.Specification
 
 import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsEvent.ReservationRequestCancelled
@@ -16,8 +14,6 @@ import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.Cli
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.anyParkingSpotId
 import static pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsEvent.ReservationCancelled
 import static pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsFixture.anyReservationId
-import static pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsFixture.individual
-import static pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsFixture.parkingSpotReservationsWith
 
 class CancellingParkingSlotReservationTest extends Specification {
   
@@ -42,15 +38,13 @@ class CancellingParkingSlotReservationTest extends Specification {
     given:
       CancellingReservationEventListener cancellingReservationEventListener = new CancellingReservationEventListener(repository)
     and:
-      def dayPartReservations = new ParkingSpotReservation(ReservationPeriod.evening(), individual(reservationId))
-    and:
-      persisted(reservationId, parkingSpotReservationsWith(parkingSpotId, dayPartReservations))
+      unknownParkingSpotReservations(reservationId)
     
     when:
       cancellingReservationEventListener.handle(new ReservationRequestCancelled(clientId, reservationId))
     
     then:
-      1 * repository.publish(new ReservationCancelled(parkingSpotId, reservationId))
+      0 * repository.publish(new ReservationCancelled(parkingSpotId, reservationId))
   }
   
   ParkingSpotReservations persisted(ReservationId reservationId, ParkingSpotReservations parkingSpotReservations) {

@@ -1,63 +1,106 @@
 package pl.cezarysanecki.parkingdomain.reservation.application
 
 import io.vavr.control.Option
-import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientId
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId
-import pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsEvent
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotType
+import pl.cezarysanecki.parkingdomain.parking.model.VehicleSizeUnit
+import pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservation
+import pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservations
+import pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsRepository
+import pl.cezarysanecki.parkingdomain.reservation.model.ReservationId
+import pl.cezarysanecki.parkingdomain.reservation.model.ReservationPeriod
 import spock.lang.Specification
 
-import java.time.LocalDateTime
-
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.anyParkingSpotId
-import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsFixture.anyClientId
-import static pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationScheduleFixture.emptyReservationSchedule
-import static pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationScheduleFixture.reservationScheduleWith
-import static pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationScheduleFixture.reservationWith
+import static pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsEvent.ReservationFailed
+import static pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsEvent.ReservationForPartOfParkingSpotMade
+import static pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsFixture.anyReservationId
+import static pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsFixture.emptyParkingSpotReservations
+import static pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsFixture.individual
+import static pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsFixture.parkingSpotReservationsWith
 
 class CreatingReservationRequestForParkingSpotTest extends Specification {
   
+  ReservationId reservationId = anyReservationId()
   ParkingSpotId parkingSpotId = anyParkingSpotId()
-  ClientId clientId = anyClientId()
+  VehicleSizeUnit vehicleSizeUnit = VehicleSizeUnit.of(2)
   
-  pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsRepository repository = Mock()
+  ParkingSpotReservationsRepository repository = Mock()
   
-  def 'should successfully reserve parking spot'() {
+  def 'should successfully reserve part of any parking spot when it is empty'() {
     given:
       MakingReservationEventListener makingParkingSlotReservation = new MakingReservationEventListener(repository)
     and:
-      def now = LocalDateTime.of(2024, 10, 10, 10, 0)
+      ReservationPeriod reservationPeriod = ReservationPeriod.morning()
     and:
-      def reservationSlot = new ReservationSlot(now, 3)
-    and:
-      persisted(emptyReservationSchedule(parkingSpotId, now))
+      persisted(emptyParkingSpotReservations(parkingSpotId))
     
     when:
-      makingParkingSlotReservation.handle(new ReservationRequestCreated(clientId, reservationSlot, Option.of(parkingSpotId)))
+      makingParkingSlotReservation.handle(reservingPartOfParkingSpotRequestHasOccurred(ReservationPeriod.morning()))
     
     then:
-      1 * repository.publish(_ as ReservationMade)
+      1 * repository.publish(new ReservationForPartOfParkingSpotMade(reservationId, reservationPeriod, parkingSpotId, vehicleSizeUnit))
   }
   
-  def 'should reject reserving parking spot when there is reservation on that slot'() {
+  def 'should successfully reserve part of any parking spot even it is not persisted'() {
     given:
       MakingReservationEventListener makingParkingSlotReservation = new MakingReservationEventListener(repository)
     and:
-      def now = LocalDateTime.of(2024, 10, 10, 10, 0)
+      ReservationPeriod reservationPeriod = ReservationPeriod.morning()
     and:
-      def reservationSlot = new ReservationSlot(now, 3)
-    and:
-      persisted(reservationScheduleWith(parkingSpotId, now, reservationWith(reservationSlot, clientId)))
+      unknownParkingSpotReservations()
     
     when:
-      makingParkingSlotReservation.handle(new ReservationRequestCreated(clientId, reservationSlot, Option.of(parkingSpotId)))
+      makingParkingSlotReservation.handle(reservingPartOfParkingSpotRequestHasOccurred(ReservationPeriod.morning()))
     
     then:
-      1 * repository.publish(_ as ParkingSpotReservationsEvent.ReservationFailed)
+      1 * repository.publish(new ReservationForPartOfParkingSpotMade(reservationId, reservationPeriod, parkingSpotId, vehicleSizeUnit))
   }
   
-  ReservationSchedule persisted(ReservationSchedule reservationSchedule) {
-    repository.findBy(reservationSchedule.parkingSpotId) >> Option.of(reservationSchedule)
-    return reservationSchedule
+  def 'should reject reserving part of any parking spot when there is reservation on that slot'() {
+    given:
+      MakingReservationEventListener makingParkingSlotReservation = new MakingReservationEventListener(repository)
+    and:
+      persisted(parkingSpotReservationsWith(parkingSpotId, new ParkingSpotReservation(ReservationPeriod.morning(), individual(anyReservationId()))))
+    
+    when:
+      makingParkingSlotReservation.handle(reservingPartOfParkingSpotRequestHasOccurred(ReservationPeriod.morning()))
+    
+    then:
+      1 * repository.publish(_ as ReservationFailed)
+  }
+  
+  ParkingSpotReservations persisted(ParkingSpotReservations parkingSpotReservations) {
+    repository.findBy(parkingSpotId) >> Option.of(parkingSpotReservations)
+    return parkingSpotReservations
+  }
+  
+  void unknownParkingSpotReservations() {
+    repository.findBy(parkingSpotId) >> Option.none()
+  }
+  
+  ReservingPartOfParkingSpotRequestHasOccurred reservingPartOfParkingSpotRequestHasOccurred(ReservationPeriod reservationPeriod) {
+    return new ReservingPartOfParkingSpotRequestHasOccurred() {
+      @Override
+      ReservationId getReservationId() {
+        return reservationId
+      }
+      
+      @Override
+      ReservationPeriod getReservationPeriod() {
+        return reservationPeriod
+      }
+      
+      @Override
+      VehicleSizeUnit getVehicleSizeUnit() {
+        return vehicleSizeUnit
+      }
+      
+      @Override
+      ParkingSpotType getParkingSpotType() {
+        return ParkingSpotType.Gold
+      }
+    }
   }
   
 }
