@@ -78,7 +78,7 @@ class CreatingReservationRequestForAnyPartOfParkingSpotTest extends Specificatio
   }
   
   ClientReservationRequests persisted(ClientReservationRequests clientReservations) {
-    repository.findBy(clientReservations.clientId) >> clientReservations
+    repository.findBy(clientReservations.clientId) >> Option.of(clientReservations)
     repository.publish(_ as ClientReservationRequestsEvent) >> clientReservations
     return clientReservations
   }

@@ -42,7 +42,7 @@ class ReservingPartOfAnyParkingSpotTest extends Specification {
     given:
       def reservationPeriod = ReservationPeriod.evening()
     and:
-      def dayPartReservations = new ParkingSpotReservation(ReservationPeriod.wholeDay(), individual(anyReservationId()))
+      def dayPartReservations = new ParkingSpotReservation(individual(anyReservationId()), ReservationPeriod.wholeDay())
     
     and:
       def parkingSpotReservations = parkingSpotReservationsWith(parkingSpotId, dayPartReservations)

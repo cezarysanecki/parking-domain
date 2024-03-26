@@ -67,7 +67,7 @@ class CancellingReservationRequestTest extends Specification {
   }
   
   ClientReservationRequests persisted(ClientReservationRequests clientReservations) {
-    repository.findBy(reservationId) >> clientReservations
+    repository.findBy(reservationId) >> Option.of(clientReservations)
     repository.publish(_ as ClientReservationRequestsEvent) >> clientReservations
     return clientReservations
   }

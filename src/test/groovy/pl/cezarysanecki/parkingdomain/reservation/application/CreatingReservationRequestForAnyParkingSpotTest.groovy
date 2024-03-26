@@ -58,7 +58,7 @@ class CreatingReservationRequestForAnyParkingSpotTest extends Specification {
     given:
       MakingReservationEventListener makingParkingSlotReservation = new MakingReservationEventListener(repository)
     and:
-      persisted(parkingSpotReservationsWith(parkingSpotId, new ParkingSpotReservation(ReservationPeriod.morning(), individual(anyReservationId()))))
+      persisted(parkingSpotReservationsWith(parkingSpotId, new ParkingSpotReservation(individual(anyReservationId()), ReservationPeriod.morning())))
     
     when:
       makingParkingSlotReservation.handle(reservingWholeParkingSpotRequestHasOccurred(ReservationPeriod.morning()))

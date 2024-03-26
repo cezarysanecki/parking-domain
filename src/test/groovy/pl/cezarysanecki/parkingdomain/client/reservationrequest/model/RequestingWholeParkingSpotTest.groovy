@@ -11,6 +11,7 @@ import static ClientReservationRequestsFixture.anyClientId
 import static ClientReservationRequestsFixture.noReservationRequests
 import static ClientReservationRequestsFixture.reservationRequestsWith
 import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsEvent.ChosenParkingSpotReservationRequested
+import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsFixture.anyReservationId
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.anyParkingSpotId
 
 class RequestingWholeParkingSpotTest extends Specification {
