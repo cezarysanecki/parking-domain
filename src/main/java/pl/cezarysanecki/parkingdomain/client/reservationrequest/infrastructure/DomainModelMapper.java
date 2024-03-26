@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientId;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequests;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsFactory;
-import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationId;
+import pl.cezarysanecki.parkingdomain.reservation.model.ReservationId;
 
 import java.util.stream.Collectors;
 

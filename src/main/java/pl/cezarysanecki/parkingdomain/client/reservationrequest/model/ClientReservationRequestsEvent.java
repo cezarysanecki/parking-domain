@@ -6,8 +6,8 @@ import pl.cezarysanecki.parkingdomain.commons.events.DomainEvent;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotType;
 import pl.cezarysanecki.parkingdomain.parking.model.VehicleSizeUnit;
-import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationId;
-import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationPeriod;
+import pl.cezarysanecki.parkingdomain.reservation.model.ReservationId;
+import pl.cezarysanecki.parkingdomain.reservation.model.ReservationPeriod;
 
 import java.util.UUID;
 

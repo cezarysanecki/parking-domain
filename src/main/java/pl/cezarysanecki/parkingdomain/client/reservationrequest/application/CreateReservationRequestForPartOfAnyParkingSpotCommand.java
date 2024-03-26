@@ -4,13 +4,15 @@ import lombok.NonNull;
 import lombok.Value;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientId;
 import pl.cezarysanecki.parkingdomain.reservation.model.ReservationPeriod;
-import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotType;
+import pl.cezarysanecki.parkingdomain.parking.model.VehicleSizeUnit;
 
 @Value
-public class CreateReservationRequestForChosenParkingSpotCommand {
+public class CreateReservationRequestForPartOfAnyParkingSpotCommand {
 
     @NonNull ClientId clientId;
-    @NonNull ParkingSpotId parkingSpotId;
+    @NonNull ParkingSpotType parkingSpotType;
+    @NonNull VehicleSizeUnit vehicleSizeUnit;
     @NonNull ReservationPeriod reservationPeriod;
 
 }

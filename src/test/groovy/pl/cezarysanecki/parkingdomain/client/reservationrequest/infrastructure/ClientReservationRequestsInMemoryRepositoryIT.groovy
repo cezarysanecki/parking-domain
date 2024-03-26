@@ -9,59 +9,65 @@ import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientRese
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsRepository
 import pl.cezarysanecki.parkingdomain.commons.date.DateConfig
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisherTestConfig
-import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationId
-
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId
+import pl.cezarysanecki.parkingdomain.reservation.model.ReservationId
+import pl.cezarysanecki.parkingdomain.reservation.model.ReservationPeriod
 import spock.lang.Specification
 
-import java.time.LocalDateTime
-
+import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsEvent.ChosenParkingSpotReservationRequested
 import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsEvent.ReservationRequestCancelled
-import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationsFixture.anyClientId
+import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsFixture.anyClientId
+import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.anyParkingSpotId
 
 @ActiveProfiles("local")
 @SpringBootTest(classes = [ClientReservationsConfig.class, EventPublisherTestConfig.class, DateConfig.class])
 class ClientReservationRequestsInMemoryRepositoryIT extends Specification {
   
   ClientId clientId = anyClientId()
+  ParkingSpotId parkingSpotId = anyParkingSpotId()
   
   @Autowired
-  ClientReservationRequestsRepository clientReservationsRepository
+  ClientReservationRequestsRepository clientReservationRequestsRepository
   
   def 'persistence in database should work'() {
     given:
-      def reservationRequestCreated = reservationRequestCreated()
+      def chosenParkingSpotReservationRequested = chosenParkingSpotReservationRequested()
     
     when:
-      clientReservationsRepository.publish reservationRequestCreated
+      clientReservationRequestsRepository.publish chosenParkingSpotReservationRequested
     then:
-      clientReservationsShouldNotBeEmpty(clientId)
+      clientReservationRequestsShouldNotBeEmpty(clientId)
     
     when:
-      clientReservationsRepository.publish reservationRequestCancelled(reservationRequestCreated.reservationId)
+      clientReservationRequestsRepository.publish reservationRequestCancelled(chosenParkingSpotReservationRequested.reservationId)
     then:
-      clientReservationsShouldBeEmpty(clientId)
+      clientReservationRequestsShouldBeEmpty(clientId)
   }
   
-  void clientReservationsShouldNotBeEmpty(ClientId clientId) {
-    def clientReservations = loadPersistedClientReservations(clientId)
-    assert !clientReservations.isEmpty()
+  void clientReservationRequestsShouldNotBeEmpty(ClientId clientId) {
+    def clientReservationRequests = loadPersistedClientReservationRequests(clientId)
+    assert !clientReservationRequests.isEmpty()
   }
   
-  void clientReservationsShouldBeEmpty(ClientId clientId) {
-    def clientReservations = loadPersistedClientReservations(clientId)
-    assert clientReservations.isEmpty()
+  void clientReservationRequestsShouldBeEmpty(ClientId clientId) {
+    def clientReservationRequests = loadPersistedClientReservationRequests(clientId)
+    assert clientReservationRequests.isEmpty()
   }
   
-  ReservationRequestCreated reservationRequestCreated() {
-    return new ReservationRequestCreated(clientId, new ReservationSlot(LocalDateTime.now(), 3), Option.none())
+  ChosenParkingSpotReservationRequested chosenParkingSpotReservationRequested() {
+    return new ChosenParkingSpotReservationRequested(clientId, ReservationPeriod.wholeDay(), parkingSpotId)
   }
   
   ReservationRequestCancelled reservationRequestCancelled(ReservationId reservationId) {
     return new ReservationRequestCancelled(clientId, reservationId)
   }
   
-  ClientReservationRequests loadPersistedClientReservations(ClientId clientId) {
-    return clientReservationsRepository.findBy(clientId)
+  ClientReservationRequests loadPersistedClientReservationRequests(ClientId clientId) {
+    Option<ClientReservationRequests> loaded = clientReservationRequestsRepository.findBy(clientId)
+    def clientReservationRequests = loaded.getOrElseThrow({
+      new IllegalStateException("should have been persisted")
+    })
+    return clientReservationRequests
   }
   
 }

@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientId;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequests;
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsFactory;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsRepository;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
 
@@ -26,11 +27,12 @@ import static pl.cezarysanecki.parkingdomain.commons.commands.Result.Success;
 public class CreatingReservationRequest {
 
     private final ClientReservationRequestsRepository clientReservationRequestsRepository;
+    private final ClientReservationRequestsFactory clientReservationRequestsFactory;
 
     public Try<Result> createRequest(@NonNull CreateReservationRequestForChosenParkingSpotCommand command) {
         return Try.of(() -> {
             ClientReservationRequests clientReservationRequests = load(command.getClientId());
-            Either<ReservationRequestFailed, ChosenParkingSpotReservationRequested> result = clientReservationRequests.reserve(
+            Either<ReservationRequestFailed, ChosenParkingSpotReservationRequested> result = clientReservationRequests.createRequest(
                     command.getReservationPeriod(),
                     command.getParkingSpotId());
             return Match(result).of(
@@ -39,10 +41,10 @@ public class CreatingReservationRequest {
         }).onFailure(throwable -> log.error("Failed to create reservation request", throwable));
     }
 
-    public Try<Result> createRequest(@NonNull CreateReservationRequestForAnyParkingSpotCommand command) {
+    public Try<Result> createRequest(@NonNull CreateReservationRequestForPartOfAnyParkingSpotCommand command) {
         return Try.of(() -> {
             ClientReservationRequests clientReservationRequests = load(command.getClientId());
-            Either<ReservationRequestFailed, AnyParkingSpotReservationRequested> result = clientReservationRequests.reserve(
+            Either<ReservationRequestFailed, AnyParkingSpotReservationRequested> result = clientReservationRequests.createRequest(
                     command.getReservationPeriod(),
                     command.getParkingSpotType(),
                     command.getVehicleSizeUnit());
@@ -71,7 +73,8 @@ public class CreatingReservationRequest {
     }
 
     private ClientReservationRequests load(ClientId clientId) {
-        return clientReservationRequestsRepository.findBy(clientId);
+        return clientReservationRequestsRepository.findBy(clientId)
+                .getOrElse(() -> clientReservationRequestsFactory.createEmpty(clientId));
     }
 
 }

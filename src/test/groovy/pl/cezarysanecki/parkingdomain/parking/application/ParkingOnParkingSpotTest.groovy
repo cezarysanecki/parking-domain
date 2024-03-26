@@ -10,13 +10,13 @@ import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotType
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpots
 import pl.cezarysanecki.parkingdomain.parking.model.Vehicle
-import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationId
+import pl.cezarysanecki.parkingdomain.reservation.model.ReservationId
 import spock.lang.Specification
 
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.emptyParkingSpotWith
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.vehicleWith
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotType.Gold
-import static pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationScheduleFixture.anyReservationId
+import static pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsFixture.anyReservationId
 
 class ParkingOnParkingSpotTest extends Specification {
   

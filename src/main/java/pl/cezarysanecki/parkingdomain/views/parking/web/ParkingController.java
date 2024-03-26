@@ -22,7 +22,7 @@ import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotType;
 import pl.cezarysanecki.parkingdomain.parking.model.Vehicle;
 import pl.cezarysanecki.parkingdomain.parking.model.VehicleId;
 import pl.cezarysanecki.parkingdomain.parking.model.VehicleSizeUnit;
-import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationId;
+import pl.cezarysanecki.parkingdomain.reservation.model.ReservationId;
 import pl.cezarysanecki.parkingdomain.views.parking.model.AvailableParkingSpotView;
 import pl.cezarysanecki.parkingdomain.views.parking.model.ParkingViews;
 

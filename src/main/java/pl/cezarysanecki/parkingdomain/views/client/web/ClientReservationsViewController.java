@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.application.CancelReservationRequestCommand;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.application.CancellingReservationRequest;
-import pl.cezarysanecki.parkingdomain.client.reservationrequest.application.CreateReservationRequestForAnyParkingSpotCommand;
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.application.CreateReservationRequestForPartOfAnyParkingSpotCommand;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.application.CreateReservationRequestForChosenParkingSpotCommand;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.application.CreatingReservationRequest;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientId;
@@ -22,8 +22,8 @@ import pl.cezarysanecki.parkingdomain.commons.commands.Result;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotType;
 import pl.cezarysanecki.parkingdomain.parking.model.VehicleSizeUnit;
-import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationId;
-import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationPeriod;
+import pl.cezarysanecki.parkingdomain.reservation.model.ReservationId;
+import pl.cezarysanecki.parkingdomain.reservation.model.ReservationPeriod;
 import pl.cezarysanecki.parkingdomain.views.client.model.ClientReservationsView;
 import pl.cezarysanecki.parkingdomain.views.client.model.ClientsReservationsViews;
 
@@ -55,7 +55,7 @@ class ClientReservationsViewController {
 
     @PostMapping("/client-reservation")
     ResponseEntity reserveAnyParkingSpot(@RequestBody CreateReservationRequestForAnyParkingSpotRequest request) {
-        Try<Result> result = creatingReservationRequest.createRequest(new CreateReservationRequestForAnyParkingSpotCommand(
+        Try<Result> result = creatingReservationRequest.createRequest(new CreateReservationRequestForPartOfAnyParkingSpotCommand(
                 ClientId.of(request.clientId),
                 ParkingSpotType.Gold,
                 VehicleSizeUnit.of(request.vehicleSize),
