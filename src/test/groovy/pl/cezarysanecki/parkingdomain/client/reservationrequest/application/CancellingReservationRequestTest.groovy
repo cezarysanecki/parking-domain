@@ -4,19 +4,17 @@ import io.vavr.control.Option
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientId
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequests
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsEvent
-import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsFactory
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsRepository
 import pl.cezarysanecki.parkingdomain.commons.commands.Result
-import pl.cezarysanecki.parkingdomain.commons.date.DateProvider
 import pl.cezarysanecki.parkingdomain.reservation.model.ReservationId
 import spock.lang.Specification
 
 import java.time.LocalDateTime
 
 import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsFixture.anyClientId
+import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsFixture.anyReservationId
 import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsFixture.noReservationRequests
 import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsFixture.reservationRequestsWith
-import static pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationScheduleFixture.anyReservationId
 
 class CancellingReservationRequestTest extends Specification {
   
@@ -26,8 +24,6 @@ class CancellingReservationRequestTest extends Specification {
   LocalDateTime now = LocalDateTime.now()
   
   ClientReservationRequestsRepository repository = Stub()
-  DateProvider dateProvider = Stub()
-  ClientReservationRequestsFactory clientReservationRequestsFactory = new ClientReservationRequestsFactory(dateProvider)
   
   def 'should successfully cancel reservation request for parking spot if there is one'() {
     given:
