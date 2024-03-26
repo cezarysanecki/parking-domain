@@ -1,5 +1,6 @@
 package pl.cezarysanecki.parkingdomain.views.client.web;
 
+import io.vavr.API;
 import io.vavr.control.Try;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -31,6 +32,8 @@ import pl.cezarysanecki.parkingdomain.views.client.model.ClientsReservationsView
 import java.util.Set;
 import java.util.UUID;
 
+import static io.vavr.Predicates.instanceOf;
+
 @RestController
 @RequiredArgsConstructor
 class ClientReservationsViewController {
@@ -49,10 +52,9 @@ class ClientReservationsViewController {
                 dateProvider.now()));
 
         return result
-                .map(success -> switch (success) {
-                    case Success -> ResponseEntity.ok().build();
-                    case Rejection -> ResponseEntity.badRequest().build();
-                })
+                .map(success -> API.Match(success).of(
+                        API.Case(API.$(instanceOf(Result.Success.class)), () -> ResponseEntity.ok().build()),
+                        API.Case(API.$(instanceOf(Result.Rejection.class)), rejection -> ResponseEntity.badRequest().body(rejection.getValidationErrors()))))
                 .getOrElse(() -> ResponseEntity.internalServerError().build());
     }
 
@@ -62,13 +64,13 @@ class ClientReservationsViewController {
                 ClientId.of(request.clientId),
                 ParkingSpotType.Gold,
                 VehicleSizeUnit.of(request.vehicleSize),
-                request.reservationPeriod));
+                request.reservationPeriod,
+                dateProvider.now()));
 
         return result
-                .map(success -> switch (success) {
-                    case Success -> ResponseEntity.ok().build();
-                    case Rejection -> ResponseEntity.badRequest().build();
-                })
+                .map(success -> API.Match(success).of(
+                        API.Case(API.$(instanceOf(Result.Success.class)), () -> ResponseEntity.ok().build()),
+                        API.Case(API.$(instanceOf(Result.Rejection.class)), rejection -> ResponseEntity.badRequest().body(rejection.getValidationErrors()))))
                 .getOrElse(() -> ResponseEntity.internalServerError().build());
     }
 
@@ -79,10 +81,9 @@ class ClientReservationsViewController {
                 dateProvider.now()));
 
         return result
-                .map(success -> switch (success) {
-                    case Success -> ResponseEntity.ok().build();
-                    case Rejection -> ResponseEntity.badRequest().build();
-                })
+                .map(success -> API.Match(success).of(
+                        API.Case(API.$(instanceOf(Result.Success.class)), () -> ResponseEntity.ok().build()),
+                        API.Case(API.$(instanceOf(Result.Rejection.class)), rejection -> ResponseEntity.badRequest().body(rejection.getValidationErrors()))))
                 .getOrElse(() -> ResponseEntity.internalServerError().build());
     }
 

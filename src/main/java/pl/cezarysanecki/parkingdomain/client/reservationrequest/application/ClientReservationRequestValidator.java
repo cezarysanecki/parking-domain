@@ -4,10 +4,12 @@ import lombok.RequiredArgsConstructor;
 import pl.cezarysanecki.parkingdomain.commons.commands.ValidationError;
 import pl.cezarysanecki.parkingdomain.commons.date.DateProvider;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 public class ClientReservationRequestValidator {
@@ -15,16 +17,34 @@ public class ClientReservationRequestValidator {
     private final DateProvider dateProvider;
 
     public Set<ValidationError> validate(CreateReservationRequestForChosenParkingSpotCommand command) {
-        LocalDateTime currentDateTime = dateProvider.now();
-        LocalDate currentDate = currentDateTime.toLocalDate();
-        LocalTime currentTime = currentDateTime.toLocalTime();
+        return Stream.of(
+                        requestDateMustBeInValidPeriod(command.getWhen()))
+                .flatMap(Optional::stream)
+                .collect(Collectors.toUnmodifiableSet());
+    }
 
-        LocalDateTime commandDateTime = command.getWhen();
-        LocalDate commandDate = commandDateTime.toLocalDate();
-        LocalTime commandTime = commandDateTime.toLocalTime();
+    public Set<ValidationError> validate(CreateReservationRequestForPartOfAnyParkingSpotCommand command) {
+        return Stream.of(
+                        requestDateMustBeInValidPeriod(command.getWhen()))
+                .flatMap(Optional::stream)
+                .collect(Collectors.toUnmodifiableSet());
+    }
 
-//        if (curr)
-        return Set.of();
+    public Set<ValidationError> validate(CancelReservationRequestCommand command) {
+        return Stream.of(
+                        requestDateMustBeInValidPeriod(command.getWhen()))
+                .flatMap(Optional::stream)
+                .collect(Collectors.toUnmodifiableSet());
+    }
+
+    private Optional<ValidationError> requestDateMustBeInValidPeriod(LocalDateTime when) {
+        LocalDateTime start = dateProvider.nearestFutureDateAt(LocalTime.of(4, 0));
+        LocalDateTime end = dateProvider.nearestFutureDateAt(LocalTime.of(5, 0));
+
+        if (start.isBefore(when) && end.isAfter(when)) {
+            return Optional.of(new ValidationError("when", "time limitation"));
+        }
+        return Optional.empty();
     }
 
 }

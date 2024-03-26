@@ -1,5 +1,6 @@
 package pl.cezarysanecki.parkingdomain.views.parking.web;
 
+import io.vavr.API;
 import io.vavr.control.Try;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -30,6 +31,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static io.vavr.Predicates.instanceOf;
+
 @RestController
 @RequiredArgsConstructor
 class ParkingController {
@@ -45,10 +48,9 @@ class ParkingController {
                 new Vehicle(VehicleId.of(request.vehicleId), VehicleSizeUnit.of(request.vehicleSize))));
 
         return result
-                .map(success -> switch (success) {
-                    case Success -> ResponseEntity.ok().build();
-                    case Rejection -> ResponseEntity.badRequest().build();
-                })
+                .map(success -> API.Match(success).of(
+                        API.Case(API.$(instanceOf(Result.Success.class)), () -> ResponseEntity.ok().build()),
+                        API.Case(API.$(instanceOf(Result.Rejection.class)), () -> ResponseEntity.badRequest().build())))
                 .getOrElse(() -> ResponseEntity.internalServerError().build());
     }
 
@@ -59,10 +61,9 @@ class ParkingController {
                 new Vehicle(VehicleId.of(request.vehicleId), VehicleSizeUnit.of(request.vehicleSize))));
 
         return result
-                .map(success -> switch (success) {
-                    case Success -> ResponseEntity.ok().build();
-                    case Rejection -> ResponseEntity.badRequest().build();
-                })
+                .map(success -> API.Match(success).of(
+                        API.Case(API.$(instanceOf(Result.Success.class)), () -> ResponseEntity.ok().build()),
+                        API.Case(API.$(instanceOf(Result.Rejection.class)), () -> ResponseEntity.badRequest().build())))
                 .getOrElse(() -> ResponseEntity.internalServerError().build());
     }
 
@@ -71,10 +72,9 @@ class ParkingController {
         Try<Result> result = releasingParkingSpot.release(new ReleaseParkingSpotCommand(VehicleId.of(vehicleId)));
 
         return result
-                .map(success -> switch (success) {
-                    case Success -> ResponseEntity.ok().build();
-                    case Rejection -> ResponseEntity.badRequest().build();
-                })
+                .map(success -> API.Match(success).of(
+                        API.Case(API.$(instanceOf(Result.Success.class)), () -> ResponseEntity.ok().build()),
+                        API.Case(API.$(instanceOf(Result.Rejection.class)), () -> ResponseEntity.badRequest().build())))
                 .getOrElse(() -> ResponseEntity.internalServerError().build());
     }
 

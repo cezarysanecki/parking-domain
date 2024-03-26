@@ -65,19 +65,19 @@ public class MakingReservationEventListener {
     private Result publishEvents(ReservationForWholeParkingSpotMade reservationForWholeParkingSpotMade) {
         parkingSpotReservationsRepository.publish(reservationForWholeParkingSpotMade);
         log.debug("successfully made reservation for whole parking spot with id {}", reservationForWholeParkingSpotMade.getReservationId());
-        return Success;
+        return new Success();
     }
 
     private Result publishEvents(ReservationForPartOfParkingSpotMade reservationForPartOfParkingSpotMade) {
         parkingSpotReservationsRepository.publish(reservationForPartOfParkingSpotMade);
         log.debug("successfully made reservation for part of parking spot with id {}", reservationForPartOfParkingSpotMade.getReservationId());
-        return Success;
+        return new Success();
     }
 
     private Result publishEvents(ReservationFailed reservationFailed) {
         parkingSpotReservationsRepository.publish(reservationFailed);
         log.debug("rejected to make reservation with for parking spot with id {}, reason: {}", reservationFailed.getParkingSpotId(), reservationFailed.getReason());
-        return Rejection;
+        return Rejection.empty();
     }
 
     private ParkingSpotReservations load(ParkingSpotId parkingSpotId) {

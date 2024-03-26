@@ -10,6 +10,10 @@ import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientRese
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsFactory;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsRepository;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
+import pl.cezarysanecki.parkingdomain.commons.commands.Result.Rejection;
+import pl.cezarysanecki.parkingdomain.commons.commands.ValidationError;
+
+import java.util.Set;
 
 import static io.vavr.API.$;
 import static io.vavr.API.Case;
@@ -19,7 +23,6 @@ import static io.vavr.Patterns.$Right;
 import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsEvent.AnyParkingSpotReservationRequested;
 import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsEvent.ChosenParkingSpotReservationRequested;
 import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsEvent.ReservationRequestFailed;
-import static pl.cezarysanecki.parkingdomain.commons.commands.Result.Rejection;
 import static pl.cezarysanecki.parkingdomain.commons.commands.Result.Success;
 
 @Slf4j
@@ -27,9 +30,15 @@ import static pl.cezarysanecki.parkingdomain.commons.commands.Result.Success;
 public class CreatingReservationRequest {
 
     private final ClientReservationRequestsRepository clientReservationRequestsRepository;
+    private final ClientReservationRequestValidator clientReservationRequestValidator;
     private final ClientReservationRequestsFactory clientReservationRequestsFactory;
 
     public Try<Result> createRequest(@NonNull CreateReservationRequestForChosenParkingSpotCommand command) {
+        Set<ValidationError> validationErrors = clientReservationRequestValidator.validate(command);
+        if (!validationErrors.isEmpty()) {
+            return Try.success(new Rejection(validationErrors));
+        }
+
         return Try.of(() -> {
             ClientReservationRequests clientReservationRequests = load(command.getClientId());
             Either<ReservationRequestFailed, ChosenParkingSpotReservationRequested> result = clientReservationRequests.createRequest(
@@ -42,6 +51,11 @@ public class CreatingReservationRequest {
     }
 
     public Try<Result> createRequest(@NonNull CreateReservationRequestForPartOfAnyParkingSpotCommand command) {
+        Set<ValidationError> validationErrors = clientReservationRequestValidator.validate(command);
+        if (!validationErrors.isEmpty()) {
+            return Try.success(new Rejection(validationErrors));
+        }
+
         return Try.of(() -> {
             ClientReservationRequests clientReservationRequests = load(command.getClientId());
             Either<ReservationRequestFailed, AnyParkingSpotReservationRequested> result = clientReservationRequests.createRequest(
@@ -57,19 +71,19 @@ public class CreatingReservationRequest {
     private Result publishEvents(ChosenParkingSpotReservationRequested chosenParkingSpotReservationRequested) {
         clientReservationRequestsRepository.publish(chosenParkingSpotReservationRequested);
         log.debug("successfully created reservation request for client with id {}", chosenParkingSpotReservationRequested.getClientId());
-        return Success;
+        return new Success();
     }
 
     private Result publishEvents(AnyParkingSpotReservationRequested anyParkingSpotReservationRequested) {
         clientReservationRequestsRepository.publish(anyParkingSpotReservationRequested);
         log.debug("successfully created reservation request for client with id {}", anyParkingSpotReservationRequested.getClientId());
-        return Success;
+        return new Success();
     }
 
     private Result publishEvents(ReservationRequestFailed reservationRequestFailed) {
         clientReservationRequestsRepository.publish(reservationRequestFailed);
         log.debug("rejected to request reservation for client with id {}, reason: {}", reservationRequestFailed.getClientId(), reservationRequestFailed.getReason());
-        return Rejection;
+        return Rejection.empty();
     }
 
     private ClientReservationRequests load(ClientId clientId) {

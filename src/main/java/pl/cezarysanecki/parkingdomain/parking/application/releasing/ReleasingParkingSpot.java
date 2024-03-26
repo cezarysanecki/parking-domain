@@ -7,6 +7,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
+import pl.cezarysanecki.parkingdomain.commons.commands.Result.Rejection;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpots;
 import pl.cezarysanecki.parkingdomain.parking.model.VehicleId;
@@ -15,7 +16,6 @@ import static io.vavr.API.$;
 import static io.vavr.API.Case;
 import static io.vavr.Patterns.$Left;
 import static io.vavr.Patterns.$Right;
-import static pl.cezarysanecki.parkingdomain.commons.commands.Result.Rejection;
 import static pl.cezarysanecki.parkingdomain.commons.commands.Result.Success;
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ReleasingFailed;
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.VehicleLeftEvents;
@@ -39,14 +39,14 @@ public class ReleasingParkingSpot {
     private Result publishEvents(ReleasingFailed releasingFailed) {
         parkingSpots.publish(releasingFailed);
         log.debug("rejected to leave vehicle with ids {}, reason: {}", releasingFailed.getVehicleIds(), releasingFailed.getReason());
-        return Rejection;
+        return Rejection.empty();
     }
 
     private Result publishEvents(VehicleLeftEvents vehicleLeftEvents) {
         parkingSpots.publish(vehicleLeftEvents);
         VehicleId vehicleId = vehicleLeftEvents.getVehiclesLeft().getVehicle().getVehicleId();
         log.debug("successfully vehicle left with id {}", vehicleId);
-        return Success;
+        return new Success();
     }
 
     private ParkingSpot find(VehicleId vehicleId) {
