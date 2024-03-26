@@ -10,8 +10,8 @@ import pl.cezarysanecki.parkingdomain.commons.commands.Result
 import pl.cezarysanecki.parkingdomain.commons.date.DateProvider
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotType
 import pl.cezarysanecki.parkingdomain.parking.model.VehicleSizeUnit
-import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationId
-import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationPeriod
+import pl.cezarysanecki.parkingdomain.reservation.model.ReservationId
+import pl.cezarysanecki.parkingdomain.reservation.model.ReservationPeriod
 import spock.lang.Specification
 
 import java.time.LocalDateTime
@@ -40,7 +40,7 @@ class CreatingReservationRequestForAnyPartOfParkingSpotTest extends Specificatio
     
     when:
       def result = requestingReservation.createRequest(
-          new CreateReservationRequestForAnyPartOfParkingSpotCommand(clientId, ParkingSpotType.Gold, VehicleSizeUnit.of(2), ReservationPeriod.evening()))
+          new CreateReservationRequestForPartOfAnyParkingSpotCommand(clientId, ParkingSpotType.Gold, VehicleSizeUnit.of(2), ReservationPeriod.evening()))
     
     then:
       result.isSuccess()
@@ -55,7 +55,7 @@ class CreatingReservationRequestForAnyPartOfParkingSpotTest extends Specificatio
     
     when:
       def result = requestingReservation.createRequest(
-          new CreateReservationRequestForAnyPartOfParkingSpotCommand(clientId, ParkingSpotType.Gold, VehicleSizeUnit.of(2), ReservationPeriod.evening()))
+          new CreateReservationRequestForPartOfAnyParkingSpotCommand(clientId, ParkingSpotType.Gold, VehicleSizeUnit.of(2), ReservationPeriod.evening()))
     
     then:
       result.isSuccess()
@@ -66,11 +66,11 @@ class CreatingReservationRequestForAnyPartOfParkingSpotTest extends Specificatio
     given:
       CreatingReservationRequest requestingReservation = new CreatingReservationRequest(repository, clientReservationRequestsFactory)
     and:
-      notPersisted(noReservationRequests(clientId, now))
+      unknownClientReservationRequests(noReservationRequests(clientId, now))
     
     when:
       def result = requestingReservation.createRequest(
-          new CreateReservationRequestForAnyPartOfParkingSpotCommand(clientId, ParkingSpotType.Gold, VehicleSizeUnit.of(2), ReservationPeriod.evening()))
+          new CreateReservationRequestForPartOfAnyParkingSpotCommand(clientId, ParkingSpotType.Gold, VehicleSizeUnit.of(2), ReservationPeriod.evening()))
     
     then:
       result.isSuccess()
@@ -83,7 +83,7 @@ class CreatingReservationRequestForAnyPartOfParkingSpotTest extends Specificatio
     return clientReservations
   }
   
-  ClientReservationRequests notPersisted(ClientReservationRequests clientReservations) {
+  ClientReservationRequests unknownClientReservationRequests(ClientReservationRequests clientReservations) {
     repository.findBy(clientReservations.clientId) >> Option.none()
     repository.publish(_ as ClientReservationRequestsEvent) >> clientReservations
     return clientReservations

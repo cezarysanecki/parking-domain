@@ -12,7 +12,7 @@ import pl.cezarysanecki.parkingdomain.views.client.model.ClientsReservationsView
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisherTestConfig
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId
-import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationId
+import pl.cezarysanecki.parkingdomain.reservation.model.ReservationId
 
 import spock.lang.Specification
 
@@ -23,7 +23,7 @@ import static pl.cezarysanecki.parkingdomain.views.client.model.ClientReservatio
 import static pl.cezarysanecki.parkingdomain.views.client.model.ClientReservationStatus.Cancelled
 import static pl.cezarysanecki.parkingdomain.views.client.model.ClientReservationStatus.Pending
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.anyParkingSpotId
-import static pl.cezarysanecki.parkingdomain.reservation.schedule.model.ParkingSpotReservationsEvent.ReservationCancelled
+import static pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsEvent.ReservationCancelled
 
 @ActiveProfiles("local")
 @SpringBootTest(classes = [ClientsReservationsViewConfig.class, EventPublisherTestConfig.class])

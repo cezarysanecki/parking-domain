@@ -2,7 +2,7 @@ package pl.cezarysanecki.parkingdomain.client.reservationrequest.model;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationId;
+import pl.cezarysanecki.parkingdomain.reservation.model.ReservationId;
 
 import java.time.LocalDateTime;
 import java.util.Set;

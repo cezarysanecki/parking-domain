@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequests;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsRepository;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
-import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationId;
+import pl.cezarysanecki.parkingdomain.reservation.model.ReservationId;
 
 import static io.vavr.API.$;
 import static io.vavr.API.Case;

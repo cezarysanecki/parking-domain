@@ -9,17 +9,17 @@ import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientRese
 import pl.cezarysanecki.parkingdomain.commons.commands.Result
 import pl.cezarysanecki.parkingdomain.commons.date.DateProvider
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId
-import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationId
-import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationPeriod
+import pl.cezarysanecki.parkingdomain.reservation.model.ReservationId
+import pl.cezarysanecki.parkingdomain.reservation.model.ReservationPeriod
 import spock.lang.Specification
 
 import java.time.LocalDateTime
 
 import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsFixture.anyClientId
+import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsFixture.anyReservationId
 import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsFixture.noReservationRequests
 import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsFixture.reservationRequestsWith
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.anyParkingSpotId
-import static pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationScheduleFixture.anyReservationId
 
 class CreatingReservationRequestForChosenParkingSpotTest extends Specification {
   
@@ -67,7 +67,7 @@ class CreatingReservationRequestForChosenParkingSpotTest extends Specification {
     given:
       CreatingReservationRequest requestingReservation = new CreatingReservationRequest(repository, clientReservationRequestsFactory)
     and:
-      notPersisted(noReservationRequests(clientId, now))
+      unknownClientReservationRequests(noReservationRequests(clientId, now))
     
     when:
       def result = requestingReservation.createRequest(
@@ -84,7 +84,7 @@ class CreatingReservationRequestForChosenParkingSpotTest extends Specification {
     return clientReservations
   }
   
-  ClientReservationRequests notPersisted(ClientReservationRequests clientReservations) {
+  ClientReservationRequests unknownClientReservationRequests(ClientReservationRequests clientReservations) {
     repository.findBy(clientReservations.clientId) >> Option.none()
     repository.publish(_ as ClientReservationRequestsEvent) >> clientReservations
     return clientReservations

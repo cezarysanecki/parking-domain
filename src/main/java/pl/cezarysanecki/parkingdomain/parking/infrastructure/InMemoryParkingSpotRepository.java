@@ -12,7 +12,7 @@ import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotType;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpots;
 import pl.cezarysanecki.parkingdomain.parking.model.VehicleId;
 import pl.cezarysanecki.parkingdomain.parking.model.VehicleSizeUnit;
-import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationId;
+import pl.cezarysanecki.parkingdomain.reservation.model.ReservationId;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

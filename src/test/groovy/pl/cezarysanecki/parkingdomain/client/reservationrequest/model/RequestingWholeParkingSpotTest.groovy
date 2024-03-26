@@ -1,7 +1,7 @@
 package pl.cezarysanecki.parkingdomain.client.reservationrequest.model
 
 import io.vavr.control.Either
-import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationPeriod
+import pl.cezarysanecki.parkingdomain.reservation.model.ReservationPeriod
 import spock.lang.Specification
 
 import java.time.LocalDateTime
@@ -28,7 +28,7 @@ class RequestingWholeParkingSpotTest extends Specification {
       def parkingSpotId = anyParkingSpotId()
     
     when:
-      Either<ReservationRequestFailed, ChosenParkingSpotReservationRequested> result = clientReservationRequests.reserve(reservationPeriod, parkingSpotId)
+      Either<ReservationRequestFailed, ChosenParkingSpotReservationRequested> result = clientReservationRequests.createRequest(reservationPeriod, parkingSpotId)
     
     then:
       result.isRight()
@@ -44,7 +44,7 @@ class RequestingWholeParkingSpotTest extends Specification {
       def clientReservations = reservationRequestsWith(clientId, anyReservationId(), now)
     
     when:
-      Either<ReservationRequestFailed, ChosenParkingSpotReservationRequested> result = clientReservations.reserve(ReservationPeriod.morning(), anyParkingSpotId())
+      Either<ReservationRequestFailed, ChosenParkingSpotReservationRequested> result = clientReservations.createRequest(ReservationPeriod.morning(), anyParkingSpotId())
     
     then:
       result.isLeft()

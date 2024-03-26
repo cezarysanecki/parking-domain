@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientId;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationId;
+import pl.cezarysanecki.parkingdomain.reservation.model.ReservationId;
 import pl.cezarysanecki.parkingdomain.views.client.model.ClientReservationStatus;
 import pl.cezarysanecki.parkingdomain.views.client.model.ClientReservationsView;
 import pl.cezarysanecki.parkingdomain.views.client.model.ClientsReservationsViews;

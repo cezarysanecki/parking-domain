@@ -32,7 +32,7 @@ public class CreatingReservationRequest {
     public Try<Result> createRequest(@NonNull CreateReservationRequestForChosenParkingSpotCommand command) {
         return Try.of(() -> {
             ClientReservationRequests clientReservationRequests = load(command.getClientId());
-            Either<ReservationRequestFailed, ChosenParkingSpotReservationRequested> result = clientReservationRequests.reserve(
+            Either<ReservationRequestFailed, ChosenParkingSpotReservationRequested> result = clientReservationRequests.createRequest(
                     command.getReservationPeriod(),
                     command.getParkingSpotId());
             return Match(result).of(
@@ -41,10 +41,10 @@ public class CreatingReservationRequest {
         }).onFailure(throwable -> log.error("Failed to create reservation request", throwable));
     }
 
-    public Try<Result> createRequest(@NonNull CreateReservationRequestForAnyPartOfParkingSpotCommand command) {
+    public Try<Result> createRequest(@NonNull CreateReservationRequestForPartOfAnyParkingSpotCommand command) {
         return Try.of(() -> {
             ClientReservationRequests clientReservationRequests = load(command.getClientId());
-            Either<ReservationRequestFailed, AnyParkingSpotReservationRequested> result = clientReservationRequests.reserve(
+            Either<ReservationRequestFailed, AnyParkingSpotReservationRequested> result = clientReservationRequests.createRequest(
                     command.getReservationPeriod(),
                     command.getParkingSpotType(),
                     command.getVehicleSizeUnit());

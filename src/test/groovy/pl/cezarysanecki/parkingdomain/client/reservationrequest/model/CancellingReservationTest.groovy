@@ -1,7 +1,7 @@
 package pl.cezarysanecki.parkingdomain.client.reservationrequest.model
 
 import io.vavr.control.Either
-import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationId
+import pl.cezarysanecki.parkingdomain.reservation.model.ReservationId
 import spock.lang.Specification
 
 import java.time.LocalDateTime
@@ -10,8 +10,8 @@ import static ClientReservationRequestsFixture.anyClientId
 import static ClientReservationRequestsFixture.reservationRequestsWith
 import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsEvent.CancellationOfReservationRequestFailed
 import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsEvent.ReservationRequestCancelled
+import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsFixture.anyReservationId
 import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsFixture.noReservationRequests
-import static pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationScheduleFixture.anyReservationId
 
 class CancellingReservationTest extends Specification {
   

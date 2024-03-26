@@ -10,7 +10,7 @@ import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientRese
 import pl.cezarysanecki.parkingdomain.commons.date.DateConfig
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisherTestConfig
-import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationId
+import pl.cezarysanecki.parkingdomain.reservation.model.ReservationId
 
 import spock.lang.Specification
 
@@ -18,7 +18,7 @@ import java.time.LocalDateTime
 
 import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsFixture.anyClientId
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.anyParkingSpotId
-import static pl.cezarysanecki.parkingdomain.reservation.schedule.model.ParkingSpotReservationsEvent.ReservationCancelled
+import static pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsEvent.ReservationCancelled
 
 @ActiveProfiles("local")
 @SpringBootTest(classes = [ClientReservationsConfig.class, EventPublisherTestConfig.class, DateConfig.class])

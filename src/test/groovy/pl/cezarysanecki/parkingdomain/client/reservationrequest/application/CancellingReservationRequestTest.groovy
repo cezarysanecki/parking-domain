@@ -8,7 +8,7 @@ import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientRese
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsRepository
 import pl.cezarysanecki.parkingdomain.commons.commands.Result
 import pl.cezarysanecki.parkingdomain.commons.date.DateProvider
-import pl.cezarysanecki.parkingdomain.reservation.schedule.model.ReservationId
+import pl.cezarysanecki.parkingdomain.reservation.model.ReservationId
 import spock.lang.Specification
 
 import java.time.LocalDateTime
@@ -61,7 +61,7 @@ class CancellingReservationRequestTest extends Specification {
     given:
       CancellingReservationRequest cancellingReservationRequest = new CancellingReservationRequest(repository)
     and:
-      notPersisted()
+      unknownClientReservationRequests()
     
     when:
       def result = cancellingReservationRequest.cancelRequest(new CancelReservationRequestCommand(reservationId))
@@ -76,7 +76,7 @@ class CancellingReservationRequestTest extends Specification {
     return clientReservations
   }
   
-  void notPersisted() {
+  void unknownClientReservationRequests() {
     repository.findBy(reservationId) >> Option.none()
   }
   
