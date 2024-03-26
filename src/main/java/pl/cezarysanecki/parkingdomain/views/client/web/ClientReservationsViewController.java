@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.application.CancelReservationRequestCommand;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.application.CancellingReservationRequest;
-import pl.cezarysanecki.parkingdomain.client.reservationrequest.application.CreateReservationRequestForAnyParkingSpotCommand;
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.application.CreateReservationRequestForAnyPartOfParkingSpotCommand;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.application.CreateReservationRequestForChosenParkingSpotCommand;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.application.CreatingReservationRequest;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientId;
@@ -55,7 +55,7 @@ class ClientReservationsViewController {
 
     @PostMapping("/client-reservation")
     ResponseEntity reserveAnyParkingSpot(@RequestBody CreateReservationRequestForAnyParkingSpotRequest request) {
-        Try<Result> result = creatingReservationRequest.createRequest(new CreateReservationRequestForAnyParkingSpotCommand(
+        Try<Result> result = creatingReservationRequest.createRequest(new CreateReservationRequestForAnyPartOfParkingSpotCommand(
                 ClientId.of(request.clientId),
                 ParkingSpotType.Gold,
                 VehicleSizeUnit.of(request.vehicleSize),

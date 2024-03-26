@@ -8,7 +8,7 @@ import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotType;
 import pl.cezarysanecki.parkingdomain.parking.model.VehicleSizeUnit;
 
 @Value
-public class CreateReservationRequestForAnyParkingSpotCommand {
+public class CreateReservationRequestForAnyPartOfParkingSpotCommand {
 
     @NonNull ClientId clientId;
     @NonNull ParkingSpotType parkingSpotType;
