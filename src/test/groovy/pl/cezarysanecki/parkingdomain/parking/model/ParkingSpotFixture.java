@@ -1,10 +1,14 @@
 package pl.cezarysanecki.parkingdomain.parking.model;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ParkingSpotFixture {
 
     public static ParkingSpot emptyParkingSpotWith(int capacity) {
