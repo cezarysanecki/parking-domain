@@ -16,9 +16,9 @@ import pl.cezarysanecki.parkingdomain.views.client.model.ClientsReservationsView
 import spock.lang.Specification
 
 import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsEvent.ChosenParkingSpotReservationRequested
+import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsEvent.ReservationRequestCancelled
 import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsFixture.anyClientId
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.anyParkingSpotId
-import static pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsEvent.ReservationCancelled
 import static pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsEvent.ReservationForWholeParkingSpotMade
 import static pl.cezarysanecki.parkingdomain.views.client.model.ClientReservationStatus.Approved
 import static pl.cezarysanecki.parkingdomain.views.client.model.ClientReservationStatus.Cancelled
@@ -55,7 +55,7 @@ class CreatingClientReservationViewTest extends Specification {
       reservationShouldBeInSpecificStatus(clientId, reservationId, Approved)
     
     when:
-      eventPublisher.publish reservationCancelled(reservationId)
+      eventPublisher.publish reservationRequestCancelled(reservationId)
     
     then:
       reservationShouldBeInSpecificStatus(clientId, reservationId, Cancelled)
@@ -75,8 +75,8 @@ class CreatingClientReservationViewTest extends Specification {
     return new ReservationForWholeParkingSpotMade(reservationId, reservationPeriod, parkingSpotId)
   }
   
-  ReservationCancelled reservationCancelled(ReservationId reservationId) {
-    return new ReservationCancelled(parkingSpotId, reservationId)
+  ReservationRequestCancelled reservationRequestCancelled(ReservationId reservationId) {
+    return new ReservationRequestCancelled(clientId, reservationId)
   }
   
   ClientReservationsView loadPersistedClientReservationsView(ClientId clientId) {
