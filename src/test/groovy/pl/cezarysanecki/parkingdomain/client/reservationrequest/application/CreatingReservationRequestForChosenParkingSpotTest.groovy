@@ -1,13 +1,14 @@
 package pl.cezarysanecki.parkingdomain.client.reservationrequest.application
 
 import io.vavr.control.Option
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.infrastructure.ClientReservationsConfig
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientId
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequests
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsEvent
-import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsFactory
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsRepository
 import pl.cezarysanecki.parkingdomain.commons.commands.Result
-import pl.cezarysanecki.parkingdomain.commons.date.DateProvider
+import pl.cezarysanecki.parkingdomain.commons.date.LocalDateProvider
+import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.reservation.model.ReservationId
 import pl.cezarysanecki.parkingdomain.reservation.model.ReservationPeriod
@@ -29,53 +30,50 @@ class CreatingReservationRequestForChosenParkingSpotTest extends Specification {
   
   LocalDateTime now = LocalDateTime.now()
   
+  EventPublisher eventPublisher = Mock()
   ClientReservationRequestsRepository repository = Stub()
-  DateProvider dateProvider = Stub()
-  ClientReservationRequestsFactory clientReservationRequestsFactory = new ClientReservationRequestsFactory(dateProvider)
+  
+  ClientReservationsConfig clientReservationsConfig = new ClientReservationsConfig(
+      eventPublisher, new LocalDateProvider())
+  CreatingReservationRequest requestingReservation = clientReservationsConfig.creatingReservationRequest(repository)
   
   def 'should successfully create reservation request for chosen parking spot if there is no others'() {
     given:
-      CreatingReservationRequest requestingReservation = new CreatingReservationRequest(repository, clientReservationRequestsFactory)
-    and:
       persisted(noReservationRequests(clientId, now))
     
     when:
       def result = requestingReservation.createRequest(
-          new CreateReservationRequestForChosenParkingSpotCommand(clientId, parkingSpotId, ReservationPeriod.wholeDay()))
+          new CreateReservationRequestForChosenParkingSpotCommand(clientId, parkingSpotId, ReservationPeriod.wholeDay(), now))
     
     then:
       result.isSuccess()
-      result.get() == Result.Success
+      result.get() in Result.Success
   }
   
   def 'should reject creation of reservation request for chosen parking spot if there is too many of them'() {
     given:
-      CreatingReservationRequest requestingReservation = new CreatingReservationRequest(repository, clientReservationRequestsFactory)
-    and:
       persisted(reservationRequestsWith(clientId, reservationId, now))
     
     when:
       def result = requestingReservation.createRequest(
-          new CreateReservationRequestForChosenParkingSpotCommand(clientId, parkingSpotId, ReservationPeriod.wholeDay()))
+          new CreateReservationRequestForChosenParkingSpotCommand(clientId, parkingSpotId, ReservationPeriod.wholeDay(), now))
     
     then:
       result.isSuccess()
-      result.get() == Result.Rejection
+      result.get() in Result.Rejection
   }
   
   def 'should successfully create reservation for chosen parking spot even if there is no client reservation requests'() {
     given:
-      CreatingReservationRequest requestingReservation = new CreatingReservationRequest(repository, clientReservationRequestsFactory)
-    and:
       unknownClientReservationRequests(noReservationRequests(clientId, now))
     
     when:
       def result = requestingReservation.createRequest(
-          new CreateReservationRequestForChosenParkingSpotCommand(clientId, parkingSpotId, ReservationPeriod.wholeDay()))
+          new CreateReservationRequestForChosenParkingSpotCommand(clientId, parkingSpotId, ReservationPeriod.wholeDay(), now))
     
     then:
       result.isSuccess()
-      result.get() == Result.Success
+      result.get() in Result.Success
   }
   
   ClientReservationRequests persisted(ClientReservationRequests clientReservations) {
