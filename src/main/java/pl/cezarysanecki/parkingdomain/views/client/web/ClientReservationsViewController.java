@@ -1,5 +1,6 @@
 package pl.cezarysanecki.parkingdomain.views.client.web;
 
+import io.vavr.API;
 import io.vavr.control.Try;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,11 +15,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.application.CancelReservationRequestCommand;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.application.CancellingReservationRequest;
-import pl.cezarysanecki.parkingdomain.client.reservationrequest.application.CreateReservationRequestForPartOfAnyParkingSpotCommand;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.application.CreateReservationRequestForChosenParkingSpotCommand;
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.application.CreateReservationRequestForPartOfAnyParkingSpotCommand;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.application.CreatingReservationRequest;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientId;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
+import pl.cezarysanecki.parkingdomain.commons.date.DateProvider;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotType;
 import pl.cezarysanecki.parkingdomain.parking.model.VehicleSizeUnit;
@@ -30,6 +32,8 @@ import pl.cezarysanecki.parkingdomain.views.client.model.ClientsReservationsView
 import java.util.Set;
 import java.util.UUID;
 
+import static io.vavr.Predicates.instanceOf;
+
 @RestController
 @RequiredArgsConstructor
 class ClientReservationsViewController {
@@ -37,19 +41,20 @@ class ClientReservationsViewController {
     private final ClientsReservationsViews clientsReservationsViews;
     private final CreatingReservationRequest creatingReservationRequest;
     private final CancellingReservationRequest cancellingReservationRequest;
+    private final DateProvider dateProvider;
 
     @PostMapping("/client-reservation/{parkingSpotId}")
     ResponseEntity reserveParkingSpot(@PathVariable UUID parkingSpotId, @RequestBody CreateReservationRequestForWholeParkingSpotRequest request) {
         Try<Result> result = creatingReservationRequest.createRequest(new CreateReservationRequestForChosenParkingSpotCommand(
                 ClientId.of(request.clientId),
                 ParkingSpotId.of(parkingSpotId),
-                request.reservationPeriod));
+                request.reservationPeriod,
+                dateProvider.now()));
 
         return result
-                .map(success -> switch (success) {
-                    case Success -> ResponseEntity.ok().build();
-                    case Rejection -> ResponseEntity.badRequest().build();
-                })
+                .map(success -> API.Match(success).of(
+                        API.Case(API.$(instanceOf(Result.Success.class)), () -> ResponseEntity.ok().build()),
+                        API.Case(API.$(instanceOf(Result.Rejection.class)), rejection -> ResponseEntity.badRequest().body(rejection.getValidationErrors()))))
                 .getOrElse(() -> ResponseEntity.internalServerError().build());
     }
 
@@ -59,26 +64,26 @@ class ClientReservationsViewController {
                 ClientId.of(request.clientId),
                 ParkingSpotType.Gold,
                 VehicleSizeUnit.of(request.vehicleSize),
-                request.reservationPeriod));
+                request.reservationPeriod,
+                dateProvider.now()));
 
         return result
-                .map(success -> switch (success) {
-                    case Success -> ResponseEntity.ok().build();
-                    case Rejection -> ResponseEntity.badRequest().build();
-                })
+                .map(success -> API.Match(success).of(
+                        API.Case(API.$(instanceOf(Result.Success.class)), () -> ResponseEntity.ok().build()),
+                        API.Case(API.$(instanceOf(Result.Rejection.class)), rejection -> ResponseEntity.badRequest().body(rejection.getValidationErrors()))))
                 .getOrElse(() -> ResponseEntity.internalServerError().build());
     }
 
     @DeleteMapping("/client-reservation/{reservationId}")
     ResponseEntity cancelReservation(@PathVariable UUID reservationId) {
         Try<Result> result = cancellingReservationRequest.cancelRequest(new CancelReservationRequestCommand(
-                ReservationId.of(reservationId)));
+                ReservationId.of(reservationId),
+                dateProvider.now()));
 
         return result
-                .map(success -> switch (success) {
-                    case Success -> ResponseEntity.ok().build();
-                    case Rejection -> ResponseEntity.badRequest().build();
-                })
+                .map(success -> API.Match(success).of(
+                        API.Case(API.$(instanceOf(Result.Success.class)), () -> ResponseEntity.ok().build()),
+                        API.Case(API.$(instanceOf(Result.Rejection.class)), rejection -> ResponseEntity.badRequest().body(rejection.getValidationErrors()))))
                 .getOrElse(() -> ResponseEntity.internalServerError().build());
     }
 

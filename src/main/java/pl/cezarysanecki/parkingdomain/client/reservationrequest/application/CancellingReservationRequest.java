@@ -8,7 +8,10 @@ import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequests;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsRepository;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
+import pl.cezarysanecki.parkingdomain.commons.commands.ValidationError;
 import pl.cezarysanecki.parkingdomain.reservation.model.ReservationId;
+
+import java.util.Set;
 
 import static io.vavr.API.$;
 import static io.vavr.API.Case;
@@ -25,8 +28,14 @@ import static pl.cezarysanecki.parkingdomain.commons.commands.Result.Success;
 public class CancellingReservationRequest {
 
     private final ClientReservationRequestsRepository clientReservationRequestsRepository;
+    private final ClientReservationRequestValidator clientReservationRequestValidator;
 
     public Try<Result> cancelRequest(@NonNull CancelReservationRequestCommand command) {
+        Set<ValidationError> validationErrors = clientReservationRequestValidator.validate(command);
+        if (!validationErrors.isEmpty()) {
+            return Try.success(new Rejection(validationErrors));
+        }
+
         return Try.of(() -> {
             ClientReservationRequests clientReservationRequests = load(command.getReservationId());
             Either<CancellationOfReservationRequestFailed, ReservationRequestCancelled> result = clientReservationRequests.cancel(command.getReservationId());
@@ -39,14 +48,14 @@ public class CancellingReservationRequest {
     private Result publishEvents(ReservationRequestCancelled reservationRequestCancelled) {
         clientReservationRequestsRepository.publish(reservationRequestCancelled);
         log.debug("successfully cancelled reservation request for client with id {}", reservationRequestCancelled.getClientId());
-        return Success;
+        return new Success();
     }
 
     private Result publishEvents(CancellationOfReservationRequestFailed cancellationOfReservationRequestFailed) {
         clientReservationRequestsRepository.publish(cancellationOfReservationRequestFailed);
         log.debug("rejected to cancel reservation request for client with id {}, reason: {}",
                 cancellationOfReservationRequestFailed.getClientId(), cancellationOfReservationRequestFailed.getReason());
-        return Rejection;
+        return Rejection.empty();
     }
 
     private ClientReservationRequests load(ReservationId reservationId) {

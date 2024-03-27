@@ -39,7 +39,7 @@ class ParkingOnParkingSpotTest extends Specification {
     
     then:
       result.isSuccess()
-      result.get() == Result.Success
+      result.get() in Result.Success
   }
   
   def 'should reject parking vehicle if it is too big for open parking spot'() {
@@ -53,7 +53,7 @@ class ParkingOnParkingSpotTest extends Specification {
     
     then:
       result.isSuccess()
-      result.get() == Result.Rejection
+      result.get() in Result.Rejection
   }
   
   def 'should fail if open parking spot does not exist'() {
@@ -80,7 +80,7 @@ class ParkingOnParkingSpotTest extends Specification {
     
     then:
       result.isSuccess()
-      result.get() == Result.Success
+      result.get() in Result.Success
   }
   
   def 'should reject parking vehicle if it is too big for reserved parking spot'() {
@@ -94,7 +94,7 @@ class ParkingOnParkingSpotTest extends Specification {
     
     then:
       result.isSuccess()
-      result.get() == Result.Rejection
+      result.get() in Result.Rejection
   }
   
   def 'should fail if reserved parking spot does not exist'() {

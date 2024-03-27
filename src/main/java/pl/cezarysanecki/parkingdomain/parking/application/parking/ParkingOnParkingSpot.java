@@ -55,13 +55,13 @@ public class ParkingOnParkingSpot {
     private Result publishEvents(ParkingFailed parkingFailed) {
         parkingSpots.publish(parkingFailed);
         log.debug("rejected to park vehicle with id {}, reason: {}", parkingFailed.getVehicleId(), parkingFailed.getReason());
-        return Rejection;
+        return Rejection.empty();
     }
 
     private Result publishEvents(VehicleParkedEvents vehicleParked) {
         parkingSpots.publish(vehicleParked);
         log.debug("successfully parked vehicle with id {}", vehicleParked.getVehicleParked().getVehicle().getVehicleId());
-        return Success;
+        return new Success();
     }
 
     private ParkingSpot load(ParkingSpotType parkingSpotType, VehicleSizeUnit vehicleSizeUnit) {

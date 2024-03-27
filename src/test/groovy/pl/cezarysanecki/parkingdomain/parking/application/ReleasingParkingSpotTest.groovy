@@ -35,7 +35,7 @@ class ReleasingParkingSpotTest extends Specification {
     
     then:
       result.isSuccess()
-      result.get() == Result.Success
+      result.get() in Result.Success
   }
   
   def 'should reject releasing parking spot if specified vehicle is not parked on it'() {
@@ -49,7 +49,7 @@ class ReleasingParkingSpotTest extends Specification {
     
     then:
       result.isSuccess()
-      result.get() == Result.Rejection
+      result.get() in Result.Rejection
   }
   
   def 'should fail if parking spot does not exist'() {

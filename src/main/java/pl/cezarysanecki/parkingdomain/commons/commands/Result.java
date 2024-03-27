@@ -1,5 +1,24 @@
 package pl.cezarysanecki.parkingdomain.commons.commands;
 
-public enum Result {
-    Success, Rejection
+import lombok.Value;
+
+import java.util.Set;
+
+public interface Result {
+
+    class Success implements Result {
+
+    }
+
+    @Value
+    class Rejection implements Result {
+
+        Set<ValidationError> validationErrors;
+
+        public static Rejection empty() {
+            return new Rejection(Set.of());
+        }
+
+    }
+
 }
