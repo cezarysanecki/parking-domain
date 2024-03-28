@@ -1,18 +1,14 @@
 package pl.cezarysanecki.parkingdomain.client.reservationrequest.application
 
 import io.vavr.control.Option
-import pl.cezarysanecki.parkingdomain.client.reservationrequest.infrastructure.ClientReservationsConfig
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientId
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequests
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsEvent
-import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsRepository
 import pl.cezarysanecki.parkingdomain.commons.commands.Result
-import pl.cezarysanecki.parkingdomain.commons.date.LocalDateProvider
-import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.reservation.model.ReservationId
 import pl.cezarysanecki.parkingdomain.reservation.model.ReservationPeriod
-import spock.lang.Specification
+import spock.lang.Subject
 
 import java.time.LocalDateTime
 
@@ -22,7 +18,7 @@ import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.Cli
 import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsFixture.reservationRequestsWith
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.anyParkingSpotId
 
-class CreatingReservationRequestForChosenParkingSpotTest extends Specification {
+class CreatingReservationRequestForChosenParkingSpotTest extends AbstractClientReservationRequestSpecification {
   
   ClientId clientId = anyClientId()
   ParkingSpotId parkingSpotId = anyParkingSpotId()
@@ -30,20 +26,16 @@ class CreatingReservationRequestForChosenParkingSpotTest extends Specification {
   
   LocalDateTime now = LocalDateTime.now()
   
-  EventPublisher eventPublisher = Mock()
-  ClientReservationRequestsRepository repository = Stub()
-  
-  ClientReservationsConfig clientReservationsConfig = new ClientReservationsConfig(
-      eventPublisher, new LocalDateProvider())
-  CreatingReservationRequest requestingReservation = clientReservationsConfig.creatingReservationRequest(repository)
+  @Subject
+  CreatingReservationRequest sut = creatingReservationRequest
   
   def 'should successfully create reservation request for chosen parking spot if there is no others'() {
     given:
       persisted(noReservationRequests(clientId, now))
     
     when:
-      def result = requestingReservation.createRequest(
-          new CreateReservationRequestForChosenParkingSpotCommand(clientId, parkingSpotId, ReservationPeriod.wholeDay(), now))
+      def result = sut.createRequest(new CreateReservationRequestForChosenParkingSpotCommand(
+          clientId, parkingSpotId, ReservationPeriod.wholeDay(), now))
     
     then:
       result.isSuccess()
@@ -55,8 +47,8 @@ class CreatingReservationRequestForChosenParkingSpotTest extends Specification {
       persisted(reservationRequestsWith(clientId, reservationId, now))
     
     when:
-      def result = requestingReservation.createRequest(
-          new CreateReservationRequestForChosenParkingSpotCommand(clientId, parkingSpotId, ReservationPeriod.wholeDay(), now))
+      def result = sut.createRequest(new CreateReservationRequestForChosenParkingSpotCommand(
+          clientId, parkingSpotId, ReservationPeriod.wholeDay(), now))
     
     then:
       result.isSuccess()
@@ -68,8 +60,8 @@ class CreatingReservationRequestForChosenParkingSpotTest extends Specification {
       unknownClientReservationRequests(noReservationRequests(clientId, now))
     
     when:
-      def result = requestingReservation.createRequest(
-          new CreateReservationRequestForChosenParkingSpotCommand(clientId, parkingSpotId, ReservationPeriod.wholeDay(), now))
+      def result = sut.createRequest(new CreateReservationRequestForChosenParkingSpotCommand(
+          clientId, parkingSpotId, ReservationPeriod.wholeDay(), now))
     
     then:
       result.isSuccess()

@@ -19,17 +19,20 @@ public class ClientReservationsConfig {
     private final EventPublisher eventPublisher;
     private final ClientReservationRequestsFactory clientReservationRequestsFactory;
     private final ClientReservationRequestValidator clientReservationRequestValidator;
+    private final ClientReservationRequestsRepository clientReservationRequestsRepository;
 
     public ClientReservationsConfig(
             EventPublisher eventPublisher,
-            DateProvider dateProvider) {
+            DateProvider dateProvider,
+            ClientReservationRequestsRepository clientReservationRequestsRepository) {
         this.eventPublisher = eventPublisher;
+        this.clientReservationRequestsRepository = clientReservationRequestsRepository;
         this.clientReservationRequestsFactory = new ClientReservationRequestsFactory(dateProvider);
         this.clientReservationRequestValidator = new ClientReservationRequestValidator(dateProvider);
     }
 
     @Bean
-    public CreatingReservationRequest creatingReservationRequest(ClientReservationRequestsRepository clientReservationRequestsRepository) {
+    public CreatingReservationRequest creatingReservationRequest() {
         return new CreatingReservationRequest(
                 clientReservationRequestsRepository,
                 clientReservationRequestValidator,
@@ -37,7 +40,7 @@ public class ClientReservationsConfig {
     }
 
     @Bean
-    public CancellingReservationRequest cancellingReservationRequest(ClientReservationRequestsRepository clientReservationRequestsRepository) {
+    public CancellingReservationRequest cancellingReservationRequest() {
         return new CancellingReservationRequest(
                 clientReservationRequestsRepository,
                 clientReservationRequestValidator);
