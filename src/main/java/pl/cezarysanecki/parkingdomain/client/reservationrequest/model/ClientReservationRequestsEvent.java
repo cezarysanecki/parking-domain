@@ -6,6 +6,8 @@ import pl.cezarysanecki.parkingdomain.commons.events.DomainEvent;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotType;
 import pl.cezarysanecki.parkingdomain.parking.model.VehicleSizeUnit;
+import pl.cezarysanecki.parkingdomain.reservation.application.ReservingPartOfParkingSpotRequestHasOccurred;
+import pl.cezarysanecki.parkingdomain.reservation.application.ReservingWholeParkingSpotRequestHasOccurred;
 import pl.cezarysanecki.parkingdomain.reservation.model.ReservationId;
 import pl.cezarysanecki.parkingdomain.reservation.model.ReservationPeriod;
 
@@ -18,7 +20,7 @@ public interface ClientReservationRequestsEvent extends DomainEvent {
     ReservationId getReservationId();
 
     @Value
-    final class ChosenParkingSpotReservationRequested implements ClientReservationRequestsEvent {
+    final class ChosenParkingSpotReservationRequested implements ClientReservationRequestsEvent, ReservingWholeParkingSpotRequestHasOccurred {
 
         @NonNull ClientId clientId;
         @NonNull ReservationId reservationId = ReservationId.of(UUID.randomUUID());
@@ -28,7 +30,7 @@ public interface ClientReservationRequestsEvent extends DomainEvent {
     }
 
     @Value
-    final class AnyParkingSpotReservationRequested implements ClientReservationRequestsEvent {
+    final class AnyParkingSpotReservationRequested implements ClientReservationRequestsEvent, ReservingPartOfParkingSpotRequestHasOccurred {
 
         @NonNull ClientId clientId;
         @NonNull ReservationId reservationId = ReservationId.of(UUID.randomUUID());
