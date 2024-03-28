@@ -10,7 +10,6 @@ import pl.cezarysanecki.parkingdomain.parking.model.VehicleSizeUnit;
 import pl.cezarysanecki.parkingdomain.reservation.model.ReservationId;
 import pl.cezarysanecki.parkingdomain.reservation.model.ReservationPeriod;
 
-import java.time.LocalDateTime;
 import java.util.Set;
 
 import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsEvent.AnyParkingSpotReservationRequested;
@@ -21,16 +20,15 @@ import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.Cli
 import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announceFailure;
 import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announceSuccess;
 
-@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
+@RequiredArgsConstructor
 public class ClientReservationRequests {
 
     @Getter
     private final ClientId clientId;
     private final Set<ReservationId> reservations;
-    private final LocalDateTime now;
 
-    public static ClientReservationRequests empty(ClientId clientId, LocalDateTime now) {
-        return new ClientReservationRequests(clientId, Set.of(), now);
+    public static ClientReservationRequests empty(ClientId clientId) {
+        return new ClientReservationRequests(clientId, Set.of());
     }
 
     public Either<ReservationRequestFailed, ChosenParkingSpotReservationRequested> createRequest(ReservationPeriod reservationPeriod, ParkingSpotId parkingSpotId) {
