@@ -14,9 +14,11 @@ class AbstractClientReservationRequestSpecification extends Specification {
   
   LocalDateProvider dateProvider = new LocalDateProvider()
   
-  ClientReservationsConfig config = new ClientReservationsConfig(eventPublisher, repository)
+  ClientReservationsConfig config = new ClientReservationsConfig(eventPublisher)
   
-  CancellingReservationRequest cancellingReservationRequest = config.cancellingReservationRequest(clientReservationRequestCommandValidator)
-  CreatingReservationRequest creatingReservationRequest = config.creatingReservationRequest(clientReservationRequestCommandValidator)
+  CancellingReservationRequest cancellingReservationRequest = config.cancellingReservationRequest(
+      clientReservationRequestCommandValidator, repository)
+  CreatingReservationRequest creatingReservationRequest = config.creatingReservationRequest(
+      clientReservationRequestCommandValidator, repository)
   
 }

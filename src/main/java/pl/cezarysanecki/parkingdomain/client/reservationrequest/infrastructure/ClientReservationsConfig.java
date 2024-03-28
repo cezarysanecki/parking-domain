@@ -18,17 +18,20 @@ import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 public class ClientReservationsConfig {
 
     private final EventPublisher eventPublisher;
-    private final ClientReservationRequestsRepository clientReservationRequestsRepository;
 
     @Bean
-    public CreatingReservationRequest creatingReservationRequest(ClientReservationRequestCommandValidator clientReservationRequestCommandValidator) {
+    public CreatingReservationRequest creatingReservationRequest(
+            ClientReservationRequestCommandValidator clientReservationRequestCommandValidator,
+            ClientReservationRequestsRepository clientReservationRequestsRepository) {
         return new CreatingReservationRequest(
                 clientReservationRequestsRepository,
                 clientReservationRequestCommandValidator);
     }
 
     @Bean
-    public CancellingReservationRequest cancellingReservationRequest(ClientReservationRequestCommandValidator clientReservationRequestCommandValidator) {
+    public CancellingReservationRequest cancellingReservationRequest(
+            ClientReservationRequestCommandValidator clientReservationRequestCommandValidator,
+            ClientReservationRequestsRepository clientReservationRequestsRepository) {
         return new CancellingReservationRequest(
                 clientReservationRequestsRepository,
                 clientReservationRequestCommandValidator);
