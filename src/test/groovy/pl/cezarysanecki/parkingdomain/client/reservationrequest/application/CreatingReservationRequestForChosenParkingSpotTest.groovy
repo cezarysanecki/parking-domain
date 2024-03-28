@@ -31,7 +31,7 @@ class CreatingReservationRequestForChosenParkingSpotTest extends AbstractClientR
   
   def 'should successfully create reservation request for chosen parking spot if there is no others'() {
     given:
-      persisted(noReservationRequests(clientId, now))
+      persisted(noReservationRequests(clientId))
     
     when:
       def result = sut.createRequest(new CreateReservationRequestForChosenParkingSpotCommand(
@@ -44,7 +44,7 @@ class CreatingReservationRequestForChosenParkingSpotTest extends AbstractClientR
   
   def 'should reject creation of reservation request for chosen parking spot if there is too many of them'() {
     given:
-      persisted(reservationRequestsWith(clientId, reservationId, now))
+      persisted(reservationRequestsWith(clientId, reservationId))
     
     when:
       def result = sut.createRequest(new CreateReservationRequestForChosenParkingSpotCommand(
@@ -57,7 +57,7 @@ class CreatingReservationRequestForChosenParkingSpotTest extends AbstractClientR
   
   def 'should successfully create reservation for chosen parking spot even if there is no client reservation requests'() {
     given:
-      unknownClientReservationRequests(noReservationRequests(clientId, now))
+      unknownClientReservationRequests(noReservationRequests(clientId))
     
     when:
       def result = sut.createRequest(new CreateReservationRequestForChosenParkingSpotCommand(

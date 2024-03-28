@@ -10,12 +10,13 @@ class AbstractClientReservationRequestSpecification extends Specification {
   
   EventPublisher eventPublisher = Mock()
   ClientReservationRequestsRepository repository = Stub()
+  ClientReservationRequestCommandValidator clientReservationRequestCommandValidator = Stub()
   
   LocalDateProvider dateProvider = new LocalDateProvider()
   
-  ClientReservationsConfig config = new ClientReservationsConfig(eventPublisher, dateProvider, repository)
+  ClientReservationsConfig config = new ClientReservationsConfig(eventPublisher, repository)
   
-  CancellingReservationRequest cancellingReservationRequest = config.cancellingReservationRequest()
-  CreatingReservationRequest creatingReservationRequest = config.creatingReservationRequest()
+  CancellingReservationRequest cancellingReservationRequest = config.cancellingReservationRequest(clientReservationRequestCommandValidator)
+  CreatingReservationRequest creatingReservationRequest = config.creatingReservationRequest(clientReservationRequestCommandValidator)
   
 }

@@ -4,8 +4,6 @@ import io.vavr.control.Either
 import pl.cezarysanecki.parkingdomain.reservation.model.ReservationId
 import spock.lang.Specification
 
-import java.time.LocalDateTime
-
 import static ClientReservationRequestsFixture.anyClientId
 import static ClientReservationRequestsFixture.reservationRequestsWith
 import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsEvent.CancellationOfReservationRequestFailed
@@ -18,11 +16,9 @@ class CancellingReservationTest extends Specification {
   ClientId clientId = anyClientId()
   ReservationId reservationId = anyReservationId()
   
-  LocalDateTime now = LocalDateTime.now()
-  
   def "can cancel reservation for parking spot"() {
     given:
-      def clientReservationRequests = reservationRequestsWith(clientId, reservationId, now)
+      def clientReservationRequests = reservationRequestsWith(clientId, reservationId)
     
     when:
       Either<CancellationOfReservationRequestFailed, ReservationRequestCancelled> result = clientReservationRequests.cancel(reservationId)
@@ -37,7 +33,7 @@ class CancellingReservationTest extends Specification {
   
   def "cannot cancel reservation for parking spot when there is no such reservation"() {
     given:
-      def clientReservationRequests = noReservationRequests(clientId, now)
+      def clientReservationRequests = noReservationRequests(clientId)
     
     when:
       Either<CancellationOfReservationRequestFailed, ReservationRequestCancelled> result = clientReservationRequests.cancel(reservationId)

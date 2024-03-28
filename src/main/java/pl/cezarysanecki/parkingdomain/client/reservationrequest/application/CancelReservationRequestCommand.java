@@ -7,7 +7,7 @@ import pl.cezarysanecki.parkingdomain.reservation.model.ReservationId;
 import java.time.LocalDateTime;
 
 @Value
-public class CancelReservationRequestCommand {
+public class CancelReservationRequestCommand implements ClientReservationRequestCommand {
 
     @NonNull ReservationId reservationId;
     @NonNull LocalDateTime when;

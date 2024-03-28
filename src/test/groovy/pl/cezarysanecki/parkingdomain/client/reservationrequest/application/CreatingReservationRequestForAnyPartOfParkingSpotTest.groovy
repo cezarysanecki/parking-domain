@@ -30,7 +30,7 @@ class CreatingReservationRequestForAnyPartOfParkingSpotTest extends AbstractClie
   
   def 'should successfully create reservation request for any part of parking spot if there is no others'() {
     given:
-      persisted(noReservationRequests(clientId, now))
+      persisted(noReservationRequests(clientId))
     
     when:
       def result = sut.createRequest(new CreateReservationRequestForPartOfAnyParkingSpotCommand(
@@ -43,7 +43,7 @@ class CreatingReservationRequestForAnyPartOfParkingSpotTest extends AbstractClie
   
   def 'should reject creation of reservation request for any part of parking spot if there is too many of them'() {
     given:
-      persisted(reservationRequestsWith(clientId, reservationId, now))
+      persisted(reservationRequestsWith(clientId, reservationId))
     
     when:
       def result = sut.createRequest(new CreateReservationRequestForPartOfAnyParkingSpotCommand(
@@ -56,7 +56,7 @@ class CreatingReservationRequestForAnyPartOfParkingSpotTest extends AbstractClie
   
   def 'should successfully create reservation for any part of parking spot even if there is no client reservation requests'() {
     given:
-      unknownClientReservationRequests(noReservationRequests(clientId, now))
+      unknownClientReservationRequests(noReservationRequests(clientId))
     
     when:
       def result = sut.createRequest(new CreateReservationRequestForPartOfAnyParkingSpotCommand(

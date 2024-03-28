@@ -5,6 +5,7 @@ import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientId
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequests
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsEvent
 import pl.cezarysanecki.parkingdomain.commons.commands.Result
+import pl.cezarysanecki.parkingdomain.commons.commands.ValidationError
 import pl.cezarysanecki.parkingdomain.reservation.model.ReservationId
 import spock.lang.Subject
 
@@ -27,11 +28,12 @@ class CancellingReservationRequestTest extends AbstractClientReservationRequestS
   
   def setup() {
     dateProvider.setCurrentDate(now)
+    clientReservationRequestCommandValidator.validate(_ as ClientReservationRequestCommand) >> Set.of()
   }
   
   def 'should successfully cancel reservation request for parking spot if there is one'() {
     given:
-      persisted(reservationRequestsWith(clientId, reservationId, now))
+      persisted(reservationRequestsWith(clientId, reservationId))
     
     when:
       def result = sut.cancelRequest(new CancelReservationRequestCommand(reservationId, now))
@@ -43,7 +45,7 @@ class CancellingReservationRequestTest extends AbstractClientReservationRequestS
   
   def 'should reject cancelling reservation request for parking spot if there is any'() {
     given:
-      persisted(noReservationRequests(clientId, now))
+      persisted(noReservationRequests(clientId))
     
     when:
       def result = sut.cancelRequest(new CancelReservationRequestCommand(reservationId, now))
@@ -58,7 +60,7 @@ class CancellingReservationRequestTest extends AbstractClientReservationRequestS
       LocalDateTime now = LocalDateTime.of(2020, 10, 10, 4, 30)
       dateProvider.setCurrentDate(now)
     and:
-      persisted(reservationRequestsWith(clientId, reservationId, now))
+      persisted(reservationRequestsWith(clientId, reservationId))
     
     when:
       def result = sut.cancelRequest(new CancelReservationRequestCommand(reservationId, now))
@@ -66,6 +68,8 @@ class CancellingReservationRequestTest extends AbstractClientReservationRequestS
     then:
       result.isSuccess()
       result.get() in Result.Rejection
+    and:
+      clientReservationRequestCommandValidator.validate(_ as ClientReservationRequestCommand) >> Set.of(new ValidationError("any", "test msg"))
   }
   
   def 'should fail if client reservations do not exist'() {
