@@ -25,6 +25,10 @@ class CancellingReservationRequestTest extends AbstractClientReservationRequestS
   @Subject
   CancellingReservationRequest sut = cancellingReservationRequest
   
+  def setup() {
+    dateProvider.setCurrentDate(now)
+  }
+  
   def 'should successfully cancel reservation request for parking spot if there is one'() {
     given:
       persisted(reservationRequestsWith(clientId, reservationId, now))
@@ -40,6 +44,21 @@ class CancellingReservationRequestTest extends AbstractClientReservationRequestS
   def 'should reject cancelling reservation request for parking spot if there is any'() {
     given:
       persisted(noReservationRequests(clientId, now))
+    
+    when:
+      def result = sut.cancelRequest(new CancelReservationRequestCommand(reservationId, now))
+    
+    then:
+      result.isSuccess()
+      result.get() in Result.Rejection
+  }
+  
+  def 'should reject cancelling reservation request when command validation failed'() {
+    given:
+      LocalDateTime now = LocalDateTime.of(2020, 10, 10, 4, 30)
+      dateProvider.setCurrentDate(now)
+    and:
+      persisted(reservationRequestsWith(clientId, reservationId, now))
     
     when:
       def result = sut.cancelRequest(new CancelReservationRequestCommand(reservationId, now))

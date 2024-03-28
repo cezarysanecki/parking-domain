@@ -38,8 +38,8 @@ public class ClientReservationRequestValidator {
     }
 
     private Optional<ValidationError> requestDateMustBeInValidPeriod(LocalDateTime when) {
-        LocalDateTime start = dateProvider.nearestFutureDateAt(LocalTime.of(4, 0));
         LocalDateTime end = dateProvider.nearestFutureDateAt(LocalTime.of(5, 0));
+        LocalDateTime start = end.minusHours(1);
 
         if (start.isBefore(when) && end.isAfter(when)) {
             return Optional.of(new ValidationError("when", "time limitation"));
