@@ -29,7 +29,7 @@ public class CancellingReservationEventListener {
     }
 
     private Result publishEvents(ParkingSpotReservations parkingSpotReservations, ReservationId reservationId) {
-        parkingSpotReservationsRepository.publish(new ReservationCancelled(parkingSpotReservations.getParkingSpotId(), reservationId));
+        parkingSpotReservationsRepository.publish(new ReservationCancelled(reservationId, parkingSpotReservations.getParkingSpotId()));
         log.debug("successfully cancelled reservation with id {}", reservationId);
         return new Success();
     }

@@ -59,7 +59,10 @@ public class MakingReservationEventListener {
             return Match(result).of(
                     Case($Left($()), this::publishEvents),
                     Case($Right($()), this::publishEvents));
-        }).onFailure(throwable -> log.error("Failed to reserve whole parking slot", throwable));
+        }).onFailure(throwable -> {
+            log.error("Failed to reserve whole parking slot", throwable);
+            publishEvents(new ReservationFailed(reservationId, "error while reserving"));
+        });
     }
 
     private Result publishEvents(ReservationForWholeParkingSpotMade reservationForWholeParkingSpotMade) {
@@ -76,7 +79,7 @@ public class MakingReservationEventListener {
 
     private Result publishEvents(ReservationFailed reservationFailed) {
         parkingSpotReservationsRepository.publish(reservationFailed);
-        log.debug("rejected to make reservation with for parking spot with id {}, reason: {}", reservationFailed.getParkingSpotId(), reservationFailed.getReason());
+        log.debug("rejected to make reservation with id {}, reason: {}", reservationFailed.getReservationId(), reservationFailed.getReason());
         return Rejection.empty();
     }
 

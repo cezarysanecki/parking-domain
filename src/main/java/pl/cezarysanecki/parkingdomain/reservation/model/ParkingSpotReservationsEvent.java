@@ -8,7 +8,7 @@ import pl.cezarysanecki.parkingdomain.parking.model.VehicleSizeUnit;
 
 public sealed interface ParkingSpotReservationsEvent extends DomainEvent {
 
-    ParkingSpotId getParkingSpotId();
+    ReservationId getReservationId();
 
     @Value
     final class ReservationForWholeParkingSpotMade implements ParkingSpotReservationsEvent {
@@ -33,8 +33,6 @@ public sealed interface ParkingSpotReservationsEvent extends DomainEvent {
     final class ReservationFailed implements ParkingSpotReservationsEvent {
 
         @NonNull ReservationId reservationId;
-        @NonNull ReservationPeriod reservationPeriod;
-        @NonNull ParkingSpotId parkingSpotId;
         @NonNull String reason;
 
     }
@@ -42,8 +40,8 @@ public sealed interface ParkingSpotReservationsEvent extends DomainEvent {
     @Value
     final class ReservationCancelled implements ParkingSpotReservationsEvent {
 
-        @NonNull ParkingSpotId parkingSpotId;
         @NonNull ReservationId reservationId;
+        @NonNull ParkingSpotId parkingSpotId;
 
     }
 

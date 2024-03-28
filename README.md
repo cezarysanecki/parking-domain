@@ -93,25 +93,31 @@ with existing legacy code and explore tools from the JVM ecosystem (but not excl
 
 ### Making reservation
 
+- Reservation can only be made only for the next day
+- Client can have only one valid reservation
 - Client can make reservation for
     - any parking spot
         - from class (BRONZE, SILVER, GOLD)
         - for specified vehicle type
+        - last until:
+            - vehicle drives away
+            - reservation time has expired
     - chosen parking spot
-        - from class (BRONZE, SILVER, GOLD)
-        - whole spot
-        - last until all vehicles drive away
+        - whole spot (can park even 4 scooters)
+        - last until:
+            - all vehicles drive away
+            - reservation time has expired
 - Making reservation on chosen parking spot is available for additional fee
-- Reservations can be made for next day (until 10pm of current day)
+- Reservations can be made, cancelled any time but 4-5am
 - Reservation can be made for
-  - morning (7:00-17:00)
-  - evening (18:00-24:00)
-  - whole day (7:00-24:00)
+    - morning (7:00-17:00)
+    - evening (18:00-24:00)
+    - whole day (7:00-24:00)
 - Reservation can be extended to whole day
-- Reservation until
-  - 9:00 (morning reservation)
-  - 18:30 (evening reservation)
-- Client can have only one valid reservation
+    - if was morning reservation
+    - if current spot has no reservation for evening
+- There is possibility to extended reservation choosing any free parking spot from the same class if current is reserved
+- Reservations become effective for a given day during the reservation window (4-5am)
 
 ### Reservation fulfillment
 
