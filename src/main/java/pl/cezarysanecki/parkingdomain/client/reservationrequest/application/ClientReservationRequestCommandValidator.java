@@ -32,7 +32,7 @@ public interface ClientReservationRequestCommandValidator {
             LocalDateTime end = dateProvider.nearestFutureDateAt(LocalTime.of(5, 0));
             LocalDateTime start = end.minusHours(1);
 
-            if (start.isBefore(when) && end.isAfter(when)) {
+            if (start.isBefore(when) && when.isBefore(end)) {
                 return Optional.of(new ValidationError("when", "time limitation"));
             }
             return Optional.empty();
