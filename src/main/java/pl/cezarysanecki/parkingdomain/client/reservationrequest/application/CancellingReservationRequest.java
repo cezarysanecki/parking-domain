@@ -28,10 +28,10 @@ import static pl.cezarysanecki.parkingdomain.commons.commands.Result.Success;
 public class CancellingReservationRequest {
 
     private final ClientReservationRequestsRepository clientReservationRequestsRepository;
-    private final ClientReservationRequestValidator clientReservationRequestValidator;
+    private final ClientReservationRequestCommandValidator clientReservationRequestCommandValidator;
 
     public Try<Result> cancelRequest(@NonNull CancelReservationRequestCommand command) {
-        Set<ValidationError> validationErrors = clientReservationRequestValidator.validate(command);
+        Set<ValidationError> validationErrors = clientReservationRequestCommandValidator.validate(command);
         if (!validationErrors.isEmpty()) {
             return Try.success(new Rejection(validationErrors));
         }

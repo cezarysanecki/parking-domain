@@ -1,55 +1,51 @@
 package pl.cezarysanecki.parkingdomain.client.reservationrequest.infrastructure;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.application.CancellingReservationRequest;
-import pl.cezarysanecki.parkingdomain.client.reservationrequest.application.ClientReservationRequestValidator;
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.application.ClientReservationRequestCommandValidator;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.application.CreatingReservationRequest;
-import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsFactory;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsRepository;
 import pl.cezarysanecki.parkingdomain.commons.date.DateProvider;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 
 @Slf4j
 @Configuration
+@RequiredArgsConstructor
 public class ClientReservationsConfig {
 
     private final EventPublisher eventPublisher;
-    private final ClientReservationRequestsFactory clientReservationRequestsFactory;
-    private final ClientReservationRequestValidator clientReservationRequestValidator;
-
-    public ClientReservationsConfig(
-            EventPublisher eventPublisher,
-            DateProvider dateProvider) {
-        this.eventPublisher = eventPublisher;
-        this.clientReservationRequestsFactory = new ClientReservationRequestsFactory(dateProvider);
-        this.clientReservationRequestValidator = new ClientReservationRequestValidator(dateProvider);
-    }
 
     @Bean
-    public CreatingReservationRequest creatingReservationRequest(ClientReservationRequestsRepository clientReservationRequestsRepository) {
+    public CreatingReservationRequest creatingReservationRequest(
+            ClientReservationRequestCommandValidator clientReservationRequestCommandValidator,
+            ClientReservationRequestsRepository clientReservationRequestsRepository) {
         return new CreatingReservationRequest(
                 clientReservationRequestsRepository,
-                clientReservationRequestValidator,
-                clientReservationRequestsFactory);
+                clientReservationRequestCommandValidator);
     }
 
     @Bean
-    public CancellingReservationRequest cancellingReservationRequest(ClientReservationRequestsRepository clientReservationRequestsRepository) {
+    public CancellingReservationRequest cancellingReservationRequest(
+            ClientReservationRequestCommandValidator clientReservationRequestCommandValidator,
+            ClientReservationRequestsRepository clientReservationRequestsRepository) {
         return new CancellingReservationRequest(
                 clientReservationRequestsRepository,
-                clientReservationRequestValidator);
+                clientReservationRequestCommandValidator);
+    }
+
+    @Bean
+    public ClientReservationRequestCommandValidator clientReservationRequestCommandValidator(DateProvider dateProvider) {
+        return new ClientReservationRequestCommandValidator.Production(dateProvider);
     }
 
     @Bean
     @Profile("local")
     public ClientReservationRequestsRepository inMemoryClientReservationsRepository() {
-        DomainModelMapper domainModelMapper = new DomainModelMapper(clientReservationRequestsFactory);
-        return new InMemoryClientReservationRequestsRepository(
-                eventPublisher,
-                domainModelMapper);
+        return new InMemoryClientReservationRequestsRepository(eventPublisher);
     }
 
 }

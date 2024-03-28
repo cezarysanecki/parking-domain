@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientId;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequests;
-import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsFactory;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsRepository;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result.Rejection;
@@ -30,11 +29,10 @@ import static pl.cezarysanecki.parkingdomain.commons.commands.Result.Success;
 public class CreatingReservationRequest {
 
     private final ClientReservationRequestsRepository clientReservationRequestsRepository;
-    private final ClientReservationRequestValidator clientReservationRequestValidator;
-    private final ClientReservationRequestsFactory clientReservationRequestsFactory;
+    private final ClientReservationRequestCommandValidator clientReservationRequestCommandValidator;
 
     public Try<Result> createRequest(@NonNull CreateReservationRequestForChosenParkingSpotCommand command) {
-        Set<ValidationError> validationErrors = clientReservationRequestValidator.validate(command);
+        Set<ValidationError> validationErrors = clientReservationRequestCommandValidator.validate(command);
         if (!validationErrors.isEmpty()) {
             return Try.success(new Rejection(validationErrors));
         }
@@ -51,7 +49,7 @@ public class CreatingReservationRequest {
     }
 
     public Try<Result> createRequest(@NonNull CreateReservationRequestForPartOfAnyParkingSpotCommand command) {
-        Set<ValidationError> validationErrors = clientReservationRequestValidator.validate(command);
+        Set<ValidationError> validationErrors = clientReservationRequestCommandValidator.validate(command);
         if (!validationErrors.isEmpty()) {
             return Try.success(new Rejection(validationErrors));
         }
@@ -88,7 +86,7 @@ public class CreatingReservationRequest {
 
     private ClientReservationRequests load(ClientId clientId) {
         return clientReservationRequestsRepository.findBy(clientId)
-                .getOrElse(() -> clientReservationRequestsFactory.createEmpty(clientId));
+                .getOrElse(() -> ClientReservationRequests.empty(clientId));
     }
 
 }

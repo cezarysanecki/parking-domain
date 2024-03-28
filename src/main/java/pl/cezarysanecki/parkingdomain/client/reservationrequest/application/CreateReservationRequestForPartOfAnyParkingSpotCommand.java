@@ -10,7 +10,7 @@ import pl.cezarysanecki.parkingdomain.reservation.model.ReservationPeriod;
 import java.time.LocalDateTime;
 
 @Value
-public class CreateReservationRequestForPartOfAnyParkingSpotCommand {
+public class CreateReservationRequestForPartOfAnyParkingSpotCommand implements ClientReservationRequestCommand {
 
     @NonNull ClientId clientId;
     @NonNull ParkingSpotType parkingSpotType;

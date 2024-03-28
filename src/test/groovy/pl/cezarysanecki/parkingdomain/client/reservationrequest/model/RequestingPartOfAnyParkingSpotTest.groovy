@@ -25,7 +25,7 @@ class RequestingPartOfAnyParkingSpotTest extends Specification {
   
   def "can make reservation for part of parking spot"() {
     given:
-      def clientReservationRequests = noReservationRequests(clientId, now)
+      def clientReservationRequests = noReservationRequests(clientId)
     and:
       def reservationPeriod = ReservationPeriod.morning()
       def parkingSpotType = ParkingSpotType.Bronze
@@ -46,7 +46,7 @@ class RequestingPartOfAnyParkingSpotTest extends Specification {
   
   def "cannot make reservation for part of parking spot when there is too many made reservations"() {
     given:
-      def clientReservations = reservationRequestsWith(clientId, anyReservationId(), now)
+      def clientReservations = reservationRequestsWith(clientId, anyReservationId())
     
     when:
       Either<ReservationRequestFailed, ChosenParkingSpotReservationRequested> result = clientReservations.createRequest(ReservationPeriod.morning(), anyParkingSpotId())

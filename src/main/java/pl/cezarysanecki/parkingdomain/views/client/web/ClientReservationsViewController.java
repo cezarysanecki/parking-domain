@@ -48,7 +48,7 @@ class ClientReservationsViewController {
         Try<Result> result = creatingReservationRequest.createRequest(new CreateReservationRequestForChosenParkingSpotCommand(
                 ClientId.of(request.clientId),
                 ParkingSpotId.of(parkingSpotId),
-                request.reservationPeriod,
+                new ReservationPeriod(request.dayParts),
                 dateProvider.now()));
 
         return result
@@ -64,7 +64,7 @@ class ClientReservationsViewController {
                 ClientId.of(request.clientId),
                 ParkingSpotType.Gold,
                 VehicleSizeUnit.of(request.vehicleSize),
-                request.reservationPeriod,
+                new ReservationPeriod(request.dayParts),
                 dateProvider.now()));
 
         return result
@@ -102,7 +102,7 @@ class ClientReservationsViewController {
 class CreateReservationRequestForWholeParkingSpotRequest {
 
     UUID clientId;
-    ReservationPeriod reservationPeriod;
+    Set<ReservationPeriod.DayPart> dayParts;
 
 }
 
@@ -112,7 +112,7 @@ class CreateReservationRequestForWholeParkingSpotRequest {
 class CreateReservationRequestForAnyParkingSpotRequest {
 
     UUID clientId;
-    ReservationPeriod reservationPeriod;
+    Set<ReservationPeriod.DayPart> dayParts;
     ParkingSpotType parkingSpotType;
     int vehicleSize;
 

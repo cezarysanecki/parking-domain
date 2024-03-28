@@ -13,13 +13,11 @@ public class ClientReservationRequestsFactory {
     private final DateProvider dateProvider;
 
     public ClientReservationRequests createEmpty(ClientId clientId) {
-        LocalDateTime now = dateProvider.now();
-        return ClientReservationRequests.empty(clientId, now);
+        return ClientReservationRequests.empty(clientId);
     }
 
     public ClientReservationRequests create(ClientId clientId, Set<ReservationId> reservations) {
-        LocalDateTime now = dateProvider.now();
-        return new ClientReservationRequests(clientId, reservations, now);
+        return new ClientReservationRequests(clientId, reservations);
     }
 
 }

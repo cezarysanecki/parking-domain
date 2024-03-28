@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 class InMemoryClientsReservationsViewsRepository implements ClientsReservationsViews {
 
     private static final Map<ClientId, ClientReservationsViewEntity> DATABASE = new ConcurrentHashMap<>();
+    private static final Map<ReservationId, ParkingSpotId> DATABASE_APPROVED_RESERVATIONS = new ConcurrentHashMap<>();
 
     @Override
     public ClientReservationsView findFor(ClientId clientId) {
@@ -29,12 +30,17 @@ class InMemoryClientsReservationsViewsRepository implements ClientsReservationsV
     }
 
     @Override
-    public ClientReservationsView approveReservation(ReservationId reservationId, ParkingSpotId parkingSpotId) {
+    public void approveReservation(ReservationId reservationId, ParkingSpotId parkingSpotId) {
         ClientReservationsViewEntity entity = DATABASE.values().stream()
                 .filter(clientReservationsViewEntity -> clientReservationsViewEntity.reservations.stream()
                         .anyMatch(clientReservationViewEntity -> clientReservationViewEntity.getReservationId().equals(reservationId.getValue())))
                 .findFirst()
-                .orElseThrow(() -> new IllegalStateException("there should be reservation with id " + reservationId));
+                .orElse(null);
+        if (entity == null) {
+            DATABASE_APPROVED_RESERVATIONS.put(reservationId, parkingSpotId);
+            log.debug("cannot find pending reservation request with id {} - need to store this info in temp", reservationId);
+            return;
+        }
 
         entity.getReservations()
                 .stream()
@@ -45,26 +51,29 @@ class InMemoryClientsReservationsViewsRepository implements ClientsReservationsV
                     reservation.status = ClientReservationStatus.Approved;
                 });
         DATABASE.put(ClientId.of(entity.clientId), entity);
-
-        return map(entity);
     }
 
     @Override
-    public ClientReservationsView addPendingReservation(ClientId clientId, Option<ParkingSpotId> parkingSpotId, ReservationId reservationId) {
+    public void addPendingReservation(ClientId clientId, Option<ParkingSpotId> parkingSpotId, ReservationId reservationId) {
         ClientReservationsViewEntity entity = DATABASE.getOrDefault(clientId, new ClientReservationsViewEntity(clientId.getValue(), new HashSet<>()));
+
+        ParkingSpotId approvedParkingSpotId = DATABASE_APPROVED_RESERVATIONS.remove(reservationId);
+        ParkingSpotId parkingSpotToSave = approvedParkingSpotId != null ? approvedParkingSpotId : parkingSpotId.getOrNull();
+
+        if (parkingSpotToSave == null) {
+            log.error("there is no parking spot to assign to client - look at that");
+        }
 
         entity.getReservations()
                 .add(new ClientReservationViewEntity(
                         reservationId.getValue(),
-                        parkingSpotId.map(ParkingSpotId::getValue).getOrNull(),
-                        ClientReservationStatus.Pending));
+                        Option.of(parkingSpotToSave).map(ParkingSpotId::getValue).getOrNull(),
+                        approvedParkingSpotId != null ? ClientReservationStatus.Approved : ClientReservationStatus.Pending));
         DATABASE.put(clientId, entity);
-
-        return map(entity);
     }
 
     @Override
-    public ClientReservationsView cancelReservation(ClientId clientId, ReservationId reservationId) {
+    public void cancelReservation(ClientId clientId, ReservationId reservationId) {
         ClientReservationsViewEntity entity = DATABASE.getOrDefault(clientId, new ClientReservationsViewEntity(clientId.getValue(), new HashSet<>()));
 
         entity.getReservations()
@@ -73,8 +82,6 @@ class InMemoryClientsReservationsViewsRepository implements ClientsReservationsV
                 .findFirst()
                 .ifPresent(reservation -> reservation.status = ClientReservationStatus.Cancelled);
         DATABASE.put(clientId, entity);
-
-        return map(entity);
     }
 
     private static ClientReservationsView map(ClientReservationsViewEntity entity) {
