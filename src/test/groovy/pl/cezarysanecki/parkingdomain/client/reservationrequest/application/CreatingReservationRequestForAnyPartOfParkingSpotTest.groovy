@@ -5,6 +5,7 @@ import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientId
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequests
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsEvent
 import pl.cezarysanecki.parkingdomain.commons.commands.Result
+import pl.cezarysanecki.parkingdomain.commons.commands.ValidationError
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotType
 import pl.cezarysanecki.parkingdomain.parking.model.VehicleSizeUnit
 import pl.cezarysanecki.parkingdomain.reservation.model.ReservationId
@@ -27,6 +28,11 @@ class CreatingReservationRequestForAnyPartOfParkingSpotTest extends AbstractClie
   
   @Subject
   CreatingReservationRequest sut = creatingReservationRequest
+  
+  def setup() {
+    dateProvider.setCurrentDate(now)
+    clientReservationRequestCommandValidator.validate(_ as ClientReservationRequestCommand) >> Set.of()
+  }
   
   def 'should successfully create reservation request for any part of parking spot if there is no others'() {
     given:
@@ -52,6 +58,21 @@ class CreatingReservationRequestForAnyPartOfParkingSpotTest extends AbstractClie
     then:
       result.isSuccess()
       result.get() in Result.Rejection
+  }
+  
+  def 'should reject creation of reservation request when command validation failed'() {
+    given:
+      persisted(noReservationRequests(clientId))
+    
+    when:
+      def result = sut.createRequest(new CreateReservationRequestForPartOfAnyParkingSpotCommand(
+          clientId, ParkingSpotType.Gold, VehicleSizeUnit.of(2), ReservationPeriod.evening(), now))
+    
+    then:
+      result.isSuccess()
+      result.get() in Result.Rejection
+    and:
+      clientReservationRequestCommandValidator.validate(_ as ClientReservationRequestCommand) >> Set.of(new ValidationError("any", "test msg"))
   }
   
   def 'should successfully create reservation for any part of parking spot even if there is no client reservation requests'() {
