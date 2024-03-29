@@ -6,10 +6,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientId;
-import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsEvent;
-import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsEvent.AnyParkingSpotReservationRequested;
-import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsEvent.ChosenParkingSpotReservationRequested;
-import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsEvent.ReservationRequestCancelled;
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.events.ClientReservationRequestsEvent;
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.events.AnyParkingSpotReservationRequested;
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.events.ChosenParkingSpotReservationRequested;
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.events.ReservationRequestCancelled;
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.events.ClientReservationRequestsEvent.ReservationRequestRejected;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsEvent;
 import pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsEvent.ReservationForPartOfParkingSpotMade;
@@ -33,6 +34,7 @@ public class ClientReservationViewEventHandler {
                 Case($(instanceOf(ChosenParkingSpotReservationRequested.class)), this::handle),
                 Case($(instanceOf(AnyParkingSpotReservationRequested.class)), this::handle),
                 Case($(instanceOf(ReservationRequestCancelled.class)), this::handle),
+                Case($(instanceOf(ReservationRequestRejected.class)), this::handle),
                 Case($(), () -> event));
     }
 
@@ -69,10 +71,20 @@ public class ClientReservationViewEventHandler {
         ClientId clientId = reservationRequestCancelled.getClientId();
         ReservationId reservationId = reservationRequestCancelled.getReservationId();
 
-        log.debug("removing reservation view for client with id {}", clientId);
+        log.debug("cancelling reservation view for client with id {}", clientId);
         clientsReservationsViews.cancelReservation(clientId, reservationId);
 
         return reservationRequestCancelled;
+    }
+
+    private ClientReservationRequestsEvent handle(ReservationRequestRejected reservationRequestRejected) {
+        ClientId clientId = reservationRequestRejected.getClientId();
+        ReservationId reservationId = reservationRequestRejected.getReservationId();
+
+        log.debug("rejecting reservation view for client with id {}", clientId);
+        clientsReservationsViews.rejectReservation(clientId, reservationId);
+
+        return reservationRequestRejected;
     }
 
     public ParkingSpotReservationsEvent handle(ReservationForWholeParkingSpotMade reservationForWholeParkingSpotMade) {

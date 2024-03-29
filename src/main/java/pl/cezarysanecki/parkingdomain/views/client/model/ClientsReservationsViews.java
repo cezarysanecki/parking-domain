@@ -15,4 +15,6 @@ public interface ClientsReservationsViews {
 
     void cancelReservation(ClientId clientId, ReservationId reservationIde);
 
+    void rejectReservation(ClientId clientId, ReservationId reservationIde);
+
 }

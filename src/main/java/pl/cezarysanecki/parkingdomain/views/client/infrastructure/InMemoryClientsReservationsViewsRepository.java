@@ -84,6 +84,18 @@ class InMemoryClientsReservationsViewsRepository implements ClientsReservationsV
         DATABASE.put(clientId, entity);
     }
 
+    @Override
+    public void rejectReservation(ClientId clientId, ReservationId reservationId) {
+        ClientReservationsViewEntity entity = DATABASE.getOrDefault(clientId, new ClientReservationsViewEntity(clientId.getValue(), new HashSet<>()));
+
+        entity.getReservations()
+                .stream()
+                .filter(reservation -> reservation.reservationId.equals(reservationId.getValue()))
+                .findFirst()
+                .ifPresent(reservation -> reservation.status = ClientReservationStatus.Rejected);
+        DATABASE.put(clientId, entity);
+    }
+
     private static ClientReservationsView map(ClientReservationsViewEntity entity) {
         return new ClientReservationsView(entity.getClientId(), entity.getReservations()
                 .stream()

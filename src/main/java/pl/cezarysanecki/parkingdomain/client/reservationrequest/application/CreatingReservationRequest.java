@@ -19,9 +19,11 @@ import static io.vavr.API.Case;
 import static io.vavr.API.Match;
 import static io.vavr.Patterns.$Left;
 import static io.vavr.Patterns.$Right;
-import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsEvent.AnyParkingSpotReservationRequested;
-import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsEvent.ChosenParkingSpotReservationRequested;
-import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsEvent.ReservationRequestFailed;
+
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.events.AnyParkingSpotReservationRequested;
+
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.events.ChosenParkingSpotReservationRequested;
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.events.ReservationRequestFailed;
 import static pl.cezarysanecki.parkingdomain.commons.commands.Result.Success;
 
 @Slf4j
@@ -81,7 +83,7 @@ public class CreatingReservationRequest {
     private Result publishEvents(ReservationRequestFailed reservationRequestFailed) {
         clientReservationRequestsRepository.publish(reservationRequestFailed);
         log.debug("rejected to request reservation for client with id {}, reason: {}", reservationRequestFailed.getClientId(), reservationRequestFailed.getReason());
-        return Rejection.empty();
+        return Rejection.with(reservationRequestFailed.getReason());
     }
 
     private ClientReservationRequests load(ClientId clientId) {

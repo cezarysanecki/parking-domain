@@ -18,8 +18,10 @@ import static io.vavr.API.Case;
 import static io.vavr.API.Match;
 import static io.vavr.Patterns.$Left;
 import static io.vavr.Patterns.$Right;
-import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsEvent.CancellationOfReservationRequestFailed;
-import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsEvent.ReservationRequestCancelled;
+
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.events.ReservationRequestCancellationFailed;
+
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.events.ReservationRequestCancelled;
 import static pl.cezarysanecki.parkingdomain.commons.commands.Result.Rejection;
 import static pl.cezarysanecki.parkingdomain.commons.commands.Result.Success;
 
@@ -38,7 +40,7 @@ public class CancellingReservationRequest {
 
         return Try.of(() -> {
             ClientReservationRequests clientReservationRequests = load(command.getReservationId());
-            Either<CancellationOfReservationRequestFailed, ReservationRequestCancelled> result = clientReservationRequests.cancel(command.getReservationId());
+            Either<ReservationRequestCancellationFailed, ReservationRequestCancelled> result = clientReservationRequests.cancel(command.getReservationId());
             return Match(result).of(
                     Case($Left($()), this::publishEvents),
                     Case($Right($()), this::publishEvents));
@@ -51,10 +53,10 @@ public class CancellingReservationRequest {
         return new Success();
     }
 
-    private Result publishEvents(CancellationOfReservationRequestFailed cancellationOfReservationRequestFailed) {
-        clientReservationRequestsRepository.publish(cancellationOfReservationRequestFailed);
+    private Result publishEvents(ReservationRequestCancellationFailed reservationRequestCancellationFailed) {
+        clientReservationRequestsRepository.publish(reservationRequestCancellationFailed);
         log.debug("rejected to cancel reservation request for client with id {}, reason: {}",
-                cancellationOfReservationRequestFailed.getClientId(), cancellationOfReservationRequestFailed.getReason());
+                reservationRequestCancellationFailed.getClientId(), reservationRequestCancellationFailed.getReason());
         return Rejection.empty();
     }
 

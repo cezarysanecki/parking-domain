@@ -2,6 +2,7 @@ package pl.cezarysanecki.parkingdomain.reservation.application
 
 import io.vavr.control.Option
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientId
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.events.ReservationRequestCancelled
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservation
 import pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservations
@@ -11,7 +12,6 @@ import pl.cezarysanecki.parkingdomain.reservation.model.ReservationId
 import pl.cezarysanecki.parkingdomain.reservation.model.ReservationPeriod
 import spock.lang.Specification
 
-import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsEvent.ReservationRequestCancelled
 import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsFixture.anyClientId
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.anyParkingSpotId
 import static pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsEvent.ReservationCancelled

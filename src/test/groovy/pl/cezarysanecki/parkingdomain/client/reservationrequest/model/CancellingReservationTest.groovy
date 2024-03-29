@@ -1,13 +1,13 @@
 package pl.cezarysanecki.parkingdomain.client.reservationrequest.model
 
 import io.vavr.control.Either
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.events.ReservationRequestCancellationFailed
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.events.ReservationRequestCancelled
 import pl.cezarysanecki.parkingdomain.reservation.model.ReservationId
 import spock.lang.Specification
 
 import static ClientReservationRequestsFixture.anyClientId
 import static ClientReservationRequestsFixture.reservationRequestsWith
-import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsEvent.CancellationOfReservationRequestFailed
-import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsEvent.ReservationRequestCancelled
 import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsFixture.anyReservationId
 import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsFixture.noReservationRequests
 
@@ -21,7 +21,7 @@ class CancellingReservationTest extends Specification {
       def clientReservationRequests = reservationRequestsWith(clientId, reservationId)
     
     when:
-      Either<CancellationOfReservationRequestFailed, ReservationRequestCancelled> result = clientReservationRequests.cancel(reservationId)
+      Either<ReservationRequestCancellationFailed, ReservationRequestCancelled> result = clientReservationRequests.cancel(reservationId)
     
     then:
       result.isRight()
@@ -36,7 +36,7 @@ class CancellingReservationTest extends Specification {
       def clientReservationRequests = noReservationRequests(clientId)
     
     when:
-      Either<CancellationOfReservationRequestFailed, ReservationRequestCancelled> result = clientReservationRequests.cancel(reservationId)
+      Either<ReservationRequestCancellationFailed, ReservationRequestCancelled> result = clientReservationRequests.cancel(reservationId)
     
     then:
       result.isLeft()

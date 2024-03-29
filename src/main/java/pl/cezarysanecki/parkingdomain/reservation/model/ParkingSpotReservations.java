@@ -49,14 +49,14 @@ public class ParkingSpotReservations {
 
     public Either<ReservationFailed, ReservationForWholeParkingSpotMade> reserveWhole(ReservationId reservationId, ReservationPeriod period) {
         if (isReservationFor(period)) {
-            return announceFailure(new ReservationFailed(reservationId, period, parkingSpotId, "there is any reservation for that period"));
+            return announceFailure(new ReservationFailed(reservationId, "there is any reservation for that period"));
         }
         return announceSuccess(new ReservationForWholeParkingSpotMade(reservationId, period, parkingSpotId));
     }
 
     public Either<ReservationFailed, ReservationForPartOfParkingSpotMade> reservePart(ReservationId reservationId, ReservationPeriod period, VehicleSizeUnit vehicleSizeUnit) {
         if (isAnyIndividualReservationFor(period)) {
-            return announceFailure(new ReservationFailed(reservationId, period, parkingSpotId, "there is an individual reservation for that period"));
+            return announceFailure(new ReservationFailed(reservationId, "there is an individual reservation for that period"));
         }
         return announceSuccess(new ReservationForPartOfParkingSpotMade(reservationId, period, parkingSpotId, vehicleSizeUnit));
     }

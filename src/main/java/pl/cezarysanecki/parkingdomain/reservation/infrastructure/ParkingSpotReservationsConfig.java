@@ -36,7 +36,7 @@ public class ParkingSpotReservationsConfig {
     @Bean
     @Profile("local")
     public ParkingSpotReservationsRepository inMemoryReservationSchedules() {
-        return new InMemoryReservationScheduleRepository(eventPublisher);
+        return new InMemoryParkingSpotReservationsRepository(eventPublisher);
     }
 
 }

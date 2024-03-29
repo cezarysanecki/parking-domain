@@ -9,15 +9,15 @@ import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotType;
 import pl.cezarysanecki.parkingdomain.parking.model.VehicleSizeUnit;
 import pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservations;
 import pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsEvent;
-import pl.cezarysanecki.parkingdomain.reservation.model.ReservationId;
 import pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsRepository;
+import pl.cezarysanecki.parkingdomain.reservation.model.ReservationId;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @RequiredArgsConstructor
-class InMemoryReservationScheduleRepository implements ParkingSpotReservationsRepository {
+class InMemoryParkingSpotReservationsRepository implements ParkingSpotReservationsRepository {
 
     private static final Map<ParkingSpotId, ParkingReservationsEntity> DATABASE = new ConcurrentHashMap<>();
     private final EventPublisher eventPublisher;
@@ -66,10 +66,18 @@ class InMemoryReservationScheduleRepository implements ParkingSpotReservationsRe
     }
 
     private ParkingSpotReservations handle(ParkingSpotReservationsEvent event) {
-        ParkingReservationsEntity entity = DATABASE.get(event.getParkingSpotId());
-        entity = entity.handle(event);
-        DATABASE.put(event.getParkingSpotId(), entity);
-        return DomainModelMapper.map(entity);
+        return Option.ofOptional(
+                        DATABASE.values()
+                                .stream()
+                                .filter(entity -> entity.collection.stream()
+                                        .anyMatch(reservationEntity -> reservationEntity.reservationId.equals(event.getReservationId().getValue())))
+                                .findFirst())
+                .map(entity -> {
+                    entity = entity.handle(event);
+                    DATABASE.put(ParkingSpotId.of(entity.parkingSpotId), entity);
+                    return DomainModelMapper.map(entity);
+                })
+                .getOrElseThrow(() -> new IllegalStateException("there should be parking spot reservations containing reservation with id " + event.getReservationId()));
     }
 
 }

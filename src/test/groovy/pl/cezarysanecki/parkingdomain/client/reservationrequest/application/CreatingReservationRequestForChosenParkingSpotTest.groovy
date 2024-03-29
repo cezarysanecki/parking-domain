@@ -3,7 +3,7 @@ package pl.cezarysanecki.parkingdomain.client.reservationrequest.application
 import io.vavr.control.Option
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientId
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequests
-import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsEvent
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.events.ClientReservationRequestsEvent
 import pl.cezarysanecki.parkingdomain.commons.commands.Result
 import pl.cezarysanecki.parkingdomain.commons.commands.ValidationError
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId

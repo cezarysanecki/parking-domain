@@ -1,7 +1,6 @@
 package pl.cezarysanecki.parkingdomain.client.reservationrequest.model;
 
 import io.vavr.control.Either;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
@@ -12,11 +11,13 @@ import pl.cezarysanecki.parkingdomain.reservation.model.ReservationPeriod;
 
 import java.util.Set;
 
-import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsEvent.AnyParkingSpotReservationRequested;
-import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsEvent.CancellationOfReservationRequestFailed;
-import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsEvent.ChosenParkingSpotReservationRequested;
-import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsEvent.ReservationRequestCancelled;
-import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsEvent.ReservationRequestFailed;
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.events.AnyParkingSpotReservationRequested;
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.events.ReservationRequestCancellationFailed;
+
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.events.ChosenParkingSpotReservationRequested;
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.events.ReservationRequestCancelled;
+
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.events.ReservationRequestFailed;
 import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announceFailure;
 import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announceSuccess;
 
@@ -45,9 +46,9 @@ public class ClientReservationRequests {
         return announceSuccess(new AnyParkingSpotReservationRequested(clientId, reservationPeriod, parkingSpotType, vehicleSizeUnit));
     }
 
-    public Either<CancellationOfReservationRequestFailed, ReservationRequestCancelled> cancel(ReservationId reservationId) {
+    public Either<ReservationRequestCancellationFailed, ReservationRequestCancelled> cancel(ReservationId reservationId) {
         if (doesNotContain(reservationId)) {
-            return announceFailure(new CancellationOfReservationRequestFailed(clientId, reservationId, "does not have this reservation"));
+            return announceFailure(new ReservationRequestCancellationFailed(clientId, reservationId, "does not have this reservation"));
         }
         return announceSuccess(new ReservationRequestCancelled(clientId, reservationId));
     }

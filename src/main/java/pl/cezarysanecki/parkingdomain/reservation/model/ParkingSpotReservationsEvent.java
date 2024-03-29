@@ -10,6 +10,8 @@ public sealed interface ParkingSpotReservationsEvent extends DomainEvent {
 
     ReservationId getReservationId();
 
+    ParkingSpotId getParkingSpotId();
+
     @Value
     final class ReservationForWholeParkingSpotMade implements ParkingSpotReservationsEvent {
 
@@ -33,6 +35,7 @@ public sealed interface ParkingSpotReservationsEvent extends DomainEvent {
     final class ReservationFailed implements ParkingSpotReservationsEvent {
 
         @NonNull ReservationId reservationId;
+        @NonNull ParkingSpotId parkingSpotId;
         @NonNull String reason;
 
     }

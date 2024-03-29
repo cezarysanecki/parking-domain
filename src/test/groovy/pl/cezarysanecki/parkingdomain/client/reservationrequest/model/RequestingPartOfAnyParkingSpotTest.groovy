@@ -1,6 +1,9 @@
 package pl.cezarysanecki.parkingdomain.client.reservationrequest.model
 
 import io.vavr.control.Either
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.events.AnyParkingSpotReservationRequested
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.events.ChosenParkingSpotReservationRequested
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.events.ReservationRequestFailed
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotType
 import pl.cezarysanecki.parkingdomain.parking.model.VehicleSizeUnit
 import pl.cezarysanecki.parkingdomain.reservation.model.ReservationPeriod
@@ -8,12 +11,9 @@ import spock.lang.Specification
 
 import java.time.LocalDateTime
 
-import static ClientReservationRequestsEvent.ReservationRequestFailed
 import static ClientReservationRequestsFixture.anyClientId
 import static ClientReservationRequestsFixture.noReservationRequests
 import static ClientReservationRequestsFixture.reservationRequestsWith
-import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsEvent.AnyParkingSpotReservationRequested
-import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsEvent.ChosenParkingSpotReservationRequested
 import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsFixture.anyReservationId
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.anyParkingSpotId
 
