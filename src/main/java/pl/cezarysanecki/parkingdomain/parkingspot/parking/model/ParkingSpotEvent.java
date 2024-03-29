@@ -5,8 +5,8 @@ import io.vavr.control.Option;
 import lombok.NonNull;
 import lombok.Value;
 import pl.cezarysanecki.parkingdomain.commons.events.DomainEvent;
-import pl.cezarysanecki.parkingdomain.vehicle.model.VehicleInformation;
-import pl.cezarysanecki.parkingdomain.vehicle.model.VehicleId;
+import pl.cezarysanecki.parkingdomain.vehicle.parking.model.VehicleId;
+import pl.cezarysanecki.parkingdomain.vehicle.parking.model.VehicleSize;
 
 public interface ParkingSpotEvent extends DomainEvent {
 
@@ -16,7 +16,8 @@ public interface ParkingSpotEvent extends DomainEvent {
     class ParkingSpotOccupied implements ParkingSpotEvent {
 
         @NonNull ParkingSpotId parkingSpotId;
-        @NonNull VehicleInformation vehicle;
+        @NonNull VehicleId vehicleId;
+        @NonNull VehicleSize vehicleSize;
 
     }
 
@@ -52,7 +53,7 @@ public interface ParkingSpotEvent extends DomainEvent {
     class ParkingSpotOccupationFailed implements ParkingSpotEvent {
 
         @NonNull ParkingSpotId parkingSpotId;
-        @NonNull VehicleInformation vehicle;
+        @NonNull VehicleId vehicleId;
         @NonNull String reason;
 
     }

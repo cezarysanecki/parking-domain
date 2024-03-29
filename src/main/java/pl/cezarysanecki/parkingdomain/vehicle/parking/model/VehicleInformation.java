@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.vehicle.model;
+package pl.cezarysanecki.parkingdomain.vehicle.parking.model;
 
 import lombok.NonNull;
 import lombok.Value;
@@ -7,7 +7,6 @@ import lombok.Value;
 public class VehicleInformation {
 
     @NonNull VehicleId vehicleId;
-    @NonNull RegistrationNumber registrationNumber;
     @NonNull VehicleSize vehicleSize;
 
 }

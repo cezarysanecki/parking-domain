@@ -7,7 +7,8 @@ import pl.cezarysanecki.parkingdomain.parkingspot.parking.model.OpenParkingSpot;
 import pl.cezarysanecki.parkingdomain.parkingspot.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parkingspot.parking.model.ParkingSpotInformation;
 import pl.cezarysanecki.parkingdomain.parkingspot.parking.model.ParkingSpotOccupation;
-import pl.cezarysanecki.parkingdomain.vehicle.model.VehicleId;
+import pl.cezarysanecki.parkingdomain.vehicle.parking.VehicleId;
+import pl.cezarysanecki.parkingdomain.vehicle.parking.model.VehicleId;
 
 import java.util.stream.Collectors;
 

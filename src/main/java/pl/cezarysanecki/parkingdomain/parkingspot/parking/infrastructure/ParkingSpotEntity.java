@@ -5,8 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.parkingspot.parking.model.ParkingSpotEvent;
 import pl.cezarysanecki.parkingdomain.parkingspot.parking.model.ParkingSpotEvent.ParkingSpotLeftEvents;
-import pl.cezarysanecki.parkingdomain.vehicle.model.VehicleInformation;
-import pl.cezarysanecki.parkingdomain.vehicle.model.VehicleId;
+import pl.cezarysanecki.parkingdomain.vehicle.parking.model.VehicleId;
+import pl.cezarysanecki.parkingdomain.vehicle.parking.model.VehicleSize;
 
 import java.util.Set;
 import java.util.UUID;
@@ -26,8 +26,8 @@ class ParkingSpotEntity {
     final int capacity;
     Set<ParkingSpotVehicleEntity> vehicles;
 
-    ParkingSpotEntity handle(ParkingSpotEvent parkingSpotEvent) {
-        return API.Match(parkingSpotEvent).of(
+    ParkingSpotEntity handle(ParkingSpotEvent domainEvent) {
+        return API.Match(domainEvent).of(
                 Case($(instanceOf(ParkingSpotOccupiedEvents.class)), this::handle),
                 Case($(instanceOf(ParkingSpotOccupied.class)), this::handle),
                 Case($(instanceOf(ParkingSpotLeftEvents.class)), this::handle),
@@ -35,25 +35,27 @@ class ParkingSpotEntity {
                 Case($(), () -> this));
     }
 
-    private ParkingSpotEntity handle(ParkingSpotOccupiedEvents parkingSpotOccupiedEvents) {
-        ParkingSpotOccupied event = parkingSpotOccupiedEvents.getParkingSpotOccupied();
+    private ParkingSpotEntity handle(ParkingSpotOccupiedEvents domainEvent) {
+        ParkingSpotOccupied event = domainEvent.getParkingSpotOccupied();
         return handle(event);
     }
 
-    private ParkingSpotEntity handle(ParkingSpotOccupied parkingSpotOccupied) {
-        VehicleInformation vehicle = parkingSpotOccupied.getVehicle();
-        vehicles.add(new ParkingSpotVehicleEntity(vehicle.getVehicleId().getValue(), vehicle.getVehicleSize().getValue()));
-        log.debug("occupying parking spot with id {} by vehicle with id {}", parkingSpotOccupied.getParkingSpotId(), vehicle.getVehicleId());
+    private ParkingSpotEntity handle(ParkingSpotOccupied domainEvent) {
+        VehicleId vehicleId = domainEvent.getVehicleId();
+        VehicleSize vehicleSize = domainEvent.getVehicleSize();
+
+        vehicles.add(new ParkingSpotVehicleEntity(vehicleId.getValue(), vehicleSize.getValue()));
+        log.debug("occupying parking spot with id {} by vehicle with id {}", domainEvent.getParkingSpotId(), vehicleId);
         return this;
     }
 
-    private ParkingSpotEntity handle(ParkingSpotLeftEvents parkingSpotLeftEvents) {
-        ParkingSpotLeft event = parkingSpotLeftEvents.getParkingSpotLeft();
+    private ParkingSpotEntity handle(ParkingSpotLeftEvents domainEvent) {
+        ParkingSpotLeft event = domainEvent.getParkingSpotLeft();
         return handle(event);
     }
 
-    private ParkingSpotEntity handle(ParkingSpotLeft parkingSpotLeft) {
-        VehicleId vehicleId = parkingSpotLeft.getVehicleId();
+    private ParkingSpotEntity handle(ParkingSpotLeft domainEvent) {
+        VehicleId vehicleId = domainEvent.getVehicleId();
         vehicles.removeIf(vehicle -> vehicle.vehicleId.equals(vehicleId.getValue()));
         log.debug("driving away vehicle with id {}", vehicleId);
         return this;
