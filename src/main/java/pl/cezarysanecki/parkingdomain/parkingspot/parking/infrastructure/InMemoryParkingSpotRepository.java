@@ -7,7 +7,6 @@ import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 import pl.cezarysanecki.parkingdomain.parkingspot.parking.application.CreatingParkingSpot.ParkingSpotCreated;
 import pl.cezarysanecki.parkingdomain.parkingspot.parking.model.OccupiedParkingSpot;
 import pl.cezarysanecki.parkingdomain.parkingspot.parking.model.OpenParkingSpot;
-import pl.cezarysanecki.parkingdomain.parkingspot.parking.model.ParkingSpot;
 import pl.cezarysanecki.parkingdomain.parkingspot.parking.model.ParkingSpotEvent;
 import pl.cezarysanecki.parkingdomain.parkingspot.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parkingspot.parking.model.ParkingSpots;
@@ -47,28 +46,31 @@ class InMemoryParkingSpotRepository implements ParkingSpots {
     }
 
     @Override
-    public ParkingSpot publish(ParkingSpotEvent domainEvent) {
-        ParkingSpot result = Match(domainEvent).of(
+    public void publish(ParkingSpotEvent domainEvent) {
+        Match(domainEvent).of(
                 Case($(instanceOf(ParkingSpotCreated.class)), this::createNewParkingSpot),
                 Case($(), this::handleNextEvent));
         eventPublisher.publish(domainEvent.normalize());
-        return result;
     }
 
-    private ParkingSpot createNewParkingSpot(ParkingSpotCreated domainEvent) {
+    private ParkingSpotEvent createNewParkingSpot(ParkingSpotCreated domainEvent) {
         ParkingSpotEntity entity = new ParkingSpotEntity(
                 domainEvent.getParkingSpotId().getValue(),
                 domainEvent.getParkingSpotCapacity().getValue(),
                 new HashSet<>());
         DATABASE.put(domainEvent.getParkingSpotId(), entity);
         log.debug("creating parking spot with id {}", domainEvent.getParkingSpotId());
-        return DomainModelMapper.mapOpen(entity);
+        return domainEvent;
     }
 
-    private OpenParkingSpot handleNextEvent(ParkingSpotEvent domainEvent) {
+    private ParkingSpotEvent handleNextEvent(ParkingSpotEvent domainEvent) {
         ParkingSpotEntity entity = DATABASE.get(domainEvent.getParkingSpotId());
+        if (entity == null) {
+            log.debug("cannot find parking spot with id {}", domainEvent.getParkingSpotId());
+            return domainEvent;
+        }
         entity.handle(domainEvent);
-        return DomainModelMapper.mapOpen(entity);
+        return domainEvent;
     }
 
 }

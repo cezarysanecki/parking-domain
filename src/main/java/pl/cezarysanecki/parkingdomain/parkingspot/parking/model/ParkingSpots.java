@@ -9,6 +9,6 @@ public interface ParkingSpots {
 
     Option<OccupiedParkingSpot> findOccupiedBy(VehicleId vehicleId);
 
-    ParkingSpot publish(ParkingSpotEvent parkingSpotEvent);
+    void publish(ParkingSpotEvent parkingSpotEvent);
 
 }
