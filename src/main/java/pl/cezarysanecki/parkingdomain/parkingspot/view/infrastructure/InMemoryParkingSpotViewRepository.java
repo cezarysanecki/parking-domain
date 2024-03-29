@@ -7,7 +7,7 @@ import pl.cezarysanecki.parkingdomain.parkingspot.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parkingspot.view.infrastructure.ParkingSpotViewEntity.ParkedVehicleView;
 import pl.cezarysanecki.parkingdomain.parkingspot.view.model.ParkingSpotView;
 import pl.cezarysanecki.parkingdomain.parkingspot.view.model.ParkingSpotViews;
-import pl.cezarysanecki.parkingdomain.vehicle.model.Vehicle;
+import pl.cezarysanecki.parkingdomain.vehicle.model.VehicleInformation;
 import pl.cezarysanecki.parkingdomain.vehicle.model.VehicleId;
 
 import java.util.HashSet;
@@ -56,7 +56,7 @@ class InMemoryParkingSpotViewRepository implements ParkingSpotViews {
     public void handle(ParkingSpotOccupied event) {
         Option.of(DATABASE.get(event.getParkingSpotId()))
                 .map(entity -> {
-                    Vehicle vehicle = event.getVehicle();
+                    VehicleInformation vehicle = event.getVehicle();
                     entity.parkedVehicles.add(new ParkedVehicleView(
                             vehicle.getVehicleId().getValue(),
                             vehicle.getVehicleSize().getValue()));

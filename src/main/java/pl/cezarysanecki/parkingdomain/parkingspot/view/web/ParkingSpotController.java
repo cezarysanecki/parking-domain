@@ -18,7 +18,7 @@ import pl.cezarysanecki.parkingdomain.parkingspot.parking.model.ParkingSpotCapac
 import pl.cezarysanecki.parkingdomain.parkingspot.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parkingspot.view.model.ParkingSpotView;
 import pl.cezarysanecki.parkingdomain.parkingspot.view.model.ParkingSpotViews;
-import pl.cezarysanecki.parkingdomain.vehicle.model.Vehicle;
+import pl.cezarysanecki.parkingdomain.vehicle.model.VehicleInformation;
 import pl.cezarysanecki.parkingdomain.vehicle.model.VehicleId;
 import pl.cezarysanecki.parkingdomain.vehicle.model.VehicleSize;
 
@@ -56,7 +56,7 @@ class ParkingSpotController {
     ResponseEntity occupy(@PathVariable UUID parkingSpotId, @RequestBody OccupyParkingSpotRequest request) {
         Try<Result> result = occupyingParkingSpot.occupy(new OccupyingParkingSpot.Command(
                 ParkingSpotId.of(parkingSpotId),
-                Vehicle.of(
+                VehicleInformation.of(
                         VehicleId.of(request.vehicleId),
                         VehicleSize.of(request.size))
         ));

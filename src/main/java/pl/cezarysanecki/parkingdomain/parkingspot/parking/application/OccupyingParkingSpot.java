@@ -11,7 +11,7 @@ import pl.cezarysanecki.parkingdomain.parkingspot.parking.model.OpenParkingSpot;
 import pl.cezarysanecki.parkingdomain.parkingspot.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parkingspot.parking.model.ParkingSpots;
 import pl.cezarysanecki.parkingdomain.parkingspot.parking.model.ParkingSpotEvent;
-import pl.cezarysanecki.parkingdomain.vehicle.model.Vehicle;
+import pl.cezarysanecki.parkingdomain.vehicle.model.VehicleInformation;
 
 import static io.vavr.API.$;
 import static io.vavr.API.Case;
@@ -29,13 +29,13 @@ public class OccupyingParkingSpot {
     public static class Command {
 
         @NonNull ParkingSpotId parkingSpotId;
-        @NonNull Vehicle vehicle;
+        @NonNull VehicleInformation vehicle;
 
     }
 
     public Try<Result> occupy(Command command) {
         ParkingSpotId parkingSpotId = command.parkingSpotId;
-        Vehicle vehicle = command.vehicle;
+        VehicleInformation vehicle = command.vehicle;
 
         return Try.of(() -> {
             OpenParkingSpot openParkingSpot = load(parkingSpotId);

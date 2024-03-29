@@ -4,7 +4,7 @@ import io.vavr.control.Either;
 import lombok.NonNull;
 import lombok.Value;
 import pl.cezarysanecki.parkingdomain.parkingspot.parking.model.ParkingSpotEvent.ParkingSpotOccupiedEvents;
-import pl.cezarysanecki.parkingdomain.vehicle.model.Vehicle;
+import pl.cezarysanecki.parkingdomain.vehicle.model.VehicleInformation;
 
 import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announceFailure;
 import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announceSuccess;
@@ -19,7 +19,7 @@ public class OpenParkingSpot implements ParkingSpot {
     @NonNull
     ParkingSpotInformation parkingSpotInformation;
 
-    public Either<ParkingSpotOccupationFailed, ParkingSpotOccupiedEvents> occupy(Vehicle vehicle) {
+    public Either<ParkingSpotOccupationFailed, ParkingSpotOccupiedEvents> occupy(VehicleInformation vehicle) {
         ParkingSpotOccupation parkingSpotOccupation = getParkingSpotOccupation();
         if (!parkingSpotOccupation.canHandle(vehicle.getVehicleSize())) {
             return announceFailure(new ParkingSpotOccupationFailed(getParkingSpotId(), vehicle, "there is not enough space for vehicle"));

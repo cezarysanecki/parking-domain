@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.parkingspot.parking.model.ParkingSpotEvent;
 import pl.cezarysanecki.parkingdomain.parkingspot.parking.model.ParkingSpotEvent.ParkingSpotLeftEvents;
-import pl.cezarysanecki.parkingdomain.vehicle.model.Vehicle;
+import pl.cezarysanecki.parkingdomain.vehicle.model.VehicleInformation;
 import pl.cezarysanecki.parkingdomain.vehicle.model.VehicleId;
 
 import java.util.Set;
@@ -41,7 +41,7 @@ class ParkingSpotEntity {
     }
 
     private ParkingSpotEntity handle(ParkingSpotOccupied parkingSpotOccupied) {
-        Vehicle vehicle = parkingSpotOccupied.getVehicle();
+        VehicleInformation vehicle = parkingSpotOccupied.getVehicle();
         vehicles.add(new ParkingSpotVehicleEntity(vehicle.getVehicleId().getValue(), vehicle.getVehicleSize().getValue()));
         log.debug("occupying parking spot with id {} by vehicle with id {}", parkingSpotOccupied.getParkingSpotId(), vehicle.getVehicleId());
         return this;

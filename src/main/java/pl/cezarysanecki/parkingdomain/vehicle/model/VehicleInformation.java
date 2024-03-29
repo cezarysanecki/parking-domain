@@ -4,7 +4,7 @@ import lombok.NonNull;
 import lombok.Value;
 
 @Value(staticConstructor = "of")
-public class Vehicle {
+public class VehicleInformation {
 
     @NonNull VehicleId vehicleId;
     @NonNull RegistrationNumber registrationNumber;
