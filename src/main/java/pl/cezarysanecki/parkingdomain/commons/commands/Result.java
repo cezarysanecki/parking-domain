@@ -19,6 +19,10 @@ public interface Result {
             return new Rejection(Set.of());
         }
 
+        public static Rejection with(String message) {
+            return new Rejection(Set.of(ValidationError.global(message)));
+        }
+
     }
 
 }

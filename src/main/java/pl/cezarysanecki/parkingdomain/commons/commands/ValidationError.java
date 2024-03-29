@@ -8,4 +8,8 @@ public class ValidationError {
     String field;
     String message;
 
+    public static ValidationError global(String message) {
+        return new ValidationError("global", message);
+    }
+
 }
