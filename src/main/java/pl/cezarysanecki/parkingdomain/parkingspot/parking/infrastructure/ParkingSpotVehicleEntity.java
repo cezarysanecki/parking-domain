@@ -1,10 +1,10 @@
 package pl.cezarysanecki.parkingdomain.parkingspot.parking.infrastructure;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 
 import java.util.UUID;
 
-@RequiredArgsConstructor
+@AllArgsConstructor
 class ParkingSpotVehicleEntity {
 
     final UUID vehicleId;

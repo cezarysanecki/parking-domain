@@ -1,7 +1,8 @@
 package pl.cezarysanecki.parkingdomain.parkingspot.parking.infrastructure;
 
 import io.vavr.API;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.parkingspot.parking.model.ParkingSpotEvent;
 import pl.cezarysanecki.parkingdomain.parkingspot.parking.model.ParkingSpotEvent.ParkingSpotLeftEvents;
 import pl.cezarysanecki.parkingdomain.vehicle.model.Vehicle;
@@ -17,7 +18,8 @@ import static pl.cezarysanecki.parkingdomain.parkingspot.parking.model.ParkingSp
 import static pl.cezarysanecki.parkingdomain.parkingspot.parking.model.ParkingSpotEvent.ParkingSpotOccupied;
 import static pl.cezarysanecki.parkingdomain.parkingspot.parking.model.ParkingSpotEvent.ParkingSpotOccupiedEvents;
 
-@RequiredArgsConstructor
+@Slf4j
+@AllArgsConstructor
 class ParkingSpotEntity {
 
     final UUID parkingSpotId;
@@ -41,6 +43,7 @@ class ParkingSpotEntity {
     private ParkingSpotEntity handle(ParkingSpotOccupied parkingSpotOccupied) {
         Vehicle vehicle = parkingSpotOccupied.getVehicle();
         vehicles.add(new ParkingSpotVehicleEntity(vehicle.getVehicleId().getValue(), vehicle.getVehicleSize().getValue()));
+        log.debug("occupying parking spot with id {} by vehicle with id {}", parkingSpotOccupied.getParkingSpotId(), vehicle.getVehicleId());
         return this;
     }
 
@@ -52,6 +55,7 @@ class ParkingSpotEntity {
     private ParkingSpotEntity handle(ParkingSpotLeft parkingSpotLeft) {
         VehicleId vehicleId = parkingSpotLeft.getVehicleId();
         vehicles.removeIf(vehicle -> vehicle.vehicleId.equals(vehicleId.getValue()));
+        log.debug("driving away vehicle with id {}", vehicleId);
         return this;
     }
 

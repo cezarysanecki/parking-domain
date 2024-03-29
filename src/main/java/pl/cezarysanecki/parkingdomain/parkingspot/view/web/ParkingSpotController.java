@@ -4,6 +4,7 @@ import io.vavr.control.Try;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -64,7 +65,7 @@ class ParkingSpotController {
                 .getOrElse(ResponseEntity.status(INTERNAL_SERVER_ERROR).build());
     }
 
-    @PostMapping("/parking-spot/drive-away/{vehicleId}")
+    @DeleteMapping("/parking-spot/drive-away/{vehicleId}")
     ResponseEntity occupy(@PathVariable UUID vehicleId) {
         Try<Result> result = releasingParkingSpot.driveAway(new ReleasingParkingSpot.Command(
                 VehicleId.of(vehicleId)

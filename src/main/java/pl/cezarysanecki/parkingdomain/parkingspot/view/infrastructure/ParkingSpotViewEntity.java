@@ -1,18 +1,18 @@
 package pl.cezarysanecki.parkingdomain.parkingspot.view.infrastructure;
 
-import lombok.Value;
+import lombok.AllArgsConstructor;
 
 import java.util.Set;
 import java.util.UUID;
 
-@Value
+@AllArgsConstructor
 class ParkingSpotViewEntity {
 
     UUID parkingSpotId;
     Set<ParkedVehicleView> parkedVehicles;
     int capacity;
 
-    @Value
+    @AllArgsConstructor
     static class ParkedVehicleView {
 
         UUID vehicleId;

@@ -13,6 +13,7 @@ import pl.cezarysanecki.parkingdomain.parkingspot.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parkingspot.parking.model.ParkingSpots;
 import pl.cezarysanecki.parkingdomain.vehicle.model.VehicleId;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -55,14 +56,16 @@ class InMemoryParkingSpotRepository implements ParkingSpots {
     }
 
     private ParkingSpot createNewParkingSpot(ParkingSpotCreated domainEvent) {
-        ParkingSpotEntity entity = DATABASE.put(domainEvent.getParkingSpotId(), new ParkingSpotEntity(
+        ParkingSpotEntity entity = new ParkingSpotEntity(
                 domainEvent.getParkingSpotId().getValue(),
-                domainEvent.getParkingSpotCapacity().getValue()));
+                domainEvent.getParkingSpotCapacity().getValue(),
+                new HashSet<>());
+        DATABASE.put(domainEvent.getParkingSpotId(), entity);
+        log.debug("creating parking spot with id {}", domainEvent.getParkingSpotId());
         return DomainModelMapper.mapOpen(entity);
     }
 
     private OpenParkingSpot handleNextEvent(ParkingSpotEvent domainEvent) {
-        log.debug("handling parking spot event {}", domainEvent.getClass().getSimpleName());
         ParkingSpotEntity entity = DATABASE.get(domainEvent.getParkingSpotId());
         entity.handle(domainEvent);
         return DomainModelMapper.mapOpen(entity);

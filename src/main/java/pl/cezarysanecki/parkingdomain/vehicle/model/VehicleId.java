@@ -13,4 +13,9 @@ public class VehicleId {
         return new VehicleId(UUID.randomUUID());
     }
 
+    @Override
+    public String toString() {
+        return value.toString();
+    }
+
 }
