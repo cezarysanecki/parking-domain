@@ -9,7 +9,6 @@ import java.util.Set;
 
 import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announceFailure;
 import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announceSuccess;
-import static pl.cezarysanecki.parkingdomain.parkingspot.parking.model.ParkingSpotEvent.ParkingSpotLeftEvents.events;
 
 @Value
 public class OccupiedParkingSpot implements ParkingSpot {

@@ -8,8 +8,8 @@ import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
 import pl.cezarysanecki.parkingdomain.parkingspot.parking.model.OccupiedParkingSpot;
-import pl.cezarysanecki.parkingdomain.parkingspot.parking.model.ParkingSpots;
 import pl.cezarysanecki.parkingdomain.parkingspot.parking.model.ParkingSpotEvent;
+import pl.cezarysanecki.parkingdomain.parkingspot.parking.model.ParkingSpots;
 import pl.cezarysanecki.parkingdomain.vehicle.model.VehicleId;
 
 import static io.vavr.API.$;
@@ -31,7 +31,7 @@ public class ReleasingParkingSpot {
 
     }
 
-    public Try<Result> occupy(Command command) {
+    public Try<Result> driveAway(Command command) {
         VehicleId vehicleId = command.vehicleId;
 
         return Try.of(() -> {
