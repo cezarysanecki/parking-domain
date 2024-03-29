@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.views.client.model;
+package pl.cezarysanecki.parkingdomain.client.view.model;
 
 public enum ClientReservationStatus {
 

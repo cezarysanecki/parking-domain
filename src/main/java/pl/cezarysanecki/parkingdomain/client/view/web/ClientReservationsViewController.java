@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.views.client.web;
+package pl.cezarysanecki.parkingdomain.client.view.web;
 
 import io.vavr.API;
 import io.vavr.control.Try;
@@ -19,6 +19,8 @@ import pl.cezarysanecki.parkingdomain.client.reservationrequest.application.Crea
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.application.CreateReservationRequestForPartOfAnyParkingSpotCommand;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.application.CreatingReservationRequest;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientId;
+import pl.cezarysanecki.parkingdomain.client.view.model.ClientReservationsView;
+import pl.cezarysanecki.parkingdomain.client.view.model.ClientsReservationsViews;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
 import pl.cezarysanecki.parkingdomain.commons.date.DateProvider;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
@@ -26,8 +28,6 @@ import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotType;
 import pl.cezarysanecki.parkingdomain.parking.model.VehicleSizeUnit;
 import pl.cezarysanecki.parkingdomain.reservation.model.ReservationId;
 import pl.cezarysanecki.parkingdomain.reservation.model.ReservationPeriod;
-import pl.cezarysanecki.parkingdomain.views.client.model.ClientReservationsView;
-import pl.cezarysanecki.parkingdomain.views.client.model.ClientsReservationsViews;
 
 import java.util.Set;
 import java.util.UUID;

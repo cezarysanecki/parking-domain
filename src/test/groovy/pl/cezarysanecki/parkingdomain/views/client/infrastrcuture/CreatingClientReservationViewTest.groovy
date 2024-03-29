@@ -11,18 +11,18 @@ import pl.cezarysanecki.parkingdomain.commons.events.EventPublisherTestConfig
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.reservation.model.ReservationId
 import pl.cezarysanecki.parkingdomain.reservation.model.ReservationPeriod
-import pl.cezarysanecki.parkingdomain.views.client.infrastructure.ClientsReservationsViewConfig
-import pl.cezarysanecki.parkingdomain.views.client.model.ClientReservationStatus
-import pl.cezarysanecki.parkingdomain.views.client.model.ClientReservationsView
-import pl.cezarysanecki.parkingdomain.views.client.model.ClientsReservationsViews
+import pl.cezarysanecki.parkingdomain.client.view.infrastructure.ClientsReservationsViewConfig
+import pl.cezarysanecki.parkingdomain.client.view.model.ClientReservationStatus
+import pl.cezarysanecki.parkingdomain.client.view.model.ClientReservationsView
+import pl.cezarysanecki.parkingdomain.client.view.model.ClientsReservationsViews
 import spock.lang.Specification
 
 import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsFixture.anyClientId
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.anyParkingSpotId
 import static pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsEvent.ReservationForWholeParkingSpotMade
-import static pl.cezarysanecki.parkingdomain.views.client.model.ClientReservationStatus.Approved
-import static pl.cezarysanecki.parkingdomain.views.client.model.ClientReservationStatus.Cancelled
-import static pl.cezarysanecki.parkingdomain.views.client.model.ClientReservationStatus.Pending
+import static pl.cezarysanecki.parkingdomain.client.view.model.ClientReservationStatus.Approved
+import static pl.cezarysanecki.parkingdomain.client.view.model.ClientReservationStatus.Cancelled
+import static pl.cezarysanecki.parkingdomain.client.view.model.ClientReservationStatus.Pending
 
 @ActiveProfiles("local")
 @SpringBootTest(classes = [ClientsReservationsViewConfig.class, EventPublisherTestConfig.class])

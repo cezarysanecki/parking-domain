@@ -1,15 +1,15 @@
-package pl.cezarysanecki.parkingdomain.views.client.infrastructure;
+package pl.cezarysanecki.parkingdomain.client.view.infrastructure;
 
 import io.vavr.control.Option;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientId;
+import pl.cezarysanecki.parkingdomain.client.view.model.ClientReservationStatus;
+import pl.cezarysanecki.parkingdomain.client.view.model.ClientReservationsView;
+import pl.cezarysanecki.parkingdomain.client.view.model.ClientsReservationsViews;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.reservation.model.ReservationId;
-import pl.cezarysanecki.parkingdomain.views.client.model.ClientReservationStatus;
-import pl.cezarysanecki.parkingdomain.views.client.model.ClientReservationsView;
-import pl.cezarysanecki.parkingdomain.views.client.model.ClientsReservationsViews;
 
 import java.util.HashSet;
 import java.util.Map;

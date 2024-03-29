@@ -1,8 +1,8 @@
-package pl.cezarysanecki.parkingdomain.views.client.infrastructure;
+package pl.cezarysanecki.parkingdomain.client.view.infrastructure;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import pl.cezarysanecki.parkingdomain.views.client.model.ClientReservationStatus;
+import pl.cezarysanecki.parkingdomain.client.view.model.ClientReservationStatus;
 
 import java.util.UUID;
 

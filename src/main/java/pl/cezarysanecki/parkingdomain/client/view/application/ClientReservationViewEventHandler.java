@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.views.client.application;
+package pl.cezarysanecki.parkingdomain.client.view.application;
 
 import io.vavr.API;
 import io.vavr.control.Option;
@@ -11,12 +11,12 @@ import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.events.Any
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.events.ChosenParkingSpotReservationRequested;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.events.ReservationRequestCancelled;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.events.ClientReservationRequestsEvent.ReservationRequestRejected;
+import pl.cezarysanecki.parkingdomain.client.view.model.ClientsReservationsViews;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsEvent;
 import pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsEvent.ReservationForPartOfParkingSpotMade;
 import pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsEvent.ReservationForWholeParkingSpotMade;
 import pl.cezarysanecki.parkingdomain.reservation.model.ReservationId;
-import pl.cezarysanecki.parkingdomain.views.client.model.ClientsReservationsViews;
 
 import static io.vavr.API.$;
 import static io.vavr.API.Case;

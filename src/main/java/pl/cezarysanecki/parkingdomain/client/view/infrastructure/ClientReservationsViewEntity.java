@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.views.client.infrastructure;
+package pl.cezarysanecki.parkingdomain.client.view.infrastructure;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
