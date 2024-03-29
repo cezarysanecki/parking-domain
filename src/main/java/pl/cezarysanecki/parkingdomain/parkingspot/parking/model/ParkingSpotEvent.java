@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.parkingspot.model;
+package pl.cezarysanecki.parkingdomain.parkingspot.parking.model;
 
 import io.vavr.collection.List;
 import io.vavr.control.Option;

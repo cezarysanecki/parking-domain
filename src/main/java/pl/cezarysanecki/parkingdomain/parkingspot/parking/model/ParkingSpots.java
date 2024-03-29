@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.parkingspot.model;
+package pl.cezarysanecki.parkingdomain.parkingspot.parking.model;
 
 import io.vavr.control.Option;
 import pl.cezarysanecki.parkingdomain.vehicle.model.VehicleId;

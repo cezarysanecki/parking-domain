@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.parkingspot.model;
+package pl.cezarysanecki.parkingdomain.parkingspot.parking.model;
 
 public interface ParkingSpot {
 
