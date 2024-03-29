@@ -1,18 +1,13 @@
-package pl.cezarysanecki.parkingdomain.parkingspot;
+package pl.cezarysanecki.parkingdomain.parkingspot.model;
 
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.Value;
-import pl.cezarysanecki.parkingdomain.vehicles.VehicleSize;
+import pl.cezarysanecki.parkingdomain.vehicle.model.VehicleSize;
 
-@Value
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class ParkingSpotOccupation {
 
     int currentOccupation;
     int capacity;
 
-    public static ParkingSpotOccupation of(int currentOccupation, int capacity) {
+    private ParkingSpotOccupation(int currentOccupation, int capacity) {
         if (currentOccupation < 0) {
             throw new IllegalArgumentException("current occupation cannot be negative");
         }
@@ -22,11 +17,24 @@ public class ParkingSpotOccupation {
         if (currentOccupation > capacity) {
             throw new IllegalArgumentException("occupation cannot be grater than capacity");
         }
+        this.currentOccupation = currentOccupation;
+        this.capacity = capacity;
+    }
+
+    public static ParkingSpotOccupation of(int currentOccupation, int capacity) {
         return new ParkingSpotOccupation(currentOccupation, capacity);
     }
 
     public boolean canHandle(VehicleSize vehicleSize) {
         return currentOccupation + vehicleSize.getValue() <= capacity;
+    }
+
+    public ParkingSpotOccupation occupyWith(VehicleSize vehicleSize) {
+        return new ParkingSpotOccupation(currentOccupation + vehicleSize.getValue(), capacity);
+    }
+
+    public boolean isFull() {
+        return currentOccupation == capacity;
     }
 
 }
