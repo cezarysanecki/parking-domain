@@ -7,6 +7,7 @@ import lombok.Value;
 public class Vehicle {
 
     @NonNull VehicleId vehicleId;
+    @NonNull RegistrationNumber registrationNumber;
     @NonNull VehicleSize vehicleSize;
 
 }
