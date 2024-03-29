@@ -14,7 +14,6 @@ import pl.cezarysanecki.parkingdomain.reservation.model.ReservationId;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 @Slf4j
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
@@ -26,7 +25,7 @@ class InMemoryClientsReservationsViewsRepository implements ClientsReservationsV
     @Override
     public ClientReservationsView findFor(ClientId clientId) {
         ClientReservationsViewEntity entity = DATABASE.getOrDefault(clientId, new ClientReservationsViewEntity(clientId.getValue(), new HashSet<>()));
-        return map(entity);
+        return ViewModelMapper.map(entity);
     }
 
     @Override
@@ -94,16 +93,6 @@ class InMemoryClientsReservationsViewsRepository implements ClientsReservationsV
                 .findFirst()
                 .ifPresent(reservation -> reservation.status = ClientReservationStatus.Rejected);
         DATABASE.put(clientId, entity);
-    }
-
-    private static ClientReservationsView map(ClientReservationsViewEntity entity) {
-        return new ClientReservationsView(entity.getClientId(), entity.getReservations()
-                .stream()
-                .map(reservationEntity -> new ClientReservationsView.Reservation(
-                        reservationEntity.reservationId,
-                        reservationEntity.parkingSpotId,
-                        reservationEntity.status))
-                .collect(Collectors.toUnmodifiableSet()));
     }
 
 }
