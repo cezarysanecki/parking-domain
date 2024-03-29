@@ -10,6 +10,7 @@ import pl.cezarysanecki.parkingdomain.parkingspot.view.model.ParkingSpotViews;
 import pl.cezarysanecki.parkingdomain.vehicle.model.Vehicle;
 import pl.cezarysanecki.parkingdomain.vehicle.model.VehicleId;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -45,7 +46,7 @@ class InMemoryParkingSpotViewRepository implements ParkingSpotViews {
     public void handle(ParkingSpotCreated event) {
         DATABASE.put(event.getParkingSpotId(), new ParkingSpotViewEntity(
                 event.getParkingSpotId().getValue(),
-                Set.of(),
+                new HashSet<>(),
                 event.getParkingSpotCapacity().getValue()));
         log.debug("creating parking spot view with id {}", event.getParkingSpotId());
     }
