@@ -1,9 +1,10 @@
 package pl.cezarysanecki.parkingdomain.vehicles;
 
 import lombok.NonNull;
+import lombok.Value;
 
-@NonNull
-public class Vehicle {
+@Value(staticConstructor = "of")
+public class VehicleInformation {
 
     @NonNull VehicleId vehicleId;
     @NonNull VehicleSize vehicleSize;
