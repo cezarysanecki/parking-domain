@@ -20,7 +20,6 @@ import java.util.concurrent.ConcurrentHashMap;
 class InMemoryClientsReservationsViewsRepository implements ClientsReservationsViews {
 
     private static final Map<ClientId, ClientReservationsViewEntity> DATABASE = new ConcurrentHashMap<>();
-    private static final Map<ReservationId, ParkingSpotId> DATABASE_APPROVED_RESERVATIONS = new ConcurrentHashMap<>();
 
     @Override
     public ClientReservationsView findFor(ClientId clientId) {
@@ -29,70 +28,58 @@ class InMemoryClientsReservationsViewsRepository implements ClientsReservationsV
     }
 
     @Override
-    public void approveReservation(ReservationId reservationId, ParkingSpotId parkingSpotId) {
-        ClientReservationsViewEntity entity = DATABASE.values().stream()
-                .filter(clientReservationsViewEntity -> clientReservationsViewEntity.reservations.stream()
-                        .anyMatch(clientReservationViewEntity -> clientReservationViewEntity.getReservationId().equals(reservationId.getValue())))
-                .findFirst()
-                .orElse(null);
-        if (entity == null) {
-            DATABASE_APPROVED_RESERVATIONS.put(reservationId, parkingSpotId);
-            log.debug("cannot find pending reservation request with id {} - need to store this info in temp", reservationId);
-            return;
-        }
-
-        entity.getReservations()
-                .stream()
-                .filter(reservation -> reservation.reservationId.equals(reservationId.getValue()))
-                .findFirst()
-                .ifPresent(reservation -> {
-                    reservation.parkingSpotId = parkingSpotId.getValue();
-                    reservation.status = ClientReservationStatus.Approved;
-                });
-        DATABASE.put(ClientId.of(entity.clientId), entity);
-    }
-
-    @Override
-    public void addPendingReservation(ClientId clientId, Option<ParkingSpotId> parkingSpotId, ReservationId reservationId) {
+    public ClientReservationsView addPendingReservation(ClientId clientId, Option<ParkingSpotId> parkingSpotId, ReservationId reservationId) {
         ClientReservationsViewEntity entity = DATABASE.getOrDefault(clientId, new ClientReservationsViewEntity(clientId.getValue(), new HashSet<>()));
-
-        ParkingSpotId approvedParkingSpotId = DATABASE_APPROVED_RESERVATIONS.remove(reservationId);
-        ParkingSpotId parkingSpotToSave = approvedParkingSpotId != null ? approvedParkingSpotId : parkingSpotId.getOrNull();
-
-        if (parkingSpotToSave == null) {
-            log.error("there is no parking spot to assign to client - look at that");
-        }
 
         entity.getReservations()
                 .add(new ClientReservationViewEntity(
                         reservationId.getValue(),
-                        Option.of(parkingSpotToSave).map(ParkingSpotId::getValue).getOrNull(),
-                        approvedParkingSpotId != null ? ClientReservationStatus.Approved : ClientReservationStatus.Pending));
+                        parkingSpotId.map(ParkingSpotId::getValue).getOrNull(),
+                        ClientReservationStatus.Pending));
         DATABASE.put(clientId, entity);
+
+        return ViewModelMapper.map(entity);
     }
 
     @Override
-    public void cancelReservation(ClientId clientId, ReservationId reservationId) {
-        ClientReservationsViewEntity entity = DATABASE.getOrDefault(clientId, new ClientReservationsViewEntity(clientId.getValue(), new HashSet<>()));
-
-        entity.getReservations()
-                .stream()
-                .filter(reservation -> reservation.reservationId.equals(reservationId.getValue()))
-                .findFirst()
-                .ifPresent(reservation -> reservation.status = ClientReservationStatus.Cancelled);
-        DATABASE.put(clientId, entity);
+    public Option<ClientReservationsView> approveReservation(ReservationId reservationId, ParkingSpotId parkingSpotId) {
+        return findBy(reservationId)
+                .map(entity -> {
+                    entity.getReservations()
+                            .stream()
+                            .filter(reservation -> reservation.reservationId.equals(reservationId.getValue()))
+                            .findFirst()
+                            .ifPresent(reservation -> {
+                                reservation.status = ClientReservationStatus.Approved;
+                                reservation.parkingSpotId = parkingSpotId.getValue();
+                            });
+                    return DATABASE.put(ClientId.of(entity.getClientId()), entity);
+                })
+                .map(ViewModelMapper::map);
     }
 
     @Override
-    public void rejectReservation(ClientId clientId, ReservationId reservationId) {
-        ClientReservationsViewEntity entity = DATABASE.getOrDefault(clientId, new ClientReservationsViewEntity(clientId.getValue(), new HashSet<>()));
+    public Option<ClientReservationsView> cancelReservation(ReservationId reservationId) {
+        return findBy(reservationId)
+                .map(entity -> {
+                    entity.getReservations()
+                            .stream()
+                            .filter(reservation -> reservation.reservationId.equals(reservationId.getValue()))
+                            .findFirst()
+                            .ifPresent(reservation -> reservation.status = ClientReservationStatus.Cancelled);
+                    return DATABASE.put(ClientId.of(entity.getClientId()), entity);
+                })
+                .map(ViewModelMapper::map);
+    }
 
-        entity.getReservations()
-                .stream()
-                .filter(reservation -> reservation.reservationId.equals(reservationId.getValue()))
-                .findFirst()
-                .ifPresent(reservation -> reservation.status = ClientReservationStatus.Rejected);
-        DATABASE.put(clientId, entity);
+    private Option<ClientReservationsViewEntity> findBy(ReservationId reservationId) {
+        return Option.ofOptional(
+                        DATABASE.values()
+                                .stream()
+                                .filter(entity -> entity.reservations.stream()
+                                        .anyMatch(reservationEntity -> reservationEntity.getReservationId().equals(reservationId.getValue())))
+                                .findFirst())
+                .onEmpty(() -> log.debug("cannot find client view containing reservation with id {}", reservationId));
     }
 
 }

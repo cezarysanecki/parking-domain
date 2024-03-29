@@ -66,11 +66,10 @@ public class ClientReservationViewEventHandler {
     }
 
     private ClientReservationRequestsEvent handle(ReservationRequestCancelled event) {
-        ClientId clientId = event.getClientId();
         ReservationId reservationId = event.getReservationId();
 
-        log.debug("cancelling reservation view for client with id {}", clientId);
-        clientsReservationsViews.cancelReservation(clientId, reservationId);
+        log.debug("cancelling reservation view with id {}", reservationId);
+        clientsReservationsViews.cancelReservation(reservationId);
 
         return event;
     }

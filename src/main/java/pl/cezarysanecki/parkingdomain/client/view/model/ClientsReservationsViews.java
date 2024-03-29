@@ -9,12 +9,10 @@ public interface ClientsReservationsViews {
 
     ClientReservationsView findFor(ClientId clientId);
 
-    void addPendingReservation(ClientId clientId, Option<ParkingSpotId> parkingSpotId, ReservationId reservationId);
+    ClientReservationsView addPendingReservation(ClientId clientId, Option<ParkingSpotId> parkingSpotId, ReservationId reservationId);
 
-    void approveReservation(ReservationId reservationId, ParkingSpotId parkingSpotId);
+    Option<ClientReservationsView> approveReservation(ReservationId reservationId, ParkingSpotId parkingSpotId);
 
-    void cancelReservation(ClientId clientId, ReservationId reservationIde);
-
-    void rejectReservation(ClientId clientId, ReservationId reservationIde);
+    Option<ClientReservationsView> cancelReservation(ReservationId reservationId);
 
 }
