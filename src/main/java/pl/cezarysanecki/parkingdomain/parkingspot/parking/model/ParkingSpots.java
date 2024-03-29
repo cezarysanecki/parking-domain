@@ -1,7 +1,6 @@
 package pl.cezarysanecki.parkingdomain.parkingspot.parking.model;
 
 import io.vavr.control.Option;
-import pl.cezarysanecki.parkingdomain.vehicle.parking.VehicleId;
 import pl.cezarysanecki.parkingdomain.vehicle.parking.model.VehicleId;
 
 public interface ParkingSpots {

@@ -14,7 +14,7 @@ import pl.cezarysanecki.parkingdomain.parkingspot.parking.model.ParkingSpotCapac
 class ParkingSpotLocalConfig {
 
     @Bean
-    CommandLineRunner init(CreatingParkingSpot creatingParkingSpot) {
+    CommandLineRunner initParkingSpots(CreatingParkingSpot creatingParkingSpot) {
         return args -> {
             creatingParkingSpot.create(new CreatingParkingSpot.Command(ParkingSpotCapacity.of(4)));
             creatingParkingSpot.create(new CreatingParkingSpot.Command(ParkingSpotCapacity.of(4)));

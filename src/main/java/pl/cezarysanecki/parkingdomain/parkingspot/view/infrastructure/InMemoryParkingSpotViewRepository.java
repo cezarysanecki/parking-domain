@@ -7,10 +7,8 @@ import pl.cezarysanecki.parkingdomain.parkingspot.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parkingspot.view.infrastructure.ParkingSpotViewEntity.ParkedVehicleView;
 import pl.cezarysanecki.parkingdomain.parkingspot.view.model.ParkingSpotView;
 import pl.cezarysanecki.parkingdomain.parkingspot.view.model.ParkingSpotViews;
-import pl.cezarysanecki.parkingdomain.vehicle.parking.VehicleId;
-import pl.cezarysanecki.parkingdomain.vehicle.parking.VehicleInformation;
-import pl.cezarysanecki.parkingdomain.vehicle.parking.model.VehicleInformation;
 import pl.cezarysanecki.parkingdomain.vehicle.parking.model.VehicleId;
+import pl.cezarysanecki.parkingdomain.vehicle.parking.model.VehicleSize;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -58,10 +56,11 @@ class InMemoryParkingSpotViewRepository implements ParkingSpotViews {
     public void handle(ParkingSpotOccupied event) {
         Option.of(DATABASE.get(event.getParkingSpotId()))
                 .map(entity -> {
-                    VehicleInformation vehicle = event.getVehicle();
+                    VehicleId vehicleId = event.getVehicleId();
+                    VehicleSize vehicleSize = event.getVehicleSize();
                     entity.parkedVehicles.add(new ParkedVehicleView(
-                            vehicle.getVehicleId().getValue(),
-                            vehicle.getVehicleSize().getValue()));
+                            vehicleId.getValue(),
+                            vehicleSize.getValue()));
                     return entity;
                 });
         log.debug("updating parking spot view with id {} to decrease available capacity", event.getParkingSpotId());

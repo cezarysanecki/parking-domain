@@ -1,6 +1,5 @@
 package pl.cezarysanecki.parkingdomain.parkingspot.parking.model;
 
-import pl.cezarysanecki.parkingdomain.vehicle.parking.VehicleSize;
 import pl.cezarysanecki.parkingdomain.vehicle.parking.model.VehicleSize;
 
 public class ParkingSpotOccupation {

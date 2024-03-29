@@ -14,7 +14,7 @@ import pl.cezarysanecki.parkingdomain.vehicle.parking.model.VehicleSize;
 class VehicleLocalConfig {
 
     @Bean
-    CommandLineRunner init(RegisteringVehicle registeringVehicle) {
+    CommandLineRunner initVehicles(RegisteringVehicle registeringVehicle) {
         return args -> {
             registeringVehicle.register(new RegisteringVehicle.Command(VehicleSize.of(1)));
             registeringVehicle.register(new RegisteringVehicle.Command(VehicleSize.of(1)));
