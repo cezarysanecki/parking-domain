@@ -8,7 +8,7 @@ import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotType;
 import pl.cezarysanecki.parkingdomain.parking.model.VehicleSizeUnit;
 import pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservations;
-import pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsEvent;
+import pl.cezarysanecki.parkingdomain.reservation.model.events.ParkingSpotReservationsEvent;
 import pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsRepository;
 import pl.cezarysanecki.parkingdomain.reservation.model.ReservationId;
 

@@ -17,9 +17,12 @@ import java.util.stream.Collectors;
 import static java.util.function.Predicate.not;
 import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announceFailure;
 import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announceSuccess;
-import static pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsEvent.ReservationFailed;
-import static pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsEvent.ReservationForPartOfParkingSpotMade;
-import static pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsEvent.ReservationForWholeParkingSpotMade;
+
+import pl.cezarysanecki.parkingdomain.reservation.model.events.ReservationFailed;
+
+import pl.cezarysanecki.parkingdomain.reservation.model.events.ReservationForPartOfParkingSpotMade;
+
+import pl.cezarysanecki.parkingdomain.reservation.model.events.ReservationForWholeParkingSpotMade;
 
 @Value
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)

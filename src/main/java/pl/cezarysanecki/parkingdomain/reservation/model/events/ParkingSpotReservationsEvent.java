@@ -1,15 +1,12 @@
-package pl.cezarysanecki.parkingdomain.reservation.application;
+package pl.cezarysanecki.parkingdomain.reservation.model.events;
 
 import pl.cezarysanecki.parkingdomain.commons.events.DomainEvent;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.reservation.model.ReservationId;
-import pl.cezarysanecki.parkingdomain.reservation.model.ReservationPeriod;
 
-public interface ReservingWholeParkingSpotRequestHasOccurred extends DomainEvent {
+public interface ParkingSpotReservationsEvent extends DomainEvent {
 
     ReservationId getReservationId();
-
-    ReservationPeriod getReservationPeriod();
 
     ParkingSpotId getParkingSpotId();
 

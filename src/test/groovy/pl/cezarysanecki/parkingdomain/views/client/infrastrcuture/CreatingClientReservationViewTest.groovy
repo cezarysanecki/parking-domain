@@ -15,11 +15,11 @@ import pl.cezarysanecki.parkingdomain.client.view.infrastructure.ClientsReservat
 import pl.cezarysanecki.parkingdomain.client.view.model.ClientReservationStatus
 import pl.cezarysanecki.parkingdomain.client.view.model.ClientReservationsView
 import pl.cezarysanecki.parkingdomain.client.view.model.ClientsReservationsViews
+import pl.cezarysanecki.parkingdomain.reservation.model.events.ReservationForWholeParkingSpotMade
 import spock.lang.Specification
 
 import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsFixture.anyClientId
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.anyParkingSpotId
-import static pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsEvent.ReservationForWholeParkingSpotMade
 import static pl.cezarysanecki.parkingdomain.client.view.model.ClientReservationStatus.Approved
 import static pl.cezarysanecki.parkingdomain.client.view.model.ClientReservationStatus.Cancelled
 import static pl.cezarysanecki.parkingdomain.client.view.model.ClientReservationStatus.Pending

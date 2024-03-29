@@ -9,11 +9,11 @@ import pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservations
 import pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsRepository
 import pl.cezarysanecki.parkingdomain.reservation.model.ReservationId
 import pl.cezarysanecki.parkingdomain.reservation.model.ReservationPeriod
+import pl.cezarysanecki.parkingdomain.reservation.model.events.ReservationFailed
+import pl.cezarysanecki.parkingdomain.reservation.model.events.ReservationForPartOfParkingSpotMade
 import spock.lang.Specification
 
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.anyParkingSpotId
-import static pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsEvent.ReservationFailed
-import static pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsEvent.ReservationForPartOfParkingSpotMade
 import static pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsFixture.anyReservationId
 import static pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsFixture.emptyParkingSpotReservations
 import static pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsFixture.individual

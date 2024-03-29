@@ -12,14 +12,14 @@ import pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservations
 import pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsRepository
 import pl.cezarysanecki.parkingdomain.reservation.model.ReservationId
 import pl.cezarysanecki.parkingdomain.reservation.model.ReservationPeriod
+import pl.cezarysanecki.parkingdomain.reservation.model.events.ReservationCancelled
+import pl.cezarysanecki.parkingdomain.reservation.model.events.ReservationForWholeParkingSpotMade
 import spock.lang.Specification
 
 import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsFixture.anyReservationId
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotEvent.ParkingSpotCreated
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.anyParkingSpotId
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotType.Bronze
-import static pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsEvent.ReservationCancelled
-import static pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsEvent.ReservationForWholeParkingSpotMade
 
 @ActiveProfiles("local")
 @SpringBootTest(classes = [ParkingSpotReservationsConfig.class, EventPublisherTestConfig.class, DateConfig.class])

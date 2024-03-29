@@ -4,6 +4,7 @@ import io.vavr.control.Option;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotType;
 import pl.cezarysanecki.parkingdomain.parking.model.VehicleSizeUnit;
+import pl.cezarysanecki.parkingdomain.reservation.model.events.ParkingSpotReservationsEvent;
 
 public interface ParkingSpotReservationsRepository {
 

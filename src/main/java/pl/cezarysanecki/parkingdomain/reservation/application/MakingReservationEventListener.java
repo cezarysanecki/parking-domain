@@ -10,7 +10,7 @@ import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotType;
 import pl.cezarysanecki.parkingdomain.parking.model.VehicleSizeUnit;
 import pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservations;
-import pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsEvent.ReservationForPartOfParkingSpotMade;
+import pl.cezarysanecki.parkingdomain.reservation.model.events.ReservationForPartOfParkingSpotMade;
 import pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsRepository;
 import pl.cezarysanecki.parkingdomain.reservation.model.ReservationId;
 import pl.cezarysanecki.parkingdomain.reservation.model.ReservationPeriod;
@@ -22,8 +22,10 @@ import static io.vavr.Patterns.$Left;
 import static io.vavr.Patterns.$Right;
 import static pl.cezarysanecki.parkingdomain.commons.commands.Result.Rejection;
 import static pl.cezarysanecki.parkingdomain.commons.commands.Result.Success;
-import static pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsEvent.ReservationFailed;
-import static pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsEvent.ReservationForWholeParkingSpotMade;
+
+import pl.cezarysanecki.parkingdomain.reservation.model.events.ReservationFailed;
+
+import pl.cezarysanecki.parkingdomain.reservation.model.events.ReservationForWholeParkingSpotMade;
 
 @Slf4j
 @RequiredArgsConstructor

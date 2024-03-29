@@ -2,10 +2,10 @@ package pl.cezarysanecki.parkingdomain.reservation.model
 
 import io.vavr.control.Either
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId
+import pl.cezarysanecki.parkingdomain.reservation.model.events.ReservationFailed
+import pl.cezarysanecki.parkingdomain.reservation.model.events.ReservationForWholeParkingSpotMade
 import spock.lang.Specification
 
-import static ParkingSpotReservationsEvent.ReservationFailed
-import static ParkingSpotReservationsEvent.ReservationForWholeParkingSpotMade
 import static ParkingSpotReservationsFixture.anyReservationId
 import static ParkingSpotReservationsFixture.collective
 import static ParkingSpotReservationsFixture.emptyParkingSpotReservations

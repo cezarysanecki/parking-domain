@@ -6,15 +6,15 @@ import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.events.Res
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservation
 import pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservations
-import pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsEvent
+import pl.cezarysanecki.parkingdomain.reservation.model.events.ParkingSpotReservationsEvent
 import pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsRepository
 import pl.cezarysanecki.parkingdomain.reservation.model.ReservationId
 import pl.cezarysanecki.parkingdomain.reservation.model.ReservationPeriod
+import pl.cezarysanecki.parkingdomain.reservation.model.events.ReservationCancelled
 import spock.lang.Specification
 
 import static pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientReservationRequestsFixture.anyClientId
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.anyParkingSpotId
-import static pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsEvent.ReservationCancelled
 import static pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsFixture.anyReservationId
 import static pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsFixture.individual
 import static pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsFixture.parkingSpotReservationsWith

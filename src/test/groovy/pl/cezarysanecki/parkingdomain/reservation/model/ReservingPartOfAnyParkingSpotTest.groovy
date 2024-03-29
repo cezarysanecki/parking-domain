@@ -3,6 +3,8 @@ package pl.cezarysanecki.parkingdomain.reservation.model
 import io.vavr.control.Either
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.parking.model.VehicleSizeUnit
+import pl.cezarysanecki.parkingdomain.reservation.model.events.ReservationFailed
+import pl.cezarysanecki.parkingdomain.reservation.model.events.ReservationForPartOfParkingSpotMade
 import spock.lang.Specification
 
 import static ParkingSpotReservationsFixture.anyReservationId
@@ -10,8 +12,6 @@ import static ParkingSpotReservationsFixture.emptyParkingSpotReservations
 import static ParkingSpotReservationsFixture.individual
 import static ParkingSpotReservationsFixture.parkingSpotReservationsWith
 import static pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotFixture.anyParkingSpotId
-import static pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsEvent.ReservationFailed
-import static pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsEvent.ReservationForPartOfParkingSpotMade
 
 class ReservingPartOfAnyParkingSpotTest extends Specification {
   

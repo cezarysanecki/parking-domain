@@ -8,7 +8,7 @@ import org.springframework.context.event.EventListener;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.events.ReservationRequestCancelled;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
 import pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservations;
-import pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsEvent.ReservationCancelled;
+import pl.cezarysanecki.parkingdomain.reservation.model.events.ReservationCancelled;
 import pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsRepository;
 import pl.cezarysanecki.parkingdomain.reservation.model.ReservationId;
 

@@ -12,9 +12,9 @@ import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.events.Res
 import pl.cezarysanecki.parkingdomain.client.view.model.ClientsReservationsViews;
 import pl.cezarysanecki.parkingdomain.commons.view.ViewEventListener;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsEvent;
-import pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsEvent.ReservationForPartOfParkingSpotMade;
-import pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsEvent.ReservationForWholeParkingSpotMade;
+import pl.cezarysanecki.parkingdomain.reservation.model.events.ParkingSpotReservationsEvent;
+import pl.cezarysanecki.parkingdomain.reservation.model.events.ReservationForPartOfParkingSpotMade;
+import pl.cezarysanecki.parkingdomain.reservation.model.events.ReservationForWholeParkingSpotMade;
 import pl.cezarysanecki.parkingdomain.reservation.model.ReservationId;
 
 import static io.vavr.API.$;

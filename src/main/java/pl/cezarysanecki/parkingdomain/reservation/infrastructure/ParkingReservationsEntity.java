@@ -3,8 +3,10 @@ package pl.cezarysanecki.parkingdomain.reservation.infrastructure;
 import io.vavr.API;
 import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotType;
-import pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsEvent;
-import pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsEvent.ReservationForPartOfParkingSpotMade;
+import pl.cezarysanecki.parkingdomain.reservation.model.events.ParkingSpotReservationsEvent;
+import pl.cezarysanecki.parkingdomain.reservation.model.events.ReservationCancelled;
+import pl.cezarysanecki.parkingdomain.reservation.model.events.ReservationForPartOfParkingSpotMade;
+import pl.cezarysanecki.parkingdomain.reservation.model.events.ReservationForWholeParkingSpotMade;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -13,7 +15,6 @@ import java.util.UUID;
 import static io.vavr.API.$;
 import static io.vavr.API.Case;
 import static io.vavr.Predicates.instanceOf;
-import static pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsEvent.*;
 
 @Slf4j
 class ParkingReservationsEntity {
