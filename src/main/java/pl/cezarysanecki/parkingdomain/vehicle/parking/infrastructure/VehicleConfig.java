@@ -33,8 +33,8 @@ public class VehicleConfig {
     }
 
     @Bean
-    ParkingSpotEventsHandler parkingSpotEventsHandler(Vehicles vehicles) {
-        return new ParkingSpotEventsHandler(vehicles);
+    ParkingSpotEventsHandler parkingSpotEventsHandler(DrivingVehicleAway drivingVehicleAway) {
+        return new ParkingSpotEventsHandler(drivingVehicleAway);
     }
 
     @Bean
