@@ -25,7 +25,7 @@ public class OccupiedParkingSpot implements ParkingSpot {
 
     public Either<ParkingSpotLeavingOutFailed, ParkingSpotLeftEvents> driveAway(VehicleId vehicleId) {
         if (!parkedVehicles.contains(vehicleId)) {
-            return announceFailure(new ParkingSpotLeavingOutFailed(getParkingSpotId(), vehicleId));
+            return announceFailure(new ParkingSpotLeavingOutFailed(getParkingSpotId(), vehicleId, "vehicle is not parked there"));
         }
 
         ParkingSpotLeft parkingSpotLeft = new ParkingSpotLeft(getParkingSpotId(), vehicleId);

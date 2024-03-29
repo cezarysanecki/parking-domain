@@ -22,7 +22,7 @@ public class OpenParkingSpot implements ParkingSpot {
     public Either<ParkingSpotOccupationFailed, ParkingSpotOccupiedEvents> occupy(Vehicle vehicle) {
         ParkingSpotOccupation parkingSpotOccupation = getParkingSpotOccupation();
         if (parkingSpotOccupation.canHandle(vehicle.getVehicleSize())) {
-            return announceFailure(new ParkingSpotOccupationFailed(getParkingSpotId(), vehicle));
+            return announceFailure(new ParkingSpotOccupationFailed(getParkingSpotId(), vehicle, "there is not enough space for vehicle"));
         }
 
         ParkingSpotOccupied parkingSpotOccupied = new ParkingSpotOccupied(getParkingSpotId(), vehicle);
