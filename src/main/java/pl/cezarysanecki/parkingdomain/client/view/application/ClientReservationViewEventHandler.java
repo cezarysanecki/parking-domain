@@ -4,14 +4,13 @@ import io.vavr.API;
 import io.vavr.control.Option;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.event.EventListener;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.ClientId;
-import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.events.ClientReservationRequestsEvent;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.events.AnyParkingSpotReservationRequested;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.events.ChosenParkingSpotReservationRequested;
+import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.events.ClientReservationRequestsEvent;
 import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.events.ReservationRequestCancelled;
-import pl.cezarysanecki.parkingdomain.client.reservationrequest.model.events.ClientReservationRequestsEvent.ReservationRequestRejected;
 import pl.cezarysanecki.parkingdomain.client.view.model.ClientsReservationsViews;
+import pl.cezarysanecki.parkingdomain.commons.view.ViewEventListener;
 import pl.cezarysanecki.parkingdomain.parking.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsEvent;
 import pl.cezarysanecki.parkingdomain.reservation.model.ParkingSpotReservationsEvent.ReservationForPartOfParkingSpotMade;
@@ -28,17 +27,16 @@ public class ClientReservationViewEventHandler {
 
     private final ClientsReservationsViews clientsReservationsViews;
 
-    @EventListener
+    @ViewEventListener
     public void handle(ClientReservationRequestsEvent event) {
         API.Match(event).of(
                 Case($(instanceOf(ChosenParkingSpotReservationRequested.class)), this::handle),
                 Case($(instanceOf(AnyParkingSpotReservationRequested.class)), this::handle),
                 Case($(instanceOf(ReservationRequestCancelled.class)), this::handle),
-                Case($(instanceOf(ReservationRequestRejected.class)), this::handle),
                 Case($(), () -> event));
     }
 
-    @EventListener
+    @ViewEventListener
     public void handle(ParkingSpotReservationsEvent event) {
         API.Match(event).of(
                 Case($(instanceOf(ReservationForWholeParkingSpotMade.class)), this::handle),
@@ -46,65 +44,55 @@ public class ClientReservationViewEventHandler {
                 Case($(), () -> event));
     }
 
-    public ClientReservationRequestsEvent handle(ChosenParkingSpotReservationRequested chosenParkingSpotReservationRequested) {
-        ClientId clientId = chosenParkingSpotReservationRequested.getClientId();
-        ParkingSpotId parkingSpotId = chosenParkingSpotReservationRequested.getParkingSpotId();
-        ReservationId reservationId = chosenParkingSpotReservationRequested.getReservationId();
+    public ClientReservationRequestsEvent handle(ChosenParkingSpotReservationRequested event) {
+        ClientId clientId = event.getClientId();
+        ParkingSpotId parkingSpotId = event.getParkingSpotId();
+        ReservationId reservationId = event.getReservationId();
 
         log.debug("creating reservation view for client with id {}", clientId);
         clientsReservationsViews.addPendingReservation(clientId, Option.of(parkingSpotId), reservationId);
 
-        return chosenParkingSpotReservationRequested;
+        return event;
     }
 
-    public ClientReservationRequestsEvent handle(AnyParkingSpotReservationRequested anyParkingSpotReservationRequested) {
-        ClientId clientId = anyParkingSpotReservationRequested.getClientId();
-        ReservationId reservationId = anyParkingSpotReservationRequested.getReservationId();
+    public ClientReservationRequestsEvent handle(AnyParkingSpotReservationRequested event) {
+        ClientId clientId = event.getClientId();
+        ReservationId reservationId = event.getReservationId();
 
         log.debug("creating reservation view for client with id {}", clientId);
         clientsReservationsViews.addPendingReservation(clientId, Option.none(), reservationId);
 
-        return anyParkingSpotReservationRequested;
+        return event;
     }
 
-    private ClientReservationRequestsEvent handle(ReservationRequestCancelled reservationRequestCancelled) {
-        ClientId clientId = reservationRequestCancelled.getClientId();
-        ReservationId reservationId = reservationRequestCancelled.getReservationId();
+    private ClientReservationRequestsEvent handle(ReservationRequestCancelled event) {
+        ClientId clientId = event.getClientId();
+        ReservationId reservationId = event.getReservationId();
 
         log.debug("cancelling reservation view for client with id {}", clientId);
         clientsReservationsViews.cancelReservation(clientId, reservationId);
 
-        return reservationRequestCancelled;
+        return event;
     }
 
-    private ClientReservationRequestsEvent handle(ReservationRequestRejected reservationRequestRejected) {
-        ClientId clientId = reservationRequestRejected.getClientId();
-        ReservationId reservationId = reservationRequestRejected.getReservationId();
-
-        log.debug("rejecting reservation view for client with id {}", clientId);
-        clientsReservationsViews.rejectReservation(clientId, reservationId);
-
-        return reservationRequestRejected;
-    }
-
-    public ParkingSpotReservationsEvent handle(ReservationForWholeParkingSpotMade reservationForWholeParkingSpotMade) {
-        ParkingSpotId parkingSpotId = reservationForWholeParkingSpotMade.getParkingSpotId();
-        ReservationId reservationId = reservationForWholeParkingSpotMade.getReservationId();
+    public ParkingSpotReservationsEvent handle(ReservationForWholeParkingSpotMade event) {
+        ParkingSpotId parkingSpotId = event.getParkingSpotId();
+        ReservationId reservationId = event.getReservationId();
 
         log.debug("approving reservation view with id {}", reservationId);
         clientsReservationsViews.approveReservation(reservationId, parkingSpotId);
 
-        return reservationForWholeParkingSpotMade;
+        return event;
     }
 
-    public ParkingSpotReservationsEvent handle(ReservationForPartOfParkingSpotMade reservationForPartOfParkingSpotMade) {
-        ParkingSpotId parkingSpotId = reservationForPartOfParkingSpotMade.getParkingSpotId();
-        ReservationId reservationId = reservationForPartOfParkingSpotMade.getReservationId();
+    public ParkingSpotReservationsEvent handle(ReservationForPartOfParkingSpotMade event) {
+        ParkingSpotId parkingSpotId = event.getParkingSpotId();
+        ReservationId reservationId = event.getReservationId();
 
         log.debug("approving reservation view with id {}", reservationId);
         clientsReservationsViews.approveReservation(reservationId, parkingSpotId);
 
-        return reservationForPartOfParkingSpotMade;
+        return event;
     }
 
 }
