@@ -25,7 +25,7 @@ public class Vehicle {
         if (parkedOn.isDefined()) {
             return announceFailure(new VehicleParkingFailed(vehicleInformation.getVehicleId(), "vehicle is already parked"));
         }
-        return announceSuccess(new VehicleParked(vehicleInformation.getVehicleId(), parkingSpotId));
+        return announceSuccess(new VehicleParked(vehicleInformation.getVehicleId(), vehicleInformation.getVehicleSize(), parkingSpotId));
     }
 
     public Either<VehicleDrivingAwayFailed, VehicleDroveAway> driveAway() {

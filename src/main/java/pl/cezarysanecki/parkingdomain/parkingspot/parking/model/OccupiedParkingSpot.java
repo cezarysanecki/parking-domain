@@ -23,7 +23,7 @@ public class OccupiedParkingSpot implements ParkingSpot {
     @NonNull
     Set<VehicleId> parkedVehicles;
 
-    public Either<ParkingSpotLeavingOutFailed, ParkingSpotLeftEvents> driveAway(VehicleId vehicleId) {
+    public Either<ParkingSpotLeavingOutFailed, ParkingSpotLeftEvents> release(VehicleId vehicleId) {
         if (!parkedVehicles.contains(vehicleId)) {
             return announceFailure(new ParkingSpotLeavingOutFailed(getParkingSpotId(), vehicleId, "vehicle is not parked there"));
         }

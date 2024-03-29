@@ -23,7 +23,7 @@ public class RegisteringVehicle {
         @NonNull VehicleSize vehicleSize;
     }
 
-    public Try<Result> create(RegisteringVehicle.Command command) {
+    public Try<Result> register(RegisteringVehicle.Command command) {
         return Try.<Result>of(() -> {
             vehicles.publish(new VehicleRegistered(VehicleId.newOne(), command.vehicleSize));
             return new Result.Success();

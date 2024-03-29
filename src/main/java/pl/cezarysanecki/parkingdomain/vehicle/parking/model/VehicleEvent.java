@@ -13,6 +13,7 @@ public interface VehicleEvent extends DomainEvent {
     class VehicleParked implements VehicleEvent {
 
         @NonNull VehicleId vehicleId;
+        @NonNull VehicleSize vehicleSize;
         @NonNull ParkingSpotId parkingSpotId;
 
     }
