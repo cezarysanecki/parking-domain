@@ -84,6 +84,14 @@ with existing legacy code and explore tools from the JVM ecosystem (but not excl
 
 ## Business context
 
+This software is being developed for a client who owns a parking facility near a shopping center and offices. Presently,
+anyone can park there for a small fee. However, this setup is frustrating for both the business and its clients. The
+business earns only a modest amount, while clients struggle to find parking due to constant occupation.
+
+The business aims to address this situation by implementing software that enables users to reserve parking spots for
+specific times of the day. Additionally, the software will optimize parking utilization by allowing multiple small
+vehicles to occupy a single parking spot. Further requirements are outlined below.
+
 ### Parking
 
 - Parking is available 24/7
