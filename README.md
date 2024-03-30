@@ -122,7 +122,7 @@ vehicles to occupy a single parking spot. Further requirements are outlined belo
             - all vehicles drive away
             - reservation time has expired
 - Making reservation on chosen parking spot is available for additional fee
-- Reservations can be made, cancelled any time but 4-5am
+- Reservations can be made and cancelled at any time, except the period between 4-5am.
 - Reservation can be made for
     - morning (7:00-17:00)
     - evening (18:00-24:00)
@@ -130,22 +130,16 @@ vehicles to occupy a single parking spot. Further requirements are outlined belo
 - Reservation can be extended to whole day
     - if was morning reservation
     - if current spot has no reservation for evening
-- There is possibility to extended reservation choosing any free parking spot from the same class if current is reserved
+- Users have the option to extend their reservations by selecting any available parking spot from the same class if
+  their current spot is already reserved.
 - Reservations become effective for a given day during the reservation window (4-5am)
 
 ### Reservation fulfillment
 
-> To be changed!
-
-- If reservation on any parking spot cannot be fulfilled
-    - propose lower class spot with adding loyalty points
-    - propose upper class spot for the same price
-- If reservation on chosen parking spot cannot be fulfilled
-    - propose
-        - the same class spot
-        - upper class spot
-        - lower class spot with adding loyalty points
-    - parking is for free
+- If a client fails to fulfill a reservation:
+    - he will be charged for the reservation
+    - his loyalty points will be reduced
+- If a client fully completes a reservation, they will earn loyalty points.
 
 ### Encourage to free reserved parking spot
 
