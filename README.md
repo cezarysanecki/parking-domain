@@ -38,6 +38,12 @@ Tools:
 
 - [Bruno](https://www.usebruno.com/)
 
+## Lessons learnt
+
+1. _Ideal code does not exist!_
+1. _Make analysis before coding!_
+1. _Tests are great, but when you are prototyping they are slowing you down_
+
 ## FAQ
 
 ### Is it production-ready?
