@@ -127,6 +127,8 @@ with existing legacy code and explore tools from the JVM ecosystem (but not excl
 
 ### Reservation fulfillment
 
+> To be changed!
+
 - If reservation on any parking spot cannot be fulfilled
     - propose lower class spot with adding loyalty points
     - propose upper class spot for the same price
@@ -138,6 +140,8 @@ with existing legacy code and explore tools from the JVM ecosystem (but not excl
     - parking is for free
 
 ### Encourage to free reserved parking spot
+
+> To be changed!
 
 - Clients who are on reserved chosen parking spot
     - notify them that they should free parking spot
