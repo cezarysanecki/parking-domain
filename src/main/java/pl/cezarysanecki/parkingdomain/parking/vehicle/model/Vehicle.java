@@ -5,9 +5,13 @@ import io.vavr.control.Option;
 import lombok.NonNull;
 import lombok.Value;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId;
+import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleEvent.VehicleParked;
 
 import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announceFailure;
 import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announceSuccess;
+import static pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleEvent.VehicleDrivingAwayFailed;
+import static pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleEvent.VehicleDroveAway;
+import static pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleEvent.VehicleParkingFailed;
 
 @Value
 public class Vehicle {
@@ -17,18 +21,18 @@ public class Vehicle {
     @NonNull
     Option<ParkingSpotId> parkedOn;
 
-    public Either<VehicleEvent.VehicleParkingFailed, VehicleEvent.VehicleParked> parkOn(ParkingSpotId parkingSpotId) {
+    public Either<VehicleParkingFailed, VehicleParked> parkOn(ParkingSpotId parkingSpotId) {
         if (parkedOn.isDefined()) {
-            return announceFailure(new VehicleEvent.VehicleParkingFailed(vehicleInformation.getVehicleId(), "vehicle is already parked"));
+            return announceFailure(new VehicleParkingFailed(vehicleInformation.getVehicleId(), "vehicle is already parked"));
         }
-        return announceSuccess(new VehicleEvent.VehicleParked(vehicleInformation.getVehicleId(), vehicleInformation.getVehicleSize(), parkingSpotId));
+        return announceSuccess(new VehicleParked(vehicleInformation.getVehicleId(), vehicleInformation.getVehicleSize(), parkingSpotId));
     }
 
-    public Either<VehicleEvent.VehicleDrivingAwayFailed, VehicleEvent.VehicleDroveAway> driveAway() {
+    public Either<VehicleDrivingAwayFailed, VehicleDroveAway> driveAway() {
         if (parkedOn.isEmpty()) {
-            return announceFailure(new VehicleEvent.VehicleDrivingAwayFailed(vehicleInformation.getVehicleId(), "vehicle is not parked"));
+            return announceFailure(new VehicleDrivingAwayFailed(vehicleInformation.getVehicleId(), "vehicle is not parked"));
         }
-        return announceSuccess(new VehicleEvent.VehicleDroveAway(vehicleInformation.getVehicleId()));
+        return announceSuccess(new VehicleDroveAway(vehicleInformation.getVehicleId()));
     }
 
 }

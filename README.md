@@ -38,6 +38,12 @@ Tools:
 
 - [Bruno](https://www.usebruno.com/)
 
+## Lessons learnt
+
+1. _Ideal code does not exist!_
+1. _Make analysis before coding!_
+1. _Tests are great, but when you are prototyping they are slowing you down_
+
 ## FAQ
 
 ### Is it production-ready?
@@ -78,6 +84,14 @@ with existing legacy code and explore tools from the JVM ecosystem (but not excl
 
 ## Business context
 
+This software is being developed for a client who owns a parking facility near a shopping center and offices. Presently,
+anyone can park there for a small fee. However, this setup is frustrating for both the business and its clients. The
+business earns only a modest amount, while clients struggle to find parking due to constant occupation.
+
+The business aims to address this situation by implementing software that enables users to reserve parking spots for
+specific times of the day. Additionally, the software will optimize parking utilization by allowing multiple small
+vehicles to occupy a single parking spot. Further requirements are outlined below.
+
 ### Parking
 
 - Parking is available 24/7
@@ -108,7 +122,7 @@ with existing legacy code and explore tools from the JVM ecosystem (but not excl
             - all vehicles drive away
             - reservation time has expired
 - Making reservation on chosen parking spot is available for additional fee
-- Reservations can be made, cancelled any time but 4-5am
+- Reservations can be made and cancelled at any time, except the period between 4-5am.
 - Reservation can be made for
     - morning (7:00-17:00)
     - evening (18:00-24:00)
@@ -116,22 +130,20 @@ with existing legacy code and explore tools from the JVM ecosystem (but not excl
 - Reservation can be extended to whole day
     - if was morning reservation
     - if current spot has no reservation for evening
-- There is possibility to extended reservation choosing any free parking spot from the same class if current is reserved
+- Users have the option to extend their reservations by selecting any available parking spot from the same class if
+  their current spot is already reserved.
 - Reservations become effective for a given day during the reservation window (4-5am)
 
 ### Reservation fulfillment
 
-- If reservation on any parking spot cannot be fulfilled
-    - propose lower class spot with adding loyalty points
-    - propose upper class spot for the same price
-- If reservation on chosen parking spot cannot be fulfilled
-    - propose
-        - the same class spot
-        - upper class spot
-        - lower class spot with adding loyalty points
-    - parking is for free
+- If a client fails to fulfill a reservation:
+    - he will be charged for the reservation
+    - his loyalty points will be reduced
+- If a client fully completes a reservation, they will earn loyalty points.
 
 ### Encourage to free reserved parking spot
+
+> To be changed!
 
 - Clients who are on reserved chosen parking spot
     - notify them that they should free parking spot
@@ -193,66 +205,11 @@ with existing legacy code and explore tools from the JVM ecosystem (but not excl
 - A customer labeled as 'difficult' has the right to assert their innocence
 - If the verifier accepts the justification, a discount should be provided to that person as compensation
 
-## Event Storming session
+## Analysis
 
-### Registration new parking spot
+### Parking subdomain
 
-![Registration new parking spot](/docs/public/es/es_registration_parking_spot.png)
-
-There is possibility to register new parking spots in system f.ex. when we create new ones.
-After registration, it lends in overall parking spots bank.
-
-**Hot spot:** Need to consider if there is a need to provide parking spots for disabled people.
-
-### Parking vehicle
-
-![Parking vehicle](/docs/public/es/es_parking_vehicle.png)
-
-Need to find available parking spot for specified vehicle type. If it fails we will try to find another one
-up to 3 times (because one of them could vanish from bank just a moment ago). If there is success just assign
-this parking spot to vehicle.
-
-**Hot spot:** What if there would like to park huge vehicle which requires f.ex. 2 parking spots?
-For now, we skip this case.
-
-### Release parking spot
-
-![Release parking spot](/docs/public/es/es_release_parking_spot_and_cleaning.png)
-
-Simple scenario, if someone did not pay then there is refusal to release parking spot.
-But if there was payment we put parking spot back to bank, add loyalty points to user and increase counter
-responsible for parking spot's clearance. When parking spot clearance counter reach 5 then we mark this spot as needed
-clearance. Of course, it is removed from available bank. When at least 10 parking spots and these spots are free
-(there are no vehicles on it) we call external cleaning service. Unless it was already called.
-
-After cleaning, parking spots go back to available bank, and we tick off that external clearance has been done.
-
-### Reservation
-
-![Reserve parking spot](/docs/public/es/es_reservation.png)
-
-We can reserve parking spot for specified date f.ex. to go to cinema. There are two conditions: is any parking spot
-available and client is marked as unwanted. If not we reject possibility to reserve spot.
-
-**Hot spot:** Can we reserve more than one parking spot (group reservation)?
-
-### Reservation
-
-![Reserve parking spot](/docs/public/es/es_releasing_reserved_parking_spot.png)
-
-2 hours before a reservation, we inform clients that they need to vacate their spot.
-We reserve another parking spot for them. If a client notifies us that they've freed up the parking spot,
-we reward them with loyalty points for their assistance. 1 hour before the reservation,
-we check if the spot has been released. If not, we relocate the vehicles and charge the users of those vehicles.
-If yes, we simply remove the parking spot from the available parking bank.
-
-### Punishing client
-
-![Punishing client](/docs/public/es/es_punishing_for_unused_reservation.png)
-
-15 minutes after a reservation, we check if the client has not parked in the reserved spot.
-If not, we add this spot to the available bank and notify the client. If this is the 2nd or 3rd warning,
-we deduct loyalty points. If it's the 4th warning, we mark the client as unwanted.
+![Parking subdomain](./docs/public/analysis/parking_subdomain.png)
 
 ## Educational goals
 
@@ -294,3 +251,9 @@ in the current project during the MVP phase. Certainly, I will create an anemic 
 
 - [DevMentors YouTube video](https://www.youtube.com/@DevMentorsPL/videos)
 - [Library by example](https://github.com/ddd-by-examples/library)
+
+<style>
+    h1, h2 {
+        text-align:center;
+    }
+</style>
