@@ -8,7 +8,7 @@ import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.Vehicle;
-import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleEvent;
+import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleEvent.VehicleDrivingAwayFailed;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleId;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.Vehicles;
 
@@ -17,6 +17,7 @@ import static io.vavr.API.Case;
 import static io.vavr.API.Match;
 import static io.vavr.Patterns.$Left;
 import static io.vavr.Patterns.$Right;
+import static pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleEvent.VehicleDroveAway;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -36,7 +37,7 @@ public class DrivingVehicleAway {
 
         return Try.of(() -> {
             Vehicle vehicle = load(vehicleId);
-            Either<VehicleEvent.VehicleDrivingAwayFailed, VehicleEvent.VehicleDroveAway> result = vehicle.driveAway();
+            Either<VehicleDrivingAwayFailed, VehicleDroveAway> result = vehicle.driveAway();
             return Match(result).of(
                     Case($Left($()), this::publishEvents),
                     Case($Right($()), this::publishEvents)
@@ -44,13 +45,13 @@ public class DrivingVehicleAway {
         }).onFailure(t -> log.error("Failed to occupy parking spot", t));
     }
 
-    private Result publishEvents(VehicleEvent.VehicleDrivingAwayFailed vehicleDrivingAwayFailed) {
+    private Result publishEvents(VehicleDrivingAwayFailed vehicleDrivingAwayFailed) {
         log.debug("failed to drive vehicle away with id {}, reason: {}", vehicleDrivingAwayFailed.getVehicleId(), vehicleDrivingAwayFailed.getReason());
         vehicles.publish(vehicleDrivingAwayFailed);
         return Result.Rejection.with(vehicleDrivingAwayFailed.getReason());
     }
 
-    private Result publishEvents(VehicleEvent.VehicleDroveAway vehicleDroveAway) {
+    private Result publishEvents(VehicleDroveAway vehicleDroveAway) {
         log.debug("successfully drive vehicle away with id {}", vehicleDroveAway.getVehicleId());
         vehicles.publish(vehicleDroveAway);
         return new Result.Success();
