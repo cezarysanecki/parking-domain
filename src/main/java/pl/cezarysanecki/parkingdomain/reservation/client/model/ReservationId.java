@@ -1,0 +1,12 @@
+package pl.cezarysanecki.parkingdomain.reservation.client.model;
+
+import lombok.Value;
+
+import java.util.UUID;
+
+@Value(staticConstructor = "of")
+public class ReservationId {
+
+    UUID value;
+
+}

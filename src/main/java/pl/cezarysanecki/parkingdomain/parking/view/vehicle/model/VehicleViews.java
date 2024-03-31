@@ -1,9 +1,11 @@
 package pl.cezarysanecki.parkingdomain.parking.view.vehicle.model;
 
-import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleEvent;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.application.RegisteringVehicle.VehicleRegistered;
 
 import java.util.Set;
+
+import static pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleEvent.VehicleDroveAway;
+import static pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleEvent.VehicleParked;
 
 public interface VehicleViews {
 
@@ -15,8 +17,8 @@ public interface VehicleViews {
 
     void handle(VehicleRegistered event);
 
-    void handle(VehicleEvent.VehicleParked event);
+    void handle(VehicleParked event);
 
-    void handle(VehicleEvent.VehicleDroveAway event);
+    void handle(VehicleDroveAway event);
 
 }

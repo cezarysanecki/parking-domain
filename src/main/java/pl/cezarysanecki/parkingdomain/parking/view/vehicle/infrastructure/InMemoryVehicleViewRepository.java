@@ -3,16 +3,18 @@ package pl.cezarysanecki.parkingdomain.parking.view.vehicle.infrastructure;
 import io.vavr.control.Option;
 import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.commons.view.ViewEventListener;
-import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleEvent;
-import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleId;
-import pl.cezarysanecki.parkingdomain.parking.view.vehicle.model.VehicleViews;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.application.RegisteringVehicle.VehicleRegistered;
+import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleEvent.VehicleDroveAway;
+import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleId;
 import pl.cezarysanecki.parkingdomain.parking.view.vehicle.model.VehicleView;
+import pl.cezarysanecki.parkingdomain.parking.view.vehicle.model.VehicleViews;
 
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+
+import static pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleEvent.VehicleParked;
 
 @Slf4j
 class InMemoryVehicleViewRepository implements VehicleViews {
@@ -56,7 +58,7 @@ class InMemoryVehicleViewRepository implements VehicleViews {
 
     @Override
     @ViewEventListener
-    public void handle(VehicleEvent.VehicleParked event) {
+    public void handle(VehicleParked event) {
         Option.of(DATABASE.get(event.getVehicleId()))
                 .map(entity -> {
                     entity.parkingSpotId = Option.of(event.getParkingSpotId().getValue());
@@ -66,7 +68,7 @@ class InMemoryVehicleViewRepository implements VehicleViews {
 
     @Override
     @ViewEventListener
-    public void handle(VehicleEvent.VehicleDroveAway event) {
+    public void handle(VehicleDroveAway event) {
         Option.of(DATABASE.get(event.getVehicleId()))
                 .map(entity -> {
                     entity.parkingSpotId = Option.none();

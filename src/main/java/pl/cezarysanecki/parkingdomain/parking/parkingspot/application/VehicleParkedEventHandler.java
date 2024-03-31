@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpots;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleEvent.VehicleParked;
@@ -17,6 +16,8 @@ import static io.vavr.API.Case;
 import static io.vavr.API.Match;
 import static io.vavr.Patterns.$Left;
 import static io.vavr.Patterns.$Right;
+import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.ParkingSpotOccupationFailed;
+import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.ParkingSpotOccupiedEvents;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -32,7 +33,7 @@ public class VehicleParkedEventHandler {
 
         parkingSpots.findOpenBy(parkingSpotId)
                 .map(openParkingSpot -> {
-                    Either<ParkingSpotEvent.ParkingSpotOccupationFailed, ParkingSpotEvent.ParkingSpotOccupiedEvents> result = openParkingSpot.occupy(vehicleId, vehicleSize);
+                    Either<ParkingSpotOccupationFailed, ParkingSpotOccupiedEvents> result = openParkingSpot.occupy(vehicleId, vehicleSize);
                     return Match(result).of(
                             Case($Left($()), this::publishEvents),
                             Case($Right($()), this::publishEvents)
@@ -40,17 +41,17 @@ public class VehicleParkedEventHandler {
                 })
                 .onEmpty(() -> {
                     log.debug("cannot find parking spot with id {}", parkingSpotId);
-                    parkingSpots.publish(new ParkingSpotEvent.ParkingSpotOccupationFailed(parkingSpotId, vehicleId, "cannot find parking spot"));
+                    parkingSpots.publish(new ParkingSpotOccupationFailed(parkingSpotId, vehicleId, "cannot find parking spot"));
                 });
     }
 
-    private Result publishEvents(ParkingSpotEvent.ParkingSpotOccupationFailed parkingSpotOccupationFailed) {
+    private Result publishEvents(ParkingSpotOccupationFailed parkingSpotOccupationFailed) {
         log.debug("failed to occupy parking spot with id {}, reason: {}", parkingSpotOccupationFailed.getParkingSpotId(), parkingSpotOccupationFailed.getReason());
         parkingSpots.publish(parkingSpotOccupationFailed);
         return Result.Rejection.with(parkingSpotOccupationFailed.getReason());
     }
 
-    private Result publishEvents(ParkingSpotEvent.ParkingSpotOccupiedEvents parkingSpotOccupiedEvents) {
+    private Result publishEvents(ParkingSpotOccupiedEvents parkingSpotOccupiedEvents) {
         log.debug("successfully occupied parking spot with id {}", parkingSpotOccupiedEvents.getParkingSpotId());
         parkingSpots.publish(parkingSpotOccupiedEvents);
         return new Result.Success();
