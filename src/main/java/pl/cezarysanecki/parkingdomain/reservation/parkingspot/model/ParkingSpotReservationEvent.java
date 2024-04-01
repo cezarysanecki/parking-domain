@@ -1,0 +1,30 @@
+package pl.cezarysanecki.parkingdomain.reservation.parkingspot.model;
+
+import lombok.NonNull;
+import lombok.Value;
+import pl.cezarysanecki.parkingdomain.commons.events.DomainEvent;
+import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId;
+import pl.cezarysanecki.parkingdomain.reservation.client.model.ReservationId;
+
+public interface ParkingSpotReservationEvent extends DomainEvent {
+
+    ParkingSpotId getParkingSpotId();
+
+    @Value
+    class ParkingSpotReserved implements ParkingSpotReservationEvent {
+
+        @NonNull ParkingSpotId parkingSpotId;
+        @NonNull ReservationId reservationId;
+
+    }
+
+    @Value
+    class ParkingSpotReservationFailed implements ParkingSpotReservationEvent {
+
+        @NonNull ParkingSpotId parkingSpotId;
+        @NonNull ReservationId reservationId;
+        @NonNull String reason;
+
+    }
+
+}
