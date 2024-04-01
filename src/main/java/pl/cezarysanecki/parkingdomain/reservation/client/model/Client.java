@@ -2,6 +2,7 @@ package pl.cezarysanecki.parkingdomain.reservation.client.model;
 
 import io.vavr.control.Either;
 import lombok.Value;
+import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId;
 
 import java.util.Set;
 import java.util.UUID;
@@ -17,11 +18,11 @@ public class Client {
     ClientId clientId;
     Set<ReservationId> reservations;
 
-    public Either<ReservationRequestSubmissionFailed, ReservationRequestSubmitted> createRequest() {
+    public Either<ReservationRequestSubmissionFailed, ReservationRequestSubmitted> createRequest(ParkingSpotId parkingSpotId) {
         if (willBeTooManyRequests()) {
             return announceFailure(new ReservationRequestSubmissionFailed(clientId, "client has too many requests"));
         }
-        return announceSuccess(new ReservationRequestSubmitted(clientId, ReservationId.of(UUID.randomUUID())));
+        return announceSuccess(new ReservationRequestSubmitted(clientId, parkingSpotId, ReservationId.of(UUID.randomUUID())));
     }
 
     private boolean willBeTooManyRequests() {
