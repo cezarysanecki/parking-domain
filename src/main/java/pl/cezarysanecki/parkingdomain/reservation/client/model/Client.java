@@ -23,7 +23,7 @@ public class Client {
         if (willBeTooManyRequests()) {
             return announceFailure(new ReservationRequestSubmissionFailed(clientId, "client has too many requests"));
         }
-        return announceSuccess(new ReservationRequestSubmitted(new Reservation(clientId, ReservationId.of(UUID.randomUUID()), parkingSpotId, vehicleSize)));
+        return announceSuccess(new ReservationRequestSubmitted(new ReservationRequest(clientId, ReservationId.of(UUID.randomUUID()), parkingSpotId, vehicleSize)));
     }
 
     private boolean willBeTooManyRequests() {

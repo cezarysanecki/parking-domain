@@ -6,7 +6,7 @@ import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleSize;
 
 @Value
-public class Reservation {
+public class ReservationRequest {
 
     @NonNull ClientId clientId;
     @NonNull ReservationId reservationId;

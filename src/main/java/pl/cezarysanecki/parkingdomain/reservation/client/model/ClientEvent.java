@@ -10,11 +10,11 @@ public interface ClientEvent {
     @Value
     class ReservationRequestSubmitted implements ClientEvent {
 
-        @NonNull Reservation reservation;
+        @NonNull ReservationRequest reservationRequest;
 
         @Override
         public ClientId getClientId() {
-            return reservation.getClientId();
+            return reservationRequest.getClientId();
         }
 
     }
