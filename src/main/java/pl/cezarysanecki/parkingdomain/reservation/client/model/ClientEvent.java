@@ -19,6 +19,7 @@ public interface ClientEvent {
     class ReservationRequestSubmissionFailed implements ClientEvent {
 
         @NonNull ClientId clientId;
+        @NonNull String reason;
 
     }
 

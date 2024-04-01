@@ -19,7 +19,7 @@ public class Client {
 
     public Either<ReservationRequestSubmissionFailed, ReservationRequestSubmitted> createRequest() {
         if (willBeTooManyRequests()) {
-            return announceFailure(new ReservationRequestSubmissionFailed(clientId));
+            return announceFailure(new ReservationRequestSubmissionFailed(clientId, "client has too many requests"));
         }
         return announceSuccess(new ReservationRequestSubmitted(clientId, ReservationId.of(UUID.randomUUID())));
     }
