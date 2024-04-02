@@ -3,12 +3,12 @@ package pl.cezarysanecki.parkingdomain.reservation.client.model;
 import lombok.NonNull;
 import lombok.Value;
 
-public interface ClientEvent {
+public interface ClientReservationsEvent {
 
     ClientId getClientId();
 
     @Value
-    class ReservationRequestSubmitted implements ClientEvent {
+    class ReservationRequestSubmitted implements ClientReservationsEvent {
 
         @NonNull ReservationRequest reservationRequest;
 
@@ -20,7 +20,7 @@ public interface ClientEvent {
     }
 
     @Value
-    class ReservationRequestSubmissionFailed implements ClientEvent {
+    class ReservationRequestSubmissionFailed implements ClientReservationsEvent {
 
         @NonNull ClientId clientId;
         @NonNull String reason;

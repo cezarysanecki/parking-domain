@@ -10,11 +10,11 @@ import java.util.UUID;
 
 import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announceFailure;
 import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announceSuccess;
-import static pl.cezarysanecki.parkingdomain.reservation.client.model.ClientEvent.ReservationRequestSubmissionFailed;
-import static pl.cezarysanecki.parkingdomain.reservation.client.model.ClientEvent.ReservationRequestSubmitted;
+import static pl.cezarysanecki.parkingdomain.reservation.client.model.ClientReservationsEvent.ReservationRequestSubmissionFailed;
+import static pl.cezarysanecki.parkingdomain.reservation.client.model.ClientReservationsEvent.ReservationRequestSubmitted;
 
 @Value
-public class Client {
+public class ClientReservations {
 
     ClientId clientId;
     Set<ReservationId> reservations;
