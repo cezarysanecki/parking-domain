@@ -2,8 +2,9 @@ package pl.cezarysanecki.parkingdomain.reservation.client.model;
 
 import lombok.NonNull;
 import lombok.Value;
+import pl.cezarysanecki.parkingdomain.commons.events.DomainEvent;
 
-public interface ClientReservationsEvent {
+public interface ClientReservationsEvent extends DomainEvent {
 
     ClientId getClientId();
 
