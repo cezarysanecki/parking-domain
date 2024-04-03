@@ -10,6 +10,8 @@ import java.util.UUID;
 
 import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announceFailure;
 import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announceSuccess;
+import static pl.cezarysanecki.parkingdomain.reservation.client.model.ClientReservationsEvent.ReservationRequestCancellationFailed;
+import static pl.cezarysanecki.parkingdomain.reservation.client.model.ClientReservationsEvent.ReservationRequestCancelled;
 import static pl.cezarysanecki.parkingdomain.reservation.client.model.ClientReservationsEvent.ReservationRequestSubmissionFailed;
 import static pl.cezarysanecki.parkingdomain.reservation.client.model.ClientReservationsEvent.ReservationRequestSubmitted;
 
@@ -24,6 +26,13 @@ public class ClientReservations {
             return announceFailure(new ReservationRequestSubmissionFailed(clientId, "client has too many requests"));
         }
         return announceSuccess(new ReservationRequestSubmitted(new ReservationRequest(clientId, ReservationId.of(UUID.randomUUID()), parkingSpotId, vehicleSize)));
+    }
+
+    public Either<ReservationRequestCancellationFailed, ReservationRequestCancelled> cancel(ReservationId reservationId) {
+        if (willBeTooManyRequests()) {
+            return announceFailure(new ReservationRequestCancellationFailed(clientId, reservationId, "there is no such reservation"));
+        }
+        return announceSuccess(new ReservationRequestCancelled(clientId, reservationId));
     }
 
     private boolean willBeTooManyRequests() {
