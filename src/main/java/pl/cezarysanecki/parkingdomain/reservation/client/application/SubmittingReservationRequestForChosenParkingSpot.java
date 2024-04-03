@@ -51,15 +51,15 @@ public class SubmittingReservationRequestForChosenParkingSpot {
     }
 
     private Result publishEvents(ReservationRequestSubmitted requestSubmitted) {
-        clientReservationsRepository.publish(requestSubmitted);
         log.debug("reservation request submitted for client with id {}", requestSubmitted.getClientId());
+        clientReservationsRepository.publish(requestSubmitted);
         return new Result.Success();
     }
 
     private Result publishEvents(ReservationRequestSubmissionFailed requestSubmissionFailed) {
-        clientReservationsRepository.publish(requestSubmissionFailed);
         log.debug("reservation request submission failed for client with id {}, reason: {}",
                 requestSubmissionFailed.getClientId(), requestSubmissionFailed.getReason());
+        clientReservationsRepository.publish(requestSubmissionFailed);
         return Result.Rejection.with(requestSubmissionFailed.getReason());
     }
 

@@ -50,15 +50,15 @@ public class CancellingReservationRequest {
     }
 
     private Result publishEvents(ReservationRequestCancelled requestCancelled) {
-        clientReservationsRepository.publish(requestCancelled);
         log.debug("reservation request cancelled for client with id {}", requestCancelled.getClientId());
+        clientReservationsRepository.publish(requestCancelled);
         return new Result.Success();
     }
 
     private Result publishEvents(ReservationRequestCancellationFailed requestCancellationFailed) {
-        clientReservationsRepository.publish(requestCancellationFailed);
         log.debug("reservation request cancellation failed for client with id {}, reason: {}",
                 requestCancellationFailed.getClientId(), requestCancellationFailed.getReason());
+        clientReservationsRepository.publish(requestCancellationFailed);
         return Result.Rejection.with(requestCancellationFailed.getReason());
     }
 
