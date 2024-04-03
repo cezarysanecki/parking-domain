@@ -28,7 +28,7 @@ public class SubmittingReservationRequestForChosenParkingSpot {
     private final ClientReservationsRepository clientReservationsRepository;
 
     @Value
-    public class Command {
+    public static class Command {
 
         @NonNull ClientId clientId;
         @NonNull ParkingSpotId parkingSpotId;
