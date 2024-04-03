@@ -17,7 +17,7 @@ class InMemoryClientReservationsViewRepository implements ClientReservationsView
     private static final Map<ClientId, ClientReservationsViewEntity> DATABASE = new ConcurrentHashMap<>();
 
     @Override
-    public ClientReservationsView getClientReservationsViewFor(ClientId clientId) {
+    public ClientReservationsView   getClientReservationsViewFor(ClientId clientId) {
         ClientReservationsViewEntity entity = DATABASE.getOrDefault(clientId, new ClientReservationsViewEntity(clientId.getValue(), new HashSet<>()));
         return new ClientReservationsView(entity.clientId, entity.currentReservations);
     }

@@ -2,6 +2,7 @@ package pl.cezarysanecki.parkingdomain.reservation.parkingspot.infrastucture;
 
 import io.vavr.control.Option;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotCapacity;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId;
@@ -13,6 +14,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Slf4j
 @RequiredArgsConstructor
 class InMemoryParkingSpotReservationsRepository implements ParkingSpotReservationsRepository {
 
@@ -37,14 +39,17 @@ class InMemoryParkingSpotReservationsRepository implements ParkingSpotReservatio
     }
 
     @Override
-    public ParkingSpotReservations publish(ParkingSpotReservationEvent parkingSpotReservationEvent) {
+    public void publish(ParkingSpotReservationEvent parkingSpotReservationEvent) {
         ParkingSpotId parkingSpotId = parkingSpotReservationEvent.getParkingSpotId();
 
         ParkingSpotReservationsEntity entity = DATABASE.get(parkingSpotId);
-        entity.handle(parkingSpotReservationEvent);
-        DATABASE.put(parkingSpotId, entity);
+        if (entity != null) {
+            entity.handle(parkingSpotReservationEvent);
+            DATABASE.put(parkingSpotId, entity);
+        } else {
+            log.debug("cannot find parking spot reservation for parking spot with id {}", parkingSpotId);
+        }
         eventPublisher.publish(parkingSpotReservationEvent.normalize());
-        return DomainModelMapper.map(entity);
     }
 
 }
