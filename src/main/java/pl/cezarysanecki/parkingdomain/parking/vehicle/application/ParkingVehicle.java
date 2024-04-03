@@ -42,8 +42,7 @@ public class ParkingVehicle {
             Either<VehicleEvent.VehicleParkingFailed, VehicleEvent.VehicleParked> result = vehicle.parkOn(parkingSpotId);
             return Match(result).of(
                     Case($Left($()), this::publishEvents),
-                    Case($Right($()), this::publishEvents)
-            );
+                    Case($Right($()), this::publishEvents));
         }).onFailure(t -> log.error("Failed to park vehicle", t));
     }
 

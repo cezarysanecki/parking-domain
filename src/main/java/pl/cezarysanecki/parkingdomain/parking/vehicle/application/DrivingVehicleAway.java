@@ -40,8 +40,7 @@ public class DrivingVehicleAway {
             Either<VehicleDrivingAwayFailed, VehicleDroveAway> result = vehicle.driveAway();
             return Match(result).of(
                     Case($Left($()), this::publishEvents),
-                    Case($Right($()), this::publishEvents)
-            );
+                    Case($Right($()), this::publishEvents));
         }).onFailure(t -> log.error("Failed to occupy parking spot", t));
     }
 
