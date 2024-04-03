@@ -4,6 +4,7 @@ import lombok.NonNull;
 import lombok.Value;
 import pl.cezarysanecki.parkingdomain.commons.events.DomainEvent;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId;
+import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleSize;
 import pl.cezarysanecki.parkingdomain.reservation.client.model.ReservationId;
 
 public interface ParkingSpotReservationEvent extends DomainEvent {
@@ -15,6 +16,7 @@ public interface ParkingSpotReservationEvent extends DomainEvent {
 
         @NonNull ParkingSpotId parkingSpotId;
         @NonNull ReservationId reservationId;
+        @NonNull VehicleSize vehicleSize;
 
     }
 
