@@ -4,6 +4,7 @@ import io.vavr.control.Try;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,8 +40,8 @@ class ClientReservationsController {
                 .getOrElse(ResponseEntity.status(INTERNAL_SERVER_ERROR).build());
     }
 
-    @PostMapping("/client-reservations/{clientId}/reservation/{reservationId}")
-    ResponseEntity create(@PathVariable UUID clientId, @PathVariable UUID reservationId) {
+    @DeleteMapping("/client-reservations/reservation/{reservationId}")
+    ResponseEntity cancel(@PathVariable UUID reservationId) {
         Try<Result> result = cancellingReservationRequest.cancelReservationRequest(
                 new CancellingReservationRequest.Command(ReservationId.of(reservationId)));
         return result
