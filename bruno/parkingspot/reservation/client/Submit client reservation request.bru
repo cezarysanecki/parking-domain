@@ -1,0 +1,18 @@
+meta {
+  name: Submit client reservation request
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/client-reservations/123
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "parkingSpotId": "123",
+    "vehicleSize": 2
+  }
+}

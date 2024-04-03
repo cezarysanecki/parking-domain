@@ -1,6 +1,5 @@
 package pl.cezarysanecki.parkingdomain.parking.view.parkingspot.web;
 
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,7 +8,6 @@ import pl.cezarysanecki.parkingdomain.parking.view.parkingspot.model.ParkingSpot
 import pl.cezarysanecki.parkingdomain.parking.view.parkingspot.model.ParkingSpotViews;
 
 import java.util.Set;
-import java.util.UUID;
 
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -24,10 +22,4 @@ class ParkingSpotController {
         return ok(parkingSpotViews.queryForAvailableParkingSpots());
     }
 
-}
-
-@Data
-class OccupyParkingSpotRequest {
-    UUID vehicleId;
-    Integer size;
 }

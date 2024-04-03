@@ -33,7 +33,7 @@ class ClientReservationsController {
     private final CancellingReservationRequest cancellingReservationRequest;
 
     @GetMapping("/client-reservations/{clientId}")
-    ResponseEntity<ClientReservationsView> create(@PathVariable UUID clientId) {
+    ResponseEntity<ClientReservationsView> getClientReservations(@PathVariable UUID clientId) {
         ClientReservationsView clientReservationsView = clientReservationsViews.getClientReservationsViewFor(ClientId.of(clientId));
         return ResponseEntity.ok(clientReservationsView);
     }
