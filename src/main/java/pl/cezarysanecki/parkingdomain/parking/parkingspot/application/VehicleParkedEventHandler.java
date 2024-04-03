@@ -36,8 +36,7 @@ public class VehicleParkedEventHandler {
                     Either<ParkingSpotOccupationFailed, ParkingSpotOccupiedEvents> result = openParkingSpot.occupy(vehicleId, vehicleSize);
                     return Match(result).of(
                             Case($Left($()), this::publishEvents),
-                            Case($Right($()), this::publishEvents)
-                    );
+                            Case($Right($()), this::publishEvents));
                 })
                 .onEmpty(() -> {
                     log.debug("cannot find parking spot with id {}", parkingSpotId);
