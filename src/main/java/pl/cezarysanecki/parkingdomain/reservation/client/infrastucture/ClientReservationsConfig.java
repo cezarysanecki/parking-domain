@@ -16,7 +16,7 @@ public class ClientReservationsConfig {
     private final EventPublisher eventPublisher;
 
     @Bean
-    SubmittingReservationRequestForChosenParkingSpot requestingReservationForChosenParkingSpot(ClientReservationsRepository clientReservationsRepository) {
+    SubmittingReservationRequestForChosenParkingSpot submittingReservationRequestForChosenParkingSpot(ClientReservationsRepository clientReservationsRepository) {
         return new SubmittingReservationRequestForChosenParkingSpot(clientReservationsRepository);
     }
 
