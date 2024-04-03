@@ -2,12 +2,11 @@ package pl.cezarysanecki.parkingdomain.parking.vehicle.infrastructure;
 
 import io.vavr.control.Option;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
+import pl.cezarysanecki.parkingdomain.parking.vehicle.application.RegisteringVehicle.VehicleRegistered;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.Vehicle;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleEvent;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleId;
-import pl.cezarysanecki.parkingdomain.parking.vehicle.application.RegisteringVehicle.VehicleRegistered;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.Vehicles;
 
 import java.util.Map;
@@ -18,7 +17,6 @@ import static io.vavr.API.Case;
 import static io.vavr.API.Match;
 import static io.vavr.Predicates.instanceOf;
 
-@Slf4j
 @RequiredArgsConstructor
 class InMemoryVehicleRepository implements Vehicles {
 
@@ -47,7 +45,6 @@ class InMemoryVehicleRepository implements Vehicles {
                 Option.none(),
                 domainEvent.getVehicleSize().getValue());
         DATABASE.put(domainEvent.getVehicleId(), entity);
-        log.debug("creating vehicle with id {}", domainEvent.getVehicleId());
         return DomainModelMapper.map(entity);
     }
 

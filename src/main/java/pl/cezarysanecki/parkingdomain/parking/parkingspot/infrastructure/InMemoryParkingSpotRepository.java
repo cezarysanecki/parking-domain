@@ -3,7 +3,6 @@ package pl.cezarysanecki.parkingdomain.parking.parkingspot.infrastructure;
 import io.vavr.API;
 import io.vavr.control.Option;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.application.CreatingParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.OccupiedParkingSpot;
@@ -22,7 +21,6 @@ import static io.vavr.API.Case;
 import static io.vavr.API.Match;
 import static io.vavr.Predicates.instanceOf;
 
-@Slf4j
 @RequiredArgsConstructor
 class InMemoryParkingSpotRepository implements ParkingSpots {
 
@@ -60,14 +58,12 @@ class InMemoryParkingSpotRepository implements ParkingSpots {
                 domainEvent.getParkingSpotCapacity().getValue(),
                 new HashSet<>());
         DATABASE.put(domainEvent.getParkingSpotId(), entity);
-        log.debug("creating parking spot with id {}", domainEvent.getParkingSpotId());
         return domainEvent;
     }
 
     private ParkingSpotEvent handleNextEvent(ParkingSpotEvent domainEvent) {
         ParkingSpotEntity entity = DATABASE.get(domainEvent.getParkingSpotId());
         if (entity == null) {
-            log.debug("cannot find parking spot with id {}", domainEvent.getParkingSpotId());
             return domainEvent;
         }
         entity.handle(domainEvent);

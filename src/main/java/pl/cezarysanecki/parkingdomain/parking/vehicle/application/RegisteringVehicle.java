@@ -25,7 +25,11 @@ public class RegisteringVehicle {
 
     public Try<Result> register(RegisteringVehicle.Command command) {
         return Try.<Result>of(() -> {
-            vehicles.publish(new VehicleRegistered(VehicleId.newOne(), command.vehicleSize));
+            VehicleId vehicleId = VehicleId.newOne();
+
+            log.debug("registering vehicle with id {}", vehicleId);
+            vehicles.publish(new VehicleRegistered(vehicleId, command.vehicleSize));
+
             return new Result.Success();
         }).onFailure(t -> log.error("Failed to register vehicle", t));
     }

@@ -25,7 +25,11 @@ public class CreatingParkingSpot {
 
     public Try<Result> create(Command command) {
         return Try.<Result>of(() -> {
-            parkingSpots.publish(new ParkingSpotCreated(ParkingSpotId.newOne(), command.parkingSpotCapacity));
+            ParkingSpotId parkingSpotId = ParkingSpotId.newOne();
+
+            log.debug("created parking spot with id {}", parkingSpotId);
+            parkingSpots.publish(new ParkingSpotCreated(parkingSpotId, command.parkingSpotCapacity));
+
             return new Result.Success();
         }).onFailure(t -> log.error("Failed to create parking spot", t));
     }

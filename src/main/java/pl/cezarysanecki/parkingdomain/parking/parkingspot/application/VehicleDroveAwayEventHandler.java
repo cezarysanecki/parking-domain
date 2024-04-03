@@ -32,8 +32,7 @@ public class VehicleDroveAwayEventHandler {
                     Either<ParkingSpotLeavingOutFailed, ParkingSpotLeftEvents> result = occupiedParkingSpot.release(vehicleId);
                     return Match(result).of(
                             Case($Left($()), this::publishEvents),
-                            Case($Right($()), this::publishEvents)
-                    );
+                            Case($Right($()), this::publishEvents));
                 })
                 .onEmpty(() -> log.debug("cannot find occupied parking spot by vehicle with id {}", vehicleId));
     }
