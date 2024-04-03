@@ -25,7 +25,7 @@ public class CancellingReservationRequest {
     private final ClientReservationsRepository clientReservationsRepository;
 
     @Value
-    public class Command {
+    public static class Command {
 
         @NonNull ReservationId reservationId;
 
