@@ -4,6 +4,7 @@ import io.vavr.control.Either;
 import lombok.Value;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotOccupation;
+import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleSize;
 import pl.cezarysanecki.parkingdomain.reservation.client.model.ReservationId;
 import pl.cezarysanecki.parkingdomain.reservation.client.model.ReservationRequest;
 
@@ -24,10 +25,13 @@ public class ParkingSpotReservations {
     Set<ReservationId> reservations;
 
     public Either<ParkingSpotReservationFailed, ParkingSpotReserved> reserve(ReservationRequest reservationRequest) {
-        if (!reservedOccupation.canHandle(reservationRequest.getVehicleSize())) {
-            return announceFailure(new ParkingSpotReservationFailed(parkingSpotId, reservationRequest.getReservationId(), "not to many parking spot space"));
+        ReservationId reservationId = reservationRequest.getReservationId();
+        VehicleSize vehicleSize = reservationRequest.getVehicleSize();
+
+        if (!reservedOccupation.canHandle(vehicleSize)) {
+            return announceFailure(new ParkingSpotReservationFailed(parkingSpotId, reservationId, "not to many parking spot space"));
         }
-        return announceSuccess(new ParkingSpotReserved(parkingSpotId, reservationRequest.getReservationId()));
+        return announceSuccess(new ParkingSpotReserved(parkingSpotId, reservationId, vehicleSize));
     }
 
     public Either<ParkingSpotReservationCancellationFailed, ParkingSpotReservationCancelled> cancel(ReservationId reservationId) {
