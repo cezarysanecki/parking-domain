@@ -9,6 +9,7 @@ import pl.cezarysanecki.parkingdomain.reservation.client.model.ClientReservation
 import pl.cezarysanecki.parkingdomain.reservation.client.model.ClientReservationsEvent;
 import pl.cezarysanecki.parkingdomain.reservation.client.model.ClientReservationsRepository;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -28,9 +29,11 @@ class InMemoryClientReservationsRepository implements ClientReservationsReposito
 
     @Override
     public ClientReservations publish(ClientReservationsEvent clientReservationsEvent) {
-        ClientReservationsEntity entity = DATABASE.get(clientReservationsEvent.getClientId());
+        ClientId clientId = clientReservationsEvent.getClientId();
+
+        ClientReservationsEntity entity = DATABASE.getOrDefault(clientId, new ClientReservationsEntity(clientId.getValue(), new HashSet<>()));
         entity.handle(clientReservationsEvent);
-        DATABASE.put(clientReservationsEvent.getClientId(), entity);
+        DATABASE.put(clientId, entity);
         log.debug("handled event {} for client reservations", clientReservationsEvent.getClass().getSimpleName());
         eventPublisher.publish(clientReservationsEvent.normalize());
         return DomainModelMapper.map(entity);
