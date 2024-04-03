@@ -23,7 +23,7 @@ import static pl.cezarysanecki.parkingdomain.reservation.client.model.ClientRese
 
 @Slf4j
 @RequiredArgsConstructor
-public class RequestingReservationForChosenParkingSpot {
+public class SubmittingReservationRequestForChosenParkingSpot {
 
     private final ClientReservationsRepository clientReservationsRepository;
 
@@ -36,7 +36,7 @@ public class RequestingReservationForChosenParkingSpot {
 
     }
 
-    public Try<Result> requestChosenParkingSpot(Command command) {
+    public Try<Result> requestReservation(Command command) {
         ClientId clientId = command.getClientId();
         ParkingSpotId parkingSpotId = command.getParkingSpotId();
         VehicleSize vehicleSize = command.getVehicleSize();
