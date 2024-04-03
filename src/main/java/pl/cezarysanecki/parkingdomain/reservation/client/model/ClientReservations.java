@@ -21,6 +21,10 @@ public class ClientReservations {
     ClientId clientId;
     Set<ReservationId> reservations;
 
+    public static ClientReservations empty(ClientId clientId) {
+        return new ClientReservations(clientId, Set.of());
+    }
+
     public Either<ReservationRequestSubmissionFailed, ReservationRequestSubmitted> createRequest(ParkingSpotId parkingSpotId, VehicleSize vehicleSize) {
         if (willBeTooManyRequests()) {
             return announceFailure(new ReservationRequestSubmissionFailed(clientId, "client has too many requests"));

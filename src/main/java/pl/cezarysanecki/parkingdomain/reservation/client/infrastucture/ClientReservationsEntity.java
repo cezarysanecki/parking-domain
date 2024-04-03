@@ -1,6 +1,7 @@
 package pl.cezarysanecki.parkingdomain.reservation.client.infrastucture;
 
 import io.vavr.API;
+import lombok.AllArgsConstructor;
 import pl.cezarysanecki.parkingdomain.reservation.client.model.ClientReservationsEvent;
 import pl.cezarysanecki.parkingdomain.reservation.client.model.ClientReservationsEvent.ReservationRequestSubmitted;
 
@@ -12,6 +13,7 @@ import static io.vavr.API.Case;
 import static io.vavr.API.Match;
 import static io.vavr.Predicates.instanceOf;
 
+@AllArgsConstructor
 class ClientReservationsEntity {
 
     UUID clientId;
