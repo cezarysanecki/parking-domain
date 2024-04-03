@@ -10,6 +10,6 @@ public interface ParkingSpotReservationsRepository {
 
     Option<ParkingSpotReservations> findBy(ParkingSpotId parkingSpotId);
 
-    ParkingSpotReservations publish(ParkingSpotReservationEvent parkingSpotReservationEvent);
+    void publish(ParkingSpotReservationEvent parkingSpotReservationEvent);
 
 }

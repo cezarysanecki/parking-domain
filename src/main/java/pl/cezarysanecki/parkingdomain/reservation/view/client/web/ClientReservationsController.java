@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,6 +17,8 @@ import pl.cezarysanecki.parkingdomain.reservation.client.application.CancellingR
 import pl.cezarysanecki.parkingdomain.reservation.client.application.SubmittingReservationRequestForChosenParkingSpot;
 import pl.cezarysanecki.parkingdomain.reservation.client.model.ClientId;
 import pl.cezarysanecki.parkingdomain.reservation.client.model.ReservationId;
+import pl.cezarysanecki.parkingdomain.reservation.view.client.model.ClientReservationsView;
+import pl.cezarysanecki.parkingdomain.reservation.view.client.model.ClientReservationsViews;
 
 import java.util.UUID;
 
@@ -25,8 +28,15 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 @RequiredArgsConstructor
 class ClientReservationsController {
 
+    private final ClientReservationsViews clientReservationsViews;
     private final SubmittingReservationRequestForChosenParkingSpot submittingReservationRequestForChosenParkingSpot;
     private final CancellingReservationRequest cancellingReservationRequest;
+
+    @GetMapping("/client-reservations/{clientId}")
+    ResponseEntity<ClientReservationsView> getClientReservations(@PathVariable UUID clientId) {
+        ClientReservationsView clientReservationsView = clientReservationsViews.getClientReservationsViewFor(ClientId.of(clientId));
+        return ResponseEntity.ok(clientReservationsView);
+    }
 
     @PostMapping("/client-reservations/{clientId}")
     ResponseEntity create(@PathVariable UUID clientId, @RequestBody SubmitReservationRequest request) {

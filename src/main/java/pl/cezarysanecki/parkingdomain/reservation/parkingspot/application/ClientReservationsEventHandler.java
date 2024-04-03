@@ -34,7 +34,13 @@ public class ClientReservationsEventHandler {
                             Case($Left($()), this::publishEvents),
                             Case($Right($()), this::publishEvents));
                 })
-                .onEmpty(() -> log.error("cannot find reservations for parking spot"));
+                .onEmpty(() -> {
+                    log.error("cannot find reservations for parking spot");
+                    parkingSpotReservationsRepository.publish(new ParkingSpotReservationFailed(
+                            reservationRequest.getParkingSpotId(),
+                            reservationRequest.getReservationId(),
+                            "cannot find parking spot"));
+                });
     }
 
     private Result publishEvents(ParkingSpotReservationFailed parkingSpotReservationFailed) {

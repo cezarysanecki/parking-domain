@@ -1,7 +1,7 @@
 package pl.cezarysanecki.parkingdomain.reservation.parkingspot.application;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Configuration;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotCapacity;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId;
@@ -9,7 +9,7 @@ import pl.cezarysanecki.parkingdomain.reservation.parkingspot.model.ParkingSpotR
 
 import static pl.cezarysanecki.parkingdomain.parking.parkingspot.application.CreatingParkingSpot.ParkingSpotCreated;
 
-@Configuration
+@Slf4j
 @RequiredArgsConstructor
 public class ParkingSpotEventsHandler {
 
@@ -20,6 +20,7 @@ public class ParkingSpotEventsHandler {
         ParkingSpotId parkingSpotId = parkingSpotCreated.getParkingSpotId();
         ParkingSpotCapacity parkingSpotCapacity = parkingSpotCreated.getParkingSpotCapacity();
 
+        log.debug("created parking spot reservations for parking spot with id {}", parkingSpotId);
         parkingSpotReservationsRepository.createUsing(parkingSpotId, parkingSpotCapacity);
     }
 
