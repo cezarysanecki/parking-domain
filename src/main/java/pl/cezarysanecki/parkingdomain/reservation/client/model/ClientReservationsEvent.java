@@ -28,4 +28,21 @@ public interface ClientReservationsEvent extends DomainEvent {
 
     }
 
+    @Value
+    class ReservationRequestCancelled implements ClientReservationsEvent {
+
+        @NonNull ClientId clientId;
+        @NonNull ReservationId reservationId;
+
+    }
+
+    @Value
+    class ReservationRequestCancellationFailed implements ClientReservationsEvent {
+
+        @NonNull ClientId clientId;
+        @NonNull ReservationId reservationId;
+        @NonNull String reason;
+
+    }
+
 }
