@@ -33,7 +33,7 @@ public class ParkingSpotReservations {
 
     public Either<ParkingSpotReservationFailed, WholeParkingSpotReserved> reserveWhole(ReservationId reservationId) {
         if (!reservations.isEmpty()) {
-            return announceFailure(new ParkingSpotReservationFailed(parkingSpotId, reservationId, "not to many parking spot space"));
+            return announceFailure(new ParkingSpotReservationFailed(parkingSpotId, reservationId, "there are reservations for this parking spot"));
         }
         return announceSuccess(new WholeParkingSpotReserved(parkingSpotId, reservationId));
     }
