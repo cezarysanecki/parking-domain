@@ -9,6 +9,7 @@ import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleSize;
 import pl.cezarysanecki.parkingdomain.reservation.client.model.ClientReservationsEvent.ReservationForPartOfParkingSpotSubmitted;
 import pl.cezarysanecki.parkingdomain.reservation.client.model.ReservationId;
+import pl.cezarysanecki.parkingdomain.reservation.parkingspot.model.ParkingSpotReservationEvent.WholeParkingSpotReserved;
 import pl.cezarysanecki.parkingdomain.reservation.parkingspot.model.ParkingSpotReservationsRepository;
 
 import static io.vavr.API.$;
@@ -16,6 +17,7 @@ import static io.vavr.API.Case;
 import static io.vavr.API.Match;
 import static io.vavr.Patterns.$Left;
 import static io.vavr.Patterns.$Right;
+import static pl.cezarysanecki.parkingdomain.reservation.client.model.ClientReservationsEvent.ReservationForWholeParkingSpotSubmitted;
 import static pl.cezarysanecki.parkingdomain.reservation.parkingspot.model.ParkingSpotReservationEvent.ParkingSpotReservationFailed;
 import static pl.cezarysanecki.parkingdomain.reservation.parkingspot.model.ParkingSpotReservationEvent.PartOfParkingSpotReserved;
 
@@ -33,7 +35,25 @@ public class ClientReservationsEventHandler {
 
         parkingSpotReservationsRepository.findBy(parkingSpotId)
                 .map(parkingSpotReservations -> {
-                    Either<ParkingSpotReservationFailed, PartOfParkingSpotReserved> result = parkingSpotReservations.reserve(reservationId, vehicleSize);
+                    Either<ParkingSpotReservationFailed, PartOfParkingSpotReserved> result = parkingSpotReservations.reservePart(reservationId, vehicleSize);
+                    return Match(result).of(
+                            Case($Left($()), this::publishEvents),
+                            Case($Right($()), this::publishEvents));
+                })
+                .onEmpty(() -> {
+                    log.error("cannot find reservations for parking spot");
+                    parkingSpotReservationsRepository.publish(new ParkingSpotReservationFailed(parkingSpotId, reservationId, "cannot find parking spot"));
+                });
+    }
+
+    @EventListener
+    public void handle(ReservationForWholeParkingSpotSubmitted reservationSubmitted) {
+        ParkingSpotId parkingSpotId = reservationSubmitted.getParkingSpotId();
+        ReservationId reservationId = reservationSubmitted.getReservationId();
+
+        parkingSpotReservationsRepository.findBy(parkingSpotId)
+                .map(parkingSpotReservations -> {
+                    Either<ParkingSpotReservationFailed, WholeParkingSpotReserved> result = parkingSpotReservations.reserveWhole(reservationId);
                     return Match(result).of(
                             Case($Left($()), this::publishEvents),
                             Case($Right($()), this::publishEvents));
@@ -53,6 +73,12 @@ public class ClientReservationsEventHandler {
     private Result publishEvents(PartOfParkingSpotReserved partOfParkingSpotReserved) {
         log.debug("successfully reserved part of parking spot with id {}", partOfParkingSpotReserved.getParkingSpotId());
         parkingSpotReservationsRepository.publish(partOfParkingSpotReserved);
+        return new Result.Success();
+    }
+
+    private Result publishEvents(WholeParkingSpotReserved wholeParkingSpotReserved) {
+        log.debug("successfully reserved whole parking spot with id {}", wholeParkingSpotReserved.getParkingSpotId());
+        parkingSpotReservationsRepository.publish(wholeParkingSpotReserved);
         return new Result.Success();
     }
 

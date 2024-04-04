@@ -6,6 +6,7 @@ import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotOccupation;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleSize;
 import pl.cezarysanecki.parkingdomain.reservation.client.model.ReservationId;
+import pl.cezarysanecki.parkingdomain.reservation.parkingspot.model.ParkingSpotReservationEvent.WholeParkingSpotReserved;
 
 import java.util.Set;
 
@@ -23,11 +24,18 @@ public class ParkingSpotReservations {
     ParkingSpotOccupation reservedOccupation;
     Set<ReservationId> reservations;
 
-    public Either<ParkingSpotReservationFailed, PartOfParkingSpotReserved> reserve(ReservationId reservationId, VehicleSize vehicleSize) {
+    public Either<ParkingSpotReservationFailed, PartOfParkingSpotReserved> reservePart(ReservationId reservationId, VehicleSize vehicleSize) {
         if (!reservedOccupation.canHandle(vehicleSize)) {
             return announceFailure(new ParkingSpotReservationFailed(parkingSpotId, reservationId, "not to many parking spot space"));
         }
         return announceSuccess(new PartOfParkingSpotReserved(parkingSpotId, reservationId, vehicleSize));
+    }
+
+    public Either<ParkingSpotReservationFailed, WholeParkingSpotReserved> reserveWhole(ReservationId reservationId) {
+        if (!reservations.isEmpty()) {
+            return announceFailure(new ParkingSpotReservationFailed(parkingSpotId, reservationId, "not to many parking spot space"));
+        }
+        return announceSuccess(new WholeParkingSpotReserved(parkingSpotId, reservationId));
     }
 
     public Either<ParkingSpotReservationCancellationFailed, ParkingSpotReservationCancelled> cancel(ReservationId reservationId) {

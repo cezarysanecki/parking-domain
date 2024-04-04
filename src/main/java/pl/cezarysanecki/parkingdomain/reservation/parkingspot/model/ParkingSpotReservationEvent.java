@@ -21,6 +21,14 @@ public interface ParkingSpotReservationEvent extends DomainEvent {
     }
 
     @Value
+    class WholeParkingSpotReserved implements ParkingSpotReservationEvent {
+
+        @NonNull ParkingSpotId parkingSpotId;
+        @NonNull ReservationId reservationId;
+
+    }
+
+    @Value
     class ParkingSpotReservationFailed implements ParkingSpotReservationEvent {
 
         @NonNull ParkingSpotId parkingSpotId;
