@@ -4,11 +4,11 @@ import io.vavr.control.Option;
 import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.commons.view.ViewEventListener;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId;
+import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleId;
+import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleSize;
 import pl.cezarysanecki.parkingdomain.parking.view.parkingspot.infrastructure.ParkingSpotViewEntity.ParkedVehicleView;
 import pl.cezarysanecki.parkingdomain.parking.view.parkingspot.model.ParkingSpotView;
 import pl.cezarysanecki.parkingdomain.parking.view.parkingspot.model.ParkingSpotViews;
-import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleId;
-import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleSize;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -36,7 +36,8 @@ class InMemoryParkingSpotViewRepository implements ParkingSpotViews {
                         entity.capacity - entity.parkedVehicles.stream()
                                 .map(vehicle -> vehicle.size)
                                 .reduce(0, Integer::sum),
-                        entity.capacity))
+                        entity.capacity,
+                        entity.parkingSpotCategory))
                 .filter(parkingSpotView -> parkingSpotView.getSpaceLeft() > 0)
                 .collect(Collectors.toUnmodifiableSet());
     }
@@ -47,7 +48,8 @@ class InMemoryParkingSpotViewRepository implements ParkingSpotViews {
         DATABASE.put(event.getParkingSpotId(), new ParkingSpotViewEntity(
                 event.getParkingSpotId().getValue(),
                 new HashSet<>(),
-                event.getParkingSpotCapacity().getValue()));
+                event.getParkingSpotCapacity().getValue(),
+                event.getParkingSpotCategory()));
         log.debug("creating parking spot view with id {}", event.getParkingSpotId());
     }
 
