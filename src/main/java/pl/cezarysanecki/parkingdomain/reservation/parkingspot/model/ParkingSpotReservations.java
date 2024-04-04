@@ -24,10 +24,7 @@ public class ParkingSpotReservations {
     ParkingSpotOccupation reservedOccupation;
     Set<ReservationId> reservations;
 
-    public Either<ParkingSpotReservationFailed, ParkingSpotReserved> reserve(ReservationRequest reservationRequest) {
-        ReservationId reservationId = reservationRequest.getReservationId();
-        VehicleSize vehicleSize = reservationRequest.getVehicleSize();
-
+    public Either<ParkingSpotReservationFailed, ParkingSpotReserved> reserve(ReservationId reservationId, VehicleSize vehicleSize) {
         if (!reservedOccupation.canHandle(vehicleSize)) {
             return announceFailure(new ParkingSpotReservationFailed(parkingSpotId, reservationId, "not to many parking spot space"));
         }

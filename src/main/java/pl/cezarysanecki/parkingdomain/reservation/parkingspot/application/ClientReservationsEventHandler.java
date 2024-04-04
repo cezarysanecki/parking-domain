@@ -5,8 +5,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
+import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId;
+import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleSize;
 import pl.cezarysanecki.parkingdomain.reservation.client.model.ClientReservationsEvent.ReservationForPartOfParkingSpotSubmitted;
-import pl.cezarysanecki.parkingdomain.reservation.client.model.ReservationRequest;
+import pl.cezarysanecki.parkingdomain.reservation.client.model.ReservationId;
 import pl.cezarysanecki.parkingdomain.reservation.parkingspot.model.ParkingSpotReservationsRepository;
 
 import static io.vavr.API.$;
@@ -24,22 +26,21 @@ public class ClientReservationsEventHandler {
     private final ParkingSpotReservationsRepository parkingSpotReservationsRepository;
 
     @EventListener
-    public void handle(ReservationForPartOfParkingSpotSubmitted reservationForPartOfParkingSpotSubmitted) {
-        ReservationRequest reservationRequest = reservationForPartOfParkingSpotSubmitted.getReservationRequest();
+    public void handle(ReservationForPartOfParkingSpotSubmitted reservationSubmitted) {
+        ParkingSpotId parkingSpotId = reservationSubmitted.getParkingSpotId();
+        ReservationId reservationId = reservationSubmitted.getReservationId();
+        VehicleSize vehicleSize = reservationSubmitted.getVehicleSize();
 
-        parkingSpotReservationsRepository.findBy(reservationRequest.getParkingSpotId())
+        parkingSpotReservationsRepository.findBy(parkingSpotId)
                 .map(parkingSpotReservations -> {
-                    Either<ParkingSpotReservationFailed, ParkingSpotReserved> result = parkingSpotReservations.reserve(reservationRequest);
+                    Either<ParkingSpotReservationFailed, ParkingSpotReserved> result = parkingSpotReservations.reserve(reservationId, vehicleSize);
                     return Match(result).of(
                             Case($Left($()), this::publishEvents),
                             Case($Right($()), this::publishEvents));
                 })
                 .onEmpty(() -> {
                     log.error("cannot find reservations for parking spot");
-                    parkingSpotReservationsRepository.publish(new ParkingSpotReservationFailed(
-                            reservationRequest.getParkingSpotId(),
-                            reservationRequest.getReservationId(),
-                            "cannot find parking spot"));
+                    parkingSpotReservationsRepository.publish(new ParkingSpotReservationFailed(parkingSpotId, reservationId, "cannot find parking spot"));
                 });
     }
 
