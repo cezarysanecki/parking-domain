@@ -12,7 +12,7 @@ public interface ParkingSpotReservationEvent extends DomainEvent {
     ParkingSpotId getParkingSpotId();
 
     @Value
-    class ParkingSpotReserved implements ParkingSpotReservationEvent {
+    class PartOfParkingSpotReserved implements ParkingSpotReservationEvent {
 
         @NonNull ParkingSpotId parkingSpotId;
         @NonNull ReservationId reservationId;

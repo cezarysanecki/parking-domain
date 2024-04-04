@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import pl.cezarysanecki.parkingdomain.reservation.parkingspot.model.ParkingSpotReservationEvent;
 import pl.cezarysanecki.parkingdomain.reservation.parkingspot.model.ParkingSpotReservationEvent.ParkingSpotReservationCancelled;
-import pl.cezarysanecki.parkingdomain.reservation.parkingspot.model.ParkingSpotReservationEvent.ParkingSpotReserved;
+import pl.cezarysanecki.parkingdomain.reservation.parkingspot.model.ParkingSpotReservationEvent.PartOfParkingSpotReserved;
 
 import java.util.Set;
 import java.util.UUID;
@@ -24,15 +24,15 @@ class ParkingSpotReservationsEntity {
 
     ParkingSpotReservationsEntity handle(ParkingSpotReservationEvent domainEvent) {
         return Match(domainEvent).of(
-                API.Case(API.$(instanceOf(ParkingSpotReserved.class)), this::handle),
+                API.Case(API.$(instanceOf(PartOfParkingSpotReserved.class)), this::handle),
                 API.Case(API.$(instanceOf(ParkingSpotReservationCancelled.class)), this::handle),
                 Case($(), () -> this));
     }
 
-    private ParkingSpotReservationsEntity handle(ParkingSpotReserved parkingSpotReserved) {
+    private ParkingSpotReservationsEntity handle(PartOfParkingSpotReserved partOfParkingSpotReserved) {
         reservations.add(new VehicleReservationEntity(
-                parkingSpotReserved.getReservationId().getValue(),
-                parkingSpotReserved.getVehicleSize().getValue()));
+                partOfParkingSpotReserved.getReservationId().getValue(),
+                partOfParkingSpotReserved.getVehicleSize().getValue()));
         return this;
     }
 

@@ -17,7 +17,7 @@ import static io.vavr.API.Match;
 import static io.vavr.Patterns.$Left;
 import static io.vavr.Patterns.$Right;
 import static pl.cezarysanecki.parkingdomain.reservation.parkingspot.model.ParkingSpotReservationEvent.ParkingSpotReservationFailed;
-import static pl.cezarysanecki.parkingdomain.reservation.parkingspot.model.ParkingSpotReservationEvent.ParkingSpotReserved;
+import static pl.cezarysanecki.parkingdomain.reservation.parkingspot.model.ParkingSpotReservationEvent.PartOfParkingSpotReserved;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -33,7 +33,7 @@ public class ClientReservationsEventHandler {
 
         parkingSpotReservationsRepository.findBy(parkingSpotId)
                 .map(parkingSpotReservations -> {
-                    Either<ParkingSpotReservationFailed, ParkingSpotReserved> result = parkingSpotReservations.reserve(reservationId, vehicleSize);
+                    Either<ParkingSpotReservationFailed, PartOfParkingSpotReserved> result = parkingSpotReservations.reserve(reservationId, vehicleSize);
                     return Match(result).of(
                             Case($Left($()), this::publishEvents),
                             Case($Right($()), this::publishEvents));
@@ -50,9 +50,9 @@ public class ClientReservationsEventHandler {
         return Result.Rejection.with(parkingSpotReservationFailed.getReason());
     }
 
-    private Result publishEvents(ParkingSpotReserved parkingSpotReserved) {
-        log.debug("successfully reserved parking spot with id {}", parkingSpotReserved.getParkingSpotId());
-        parkingSpotReservationsRepository.publish(parkingSpotReserved);
+    private Result publishEvents(PartOfParkingSpotReserved partOfParkingSpotReserved) {
+        log.debug("successfully reserved part of parking spot with id {}", partOfParkingSpotReserved.getParkingSpotId());
+        parkingSpotReservationsRepository.publish(partOfParkingSpotReserved);
         return new Result.Success();
     }
 
