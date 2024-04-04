@@ -23,7 +23,11 @@ import static pl.cezarysanecki.parkingdomain.reservation.client.model.ClientRese
 
 @Slf4j
 @RequiredArgsConstructor
+<<<<<<<< HEAD:src/main/java/pl/cezarysanecki/parkingdomain/reservation/client/application/ReservingPartOfParkingSpot.java
 public class ReservingPartOfParkingSpot {
+========
+public class SubmittingReservationRequestForPartOfParkingSpot {
+>>>>>>>> a91983fc714ad0982b087362abf27628ecadb516:src/main/java/pl/cezarysanecki/parkingdomain/reservation/client/application/SubmittingReservationRequestForPartOfParkingSpot.java
 
     private final ClientReservationsRepository clientReservationsRepository;
 
