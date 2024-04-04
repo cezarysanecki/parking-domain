@@ -3,8 +3,8 @@ package pl.cezarysanecki.parkingdomain.reservation.client.infrastucture;
 import io.vavr.API;
 import lombok.AllArgsConstructor;
 import pl.cezarysanecki.parkingdomain.reservation.client.model.ClientReservationsEvent;
-import pl.cezarysanecki.parkingdomain.reservation.client.model.ClientReservationsEvent.ReservationRequestCancelled;
 import pl.cezarysanecki.parkingdomain.reservation.client.model.ClientReservationsEvent.ReservationForPartOfParkingSpotSubmitted;
+import pl.cezarysanecki.parkingdomain.reservation.client.model.ClientReservationsEvent.ReservationRequestCancelled;
 
 import java.util.Set;
 import java.util.UUID;
@@ -28,7 +28,7 @@ class ClientReservationsEntity {
     }
 
     private ClientReservationsEntity handle(ReservationForPartOfParkingSpotSubmitted reservationForPartOfParkingSpotSubmitted) {
-        reservations.add(reservationForPartOfParkingSpotSubmitted.getReservationRequest().getReservationId().getValue());
+        reservations.add(reservationForPartOfParkingSpotSubmitted.getReservationId().getValue());
         return this;
     }
 

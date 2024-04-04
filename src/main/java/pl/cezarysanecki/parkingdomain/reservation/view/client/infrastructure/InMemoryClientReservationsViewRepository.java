@@ -9,15 +9,15 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static pl.cezarysanecki.parkingdomain.reservation.client.model.ClientReservationsEvent.ReservationRequestCancelled;
 import static pl.cezarysanecki.parkingdomain.reservation.client.model.ClientReservationsEvent.ReservationForPartOfParkingSpotSubmitted;
+import static pl.cezarysanecki.parkingdomain.reservation.client.model.ClientReservationsEvent.ReservationRequestCancelled;
 
 class InMemoryClientReservationsViewRepository implements ClientReservationsViews {
 
     private static final Map<ClientId, ClientReservationsViewEntity> DATABASE = new ConcurrentHashMap<>();
 
     @Override
-    public ClientReservationsView   getClientReservationsViewFor(ClientId clientId) {
+    public ClientReservationsView getClientReservationsViewFor(ClientId clientId) {
         ClientReservationsViewEntity entity = DATABASE.getOrDefault(clientId, new ClientReservationsViewEntity(clientId.getValue(), new HashSet<>()));
         return new ClientReservationsView(entity.clientId, entity.currentReservations);
     }
@@ -28,7 +28,7 @@ class InMemoryClientReservationsViewRepository implements ClientReservationsView
         ClientId clientId = event.getClientId();
 
         ClientReservationsViewEntity entity = DATABASE.getOrDefault(clientId, new ClientReservationsViewEntity(clientId.getValue(), new HashSet<>()));
-        entity.currentReservations.add(event.getReservationRequest().getReservationId().getValue());
+        entity.currentReservations.add(event.getReservationId().getValue());
         DATABASE.put(clientId, entity);
     }
 
