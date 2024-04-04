@@ -1,6 +1,7 @@
 package pl.cezarysanecki.parkingdomain.parking.view.parkingspot.model;
 
 import lombok.Value;
+import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotCategory;
 
 import java.util.Set;
 import java.util.UUID;
@@ -12,6 +13,7 @@ public class ParkingSpotView {
     Set<ParkedVehicleView> parkedVehicles;
     int spaceLeft;
     int capacity;
+    ParkingSpotCategory parkingSpotCategory;
 
     @Value
     public static class ParkedVehicleView {

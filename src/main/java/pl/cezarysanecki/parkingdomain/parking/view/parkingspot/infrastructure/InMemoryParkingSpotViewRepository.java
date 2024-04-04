@@ -36,7 +36,8 @@ class InMemoryParkingSpotViewRepository implements ParkingSpotViews {
                         entity.capacity - entity.parkedVehicles.stream()
                                 .map(vehicle -> vehicle.size)
                                 .reduce(0, Integer::sum),
-                        entity.capacity))
+                        entity.capacity,
+                        entity.parkingSpotCategory))
                 .filter(parkingSpotView -> parkingSpotView.getSpaceLeft() > 0)
                 .collect(Collectors.toUnmodifiableSet());
     }
