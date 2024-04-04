@@ -14,7 +14,7 @@ import pl.cezarysanecki.parkingdomain.commons.commands.Result;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleSize;
 import pl.cezarysanecki.parkingdomain.reservation.client.application.CancellingReservationRequest;
-import pl.cezarysanecki.parkingdomain.reservation.client.application.SubmittingReservationRequestForChosenParkingSpot;
+import pl.cezarysanecki.parkingdomain.reservation.client.application.SubmittingReservationRequestForPartOfParkingSpot;
 import pl.cezarysanecki.parkingdomain.reservation.client.model.ClientId;
 import pl.cezarysanecki.parkingdomain.reservation.client.model.ReservationId;
 import pl.cezarysanecki.parkingdomain.reservation.view.client.model.ClientReservationsView;
@@ -29,7 +29,7 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 class ClientReservationsController {
 
     private final ClientReservationsViews clientReservationsViews;
-    private final SubmittingReservationRequestForChosenParkingSpot submittingReservationRequestForChosenParkingSpot;
+    private final SubmittingReservationRequestForPartOfParkingSpot submittingReservationRequestForPartOfParkingSpot;
     private final CancellingReservationRequest cancellingReservationRequest;
 
     @GetMapping("/client-reservations/{clientId}")
@@ -40,8 +40,8 @@ class ClientReservationsController {
 
     @PostMapping("/client-reservations/{clientId}")
     ResponseEntity create(@PathVariable UUID clientId, @RequestBody SubmitReservationRequest request) {
-        Try<Result> result = submittingReservationRequestForChosenParkingSpot.requestReservation(
-                new SubmittingReservationRequestForChosenParkingSpot.Command(
+        Try<Result> result = submittingReservationRequestForPartOfParkingSpot.requestReservation(
+                new SubmittingReservationRequestForPartOfParkingSpot.Command(
                         ClientId.of(clientId),
                         ParkingSpotId.of(request.parkingSpotId),
                         VehicleSize.of(request.vehicleSize)));

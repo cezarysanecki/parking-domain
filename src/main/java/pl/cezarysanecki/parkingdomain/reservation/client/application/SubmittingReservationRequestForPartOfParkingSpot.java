@@ -23,7 +23,7 @@ import static pl.cezarysanecki.parkingdomain.reservation.client.model.ClientRese
 
 @Slf4j
 @RequiredArgsConstructor
-public class SubmittingReservationRequestForChosenParkingSpot {
+public class SubmittingReservationRequestForPartOfParkingSpot {
 
     private final ClientReservationsRepository clientReservationsRepository;
 
