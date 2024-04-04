@@ -7,6 +7,7 @@ import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotCapacity;
+import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotCategory;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpots;
@@ -21,6 +22,8 @@ public class CreatingParkingSpot {
     public static class Command {
 
         @NonNull ParkingSpotCapacity parkingSpotCapacity;
+        @NonNull ParkingSpotCategory parkingSpotCategory;
+
     }
 
     public Try<Result> create(Command command) {
@@ -28,7 +31,10 @@ public class CreatingParkingSpot {
             ParkingSpotId parkingSpotId = ParkingSpotId.newOne();
 
             log.debug("created parking spot with id {}", parkingSpotId);
-            parkingSpots.publish(new ParkingSpotCreated(parkingSpotId, command.parkingSpotCapacity));
+            parkingSpots.publish(new ParkingSpotCreated(
+                    parkingSpotId,
+                    command.parkingSpotCapacity,
+                    command.parkingSpotCategory));
 
             return new Result.Success();
         }).onFailure(t -> log.error("Failed to create parking spot", t));
@@ -39,6 +45,8 @@ public class CreatingParkingSpot {
 
         @NonNull ParkingSpotId parkingSpotId;
         @NonNull ParkingSpotCapacity parkingSpotCapacity;
+        @NonNull ParkingSpotCategory parkingSpotCategory;
+
     }
 
 }
