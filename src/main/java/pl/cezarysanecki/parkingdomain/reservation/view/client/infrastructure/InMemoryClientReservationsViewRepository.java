@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static pl.cezarysanecki.parkingdomain.reservation.client.model.ClientReservationsEvent.ReservationRequestCancelled;
-import static pl.cezarysanecki.parkingdomain.reservation.client.model.ClientReservationsEvent.ReservationRequestSubmitted;
+import static pl.cezarysanecki.parkingdomain.reservation.client.model.ClientReservationsEvent.ReservationForPartOfParkingSpotSubmitted;
 
 class InMemoryClientReservationsViewRepository implements ClientReservationsViews {
 
@@ -24,7 +24,7 @@ class InMemoryClientReservationsViewRepository implements ClientReservationsView
 
     @Override
     @ViewEventListener
-    public void handle(ReservationRequestSubmitted event) {
+    public void handle(ReservationForPartOfParkingSpotSubmitted event) {
         ClientId clientId = event.getClientId();
 
         ClientReservationsViewEntity entity = DATABASE.getOrDefault(clientId, new ClientReservationsViewEntity(clientId.getValue(), new HashSet<>()));

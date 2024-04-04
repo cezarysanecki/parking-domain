@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
-import pl.cezarysanecki.parkingdomain.reservation.client.model.ClientReservationsEvent.ReservationRequestSubmitted;
+import pl.cezarysanecki.parkingdomain.reservation.client.model.ClientReservationsEvent.ReservationForPartOfParkingSpotSubmitted;
 import pl.cezarysanecki.parkingdomain.reservation.client.model.ReservationRequest;
 import pl.cezarysanecki.parkingdomain.reservation.parkingspot.model.ParkingSpotReservationsRepository;
 
@@ -24,8 +24,8 @@ public class ClientReservationsEventHandler {
     private final ParkingSpotReservationsRepository parkingSpotReservationsRepository;
 
     @EventListener
-    public void handle(ReservationRequestSubmitted reservationRequestSubmitted) {
-        ReservationRequest reservationRequest = reservationRequestSubmitted.getReservationRequest();
+    public void handle(ReservationForPartOfParkingSpotSubmitted reservationForPartOfParkingSpotSubmitted) {
+        ReservationRequest reservationRequest = reservationForPartOfParkingSpotSubmitted.getReservationRequest();
 
         parkingSpotReservationsRepository.findBy(reservationRequest.getParkingSpotId())
                 .map(parkingSpotReservations -> {
