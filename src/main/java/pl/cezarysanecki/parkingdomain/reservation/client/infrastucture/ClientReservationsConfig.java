@@ -8,6 +8,7 @@ import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 import pl.cezarysanecki.parkingdomain.reservation.client.application.CancellingReservationRequest;
 import pl.cezarysanecki.parkingdomain.reservation.client.application.ParkingSpotReservationsEventHandler;
 import pl.cezarysanecki.parkingdomain.reservation.client.application.ReservingPartOfParkingSpot;
+import pl.cezarysanecki.parkingdomain.reservation.client.application.ReservingWholeParkingSpot;
 import pl.cezarysanecki.parkingdomain.reservation.client.model.ClientReservationsRepository;
 
 @Configuration
@@ -19,6 +20,11 @@ public class ClientReservationsConfig {
     @Bean
     ReservingPartOfParkingSpot reservingPartOfParkingSpot(ClientReservationsRepository clientReservationsRepository) {
         return new ReservingPartOfParkingSpot(clientReservationsRepository);
+    }
+
+    @Bean
+    ReservingWholeParkingSpot reservingWholeParkingSpot(ClientReservationsRepository clientReservationsRepository) {
+        return new ReservingWholeParkingSpot(clientReservationsRepository);
     }
 
     @Bean
