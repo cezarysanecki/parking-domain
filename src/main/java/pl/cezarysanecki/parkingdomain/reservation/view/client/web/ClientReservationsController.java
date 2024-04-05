@@ -38,8 +38,20 @@ class ClientReservationsController {
         return ResponseEntity.ok(clientReservationsView);
     }
 
-    @PostMapping("/client-reservations/{clientId}")
-    ResponseEntity create(@PathVariable UUID clientId, @RequestBody SubmitReservationRequest request) {
+    @PostMapping("/client-reservations/{clientId}/part-parking-spot")
+    ResponseEntity reservePartOfParkingSpot(@PathVariable UUID clientId, @RequestBody SubmitReservationRequest request) {
+        Try<Result> result = reservingPartOfParkingSpot.requestReservation(
+                new ReservingPartOfParkingSpot.Command(
+                        ClientId.of(clientId),
+                        ParkingSpotId.of(request.parkingSpotId),
+                        VehicleSize.of(request.vehicleSize)));
+        return result
+                .map(success -> ResponseEntity.ok().build())
+                .getOrElse(ResponseEntity.status(INTERNAL_SERVER_ERROR).build());
+    }
+
+    @PostMapping("/client-reservations/{clientId}/whole-parking-spot")
+    ResponseEntity reserveWholeParkingSpot(@PathVariable UUID clientId, @RequestBody SubmitReservationRequest request) {
         Try<Result> result = reservingPartOfParkingSpot.requestReservation(
                 new ReservingPartOfParkingSpot.Command(
                         ClientId.of(clientId),
