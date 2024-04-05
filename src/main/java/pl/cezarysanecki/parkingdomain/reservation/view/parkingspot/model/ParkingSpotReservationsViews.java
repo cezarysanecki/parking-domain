@@ -1,6 +1,6 @@
 package pl.cezarysanecki.parkingdomain.reservation.view.parkingspot.model;
 
-import pl.cezarysanecki.parkingdomain.reservation.parkingspot.model.ParkingSpotReservationEvent.ParkingSpotReserved;
+import pl.cezarysanecki.parkingdomain.reservation.parkingspot.model.ParkingSpotReservationEvent.PartOfParkingSpotReserved;
 
 import java.util.Set;
 
@@ -16,7 +16,7 @@ public interface ParkingSpotReservationsViews {
     void handle(ParkingSpotCreated event);
 
 
-    void handle(ParkingSpotReserved event);
+    void handle(PartOfParkingSpotReserved event);
 
     void handle(ParkingSpotReservationCancelled event);
 

@@ -14,7 +14,8 @@ import pl.cezarysanecki.parkingdomain.commons.commands.Result;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleSize;
 import pl.cezarysanecki.parkingdomain.reservation.client.application.CancellingReservationRequest;
-import pl.cezarysanecki.parkingdomain.reservation.client.application.SubmittingReservationRequestForChosenParkingSpot;
+import pl.cezarysanecki.parkingdomain.reservation.client.application.ReservingPartOfParkingSpot;
+import pl.cezarysanecki.parkingdomain.reservation.client.application.ReservingWholeParkingSpot;
 import pl.cezarysanecki.parkingdomain.reservation.client.model.ClientId;
 import pl.cezarysanecki.parkingdomain.reservation.client.model.ReservationId;
 import pl.cezarysanecki.parkingdomain.reservation.view.client.model.ClientReservationsView;
@@ -29,7 +30,8 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 class ClientReservationsController {
 
     private final ClientReservationsViews clientReservationsViews;
-    private final SubmittingReservationRequestForChosenParkingSpot submittingReservationRequestForChosenParkingSpot;
+    private final ReservingPartOfParkingSpot reservingPartOfParkingSpot;
+    private final ReservingWholeParkingSpot reservingWholeParkingSpot;
     private final CancellingReservationRequest cancellingReservationRequest;
 
     @GetMapping("/client-reservations/{clientId}")
@@ -38,13 +40,24 @@ class ClientReservationsController {
         return ResponseEntity.ok(clientReservationsView);
     }
 
-    @PostMapping("/client-reservations/{clientId}")
-    ResponseEntity create(@PathVariable UUID clientId, @RequestBody SubmitReservationRequest request) {
-        Try<Result> result = submittingReservationRequestForChosenParkingSpot.requestReservation(
-                new SubmittingReservationRequestForChosenParkingSpot.Command(
+    @PostMapping("/client-reservations/{clientId}/part-parking-spot")
+    ResponseEntity reservePartOfParkingSpot(@PathVariable UUID clientId, @RequestBody ReservePartOfParkingSpotRequest request) {
+        Try<Result> result = reservingPartOfParkingSpot.requestReservation(
+                new ReservingPartOfParkingSpot.Command(
                         ClientId.of(clientId),
                         ParkingSpotId.of(request.parkingSpotId),
                         VehicleSize.of(request.vehicleSize)));
+        return result
+                .map(success -> ResponseEntity.ok().build())
+                .getOrElse(ResponseEntity.status(INTERNAL_SERVER_ERROR).build());
+    }
+
+    @PostMapping("/client-reservations/{clientId}/whole-parking-spot")
+    ResponseEntity reserveWholeParkingSpot(@PathVariable UUID clientId, @RequestBody ReserveWholeParkingSpotRequest request) {
+        Try<Result> result = reservingWholeParkingSpot.requestReservation(
+                new ReservingWholeParkingSpot.Command(
+                        ClientId.of(clientId),
+                        ParkingSpotId.of(request.parkingSpotId)));
         return result
                 .map(success -> ResponseEntity.ok().build())
                 .getOrElse(ResponseEntity.status(INTERNAL_SERVER_ERROR).build());
@@ -62,7 +75,12 @@ class ClientReservationsController {
 }
 
 @Data
-class SubmitReservationRequest {
+class ReservePartOfParkingSpotRequest {
     UUID parkingSpotId;
     Integer vehicleSize;
+}
+
+@Data
+class ReserveWholeParkingSpotRequest {
+    UUID parkingSpotId;
 }

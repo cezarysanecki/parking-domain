@@ -3,25 +3,34 @@ package pl.cezarysanecki.parkingdomain.reservation.client.model;
 import lombok.NonNull;
 import lombok.Value;
 import pl.cezarysanecki.parkingdomain.commons.events.DomainEvent;
+import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId;
+import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleSize;
 
 public interface ClientReservationsEvent extends DomainEvent {
 
     ClientId getClientId();
 
     @Value
-    class ReservationRequestSubmitted implements ClientReservationsEvent {
+    class ReservationForPartOfParkingSpotSubmitted implements ClientReservationsEvent {
 
-        @NonNull ReservationRequest reservationRequest;
-
-        @Override
-        public ClientId getClientId() {
-            return reservationRequest.getClientId();
-        }
+        @NonNull ClientId clientId;
+        @NonNull ReservationId reservationId;
+        @NonNull ParkingSpotId parkingSpotId;
+        @NonNull VehicleSize vehicleSize;
 
     }
 
     @Value
-    class ReservationRequestSubmissionFailed implements ClientReservationsEvent {
+    class ReservationForWholeParkingSpotSubmitted implements ClientReservationsEvent {
+
+        @NonNull ClientId clientId;
+        @NonNull ReservationId reservationId;
+        @NonNull ParkingSpotId parkingSpotId;
+
+    }
+
+    @Value
+    class ReservationSubmissionFailed implements ClientReservationsEvent {
 
         @NonNull ClientId clientId;
         @NonNull String reason;

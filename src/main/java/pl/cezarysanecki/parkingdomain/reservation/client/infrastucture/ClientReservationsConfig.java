@@ -7,7 +7,8 @@ import org.springframework.context.annotation.Profile;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 import pl.cezarysanecki.parkingdomain.reservation.client.application.CancellingReservationRequest;
 import pl.cezarysanecki.parkingdomain.reservation.client.application.ParkingSpotReservationsEventHandler;
-import pl.cezarysanecki.parkingdomain.reservation.client.application.SubmittingReservationRequestForChosenParkingSpot;
+import pl.cezarysanecki.parkingdomain.reservation.client.application.ReservingPartOfParkingSpot;
+import pl.cezarysanecki.parkingdomain.reservation.client.application.ReservingWholeParkingSpot;
 import pl.cezarysanecki.parkingdomain.reservation.client.model.ClientReservationsRepository;
 
 @Configuration
@@ -17,8 +18,13 @@ public class ClientReservationsConfig {
     private final EventPublisher eventPublisher;
 
     @Bean
-    SubmittingReservationRequestForChosenParkingSpot submittingReservationRequestForChosenParkingSpot(ClientReservationsRepository clientReservationsRepository) {
-        return new SubmittingReservationRequestForChosenParkingSpot(clientReservationsRepository);
+    ReservingPartOfParkingSpot reservingPartOfParkingSpot(ClientReservationsRepository clientReservationsRepository) {
+        return new ReservingPartOfParkingSpot(clientReservationsRepository);
+    }
+
+    @Bean
+    ReservingWholeParkingSpot reservingWholeParkingSpot(ClientReservationsRepository clientReservationsRepository) {
+        return new ReservingWholeParkingSpot(clientReservationsRepository);
     }
 
     @Bean

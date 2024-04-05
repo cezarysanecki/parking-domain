@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import pl.cezarysanecki.parkingdomain.reservation.parkingspot.model.ParkingSpotReservationEvent;
 import pl.cezarysanecki.parkingdomain.reservation.parkingspot.model.ParkingSpotReservationEvent.ParkingSpotReservationCancelled;
-import pl.cezarysanecki.parkingdomain.reservation.parkingspot.model.ParkingSpotReservationEvent.ParkingSpotReserved;
+import pl.cezarysanecki.parkingdomain.reservation.parkingspot.model.ParkingSpotReservationEvent.PartOfParkingSpotReserved;
 
 import java.util.Set;
 import java.util.UUID;
@@ -14,6 +14,7 @@ import static io.vavr.API.$;
 import static io.vavr.API.Case;
 import static io.vavr.API.Match;
 import static io.vavr.Predicates.instanceOf;
+import static pl.cezarysanecki.parkingdomain.reservation.parkingspot.model.ParkingSpotReservationEvent.WholeParkingSpotReserved;
 
 @AllArgsConstructor
 class ParkingSpotReservationsEntity {
@@ -24,15 +25,23 @@ class ParkingSpotReservationsEntity {
 
     ParkingSpotReservationsEntity handle(ParkingSpotReservationEvent domainEvent) {
         return Match(domainEvent).of(
-                API.Case(API.$(instanceOf(ParkingSpotReserved.class)), this::handle),
+                API.Case(API.$(instanceOf(PartOfParkingSpotReserved.class)), this::handle),
+                API.Case(API.$(instanceOf(WholeParkingSpotReserved.class)), this::handle),
                 API.Case(API.$(instanceOf(ParkingSpotReservationCancelled.class)), this::handle),
                 Case($(), () -> this));
     }
 
-    private ParkingSpotReservationsEntity handle(ParkingSpotReserved parkingSpotReserved) {
+    private ParkingSpotReservationsEntity handle(PartOfParkingSpotReserved partOfParkingSpotReserved) {
         reservations.add(new VehicleReservationEntity(
-                parkingSpotReserved.getReservationId().getValue(),
-                parkingSpotReserved.getVehicleSize().getValue()));
+                partOfParkingSpotReserved.getReservationId().getValue(),
+                partOfParkingSpotReserved.getVehicleSize().getValue()));
+        return this;
+    }
+
+    private ParkingSpotReservationsEntity handle(WholeParkingSpotReserved wholeParkingSpotReserved) {
+        reservations.add(new VehicleReservationEntity(
+                wholeParkingSpotReserved.getReservationId().getValue(),
+                capacity));
         return this;
     }
 
