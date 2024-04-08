@@ -14,5 +14,5 @@ import pl.cezarysanecki.parkingdomain.reserving.view.parkingspot.infrastructure.
         ClientReservationsViewConfig.class,
         ParkingSpotReservationsViewConfig.class
 })
-public class ReservationConfig {
+public class ReservingConfig {
 }
