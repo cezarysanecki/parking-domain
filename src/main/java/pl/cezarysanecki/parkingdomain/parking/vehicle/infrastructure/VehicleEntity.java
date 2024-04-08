@@ -10,6 +10,7 @@ import java.util.UUID;
 import static io.vavr.API.$;
 import static io.vavr.API.Case;
 import static io.vavr.Predicates.instanceOf;
+import static pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleEvent.*;
 
 @AllArgsConstructor
 class VehicleEntity {
@@ -20,17 +21,17 @@ class VehicleEntity {
 
     VehicleEntity handle(VehicleEvent domainEvent) {
         return API.Match(domainEvent).of(
-                API.Case(API.$(instanceOf(VehicleEvent.VehicleParked.class)), this::handle),
-                API.Case(API.$(instanceOf(VehicleEvent.VehicleDroveAway.class)), this::handle),
+                API.Case(API.$(instanceOf(VehicleParked.class)), this::handle),
+                API.Case(API.$(instanceOf(VehicleDroveAway.class)), this::handle),
                 Case($(), () -> this));
     }
 
-    private VehicleEntity handle(VehicleEvent.VehicleParked domainEvent) {
+    private VehicleEntity handle(VehicleParked domainEvent) {
         parkingSpotId = Option.of(domainEvent.getParkingSpotId().getValue());
         return this;
     }
 
-    private VehicleEntity handle(VehicleEvent.VehicleDroveAway domainEvent) {
+    private VehicleEntity handle(VehicleDroveAway domainEvent) {
         parkingSpotId = Option.none();
         return this;
     }

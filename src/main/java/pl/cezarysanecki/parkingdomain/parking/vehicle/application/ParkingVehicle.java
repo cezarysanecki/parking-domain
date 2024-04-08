@@ -18,6 +18,7 @@ import static io.vavr.API.Case;
 import static io.vavr.API.Match;
 import static io.vavr.Patterns.$Left;
 import static io.vavr.Patterns.$Right;
+import static pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleEvent.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -39,20 +40,20 @@ public class ParkingVehicle {
 
         return Try.of(() -> {
             Vehicle vehicle = load(vehicleId);
-            Either<VehicleEvent.VehicleParkingFailed, VehicleEvent.VehicleParked> result = vehicle.parkOn(parkingSpotId);
+            Either<VehicleParkingFailed, VehicleParked> result = vehicle.parkOn(parkingSpotId);
             return Match(result).of(
                     Case($Left($()), this::publishEvents),
                     Case($Right($()), this::publishEvents));
         }).onFailure(t -> log.error("Failed to park vehicle", t));
     }
 
-    private Result publishEvents(VehicleEvent.VehicleParkingFailed vehicleParkingFailed) {
+    private Result publishEvents(VehicleParkingFailed vehicleParkingFailed) {
         log.debug("failed to park vehicle with id {}, reason: {}", vehicleParkingFailed.getVehicleId(), vehicleParkingFailed.getReason());
         vehicles.publish(vehicleParkingFailed);
         return Result.Rejection.with(vehicleParkingFailed.getReason());
     }
 
-    private Result publishEvents(VehicleEvent.VehicleParked vehicleParked) {
+    private Result publishEvents(VehicleParked vehicleParked) {
         log.debug("successfully park vehicle with id {} on parking spot with id {}", vehicleParked.getVehicleId(), vehicleParked.getParkingSpotId());
         vehicles.publish(vehicleParked);
         return new Result.Success();
