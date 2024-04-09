@@ -25,4 +25,11 @@ public class ParkingSpotFixture {
                 Set.of(vehicleIds));
     }
 
+    public static OpenParkingSpot emptyOpenParkingSpotWithCapacity(int capacity) {
+        return new OpenParkingSpot(
+                ParkingSpotInformation.of(
+                        ParkingSpotId.newOne(),
+                        ParkingSpotOccupation.of(0, capacity)));
+    }
+
 }
