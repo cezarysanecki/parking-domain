@@ -3,8 +3,8 @@ package pl.cezarysanecki.parkingdomain.parking.parkingspot.model
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleId
 import spock.lang.Specification
 
-import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.CompletelyFreedUp
-import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.ParkingSpotLeft
+import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotFixture.fullyOccupiedBy
+import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotFixture.occupiedBy
 
 class ReleasingOccupiedParkingSpotTest extends Specification {
   
@@ -12,8 +12,7 @@ class ReleasingOccupiedParkingSpotTest extends Specification {
     given:
       def vehicleToDriveAway = VehicleId.newOne()
     and:
-      def occupiedParkingSpot = ParkingSpotFixture.occupiedBy(
-          VehicleId.newOne(), vehicleToDriveAway)
+      def occupiedParkingSpot = occupiedBy(VehicleId.newOne(), vehicleToDriveAway)
     
     when:
       def result = occupiedParkingSpot.release(vehicleToDriveAway)
@@ -21,11 +20,11 @@ class ReleasingOccupiedParkingSpotTest extends Specification {
     then:
       result.isRight()
       result.get().with {
-        it.parkingSpotId == occupiedParkingSpot.parkingSpotId
+        assert it.parkingSpotId == occupiedParkingSpot.parkingSpotId
         
-        ParkingSpotLeft parkingSpotLeft = it.parkingSpotLeft
-        parkingSpotLeft.parkingSpotId == occupiedParkingSpot.parkingSpotId
-        parkingSpotLeft.vehicleId == vehicleToDriveAway
+        def parkingSpotLeft = it.parkingSpotLeft
+        assert parkingSpotLeft.parkingSpotId == occupiedParkingSpot.parkingSpotId
+        assert parkingSpotLeft.vehicleId == vehicleToDriveAway
       }
   }
   
@@ -33,7 +32,7 @@ class ReleasingOccupiedParkingSpotTest extends Specification {
     given:
       def vehicleToDriveAway = VehicleId.newOne()
     and:
-      def occupiedParkingSpot = ParkingSpotFixture.fullyOccupiedBy(vehicleToDriveAway)
+      def occupiedParkingSpot = fullyOccupiedBy(vehicleToDriveAway)
     
     when:
       def result = occupiedParkingSpot.release(vehicleToDriveAway)
@@ -41,14 +40,14 @@ class ReleasingOccupiedParkingSpotTest extends Specification {
     then:
       result.isRight()
       result.get().with {
-        it.parkingSpotId == occupiedParkingSpot.parkingSpotId
+        assert it.parkingSpotId == occupiedParkingSpot.parkingSpotId
         
-        ParkingSpotLeft parkingSpotLeft = it.parkingSpotLeft
-        parkingSpotLeft.parkingSpotId == occupiedParkingSpot.parkingSpotId
-        parkingSpotLeft.vehicleId == vehicleToDriveAway
+        def parkingSpotLeft = it.parkingSpotLeft
+        assert parkingSpotLeft.parkingSpotId == occupiedParkingSpot.parkingSpotId
+        assert parkingSpotLeft.vehicleId == vehicleToDriveAway
         
-        CompletelyFreedUp completelyFreedUp = it.completelyFreedUp.get()
-        completelyFreedUp.parkingSpotId == occupiedParkingSpot.parkingSpotId
+        def completelyFreedUp = it.completelyFreedUp.get()
+        assert completelyFreedUp.parkingSpotId == occupiedParkingSpot.parkingSpotId
       }
   }
   
@@ -56,7 +55,7 @@ class ReleasingOccupiedParkingSpotTest extends Specification {
     given:
       def vehicleToDriveAway = VehicleId.newOne()
     and:
-      def occupiedParkingSpot = ParkingSpotFixture.fullyOccupiedBy(VehicleId.newOne())
+      def occupiedParkingSpot = fullyOccupiedBy(VehicleId.newOne())
     
     when:
       def result = occupiedParkingSpot.release(vehicleToDriveAway)
@@ -64,9 +63,9 @@ class ReleasingOccupiedParkingSpotTest extends Specification {
     then:
       result.isLeft()
       result.getLeft().with {
-        it.parkingSpotId == occupiedParkingSpot.parkingSpotId
-        it.vehicleId == vehicleToDriveAway
-        it.reason == "vehicle is not parked there"
+        assert it.parkingSpotId == occupiedParkingSpot.parkingSpotId
+        assert it.vehicleId == vehicleToDriveAway
+        assert it.reason == "vehicle is not parked there"
       }
   }
   
