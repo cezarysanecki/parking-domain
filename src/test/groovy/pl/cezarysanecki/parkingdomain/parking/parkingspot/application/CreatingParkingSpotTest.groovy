@@ -7,6 +7,8 @@ import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpots
 import spock.lang.Specification
 import spock.lang.Subject
 
+import static pl.cezarysanecki.parkingdomain.parking.parkingspot.application.CreatingParkingSpot.*
+
 class CreatingParkingSpotTest extends Specification {
   
   ParkingSpots parkingSpots = Mock()
@@ -16,7 +18,7 @@ class CreatingParkingSpotTest extends Specification {
   
   def "allow to create parking spot"() {
     when:
-      def result = creatingParkingSpot.create(new CreatingParkingSpot.Command(
+      def result = creatingParkingSpot.create(new Command(
           ParkingSpotCapacity.of(4), ParkingSpotCategory.Gold))
     
     then:
@@ -24,22 +26,29 @@ class CreatingParkingSpotTest extends Specification {
   }
   
   def "inform that parking spot has been created"() {
+    given:
+      def parkingSpotCapacity = ParkingSpotCapacity.of(4)
+      def parkingSpotCategory = ParkingSpotCategory.Gold
+    
     when:
-      creatingParkingSpot.create(new CreatingParkingSpot.Command(
-          ParkingSpotCapacity.of(4), ParkingSpotCategory.Gold))
+      creatingParkingSpot.create(new Command(
+          parkingSpotCapacity, parkingSpotCategory))
     
     then:
-      1 * parkingSpots.publish(_ as CreatingParkingSpot.ParkingSpotCreated)
+      1 * parkingSpots.publish({
+        it.parkingSpotCapacity == parkingSpotCapacity
+            && it.parkingSpotCategory == parkingSpotCategory
+      } as ParkingSpotCreated)
   }
   
   def "fail to create parking spot when publishing fails"() {
     given:
-      parkingSpots.publish(_ as CreatingParkingSpot.ParkingSpotCreated) >> {
+      parkingSpots.publish(_ as ParkingSpotCreated) >> {
         throw new IllegalStateException()
       }
     
     when:
-      def result = creatingParkingSpot.create(new CreatingParkingSpot.Command(
+      def result = creatingParkingSpot.create(new Command(
           ParkingSpotCapacity.of(4), ParkingSpotCategory.Gold))
     
     then:
