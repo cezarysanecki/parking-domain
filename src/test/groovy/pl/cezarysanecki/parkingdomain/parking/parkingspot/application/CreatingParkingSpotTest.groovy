@@ -24,12 +24,19 @@ class CreatingParkingSpotTest extends Specification {
   }
   
   def "inform that parking spot has been created"() {
+    given:
+      def parkingSpotCapacity = ParkingSpotCapacity.of(4)
+      def parkingSpotCategory = ParkingSpotCategory.Gold
+    
     when:
       creatingParkingSpot.create(new CreatingParkingSpot.Command(
-          ParkingSpotCapacity.of(4), ParkingSpotCategory.Gold))
+          parkingSpotCapacity, parkingSpotCategory))
     
     then:
-      1 * parkingSpots.publish(_ as CreatingParkingSpot.ParkingSpotCreated)
+      1 * parkingSpots.publish({
+        it.parkingSpotCapacity == parkingSpotCapacity
+            && it.parkingSpotCategory == parkingSpotCategory
+      } as CreatingParkingSpot.ParkingSpotCreated)
   }
   
   def "fail to create parking spot when publishing fails"() {
