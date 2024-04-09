@@ -11,7 +11,7 @@ import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSp
 import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotFixture.occupiedBy
 import static pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleEvent.VehicleDroveAway
 
-class DrivingVehicleAwayHandledTest extends Specification {
+class ReleasingParkingSpotByVehicleTest extends Specification {
   
   ParkingSpots parkingSpots = Mock()
   
