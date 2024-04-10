@@ -1,13 +1,13 @@
 package pl.cezarysanecki.parkingdomain.parking.parkingspot.application
 
-
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotCapacity
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotCategory
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpots
 import spock.lang.Specification
 import spock.lang.Subject
 
-import static pl.cezarysanecki.parkingdomain.parking.parkingspot.application.CreatingParkingSpot.*
+import static pl.cezarysanecki.parkingdomain.parking.parkingspot.application.CreatingParkingSpot.Command
+import static pl.cezarysanecki.parkingdomain.parking.parkingspot.application.CreatingParkingSpot.ParkingSpotCreated
 
 class CreatingParkingSpotTest extends Specification {
   
@@ -17,24 +17,16 @@ class CreatingParkingSpotTest extends Specification {
   CreatingParkingSpot creatingParkingSpot = new CreatingParkingSpot(parkingSpots)
   
   def "allow to create parking spot"() {
-    when:
-      def result = creatingParkingSpot.create(new Command(
-          ParkingSpotCapacity.of(4), ParkingSpotCategory.Gold))
-    
-    then:
-      result.isSuccess()
-  }
-  
-  def "inform that parking spot has been created"() {
     given:
       def parkingSpotCapacity = ParkingSpotCapacity.of(4)
       def parkingSpotCategory = ParkingSpotCategory.Gold
     
     when:
-      creatingParkingSpot.create(new Command(
-          parkingSpotCapacity, parkingSpotCategory))
+      def result = creatingParkingSpot.create(new Command(parkingSpotCapacity, parkingSpotCategory))
     
     then:
+      result.isSuccess()
+    and:
       1 * parkingSpots.publish({
         it.parkingSpotCapacity == parkingSpotCapacity
             && it.parkingSpotCategory == parkingSpotCategory
