@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
+import pl.cezarysanecki.parkingdomain.reserving.client.model.ClientReservations;
 import pl.cezarysanecki.parkingdomain.reserving.client.model.ClientReservationsRepository;
 import pl.cezarysanecki.parkingdomain.reserving.client.model.ReservationId;
 
@@ -34,19 +35,13 @@ public class CancellingReservationRequest {
     public Try<Result> cancelReservationRequest(Command command) {
         ReservationId reservationId = command.getReservationId();
 
-        return Try.of(() ->
-                clientReservationsRepository.findBy(reservationId)
-                        .map(clientReservations -> {
-                            Either<ReservationRequestCancellationFailed, ReservationRequestCancelled> result = clientReservations.cancel(reservationId);
-                            return Match(result).of(
-                                    Case($Left($()), this::publishEvents),
-                                    Case($Right($()), this::publishEvents));
-                        })
-                        .getOrElse(() -> {
-                            log.error("cannot find client reservations containing reservation with id {}", reservationId);
-                            return Result.Rejection.with("cannot find client reservations");
-                        })
-        ).onFailure(t -> log.error("Failed to cancel reservation request", t));
+        return Try.of(() -> {
+            ClientReservations clientReservations = load(reservationId);
+            Either<ReservationRequestCancellationFailed, ReservationRequestCancelled> result = clientReservations.cancel(reservationId);
+            return Match(result).of(
+                    Case($Left($()), this::publishEvents),
+                    Case($Right($()), this::publishEvents));
+        }).onFailure(t -> log.error("Failed to cancel reservation request", t));
     }
 
     private Result publishEvents(ReservationRequestCancelled requestCancelled) {
@@ -60,6 +55,11 @@ public class CancellingReservationRequest {
                 requestCancellationFailed.getClientId(), requestCancellationFailed.getReason());
         clientReservationsRepository.publish(requestCancellationFailed);
         return Result.Rejection.with(requestCancellationFailed.getReason());
+    }
+
+    private ClientReservations load(ReservationId reservationId) {
+        return clientReservationsRepository.findBy(reservationId)
+                .getOrElseThrow(() -> new IllegalStateException("cannot find client reservations for reservation with id " + reservationId));
     }
 
 }

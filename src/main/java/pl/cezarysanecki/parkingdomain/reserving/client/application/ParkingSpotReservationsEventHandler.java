@@ -17,7 +17,8 @@ public class ParkingSpotReservationsEventHandler {
     public void handle(ParkingSpotReservationFailed parkingSpotReservationFailed) {
         ReservationId reservationId = parkingSpotReservationFailed.getReservationId();
 
-        cancellingReservationRequest.cancelReservationRequest(new CancellingReservationRequest.Command(reservationId));
+        cancellingReservationRequest.cancelReservationRequest(new CancellingReservationRequest.Command(reservationId))
+                .onFailure(exception -> log.error(exception.getMessage(), exception));
     }
 
 }
