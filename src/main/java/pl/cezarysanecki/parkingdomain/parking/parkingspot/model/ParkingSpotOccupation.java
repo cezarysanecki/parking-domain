@@ -33,6 +33,10 @@ public class ParkingSpotOccupation {
         return new ParkingSpotOccupation(currentOccupation + vehicleSize.getValue(), capacity);
     }
 
+    public boolean isEmpty() {
+        return currentOccupation == 0;
+    }
+
     public boolean isFull() {
         return currentOccupation == capacity;
     }
