@@ -1,42 +1,38 @@
 package pl.cezarysanecki.parkingdomain.reserving.client.model
 
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId
-import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleSize
 import spock.lang.Specification
 
 import static pl.cezarysanecki.parkingdomain.reserving.client.model.ClientReservationsFixture.clientReservationsWithReservation
 import static pl.cezarysanecki.parkingdomain.reserving.client.model.ClientReservationsFixture.noClientReservations
 
-class CreatingClientRequestReservationForPartOfParkingSpotTest extends Specification {
+class CreatingClientRequestReservationForWholeParkingSpotTest extends Specification {
   
-  def "allow to create client reservation request for part of parking spot"() {
+  def "allow to create client reservation request for whole parking spot"() {
     given:
       def parkingSpotId = ParkingSpotId.newOne()
-      def vehicleSize = VehicleSize.of(2)
     and:
       def clientReservations = noClientReservations()
-      
+    
     when:
-      def result = clientReservations.createRequest(parkingSpotId, vehicleSize)
+      def result = clientReservations.createRequest(parkingSpotId)
     
     then:
       result.isRight()
       result.get().with {
         assert it.clientId == clientReservations.clientId
         assert it.parkingSpotId == parkingSpotId
-        assert it.vehicleSize == vehicleSize
       }
   }
   
-  def "reject creating client reservation request for part of parking spot when limit of request is reached"() {
+  def "reject creating client reservation request for whole parking spot when limit of request is reached"() {
     given:
       def parkingSpotId = ParkingSpotId.newOne()
-      def vehicleSize = VehicleSize.of(2)
     and:
       def clientReservations = clientReservationsWithReservation(ReservationId.newOne())
-      
+    
     when:
-      def result = clientReservations.createRequest(parkingSpotId, vehicleSize)
+      def result = clientReservations.createRequest(parkingSpotId)
     
     then:
       result.isLeft()
