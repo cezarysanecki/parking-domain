@@ -65,7 +65,10 @@ public class ReservingPartOfParkingSpot {
 
     private ClientReservations load(ClientId clientId) {
         return clientReservationsRepository.findBy(clientId)
-                .getOrElse(() -> ClientReservations.empty(clientId));
+                .getOrElse(() -> {
+                    log.debug("resolving new client to create reservation request");
+                    return ClientReservations.empty(clientId);
+                });
     }
 
 }
