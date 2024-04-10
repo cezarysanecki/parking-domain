@@ -1,7 +1,6 @@
 package pl.cezarysanecki.parkingdomain.reserving.client.model;
 
 import lombok.Value;
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId;
 
 import java.util.UUID;
 
