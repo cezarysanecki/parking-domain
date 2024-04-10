@@ -1,13 +1,12 @@
 package pl.cezarysanecki.parkingdomain.reserving.client.model
 
-
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleSize
 import spock.lang.Specification
 
 class ClientReservationsTest extends Specification {
   
-  ClientId clientId = ClientId.of(UUID.randomUUID());
+  ClientId clientId = ClientId.newOne()
   
   def "allow to reserve whole parking spot when client does not have any active reservation"() {
     given:
@@ -32,7 +31,7 @@ class ClientReservationsTest extends Specification {
     and:
       def parkingSpotId = ParkingSpotId.newOne()
       def vehicleSize = VehicleSize.of(2)
-      
+    
     when:
       def result = clientReservations.createRequest(parkingSpotId, vehicleSize)
     

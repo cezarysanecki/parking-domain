@@ -9,4 +9,12 @@ public class ReservationId {
 
     UUID value;
 
+    public static ReservationId newOne() {
+        return new ReservationId(UUID.randomUUID());
+    }
+
+    @Override
+    public String toString() {
+        return value.toString();
+    }
 }

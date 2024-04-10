@@ -30,14 +30,14 @@ public class ClientReservations {
         if (willBeTooManyRequests()) {
             return announceFailure(new ReservationSubmissionFailed(clientId, "client has too many requests"));
         }
-        return announceSuccess(new ReservationForPartOfParkingSpotSubmitted(clientId, ReservationId.of(UUID.randomUUID()), parkingSpotId, vehicleSize));
+        return announceSuccess(new ReservationForPartOfParkingSpotSubmitted(clientId, ReservationId.newOne(), parkingSpotId, vehicleSize));
     }
 
     public Either<ReservationSubmissionFailed, ReservationForWholeParkingSpotSubmitted> createRequest(ParkingSpotId parkingSpotId) {
         if (willBeTooManyRequests()) {
             return announceFailure(new ReservationSubmissionFailed(clientId, "client has too many requests"));
         }
-        return announceSuccess(new ReservationForWholeParkingSpotSubmitted(clientId, ReservationId.of(UUID.randomUUID()), parkingSpotId));
+        return announceSuccess(new ReservationForWholeParkingSpotSubmitted(clientId, ReservationId.newOne(), parkingSpotId));
     }
 
     public Either<ReservationRequestCancellationFailed, ReservationRequestCancelled> cancel(ReservationId reservationId) {
