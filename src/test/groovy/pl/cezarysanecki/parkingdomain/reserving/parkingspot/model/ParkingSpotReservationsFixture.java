@@ -16,6 +16,11 @@ public class ParkingSpotReservationsFixture {
                 ParkingSpotId.newOne(), ParkingSpotOccupation.of(0, 4), Set.of());
     }
 
+    public static ParkingSpotReservations noParkingSpotReservationsWithCapacity(int capacity) {
+        return new ParkingSpotReservations(
+                ParkingSpotId.newOne(), ParkingSpotOccupation.of(0, capacity), Set.of());
+    }
+
     public static ParkingSpotReservations fullyReservedParkingSpotBy(ReservationId reservationId) {
         return new ParkingSpotReservations(
                 ParkingSpotId.newOne(), ParkingSpotOccupation.of(4, 4), Set.of(reservationId));
