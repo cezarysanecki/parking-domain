@@ -7,7 +7,6 @@ import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleSize;
 import pl.cezarysanecki.parkingdomain.reserving.client.model.ClientReservationsEvent.ReservationForWholeParkingSpotSubmitted;
 
 import java.util.Set;
-import java.util.UUID;
 
 import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announceFailure;
 import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announceSuccess;
@@ -45,6 +44,14 @@ public class ClientReservations {
             return announceFailure(new ReservationRequestCancellationFailed(clientId, reservationId, "there is no such reservation"));
         }
         return announceSuccess(new ReservationRequestCancelled(clientId, reservationId));
+    }
+
+    public boolean contains(ReservationId reservationId) {
+        return reservations.contains(reservationId);
+    }
+
+    public boolean isEmpty() {
+        return reservations.isEmpty();
     }
 
     private boolean willBeTooManyRequests() {

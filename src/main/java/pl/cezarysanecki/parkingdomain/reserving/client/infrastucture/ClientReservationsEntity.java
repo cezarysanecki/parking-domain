@@ -13,6 +13,7 @@ import static io.vavr.API.$;
 import static io.vavr.API.Case;
 import static io.vavr.API.Match;
 import static io.vavr.Predicates.instanceOf;
+import static pl.cezarysanecki.parkingdomain.reserving.client.model.ClientReservationsEvent.ReservationForWholeParkingSpotSubmitted;
 
 @AllArgsConstructor
 class ClientReservationsEntity {
@@ -22,9 +23,15 @@ class ClientReservationsEntity {
 
     ClientReservationsEntity handle(ClientReservationsEvent domainEvent) {
         return Match(domainEvent).of(
+                API.Case(API.$(instanceOf(ReservationForWholeParkingSpotSubmitted.class)), this::handle),
                 API.Case(API.$(instanceOf(ReservationForPartOfParkingSpotSubmitted.class)), this::handle),
                 API.Case(API.$(instanceOf(ReservationRequestCancelled.class)), this::handle),
                 Case($(), () -> this));
+    }
+
+    private ClientReservationsEntity handle(ReservationForWholeParkingSpotSubmitted reservationForWholeParkingSpotSubmitted) {
+        reservations.add(reservationForWholeParkingSpotSubmitted.getReservationId().getValue());
+        return this;
     }
 
     private ClientReservationsEntity handle(ReservationForPartOfParkingSpotSubmitted reservationForPartOfParkingSpotSubmitted) {
