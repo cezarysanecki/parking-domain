@@ -45,4 +45,12 @@ public class ParkingSpotReservations {
         return announceSuccess(new ParkingSpotReservationCancelled(parkingSpotId, reservationId));
     }
 
+    public boolean cannotHandleMore() {
+        return reservedOccupation.isFull();
+    }
+
+    public boolean isFree() {
+        return reservations.isEmpty();
+    }
+
 }
