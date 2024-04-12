@@ -30,7 +30,7 @@ class ClientReservationsDatabaseIT extends Specification {
   @Autowired
   ClientReservationsRepository clientReservationsRepository
   
-  def "persistence of vehicle in real database should work"() {
+  def "persistence of client reservations in real database should work"() {
     when:
       clientReservationsRepository.publish(createClientReservationRequest(clientId, reservationId))
     then:
@@ -43,7 +43,7 @@ class ClientReservationsDatabaseIT extends Specification {
   }
   
   private ReservationForWholeParkingSpotSubmitted createClientReservationRequest(ClientId clientId, ReservationId reservationId) {
-    new ReservationForWholeParkingSpotSubmitted(clientId, reservationId, ParkingSpotId.newOne())
+    return new ReservationForWholeParkingSpotSubmitted(clientId, reservationId, ParkingSpotId.newOne())
   }
   
   private ReservationRequestCancelled cancelClientReservationRequest(ClientId clientId, ReservationId reservationId) {
