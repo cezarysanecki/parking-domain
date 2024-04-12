@@ -50,7 +50,7 @@ class ParkingSpotsDatabaseIT extends Specification {
   }
   
   private ParkingSpotOccupied occupyParkingSpot(ParkingSpotId parkingSpotId, int vehicleSize) {
-    new ParkingSpotOccupied(parkingSpotId, VehicleId.newOne(), VehicleSize.of(vehicleSize))
+    return new ParkingSpotOccupied(parkingSpotId, VehicleId.newOne(), VehicleSize.of(vehicleSize))
   }
   
   private void parkingSpotShouldBeFoundInDatabaseBeingEmpty(ParkingSpotId parkingSpotId) {
