@@ -143,7 +143,7 @@ vehicles to occupy a single parking spot. Further requirements are outlined belo
 
 ### Encourage to free reserved parking spot
 
-> To be changed!
+> To be changed in future!
 
 - Clients who are on reserved chosen parking spot
     - notify them that they should free parking spot
