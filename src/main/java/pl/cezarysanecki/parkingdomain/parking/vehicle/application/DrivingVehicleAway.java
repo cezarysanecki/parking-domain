@@ -53,7 +53,7 @@ public class DrivingVehicleAway {
     private Result publishEvents(VehicleDroveAway vehicleDroveAway) {
         log.debug("successfully drive vehicle away with id {}", vehicleDroveAway.getVehicleId());
         vehicles.publish(vehicleDroveAway);
-        return new Result.Success();
+        return new Result.Success<>(vehicleDroveAway.getVehicleId());
     }
 
     private Vehicle load(VehicleId vehicleId) {

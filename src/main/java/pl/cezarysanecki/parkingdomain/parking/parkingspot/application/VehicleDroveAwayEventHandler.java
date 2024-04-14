@@ -46,7 +46,7 @@ public class VehicleDroveAwayEventHandler {
     private Result publishEvents(ParkingSpotLeftEvents parkingSpotLeftEvents) {
         log.debug("successfully left parking spot with id {}", parkingSpotLeftEvents.getParkingSpotId());
         parkingSpots.publish(parkingSpotLeftEvents);
-        return new Result.Success();
+        return new Result.Success<>(parkingSpotLeftEvents.getParkingSpotId());
     }
 
 }
