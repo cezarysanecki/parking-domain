@@ -73,13 +73,13 @@ public class ClientReservationsEventHandler {
     private Result publishEvents(PartOfParkingSpotReserved partOfParkingSpotReserved) {
         log.debug("successfully reserved part of parking spot with id {}", partOfParkingSpotReserved.getParkingSpotId());
         parkingSpotReservationsRepository.publish(partOfParkingSpotReserved);
-        return new Result.Success();
+        return new Result.Success<>(partOfParkingSpotReserved.getParkingSpotId());
     }
 
     private Result publishEvents(WholeParkingSpotReserved wholeParkingSpotReserved) {
         log.debug("successfully reserved whole parking spot with id {}", wholeParkingSpotReserved.getParkingSpotId());
         parkingSpotReservationsRepository.publish(wholeParkingSpotReserved);
-        return new Result.Success();
+        return new Result.Success<>(wholeParkingSpotReserved.getParkingSpotId());
     }
 
 }

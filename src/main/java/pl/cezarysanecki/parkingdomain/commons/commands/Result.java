@@ -6,7 +6,10 @@ import java.util.Set;
 
 public interface Result {
 
-    class Success implements Result {
+    @Value
+    class Success<T> implements Result {
+
+        T result;
 
     }
 

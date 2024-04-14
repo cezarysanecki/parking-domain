@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.Vehicle;
-import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleEvent;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleId;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.Vehicles;
 
@@ -18,7 +17,8 @@ import static io.vavr.API.Case;
 import static io.vavr.API.Match;
 import static io.vavr.Patterns.$Left;
 import static io.vavr.Patterns.$Right;
-import static pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleEvent.*;
+import static pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleEvent.VehicleParked;
+import static pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleEvent.VehicleParkingFailed;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -56,7 +56,7 @@ public class ParkingVehicle {
     private Result publishEvents(VehicleParked vehicleParked) {
         log.debug("successfully park vehicle with id {} on parking spot with id {}", vehicleParked.getVehicleId(), vehicleParked.getParkingSpotId());
         vehicles.publish(vehicleParked);
-        return new Result.Success();
+        return new Result.Success<>(vehicleParked.getVehicleId());
     }
 
     private Vehicle load(VehicleId vehicleId) {

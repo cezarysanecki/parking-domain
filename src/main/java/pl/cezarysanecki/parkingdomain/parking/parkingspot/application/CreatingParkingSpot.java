@@ -36,7 +36,7 @@ public class CreatingParkingSpot {
                     command.parkingSpotCapacity,
                     command.parkingSpotCategory));
 
-            return new Result.Success();
+            return new Result.Success<>(parkingSpotId);
         }).onFailure(t -> log.error("Failed to create parking spot", t));
     }
 

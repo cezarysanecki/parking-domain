@@ -50,7 +50,7 @@ public class ReservingWholeParkingSpot {
     private Result publishEvents(ReservationForWholeParkingSpotSubmitted requestSubmitted) {
         log.debug("reservation for whole parking spot submitted for client with id {}", requestSubmitted.getClientId());
         clientReservationsRepository.publish(requestSubmitted);
-        return new Result.Success();
+        return new Result.Success<>(requestSubmitted.getClientId());
     }
 
     private Result publishEvents(ReservationSubmissionFailed requestSubmissionFailed) {

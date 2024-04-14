@@ -47,7 +47,7 @@ public class CancellingReservationRequest {
     private Result publishEvents(ReservationRequestCancelled requestCancelled) {
         log.debug("reservation request cancelled for client with id {}", requestCancelled.getClientId());
         clientReservationsRepository.publish(requestCancelled);
-        return new Result.Success();
+        return new Result.Success<>(requestCancelled.getClientId());
     }
 
     private Result publishEvents(ReservationRequestCancellationFailed requestCancellationFailed) {

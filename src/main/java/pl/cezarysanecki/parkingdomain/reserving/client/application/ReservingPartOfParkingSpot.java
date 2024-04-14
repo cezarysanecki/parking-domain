@@ -53,7 +53,7 @@ public class ReservingPartOfParkingSpot {
     private Result publishEvents(ReservationForPartOfParkingSpotSubmitted requestSubmitted) {
         log.debug("reservation for part of parking spot submitted for client with id {}", requestSubmitted.getClientId());
         clientReservationsRepository.publish(requestSubmitted);
-        return new Result.Success();
+        return new Result.Success<>(requestSubmitted.getClientId());
     }
 
     private Result publishEvents(ReservationSubmissionFailed requestSubmissionFailed) {

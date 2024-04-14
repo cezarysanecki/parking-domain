@@ -53,7 +53,7 @@ public class VehicleParkedEventHandler {
     private Result publishEvents(ParkingSpotOccupiedEvents parkingSpotOccupiedEvents) {
         log.debug("successfully occupied parking spot with id {}", parkingSpotOccupiedEvents.getParkingSpotId());
         parkingSpots.publish(parkingSpotOccupiedEvents);
-        return new Result.Success();
+        return new Result.Success<>(parkingSpotOccupiedEvents.getParkingSpotId());
     }
 
 }

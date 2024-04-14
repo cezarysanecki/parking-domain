@@ -30,7 +30,7 @@ public class RegisteringVehicle {
             log.debug("registering vehicle with id {}", vehicleId);
             vehicles.publish(new VehicleRegistered(vehicleId, command.vehicleSize));
 
-            return new Result.Success();
+            return new Result.Success<>(vehicleId);
         }).onFailure(t -> log.error("Failed to register vehicle", t));
     }
 
