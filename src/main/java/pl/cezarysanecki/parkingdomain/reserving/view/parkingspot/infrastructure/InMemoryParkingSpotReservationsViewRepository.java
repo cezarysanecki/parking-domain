@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import static pl.cezarysanecki.parkingdomain.parking.parkingspot.application.CreatingParkingSpot.ParkingSpotCreated;
 import static pl.cezarysanecki.parkingdomain.reserving.parkingspot.model.ParkingSpotReservationEvent.ParkingSpotReservationCancelled;
 import static pl.cezarysanecki.parkingdomain.reserving.parkingspot.model.ParkingSpotReservationEvent.PartOfParkingSpotReserved;
+import static pl.cezarysanecki.parkingdomain.reserving.parkingspot.model.ParkingSpotReservationEvent.WholeParkingSpotReserved;
 
 class InMemoryParkingSpotReservationsViewRepository implements ParkingSpotReservationsViews {
 
@@ -41,6 +42,16 @@ class InMemoryParkingSpotReservationsViewRepository implements ParkingSpotReserv
                 event.getParkingSpotId().getValue(),
                 event.getParkingSpotCapacity().getValue(),
                 new HashSet<>()));
+    }
+
+    @Override
+    @ViewEventListener
+    public void handle(WholeParkingSpotReserved event) {
+        ParkingSpotReservationsViewEntity entity = DATABASE.get(event.getParkingSpotId());
+        entity.currentReservations.add(new ParkingSpotReservationsViewEntity.VehicleReservationEntity(
+                event.getReservationId().getValue(),
+                entity.capacity));
+        DATABASE.put(event.getParkingSpotId(), entity);
     }
 
     @Override

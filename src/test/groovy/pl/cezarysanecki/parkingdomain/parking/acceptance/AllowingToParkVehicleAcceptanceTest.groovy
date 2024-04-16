@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import pl.cezarysanecki.parkingdomain.commons.commands.Result
-import pl.cezarysanecki.parkingdomain.commons.events.EventPublisherConfig
+import pl.cezarysanecki.parkingdomain.commons.events.EventPublisherTestConfig
 import pl.cezarysanecki.parkingdomain.parking.ParkingConfig
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.application.CreatingParkingSpot
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotCapacity
@@ -19,7 +19,7 @@ import pl.cezarysanecki.parkingdomain.parking.view.vehicle.model.VehicleViews
 import spock.lang.Specification
 
 @ActiveProfiles("local")
-@SpringBootTest(classes = [ParkingConfig.class, EventPublisherConfig.class])
+@SpringBootTest(classes = [ParkingConfig.class, EventPublisherTestConfig.class])
 class AllowingToParkVehicleAcceptanceTest extends Specification {
   
   @Autowired
