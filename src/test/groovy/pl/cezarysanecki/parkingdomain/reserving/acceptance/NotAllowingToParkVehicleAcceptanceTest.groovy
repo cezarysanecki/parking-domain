@@ -1,10 +1,10 @@
-package pl.cezarysanecki.parkingdomain.parking.acceptance
+package pl.cezarysanecki.parkingdomain.reserving.acceptance
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import pl.cezarysanecki.parkingdomain.commons.commands.Result
-import pl.cezarysanecki.parkingdomain.commons.events.EventPublisherTestConfig
+import pl.cezarysanecki.parkingdomain.commons.events.EventPublisherConfig
 import pl.cezarysanecki.parkingdomain.parking.ParkingConfig
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.application.CreatingParkingSpot
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotCapacity
@@ -18,7 +18,7 @@ import pl.cezarysanecki.parkingdomain.parking.view.vehicle.model.VehicleViews
 import spock.lang.Specification
 
 @ActiveProfiles("local")
-@SpringBootTest(classes = [ParkingConfig.class, EventPublisherTestConfig.class])
+@SpringBootTest(classes = [ParkingConfig.class, EventPublisherConfig.class])
 class NotAllowingToParkVehicleAcceptanceTest extends Specification {
   
   @Autowired

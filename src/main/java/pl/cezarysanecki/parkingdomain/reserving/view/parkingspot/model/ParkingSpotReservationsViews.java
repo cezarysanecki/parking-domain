@@ -6,6 +6,7 @@ import java.util.Set;
 
 import static pl.cezarysanecki.parkingdomain.parking.parkingspot.application.CreatingParkingSpot.ParkingSpotCreated;
 import static pl.cezarysanecki.parkingdomain.reserving.parkingspot.model.ParkingSpotReservationEvent.ParkingSpotReservationCancelled;
+import static pl.cezarysanecki.parkingdomain.reserving.parkingspot.model.ParkingSpotReservationEvent.WholeParkingSpotReserved;
 
 public interface ParkingSpotReservationsViews {
 
@@ -15,6 +16,7 @@ public interface ParkingSpotReservationsViews {
 
     void handle(ParkingSpotCreated event);
 
+    void handle(WholeParkingSpotReserved event);
 
     void handle(PartOfParkingSpotReserved event);
 
