@@ -4,43 +4,31 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import pl.cezarysanecki.parkingdomain.commons.commands.Result
-import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisherTestConfig
 import pl.cezarysanecki.parkingdomain.parking.ParkingConfig
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.application.CreatingParkingSpot
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotCapacity
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotCategory
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.parking.vehicle.application.ParkingVehicle
-import pl.cezarysanecki.parkingdomain.parking.vehicle.application.RegisteringVehicle
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleId
-import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleSize
 import pl.cezarysanecki.parkingdomain.parking.view.vehicle.model.VehicleViews
 import pl.cezarysanecki.parkingdomain.reserving.ReservingConfig
 import pl.cezarysanecki.parkingdomain.reserving.client.application.ReservingWholeParkingSpot
 import pl.cezarysanecki.parkingdomain.reserving.client.model.ClientId
 import pl.cezarysanecki.parkingdomain.reserving.client.model.ReservationId
 import pl.cezarysanecki.parkingdomain.reserving.view.parkingspot.model.ParkingSpotReservationsViews
-import spock.lang.Specification
 
-import static pl.cezarysanecki.parkingdomain.parking.vehicle.application.ParkingVehicle.*
-import static pl.cezarysanecki.parkingdomain.parking.vehicle.application.ParkingVehicle.ParkOnChosenCommand
+import static pl.cezarysanecki.parkingdomain.parking.vehicle.application.ParkingVehicle.ParkOnReservedCommand
 
 @ActiveProfiles("local")
 @SpringBootTest(classes = [
     ReservingConfig.class, ParkingConfig.class,
     EventPublisherTestConfig.class])
-class AllowingToParkOnReservedParkingSpotAcceptanceTest extends Specification {
+class AllowingToParkOnReservedParkingSpotAcceptanceTest extends AbstractReservingAcceptanceTest {
   
   @Autowired
   ReservingWholeParkingSpot reservingWholeParkingSpot
   @Autowired
   ParkingVehicle parkingVehicle
   
-  @Autowired
-  RegisteringVehicle registeringVehicle
-  @Autowired
-  EventPublisher eventPublisher
   @Autowired
   VehicleViews vehicleViews
   @Autowired
@@ -80,18 +68,6 @@ class AllowingToParkOnReservedParkingSpotAcceptanceTest extends Specification {
       thereIsReservation(parkingSpotId, reservationId)
     and:
       vehicleIsNotParkedOn(parkingSpotId, vehicleId)
-  }
-  
-  private ParkingSpotId createParkingSpot(int capacity) {
-    def parkingSpotId = ParkingSpotId.newOne()
-    eventPublisher.publish(new CreatingParkingSpot.ParkingSpotCreated(
-        parkingSpotId, ParkingSpotCapacity.of(capacity), ParkingSpotCategory.Gold))
-    return parkingSpotId
-  }
-  
-  private VehicleId registerVehicle(int size) {
-    def result = registeringVehicle.register(new RegisteringVehicle.Command(VehicleSize.of(size)))
-    return (result.get() as Result.Success<VehicleId>).getResult()
   }
   
   private ReservationId reserveWholeParkingSpotFor(ClientId clientId, ParkingSpotId parkingSpotId) {

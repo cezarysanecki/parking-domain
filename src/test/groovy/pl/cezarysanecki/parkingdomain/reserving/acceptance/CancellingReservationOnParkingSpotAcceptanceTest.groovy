@@ -1,27 +1,16 @@
 package pl.cezarysanecki.parkingdomain.reserving.acceptance
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.ActiveProfiles
 import pl.cezarysanecki.parkingdomain.commons.commands.Result
-import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher
-import pl.cezarysanecki.parkingdomain.commons.events.EventPublisherTestConfig
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.application.CreatingParkingSpot
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotCapacity
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotCategory
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId
-import pl.cezarysanecki.parkingdomain.reserving.ReservingConfig
 import pl.cezarysanecki.parkingdomain.reserving.client.application.CancellingReservationRequest
 import pl.cezarysanecki.parkingdomain.reserving.client.application.ReservingPartOfParkingSpot
 import pl.cezarysanecki.parkingdomain.reserving.client.application.ReservingWholeParkingSpot
 import pl.cezarysanecki.parkingdomain.reserving.client.model.ClientId
 import pl.cezarysanecki.parkingdomain.reserving.client.model.ReservationId
 import pl.cezarysanecki.parkingdomain.reserving.view.parkingspot.model.ParkingSpotReservationsViews
-import spock.lang.Specification
 
-@ActiveProfiles("local")
-@SpringBootTest(classes = [ReservingConfig.class, EventPublisherTestConfig.class])
-class CancellingReservationOnParkingSpotAcceptanceTest extends Specification {
+class CancellingReservationOnParkingSpotAcceptanceTest extends AbstractReservingAcceptanceTest {
   
   @Autowired
   ReservingWholeParkingSpot reservingWholeParkingSpot
@@ -30,8 +19,6 @@ class CancellingReservationOnParkingSpotAcceptanceTest extends Specification {
   @Autowired
   CancellingReservationRequest cancellingReservationRequest
   
-  @Autowired
-  EventPublisher eventPublisher
   @Autowired
   ParkingSpotReservationsViews parkingSpotReservationsViews
   
@@ -48,13 +35,6 @@ class CancellingReservationOnParkingSpotAcceptanceTest extends Specification {
     
     then:
       thereIsNoSuchReservationOn(parkingSpotId, reservationId)
-  }
-  
-  private ParkingSpotId createParkingSpot(int capacity) {
-    def parkingSpotId = ParkingSpotId.newOne()
-    eventPublisher.publish(new CreatingParkingSpot.ParkingSpotCreated(
-        parkingSpotId, ParkingSpotCapacity.of(capacity), ParkingSpotCategory.Gold))
-    return parkingSpotId
   }
   
   private ReservationId reserveWholeParkingSpotFor(ClientId clientId, ParkingSpotId parkingSpotId) {
