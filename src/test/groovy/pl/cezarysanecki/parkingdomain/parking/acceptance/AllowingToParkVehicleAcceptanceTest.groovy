@@ -2,6 +2,7 @@ package pl.cezarysanecki.parkingdomain.parking.acceptance
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.ActiveProfiles
 import pl.cezarysanecki.parkingdomain.commons.commands.Result
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisherTestConfig
@@ -16,11 +17,15 @@ import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleId
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleSize
 import pl.cezarysanecki.parkingdomain.parking.view.parkingspot.model.ParkingSpotViews
 import pl.cezarysanecki.parkingdomain.parking.view.vehicle.model.VehicleViews
+import pl.cezarysanecki.parkingdomain.reserving.parkingspot.application.ParkingSpotReservationsFinder
 import spock.lang.Specification
 
 @ActiveProfiles("local")
 @SpringBootTest(classes = [ParkingConfig.class, EventPublisherTestConfig.class])
 class AllowingToParkVehicleAcceptanceTest extends Specification {
+  
+  @MockBean
+  ParkingSpotReservationsFinder parkingSpotReservationsFinder
   
   @Autowired
   CreatingParkingSpot creatingParkingSpot

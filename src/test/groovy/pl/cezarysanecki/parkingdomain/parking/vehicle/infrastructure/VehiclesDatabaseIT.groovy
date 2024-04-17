@@ -11,6 +11,7 @@ import pl.cezarysanecki.parkingdomain.parking.vehicle.model.Vehicle
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleId
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleSize
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.Vehicles
+import pl.cezarysanecki.parkingdomain.reserving.parkingspot.application.ParkingSpotReservationsFinder
 import spock.lang.Specification
 
 import static pl.cezarysanecki.parkingdomain.parking.vehicle.application.RegisteringVehicle.VehicleRegistered
@@ -24,6 +25,8 @@ class VehiclesDatabaseIT extends Specification {
   
   @MockBean
   EventPublisher eventPublisher
+  @MockBean
+  ParkingSpotReservationsFinder parkingSpotReservationsFinder
   
   @Autowired
   Vehicles vehicles

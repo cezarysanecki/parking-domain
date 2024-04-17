@@ -5,6 +5,7 @@ import pl.cezarysanecki.parkingdomain.commons.commands.Result
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleId
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.Vehicles
+import pl.cezarysanecki.parkingdomain.reserving.parkingspot.application.ParkingSpotReservationsFinder
 import spock.lang.Specification
 import spock.lang.Subject
 
@@ -15,9 +16,10 @@ import static pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleFixtur
 class ParkingVehicleTest extends Specification {
   
   Vehicles vehicles = Mock()
+  ParkingSpotReservationsFinder parkingSpotReservationsFinder = Mock()
   
   @Subject
-  ParkingVehicle parkingVehicle = new ParkingVehicle(vehicles)
+  ParkingVehicle parkingVehicle = new ParkingVehicle(vehicles, parkingSpotReservationsFinder)
   
   def "allow to park vehicle on parking spot"() {
     given:
