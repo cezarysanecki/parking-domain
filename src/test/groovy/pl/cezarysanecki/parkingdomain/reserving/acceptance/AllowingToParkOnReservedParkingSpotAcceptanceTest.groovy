@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import pl.cezarysanecki.parkingdomain.commons.commands.Result
-import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisherTestConfig
 import pl.cezarysanecki.parkingdomain.parking.ParkingConfig
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.application.CreatingParkingSpot
@@ -23,8 +22,7 @@ import pl.cezarysanecki.parkingdomain.reserving.client.model.ReservationId
 import pl.cezarysanecki.parkingdomain.reserving.view.parkingspot.model.ParkingSpotReservationsViews
 import spock.lang.Specification
 
-import static pl.cezarysanecki.parkingdomain.parking.vehicle.application.ParkingVehicle.*
-import static pl.cezarysanecki.parkingdomain.parking.vehicle.application.ParkingVehicle.ParkOnChosenCommand
+import static pl.cezarysanecki.parkingdomain.parking.vehicle.application.ParkingVehicle.ParkOnReservedCommand
 
 @ActiveProfiles("local")
 @SpringBootTest(classes = [
@@ -40,7 +38,7 @@ class AllowingToParkOnReservedParkingSpotAcceptanceTest extends Specification {
   @Autowired
   RegisteringVehicle registeringVehicle
   @Autowired
-  EventPublisher eventPublisher
+  CreatingParkingSpot creatingParkingSpot
   @Autowired
   VehicleViews vehicleViews
   @Autowired
@@ -83,10 +81,9 @@ class AllowingToParkOnReservedParkingSpotAcceptanceTest extends Specification {
   }
   
   private ParkingSpotId createParkingSpot(int capacity) {
-    def parkingSpotId = ParkingSpotId.newOne()
-    eventPublisher.publish(new CreatingParkingSpot.ParkingSpotCreated(
-        parkingSpotId, ParkingSpotCapacity.of(capacity), ParkingSpotCategory.Gold))
-    return parkingSpotId
+    def result = creatingParkingSpot.create(new CreatingParkingSpot.Command(
+        ParkingSpotCapacity.of(capacity), ParkingSpotCategory.Gold))
+    return (result.get() as Result.Success<ParkingSpotId>).getResult()
   }
   
   private VehicleId registerVehicle(int size) {
