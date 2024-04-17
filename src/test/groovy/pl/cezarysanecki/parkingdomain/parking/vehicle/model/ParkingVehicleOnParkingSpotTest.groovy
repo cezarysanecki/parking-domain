@@ -2,6 +2,7 @@ package pl.cezarysanecki.parkingdomain.parking.vehicle.model
 
 
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId
+import pl.cezarysanecki.parkingdomain.reserving.client.model.ReservationId
 import spock.lang.Specification
 
 import static pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleFixture.notParkedVehicle
@@ -41,6 +42,31 @@ class ParkingVehicleOnParkingSpotTest extends Specification {
       result.getLeft().with {
         assert it.vehicleId == vehicle.vehicleInformation.vehicleId
         assert it.reason == "vehicle is already parked"
+      }
+  }
+  
+  def "allow to park vehicle on reserved parking spot"() {
+    given:
+      def parkingSpotId = ParkingSpotId.newOne()
+    and:
+      def reservationId = ReservationId.newOne()
+    and:
+      def vehicle = notParkedVehicle()
+    
+    when:
+      def result = vehicle.parkOnUsing(parkingSpotId, reservationId)
+    
+    then:
+      result.isRight()
+      result.get().with {
+        assert it.vehicleId == vehicle.vehicleInformation.vehicleId
+        
+        def vehicleParked = it.vehicleParked
+        assert vehicleParked.vehicleSize == vehicle.vehicleInformation.vehicleSize
+        assert vehicleParked.parkingSpotId == parkingSpotId
+        
+        def fulfilledReservation = it.fulfilledReservation.get()
+        fulfilledReservation.reservationId == reservationId
       }
   }
   

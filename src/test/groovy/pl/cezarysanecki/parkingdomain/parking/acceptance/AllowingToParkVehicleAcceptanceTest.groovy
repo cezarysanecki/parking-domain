@@ -2,6 +2,7 @@ package pl.cezarysanecki.parkingdomain.parking.acceptance
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.ActiveProfiles
 import pl.cezarysanecki.parkingdomain.commons.commands.Result
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisherTestConfig
@@ -16,11 +17,15 @@ import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleId
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleSize
 import pl.cezarysanecki.parkingdomain.parking.view.parkingspot.model.ParkingSpotViews
 import pl.cezarysanecki.parkingdomain.parking.view.vehicle.model.VehicleViews
+import pl.cezarysanecki.parkingdomain.reserving.parkingspot.application.ParkingSpotReservationsFinder
 import spock.lang.Specification
 
 @ActiveProfiles("local")
 @SpringBootTest(classes = [ParkingConfig.class, EventPublisherTestConfig.class])
 class AllowingToParkVehicleAcceptanceTest extends Specification {
+  
+  @MockBean
+  ParkingSpotReservationsFinder parkingSpotReservationsFinder
   
   @Autowired
   CreatingParkingSpot creatingParkingSpot
@@ -45,14 +50,14 @@ class AllowingToParkVehicleAcceptanceTest extends Specification {
       def thirdVehicleId = registerVehicle(2)
     
     when:
-      parkingVehicle.park(new ParkingVehicle.Command(firstVehicleId, parkingSpotId))
+      parkingVehicle.park(new ParkingVehicle.ParkOnChosenCommand(firstVehicleId, parkingSpotId))
     and:
-      parkingVehicle.park(new ParkingVehicle.Command(secondVehicleId, parkingSpotId))
+      parkingVehicle.park(new ParkingVehicle.ParkOnChosenCommand(secondVehicleId, parkingSpotId))
     and:
-      parkingVehicle.park(new ParkingVehicle.Command(thirdVehicleId, parkingSpotId))
+      parkingVehicle.park(new ParkingVehicle.ParkOnChosenCommand(thirdVehicleId, parkingSpotId))
     
     then:
-      thisVehiclesAreParkedOn(parkingSpotId, [firstVehicleId, secondVehicleId, thirdVehicleId])
+      vehiclesAreParkedOn(parkingSpotId, [firstVehicleId, secondVehicleId, thirdVehicleId])
     and:
       parkingSpotIsNotAvailable(parkingSpotId)
   }
@@ -68,7 +73,7 @@ class AllowingToParkVehicleAcceptanceTest extends Specification {
     return (result.get() as Result.Success<VehicleId>).getResult()
   }
   
-  void thisVehiclesAreParkedOn(ParkingSpotId parkingSpotId, List<VehicleId> vehicles) {
+  void vehiclesAreParkedOn(ParkingSpotId parkingSpotId, List<VehicleId> vehicles) {
     def parkedVehicles = vehicleViews.queryForParkedVehicles()
         .stream()
         .filter { ParkingSpotId.of(it.parkingSpotId) == parkingSpotId }

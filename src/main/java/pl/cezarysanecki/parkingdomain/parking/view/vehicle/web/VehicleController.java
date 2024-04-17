@@ -47,7 +47,7 @@ class VehicleController {
 
     @PostMapping("/vehicle/{vehicleId}/park-on/{parkingSpotId}")
     ResponseEntity create(@PathVariable UUID vehicleId, @PathVariable UUID parkingSpotId) {
-        Try<Result> result = parkingVehicle.park(new ParkingVehicle.Command(
+        Try<Result> result = parkingVehicle.park(new ParkingVehicle.ParkOnChosenCommand(
                 VehicleId.of(vehicleId),
                 ParkingSpotId.of(parkingSpotId)
         ));
