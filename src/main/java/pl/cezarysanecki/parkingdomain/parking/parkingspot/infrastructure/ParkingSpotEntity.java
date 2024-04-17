@@ -25,7 +25,6 @@ class ParkingSpotEntity {
     final UUID parkingSpotId;
     final int capacity;
     Set<ParkingSpotVehicleEntity> vehicles;
-    Set<UUID> reservations;
 
     ParkingSpotEntity handle(ParkingSpotEvent domainEvent) {
         return API.Match(domainEvent).of(

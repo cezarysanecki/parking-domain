@@ -7,6 +7,7 @@ import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotCapacity;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.reserving.client.model.ReservationId;
+import pl.cezarysanecki.parkingdomain.reserving.parkingspot.application.ParkingSpotReservationsFinder;
 import pl.cezarysanecki.parkingdomain.reserving.parkingspot.model.ParkingSpotReservationEvent;
 import pl.cezarysanecki.parkingdomain.reserving.parkingspot.model.ParkingSpotReservations;
 import pl.cezarysanecki.parkingdomain.reserving.parkingspot.model.ParkingSpotReservationsRepository;
@@ -17,11 +18,17 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @RequiredArgsConstructor
-class InMemoryParkingSpotReservationsRepository implements ParkingSpotReservationsRepository {
+class InMemoryParkingSpotReservationsRepository implements ParkingSpotReservationsRepository, ParkingSpotReservationsFinder {
 
     private static final Map<ParkingSpotId, ParkingSpotReservationsEntity> DATABASE = new ConcurrentHashMap<>();
 
     private final EventPublisher eventPublisher;
+
+    @Override
+    public Option<ParkingSpotId> findParkingSpotIdBy(ReservationId reservationId) {
+        return findBy(reservationId)
+                .map(ParkingSpotReservations::getParkingSpotId);
+    }
 
     @Override
     public ParkingSpotReservations createUsing(ParkingSpotId parkingSpotId, ParkingSpotCapacity parkingSpotCapacity) {
@@ -63,5 +70,4 @@ class InMemoryParkingSpotReservationsRepository implements ParkingSpotReservatio
         }
         eventPublisher.publish(parkingSpotReservationEvent.normalize());
     }
-
 }

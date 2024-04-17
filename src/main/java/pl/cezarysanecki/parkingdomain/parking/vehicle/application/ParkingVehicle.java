@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.application.ParkingSpotFinder;
+import pl.cezarysanecki.parkingdomain.reserving.parkingspot.application.ParkingSpotReservationsFinder;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.Vehicle;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleId;
@@ -28,7 +28,7 @@ import static pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleEvent.
 public class ParkingVehicle {
 
     private final Vehicles vehicles;
-    private final ParkingSpotFinder parkingSpotFinder;
+    private final ParkingSpotReservationsFinder parkingSpotReservationsFinder;
 
     @Value
     public static class ParkOnChosenCommand {
@@ -99,7 +99,7 @@ public class ParkingVehicle {
     }
 
     private ParkingSpotId findParkingSpotIdBy(ReservationId reservationId) {
-        return parkingSpotFinder.findBy(reservationId)
+        return parkingSpotReservationsFinder.findParkingSpotIdBy(reservationId)
                 .getOrElseThrow(() -> new IllegalStateException("cannot find parking spot for reservation with id " + reservationId));
     }
 

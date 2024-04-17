@@ -5,14 +5,12 @@ import io.vavr.control.Option;
 import lombok.RequiredArgsConstructor;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.application.CreatingParkingSpot;
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.application.ParkingSpotFinder;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.OccupiedParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.OpenParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpots;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleId;
-import pl.cezarysanecki.parkingdomain.reserving.client.model.ReservationId;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -24,22 +22,11 @@ import static io.vavr.API.Match;
 import static io.vavr.Predicates.instanceOf;
 
 @RequiredArgsConstructor
-class InMemoryParkingSpotRepository implements ParkingSpots, ParkingSpotFinder {
+class InMemoryParkingSpotRepository implements ParkingSpots {
 
     private static final Map<ParkingSpotId, ParkingSpotEntity> DATABASE = new ConcurrentHashMap<>();
 
     private final EventPublisher eventPublisher;
-
-    @Override
-    public Option<ParkingSpotId> findBy(ReservationId reservationId) {
-        return Option.ofOptional(
-                        DATABASE.values()
-                                .stream()
-                                .filter(entity -> entity.reservations.stream()
-                                        .anyMatch(reservation -> reservation.equals(reservationId.getValue())))
-                                .findFirst())
-                .map(entity -> ParkingSpotId.of(entity.parkingSpotId));
-    }
 
     @Override
     public Option<OpenParkingSpot> findOpenBy(ParkingSpotId parkingSpotId) {
@@ -69,7 +56,6 @@ class InMemoryParkingSpotRepository implements ParkingSpots, ParkingSpotFinder {
         ParkingSpotEntity entity = new ParkingSpotEntity(
                 domainEvent.getParkingSpotId().getValue(),
                 domainEvent.getParkingSpotCapacity().getValue(),
-                new HashSet<>(),
                 new HashSet<>());
         DATABASE.put(domainEvent.getParkingSpotId(), entity);
         return domainEvent;
