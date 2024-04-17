@@ -20,6 +20,7 @@ import static io.vavr.API.Match;
 import static io.vavr.Patterns.$Left;
 import static io.vavr.Patterns.$Right;
 import static pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleEvent.VehicleParked;
+import static pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleEvent.VehicleParkedEvents;
 import static pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleEvent.VehicleParkingFailed;
 
 @Slf4j
@@ -66,7 +67,7 @@ public class ParkingVehicle {
             Vehicle vehicle = load(vehicleId);
             ParkingSpotId parkingSpotId = findParkingSpotIdBy(reservationId);
 
-            Either<VehicleParkingFailed, VehicleParked> result = vehicle.parkOn(parkingSpotId);
+            Either<VehicleParkingFailed, VehicleParkedEvents> result = vehicle.parkOnUsing(parkingSpotId, reservationId);
             return Match(result).of(
                     Case($Left($()), this::publishEvents),
                     Case($Right($()), this::publishEvents));
@@ -83,6 +84,13 @@ public class ParkingVehicle {
         log.debug("successfully park vehicle with id {} on parking spot with id {}", vehicleParked.getVehicleId(), vehicleParked.getParkingSpotId());
         vehicles.publish(vehicleParked);
         return new Result.Success<>(vehicleParked.getVehicleId());
+    }
+
+    private Result publishEvents(VehicleParkedEvents vehicleParkedEvents) {
+        ParkingSpotId parkingSpotId = vehicleParkedEvents.getVehicleParked().getParkingSpotId();
+        log.debug("successfully park vehicle with id {} using parking spot with id {}", vehicleParkedEvents.getVehicleId(), parkingSpotId);
+        vehicles.publish(vehicleParkedEvents);
+        return new Result.Success<>(vehicleParkedEvents.getVehicleId());
     }
 
     private Vehicle load(VehicleId vehicleId) {
