@@ -23,7 +23,7 @@ class ReservingPartOfParkingSpotHandlingClientRequestTest extends Specification 
   ParkingSpotReservationsRepository parkingSpotReservationsRepository = Mock()
   
   @Subject
-  ClientReservationsEventHandler clientReservationsEventHandler = new ClientReservationsEventHandler(parkingSpotReservationsRepository)
+  HandlingClientReservationsEventHandler clientReservationsEventHandler = new HandlingClientReservationsEventHandler(parkingSpotReservationsRepository)
   
   def "reserve part of parking spot when client made a request for it"() {
     given:
