@@ -13,7 +13,10 @@ import java.util.UUID;
 import static io.vavr.API.$;
 import static io.vavr.API.Case;
 import static io.vavr.Predicates.instanceOf;
-import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.*;
+import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.ParkingSpotLeft;
+import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.ParkingSpotLeftEvents;
+import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.ParkingSpotOccupied;
+import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.ParkingSpotOccupiedEvents;
 
 @Slf4j
 @AllArgsConstructor
@@ -22,6 +25,7 @@ class ParkingSpotEntity {
     final UUID parkingSpotId;
     final int capacity;
     Set<ParkingSpotVehicleEntity> vehicles;
+    Set<UUID> reservations;
 
     ParkingSpotEntity handle(ParkingSpotEvent domainEvent) {
         return API.Match(domainEvent).of(
