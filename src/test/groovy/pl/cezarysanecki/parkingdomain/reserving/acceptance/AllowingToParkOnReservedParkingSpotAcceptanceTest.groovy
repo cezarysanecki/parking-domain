@@ -23,6 +23,7 @@ import pl.cezarysanecki.parkingdomain.reserving.client.model.ReservationId
 import pl.cezarysanecki.parkingdomain.reserving.view.parkingspot.model.ParkingSpotReservationsViews
 import spock.lang.Specification
 
+import static pl.cezarysanecki.parkingdomain.parking.vehicle.application.ParkingVehicle.*
 import static pl.cezarysanecki.parkingdomain.parking.vehicle.application.ParkingVehicle.ParkOnChosenCommand
 
 @ActiveProfiles("local")
@@ -55,7 +56,7 @@ class AllowingToParkOnReservedParkingSpotAcceptanceTest extends Specification {
       def reservationId = reserveWholeParkingSpotFor(clientId, parkingSpotId)
     
     when:
-      parkingVehicle.park(new ParkOnChosenCommand(vehicleId, reservationId))
+      parkingVehicle.park(new ParkOnReservedCommand(vehicleId, reservationId))
     
     then:
       thereIsReservation(parkingSpotId, reservationId)
@@ -73,7 +74,7 @@ class AllowingToParkOnReservedParkingSpotAcceptanceTest extends Specification {
       def reservationId = reserveWholeParkingSpotFor(clientId, parkingSpotId)
     
     when:
-      parkingVehicle.park(new ParkOnChosenCommand(vehicleId, ReservationId.newOne()))
+      parkingVehicle.park(new ParkOnReservedCommand(vehicleId, ReservationId.newOne()))
     
     then:
       thereIsReservation(parkingSpotId, reservationId)
