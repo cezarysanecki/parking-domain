@@ -8,7 +8,7 @@ import pl.cezarysanecki.parkingdomain.parking.vehicle.model.Vehicles
 import spock.lang.Specification
 import spock.lang.Subject
 
-import static pl.cezarysanecki.parkingdomain.parking.vehicle.application.ParkingVehicle.Command
+import static pl.cezarysanecki.parkingdomain.parking.vehicle.application.ParkingVehicle.ParkOnChosenCommand
 import static pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleFixture.notParkedVehicle
 import static pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleFixture.parkedVehicleOn
 
@@ -26,7 +26,7 @@ class ParkingVehicleTest extends Specification {
       vehicles.findBy(vehicle.vehicleInformation.vehicleId) >> Option.of(vehicle)
     
     when:
-      def result = parkingVehicle.park(new Command(vehicle.vehicleInformation.vehicleId, ParkingSpotId.newOne()))
+      def result = parkingVehicle.park(new ParkOnChosenCommand(vehicle.vehicleInformation.vehicleId, ParkingSpotId.newOne()))
     
     then:
       result.isSuccess()
@@ -40,7 +40,7 @@ class ParkingVehicleTest extends Specification {
       vehicles.findBy(vehicle.vehicleInformation.vehicleId) >> Option.of(vehicle)
     
     when:
-      def result = parkingVehicle.park(new Command(vehicle.vehicleInformation.vehicleId, ParkingSpotId.newOne()))
+      def result = parkingVehicle.park(new ParkOnChosenCommand(vehicle.vehicleInformation.vehicleId, ParkingSpotId.newOne()))
     
     then:
       result.isSuccess()
@@ -54,7 +54,7 @@ class ParkingVehicleTest extends Specification {
       vehicles.findBy(vehicleId) >> Option.none()
     
     when:
-      def result = parkingVehicle.park(new Command(vehicleId, ParkingSpotId.newOne()))
+      def result = parkingVehicle.park(new ParkOnChosenCommand(vehicleId, ParkingSpotId.newOne()))
     
     then:
       result.isFailure()

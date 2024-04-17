@@ -36,12 +36,12 @@ class NotAllowingToParkVehicleAcceptanceTest extends Specification {
     and:
       def firstVehicleId = registerVehicle(2)
     and:
-      parkingVehicle.park(new ParkingVehicle.Command(firstVehicleId, parkingSpotId))
+      parkingVehicle.park(new ParkingVehicle.ParkOnChosenCommand(firstVehicleId, parkingSpotId))
     and:
       def secondVehicleId = registerVehicle(3)
     
     when:
-      parkingVehicle.park(new ParkingVehicle.Command(secondVehicleId, parkingSpotId))
+      parkingVehicle.park(new ParkingVehicle.ParkOnChosenCommand(secondVehicleId, parkingSpotId))
     
     then:
       thisVehicleIsParked(firstVehicleId)

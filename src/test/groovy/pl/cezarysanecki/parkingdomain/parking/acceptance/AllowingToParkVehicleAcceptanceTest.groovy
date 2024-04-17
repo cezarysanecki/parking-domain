@@ -45,11 +45,11 @@ class AllowingToParkVehicleAcceptanceTest extends Specification {
       def thirdVehicleId = registerVehicle(2)
     
     when:
-      parkingVehicle.park(new ParkingVehicle.Command(firstVehicleId, parkingSpotId))
+      parkingVehicle.park(new ParkingVehicle.ParkOnChosenCommand(firstVehicleId, parkingSpotId))
     and:
-      parkingVehicle.park(new ParkingVehicle.Command(secondVehicleId, parkingSpotId))
+      parkingVehicle.park(new ParkingVehicle.ParkOnChosenCommand(secondVehicleId, parkingSpotId))
     and:
-      parkingVehicle.park(new ParkingVehicle.Command(thirdVehicleId, parkingSpotId))
+      parkingVehicle.park(new ParkingVehicle.ParkOnChosenCommand(thirdVehicleId, parkingSpotId))
     
     then:
       vehiclesAreParkedOn(parkingSpotId, [firstVehicleId, secondVehicleId, thirdVehicleId])
