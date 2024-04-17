@@ -52,7 +52,7 @@ class AllowingToParkVehicleAcceptanceTest extends Specification {
       parkingVehicle.park(new ParkingVehicle.Command(thirdVehicleId, parkingSpotId))
     
     then:
-      thisVehiclesAreParkedOn(parkingSpotId, [firstVehicleId, secondVehicleId, thirdVehicleId])
+      vehiclesAreParkedOn(parkingSpotId, [firstVehicleId, secondVehicleId, thirdVehicleId])
     and:
       parkingSpotIsNotAvailable(parkingSpotId)
   }
@@ -68,7 +68,7 @@ class AllowingToParkVehicleAcceptanceTest extends Specification {
     return (result.get() as Result.Success<VehicleId>).getResult()
   }
   
-  void thisVehiclesAreParkedOn(ParkingSpotId parkingSpotId, List<VehicleId> vehicles) {
+  void vehiclesAreParkedOn(ParkingSpotId parkingSpotId, List<VehicleId> vehicles) {
     def parkedVehicles = vehicleViews.queryForParkedVehicles()
         .stream()
         .filter { ParkingSpotId.of(it.parkingSpotId) == parkingSpotId }
