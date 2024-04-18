@@ -4,8 +4,8 @@ import io.vavr.control.Option
 import pl.cezarysanecki.parkingdomain.commons.commands.Result
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.Vehicles
-import pl.cezarysanecki.parkingdomain.reserving.client.model.ReservationId
-import pl.cezarysanecki.parkingdomain.reserving.parkingspot.application.ParkingSpotReservationsFinder
+import pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ReservationId
+import pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.application.ParkingSpotReservationsFinder
 import spock.lang.Specification
 import spock.lang.Subject
 

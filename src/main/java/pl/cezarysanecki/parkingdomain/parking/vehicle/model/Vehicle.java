@@ -6,7 +6,7 @@ import lombok.NonNull;
 import lombok.Value;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleEvent.VehicleParked;
-import pl.cezarysanecki.parkingdomain.reserving.client.model.ReservationId;
+import pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ReservationId;
 
 import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announceFailure;
 import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announceSuccess;

@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
-import pl.cezarysanecki.parkingdomain.reserving.parkingspot.application.ParkingSpotReservationsFinder;
+import pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.application.ParkingSpotReservationsFinder;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.application.DrivingVehicleAway;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.application.ParkingSpotEventsHandler;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.application.ParkingVehicle;
