@@ -10,17 +10,17 @@ import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotCapac
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleSize
 import pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ReservationId
-import pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.infrastucture.ParkingSpotReservationsConfig
-import pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservations
-import pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationsRepository
+import pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.infrastucture.ParkingSpotReservationRequestsConfig
+import pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationRequests
+import pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationRequestsRepository
 import spock.lang.Specification
 
-import static pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationEvent.ParkingSpotReservationCancelled
-import static pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationEvent.PartOfParkingSpotReserved
+import static pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationRequestEvent.ParkingSpotReservationRequestCancelled
+import static pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationRequestEvent.PartRequestOfParkingSpotReserved
 
 @ActiveProfiles("local")
-@SpringBootTest(classes = [ParkingSpotReservationsConfig.class])
-class ParkingSpotReservationsDatabaseIT extends Specification {
+@SpringBootTest(classes = [ParkingSpotReservationRequestsConfig.class])
+class ParkingSpotReservationRequestsDatabaseIT extends Specification {
   
   def parkingSpotId = ParkingSpotId.newOne()
   
@@ -28,7 +28,7 @@ class ParkingSpotReservationsDatabaseIT extends Specification {
   EventPublisher eventPublisher
   
   @Autowired
-  ParkingSpotReservationsRepository parkingSpotReservationsRepository
+  ParkingSpotReservationRequestsRepository parkingSpotReservationsRepository
   
   def "persistence of parking spot reservations in real database should work"() {
     given:
@@ -54,13 +54,13 @@ class ParkingSpotReservationsDatabaseIT extends Specification {
       parkingSpotReservationsShouldBeFoundInDatabaseBeingFree(parkingSpotId)
   }
   
-  private PartOfParkingSpotReserved createReservationForPartOfParkingSpot(
+  private PartRequestOfParkingSpotReserved createReservationForPartOfParkingSpot(
       ParkingSpotId parkingSpotId, ReservationId reservationId, VehicleSize vehicleSize) {
-    return new PartOfParkingSpotReserved(parkingSpotId, reservationId, vehicleSize)
+    return new PartRequestOfParkingSpotReserved(parkingSpotId, reservationId, vehicleSize)
   }
   
-  private ParkingSpotReservationCancelled cancelParkingSpotReservation(ParkingSpotId parkingSpotId, ReservationId reservationId) {
-    return new ParkingSpotReservationCancelled(parkingSpotId, reservationId)
+  private ParkingSpotReservationRequestCancelled cancelParkingSpotReservation(ParkingSpotId parkingSpotId, ReservationId reservationId) {
+    return new ParkingSpotReservationRequestCancelled(parkingSpotId, reservationId)
   }
   
   private void parkingSpotReservationsShouldBeFoundInDatabaseCannotHandlingMoreReservations(ParkingSpotId parkingSpotId) {
@@ -73,9 +73,9 @@ class ParkingSpotReservationsDatabaseIT extends Specification {
     assert clientReservations.isFree()
   }
   
-  ParkingSpotReservations loadPersistedParkingSpotReservations(ParkingSpotId parkingSpotId) {
-    Option<ParkingSpotReservations> loaded = parkingSpotReservationsRepository.findBy(parkingSpotId)
-    ParkingSpotReservations parkingSpotReservations = loaded.getOrElseThrow({
+  ParkingSpotReservationRequests loadPersistedParkingSpotReservations(ParkingSpotId parkingSpotId) {
+    Option<ParkingSpotReservationRequests> loaded = parkingSpotReservationsRepository.findBy(parkingSpotId)
+    ParkingSpotReservationRequests parkingSpotReservations = loaded.getOrElseThrow({
       new IllegalStateException("should have been persisted")
     })
     return parkingSpotReservations

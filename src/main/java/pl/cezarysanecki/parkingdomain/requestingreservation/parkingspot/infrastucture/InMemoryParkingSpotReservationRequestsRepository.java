@@ -8,9 +8,9 @@ import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotCapac
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ReservationId;
 import pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.application.ParkingSpotReservationsFinder;
-import pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationEvent;
-import pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservations;
-import pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationsRepository;
+import pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationRequestEvent;
+import pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationRequests;
+import pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationRequestsRepository;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -18,21 +18,21 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @RequiredArgsConstructor
-class InMemoryParkingSpotReservationsRepository implements ParkingSpotReservationsRepository, ParkingSpotReservationsFinder {
+class InMemoryParkingSpotReservationRequestsRepository implements ParkingSpotReservationRequestsRepository, ParkingSpotReservationsFinder {
 
-    private static final Map<ParkingSpotId, ParkingSpotReservationsEntity> DATABASE = new ConcurrentHashMap<>();
+    private static final Map<ParkingSpotId, ParkingSpotReservationRequestsEntity> DATABASE = new ConcurrentHashMap<>();
 
     private final EventPublisher eventPublisher;
 
     @Override
     public Option<ParkingSpotId> findParkingSpotIdBy(ReservationId reservationId) {
         return findBy(reservationId)
-                .map(ParkingSpotReservations::getParkingSpotId);
+                .map(ParkingSpotReservationRequests::getParkingSpotId);
     }
 
     @Override
-    public ParkingSpotReservations createUsing(ParkingSpotId parkingSpotId, ParkingSpotCapacity parkingSpotCapacity) {
-        ParkingSpotReservationsEntity entity = new ParkingSpotReservationsEntity(
+    public ParkingSpotReservationRequests createUsing(ParkingSpotId parkingSpotId, ParkingSpotCapacity parkingSpotCapacity) {
+        ParkingSpotReservationRequestsEntity entity = new ParkingSpotReservationRequestsEntity(
                 parkingSpotId.getValue(),
                 parkingSpotCapacity.getValue(),
                 new HashSet<>());
@@ -41,13 +41,13 @@ class InMemoryParkingSpotReservationsRepository implements ParkingSpotReservatio
     }
 
     @Override
-    public Option<ParkingSpotReservations> findBy(ParkingSpotId parkingSpotId) {
+    public Option<ParkingSpotReservationRequests> findBy(ParkingSpotId parkingSpotId) {
         return Option.of(DATABASE.get(parkingSpotId))
                 .map(DomainModelMapper::map);
     }
 
     @Override
-    public Option<ParkingSpotReservations> findBy(ReservationId reservationId) {
+    public Option<ParkingSpotReservationRequests> findBy(ReservationId reservationId) {
         return Option.ofOptional(
                         DATABASE.values()
                                 .stream()
@@ -58,16 +58,16 @@ class InMemoryParkingSpotReservationsRepository implements ParkingSpotReservatio
     }
 
     @Override
-    public void publish(ParkingSpotReservationEvent parkingSpotReservationEvent) {
-        ParkingSpotId parkingSpotId = parkingSpotReservationEvent.getParkingSpotId();
+    public void publish(ParkingSpotReservationRequestEvent parkingSpotReservationRequestEvent) {
+        ParkingSpotId parkingSpotId = parkingSpotReservationRequestEvent.getParkingSpotId();
 
-        ParkingSpotReservationsEntity entity = DATABASE.get(parkingSpotId);
+        ParkingSpotReservationRequestsEntity entity = DATABASE.get(parkingSpotId);
         if (entity != null) {
-            entity.handle(parkingSpotReservationEvent);
+            entity.handle(parkingSpotReservationRequestEvent);
             DATABASE.put(parkingSpotId, entity);
         } else {
             log.debug("cannot find parking spot reservation for parking spot with id {}", parkingSpotId);
         }
-        eventPublisher.publish(parkingSpotReservationEvent.normalize());
+        eventPublisher.publish(parkingSpotReservationRequestEvent.normalize());
     }
 }

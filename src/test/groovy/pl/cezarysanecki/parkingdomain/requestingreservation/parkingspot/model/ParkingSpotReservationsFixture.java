@@ -11,18 +11,18 @@ import java.util.Set;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ParkingSpotReservationsFixture {
 
-    public static ParkingSpotReservations noParkingSpotReservations() {
-        return new ParkingSpotReservations(
+    public static ParkingSpotReservationRequests noParkingSpotReservations() {
+        return new ParkingSpotReservationRequests(
                 ParkingSpotId.newOne(), ParkingSpotOccupation.of(0, 4), Set.of());
     }
 
-    public static ParkingSpotReservations noParkingSpotReservationsWithCapacity(int capacity) {
-        return new ParkingSpotReservations(
+    public static ParkingSpotReservationRequests noParkingSpotReservationsWithCapacity(int capacity) {
+        return new ParkingSpotReservationRequests(
                 ParkingSpotId.newOne(), ParkingSpotOccupation.of(0, capacity), Set.of());
     }
 
-    public static ParkingSpotReservations fullyReservedParkingSpotBy(ReservationId reservationId) {
-        return new ParkingSpotReservations(
+    public static ParkingSpotReservationRequests fullyReservedParkingSpotBy(ReservationId reservationId) {
+        return new ParkingSpotReservationRequests(
                 ParkingSpotId.newOne(), ParkingSpotOccupation.of(4, 4), Set.of(reservationId));
     }
 

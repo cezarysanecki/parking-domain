@@ -5,15 +5,15 @@ import lombok.NoArgsConstructor;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotOccupation;
 import pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ReservationId;
-import pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservations;
+import pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationRequests;
 
 import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 class DomainModelMapper {
 
-    static ParkingSpotReservations map(ParkingSpotReservationsEntity entity) {
-        return new ParkingSpotReservations(
+    static ParkingSpotReservationRequests map(ParkingSpotReservationRequestsEntity entity) {
+        return new ParkingSpotReservationRequests(
                 ParkingSpotId.of(entity.parkingSpotId),
                 ParkingSpotOccupation.of(
                         entity.reservations.stream()

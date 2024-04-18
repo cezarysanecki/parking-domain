@@ -4,15 +4,15 @@ package pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.applica
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotCapacity
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotCategory
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId
-import pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationsRepository
+import pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationRequestsRepository
 import spock.lang.Specification
 import spock.lang.Subject
 
 import static pl.cezarysanecki.parkingdomain.parking.parkingspot.application.CreatingParkingSpot.ParkingSpotCreated
 
-class CreatingParkingSpotReservationsTest extends Specification {
+class CreatingParkingSpotReservationRequestsTest extends Specification {
   
-  ParkingSpotReservationsRepository parkingSpotReservationsRepository = Mock()
+  ParkingSpotReservationRequestsRepository parkingSpotReservationsRepository = Mock()
   
   @Subject
   ParkingSpotEventsHandler parkingSpotEventsHandler = new ParkingSpotEventsHandler(parkingSpotReservationsRepository)

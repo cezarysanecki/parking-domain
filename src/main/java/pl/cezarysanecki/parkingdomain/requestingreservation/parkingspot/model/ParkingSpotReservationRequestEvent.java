@@ -7,12 +7,12 @@ import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleSize;
 import pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ReservationId;
 
-public interface ParkingSpotReservationEvent extends DomainEvent {
+public interface ParkingSpotReservationRequestEvent extends DomainEvent {
 
     ParkingSpotId getParkingSpotId();
 
     @Value
-    class PartOfParkingSpotReserved implements ParkingSpotReservationEvent {
+    class PartRequestOfParkingSpotReserved implements ParkingSpotReservationRequestEvent {
 
         @NonNull ParkingSpotId parkingSpotId;
         @NonNull ReservationId reservationId;
@@ -21,7 +21,7 @@ public interface ParkingSpotReservationEvent extends DomainEvent {
     }
 
     @Value
-    class WholeParkingSpotReserved implements ParkingSpotReservationEvent {
+    class WholeRequestParkingSpotReserved implements ParkingSpotReservationRequestEvent {
 
         @NonNull ParkingSpotId parkingSpotId;
         @NonNull ReservationId reservationId;
@@ -29,7 +29,7 @@ public interface ParkingSpotReservationEvent extends DomainEvent {
     }
 
     @Value
-    class ParkingSpotReservationFailed implements ParkingSpotReservationEvent {
+    class ParkingSpotReservationRequestFailed implements ParkingSpotReservationRequestEvent {
 
         @NonNull ParkingSpotId parkingSpotId;
         @NonNull ReservationId reservationId;
@@ -38,7 +38,7 @@ public interface ParkingSpotReservationEvent extends DomainEvent {
     }
 
     @Value
-    class ParkingSpotReservationCancelled implements ParkingSpotReservationEvent {
+    class ParkingSpotReservationRequestCancelled implements ParkingSpotReservationRequestEvent {
 
         @NonNull ParkingSpotId parkingSpotId;
         @NonNull ReservationId reservationId;
@@ -46,7 +46,7 @@ public interface ParkingSpotReservationEvent extends DomainEvent {
     }
 
     @Value
-    class ParkingSpotReservationCancellationFailed implements ParkingSpotReservationEvent {
+    class ParkingSpotReservationRequestCancellationFailed implements ParkingSpotReservationRequestEvent {
 
         @NonNull ParkingSpotId parkingSpotId;
         @NonNull ReservationId reservationId;

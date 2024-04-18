@@ -4,7 +4,7 @@ import io.vavr.control.Option
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ClientReservationsRepository
 import pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ReservationId
-import pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationEvent
+import pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationRequestEvent
 import spock.lang.Specification
 import spock.lang.Subject
 
@@ -29,7 +29,7 @@ class CancellingReservationRequestAfterFailedReservationTest extends Specificati
     
     when:
       parkingSpotReservationsEventHandler.handle(
-          new ParkingSpotReservationEvent.ParkingSpotReservationFailed(ParkingSpotId.newOne(), reservationId, "any reason"))
+          new ParkingSpotReservationRequestEvent.ParkingSpotReservationRequestFailed(ParkingSpotId.newOne(), reservationId, "any reason"))
     
     then:
       1 * clientReservationsRepository.publish({

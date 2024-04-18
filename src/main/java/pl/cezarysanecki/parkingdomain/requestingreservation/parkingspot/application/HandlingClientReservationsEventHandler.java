@@ -9,8 +9,8 @@ import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleSize;
 import pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ClientReservationsEvent.ReservationForPartOfParkingSpotSubmitted;
 import pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ReservationId;
-import pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationEvent.WholeParkingSpotReserved;
-import pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationsRepository;
+import pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationRequestEvent.WholeRequestParkingSpotReserved;
+import pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationRequestsRepository;
 
 import static io.vavr.API.$;
 import static io.vavr.API.Case;
@@ -18,14 +18,14 @@ import static io.vavr.API.Match;
 import static io.vavr.Patterns.$Left;
 import static io.vavr.Patterns.$Right;
 import static pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ClientReservationsEvent.ReservationForWholeParkingSpotSubmitted;
-import static pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationEvent.ParkingSpotReservationFailed;
-import static pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationEvent.PartOfParkingSpotReserved;
+import static pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationRequestEvent.ParkingSpotReservationRequestFailed;
+import static pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationRequestEvent.PartRequestOfParkingSpotReserved;
 
 @Slf4j
 @RequiredArgsConstructor
 public class HandlingClientReservationsEventHandler {
 
-    private final ParkingSpotReservationsRepository parkingSpotReservationsRepository;
+    private final ParkingSpotReservationRequestsRepository parkingSpotReservationRequestsRepository;
 
     @EventListener
     public void handle(ReservationForPartOfParkingSpotSubmitted reservationSubmitted) {
@@ -33,16 +33,16 @@ public class HandlingClientReservationsEventHandler {
         ReservationId reservationId = reservationSubmitted.getReservationId();
         VehicleSize vehicleSize = reservationSubmitted.getVehicleSize();
 
-        parkingSpotReservationsRepository.findBy(parkingSpotId)
+        parkingSpotReservationRequestsRepository.findBy(parkingSpotId)
                 .map(parkingSpotReservations -> {
-                    Either<ParkingSpotReservationFailed, PartOfParkingSpotReserved> result = parkingSpotReservations.reservePart(reservationId, vehicleSize);
+                    Either<ParkingSpotReservationRequestFailed, PartRequestOfParkingSpotReserved> result = parkingSpotReservations.reservePart(reservationId, vehicleSize);
                     return Match(result).of(
                             Case($Left($()), this::publishEvents),
                             Case($Right($()), this::publishEvents));
                 })
                 .onEmpty(() -> {
                     log.error("cannot find reservations for parking spot");
-                    parkingSpotReservationsRepository.publish(new ParkingSpotReservationFailed(parkingSpotId, reservationId, "cannot find parking spot"));
+                    parkingSpotReservationRequestsRepository.publish(new ParkingSpotReservationRequestFailed(parkingSpotId, reservationId, "cannot find parking spot"));
                 });
     }
 
@@ -51,34 +51,34 @@ public class HandlingClientReservationsEventHandler {
         ParkingSpotId parkingSpotId = reservationSubmitted.getParkingSpotId();
         ReservationId reservationId = reservationSubmitted.getReservationId();
 
-        parkingSpotReservationsRepository.findBy(parkingSpotId)
+        parkingSpotReservationRequestsRepository.findBy(parkingSpotId)
                 .map(parkingSpotReservations -> {
-                    Either<ParkingSpotReservationFailed, WholeParkingSpotReserved> result = parkingSpotReservations.reserveWhole(reservationId);
+                    Either<ParkingSpotReservationRequestFailed, WholeRequestParkingSpotReserved> result = parkingSpotReservations.reserveWhole(reservationId);
                     return Match(result).of(
                             Case($Left($()), this::publishEvents),
                             Case($Right($()), this::publishEvents));
                 })
                 .onEmpty(() -> {
                     log.error("cannot find reservations for parking spot");
-                    parkingSpotReservationsRepository.publish(new ParkingSpotReservationFailed(parkingSpotId, reservationId, "cannot find parking spot"));
+                    parkingSpotReservationRequestsRepository.publish(new ParkingSpotReservationRequestFailed(parkingSpotId, reservationId, "cannot find parking spot"));
                 });
     }
 
-    private Result publishEvents(ParkingSpotReservationFailed parkingSpotReservationFailed) {
+    private Result publishEvents(ParkingSpotReservationRequestFailed parkingSpotReservationFailed) {
         log.debug("failed to reserve parking spot with id {}, reason: {}", parkingSpotReservationFailed.getParkingSpotId(), parkingSpotReservationFailed.getReason());
-        parkingSpotReservationsRepository.publish(parkingSpotReservationFailed);
+        parkingSpotReservationRequestsRepository.publish(parkingSpotReservationFailed);
         return Result.Rejection.with(parkingSpotReservationFailed.getReason());
     }
 
-    private Result publishEvents(PartOfParkingSpotReserved partOfParkingSpotReserved) {
+    private Result publishEvents(PartRequestOfParkingSpotReserved partOfParkingSpotReserved) {
         log.debug("successfully reserved part of parking spot with id {}", partOfParkingSpotReserved.getParkingSpotId());
-        parkingSpotReservationsRepository.publish(partOfParkingSpotReserved);
+        parkingSpotReservationRequestsRepository.publish(partOfParkingSpotReserved);
         return new Result.Success<>(partOfParkingSpotReserved.getParkingSpotId());
     }
 
-    private Result publishEvents(WholeParkingSpotReserved wholeParkingSpotReserved) {
+    private Result publishEvents(WholeRequestParkingSpotReserved wholeParkingSpotReserved) {
         log.debug("successfully reserved whole parking spot with id {}", wholeParkingSpotReserved.getParkingSpotId());
-        parkingSpotReservationsRepository.publish(wholeParkingSpotReserved);
+        parkingSpotReservationRequestsRepository.publish(wholeParkingSpotReserved);
         return new Result.Success<>(wholeParkingSpotReserved.getParkingSpotId());
     }
 
