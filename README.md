@@ -251,9 +251,3 @@ in the current project during the MVP phase. Certainly, I will create an anemic 
 
 - [DevMentors YouTube video](https://www.youtube.com/@DevMentorsPL/videos)
 - [Library by example](https://github.com/ddd-by-examples/library)
-
-<style>
-    h1, h2 {
-        text-align:center;
-    }
-</style>
