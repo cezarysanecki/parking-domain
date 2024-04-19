@@ -8,11 +8,11 @@ import java.util.Set;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ClientReservationsFixture {
 
-    public static ClientReservationRequests noClientReservations() {
+    public static ClientReservationRequests clientWithNoReservationRequests() {
         return new ClientReservationRequests(ClientId.newOne(), Set.of());
     }
 
-    public static ClientReservationRequests clientReservationsWithReservation(ReservationId reservationId) {
+    public static ClientReservationRequests clientWithReservationRequest(ReservationId reservationId) {
         return new ClientReservationRequests(ClientId.newOne(), Set.of(reservationId));
     }
 

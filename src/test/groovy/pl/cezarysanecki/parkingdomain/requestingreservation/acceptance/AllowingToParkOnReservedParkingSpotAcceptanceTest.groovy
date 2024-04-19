@@ -1,16 +1,11 @@
 package pl.cezarysanecki.parkingdomain.requestingreservation.acceptance
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.ActiveProfiles
 import pl.cezarysanecki.parkingdomain.commons.commands.Result
-import pl.cezarysanecki.parkingdomain.commons.events.EventPublisherTestConfig
-import pl.cezarysanecki.parkingdomain.parking.ParkingConfig
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.parking.vehicle.application.ParkingVehicle
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleId
 import pl.cezarysanecki.parkingdomain.parking.view.vehicle.model.VehicleViews
-import pl.cezarysanecki.parkingdomain.requestingreservation.RequestingReservationConfig
 import pl.cezarysanecki.parkingdomain.requestingreservation.client.application.RequestingReservationForWholeParkingSpot
 import pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ClientId
 import pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ReservationId
@@ -18,21 +13,17 @@ import pl.cezarysanecki.parkingdomain.requestingreservation.view.parkingspot.mod
 
 import static pl.cezarysanecki.parkingdomain.parking.vehicle.application.ParkingVehicle.ParkOnReservedCommand
 
-@ActiveProfiles("local")
-@SpringBootTest(classes = [
-    RequestingReservationConfig.class, ParkingConfig.class,
-    EventPublisherTestConfig.class])
-class AllowingToParkOnReservedParkingSpotAcceptanceTest extends AbstractReservingAcceptanceTest {
+class AllowingToParkOnReservedParkingSpotAcceptanceTest extends AbstractRequestingReservationsAcceptanceTest {
   
   @Autowired
-  RequestingReservationForWholeParkingSpot reservingWholeParkingSpot
+  RequestingReservationForWholeParkingSpot requestingReservationForWholeParkingSpot
   @Autowired
   ParkingVehicle parkingVehicle
   
   @Autowired
   VehicleViews vehicleViews
   @Autowired
-  ParkingSpotReservationRequestsViews parkingSpotReservationsViews
+  ParkingSpotReservationRequestsViews parkingSpotReservationRequestsViews
   
   def "allow to park on reserved parking spot"() {
     given:
@@ -71,13 +62,13 @@ class AllowingToParkOnReservedParkingSpotAcceptanceTest extends AbstractReservin
   }
   
   private ReservationId reserveWholeParkingSpotFor(ClientId clientId, ParkingSpotId parkingSpotId) {
-    def result = reservingWholeParkingSpot.requestReservation(new RequestingReservationForWholeParkingSpot.Command(
+    def result = requestingReservationForWholeParkingSpot.requestReservation(new RequestingReservationForWholeParkingSpot.Command(
         clientId, parkingSpotId))
     return (result.get() as Result.Success<ReservationId>).getResult()
   }
   
   private void thereIsReservation(ParkingSpotId parkingSpotId, ReservationId reservationId) {
-    assert parkingSpotReservationsViews.getAllParkingSpots()
+    assert parkingSpotReservationRequestsViews.getAllParkingSpots()
         .any {
           it.parkingSpotId == parkingSpotId.value
               && it.currentReservationRequests.contains(reservationId.value)

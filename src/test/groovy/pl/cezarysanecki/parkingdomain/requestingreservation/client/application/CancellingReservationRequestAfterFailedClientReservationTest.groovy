@@ -4,36 +4,36 @@ import io.vavr.control.Option
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ClientReservationRequestsRepository
 import pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ReservationId
-import pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationRequestEvent
 import spock.lang.Specification
 import spock.lang.Subject
 
 import static pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ClientReservationRequestsEvent.ReservationRequestCancelled
-import static pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ClientReservationsFixture.clientReservationsWithReservation
+import static pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ClientReservationsFixture.clientWithReservationRequest
+import static pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationRequestEvent.StoringParkingSpotReservationRequestFailed
 
 class CancellingReservationRequestAfterFailedClientReservationTest extends Specification {
   
-  ClientReservationRequestsRepository clientReservationsRepository = Mock()
+  ClientReservationRequestsRepository clientReservationRequestsRepository = Mock()
   
   @Subject
-  CancellingReservationRequestEventHandler parkingSpotReservationsEventHandler = new CancellingReservationRequestEventHandler(
-      new CancellingReservationRequest(clientReservationsRepository))
+  CancellingReservationRequestEventHandler cancellingReservationRequestEventHandler = new CancellingReservationRequestEventHandler(
+      new CancellingReservationRequest(clientReservationRequestsRepository))
   
-  def "cancel client reservation request when reserving parking spot fails"() {
+  def "cancel client reservation request when requesting reservation on parking spot fails"() {
     given:
       def reservationId = ReservationId.newOne()
     and:
-      def clientReservations = clientReservationsWithReservation(reservationId)
+      def clientReservationRequests = clientWithReservationRequest(reservationId)
     and:
-      clientReservationsRepository.findBy(reservationId) >> Option.of(clientReservations)
+      clientReservationRequestsRepository.findBy(reservationId) >> Option.of(clientReservationRequests)
     
     when:
-      parkingSpotReservationsEventHandler.handle(
-          new ParkingSpotReservationRequestEvent.StoringParkingSpotReservationRequestFailed(ParkingSpotId.newOne(), reservationId, "any reason"))
+      cancellingReservationRequestEventHandler.handle(new StoringParkingSpotReservationRequestFailed(
+          ParkingSpotId.newOne(), reservationId, "any reason"))
     
     then:
-      1 * clientReservationsRepository.publish({
-        it.clientId == clientReservations.clientId
+      1 * clientReservationRequestsRepository.publish({
+        it.clientId == clientReservationRequests.clientId
             && it.reservationId == reservationId
       } as ReservationRequestCancelled)
   }

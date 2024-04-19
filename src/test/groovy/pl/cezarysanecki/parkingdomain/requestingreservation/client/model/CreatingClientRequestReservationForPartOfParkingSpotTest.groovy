@@ -4,8 +4,8 @@ import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleSize
 import spock.lang.Specification
 
-import static pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ClientReservationsFixture.clientReservationsWithReservation
-import static pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ClientReservationsFixture.noClientReservations
+import static pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ClientReservationsFixture.clientWithReservationRequest
+import static pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ClientReservationsFixture.clientWithNoReservationRequests
 
 class CreatingClientRequestReservationForPartOfParkingSpotTest extends Specification {
   
@@ -14,15 +14,15 @@ class CreatingClientRequestReservationForPartOfParkingSpotTest extends Specifica
       def parkingSpotId = ParkingSpotId.newOne()
       def vehicleSize = VehicleSize.of(2)
     and:
-      def clientReservations = noClientReservations()
+      def clientReservationRequests = clientWithNoReservationRequests()
       
     when:
-      def result = clientReservations.createRequest(parkingSpotId, vehicleSize)
+      def result = clientReservationRequests.createRequest(parkingSpotId, vehicleSize)
     
     then:
       result.isRight()
       result.get().with {
-        assert it.clientId == clientReservations.clientId
+        assert it.clientId == clientReservationRequests.clientId
         assert it.parkingSpotId == parkingSpotId
         assert it.vehicleSize == vehicleSize
       }
@@ -33,15 +33,15 @@ class CreatingClientRequestReservationForPartOfParkingSpotTest extends Specifica
       def parkingSpotId = ParkingSpotId.newOne()
       def vehicleSize = VehicleSize.of(2)
     and:
-      def clientReservations = clientReservationsWithReservation(ReservationId.newOne())
+      def clientReservationRequests = clientWithReservationRequest(ReservationId.newOne())
       
     when:
-      def result = clientReservations.createRequest(parkingSpotId, vehicleSize)
+      def result = clientReservationRequests.createRequest(parkingSpotId, vehicleSize)
     
     then:
       result.isLeft()
       result.getLeft().with {
-        assert it.clientId == clientReservations.clientId
+        assert it.clientId == clientReservationRequests.clientId
         assert it.reason == "client has too many requests"
       }
   }

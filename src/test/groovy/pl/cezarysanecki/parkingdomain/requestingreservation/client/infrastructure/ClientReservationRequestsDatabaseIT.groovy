@@ -28,18 +28,18 @@ class ClientReservationRequestsDatabaseIT extends Specification {
   EventPublisher eventPublisher
   
   @Autowired
-  ClientReservationRequestsRepository clientReservationsRepository
+  ClientReservationRequestsRepository clientReservationRequestsRepository
   
-  def "persistence of client reservations in real database should work"() {
+  def "persistence of client reservation requests in real database should work"() {
     when:
-      clientReservationsRepository.publish(createClientReservationRequest(clientId, reservationId))
+      clientReservationRequestsRepository.publish(createClientReservationRequest(clientId, reservationId))
     then:
-      clientReservationsShouldBeFoundInDatabaseWithReservation(clientId, reservationId)
+      clientReservationRequestsShouldBeFoundInDatabaseWithReservationRequest(clientId, reservationId)
     
     when:
-      clientReservationsRepository.publish(cancelClientReservationRequest(clientId, reservationId))
+      clientReservationRequestsRepository.publish(cancelClientReservationRequest(clientId, reservationId))
     then:
-      clientReservationsShouldBeFoundInDatabaseBeingEmpty(clientId)
+      clientReservationRequestsShouldBeFoundInDatabaseBeingEmpty(clientId)
   }
   
   private ReservationForWholeParkingSpotRequested createClientReservationRequest(ClientId clientId, ReservationId reservationId) {
@@ -50,22 +50,22 @@ class ClientReservationRequestsDatabaseIT extends Specification {
     return new ReservationRequestCancelled(clientId, reservationId)
   }
   
-  private void clientReservationsShouldBeFoundInDatabaseWithReservation(ClientId clientId, ReservationId reservationId) {
-    def clientReservations = loadPersistedClientReservations(clientId)
+  private void clientReservationRequestsShouldBeFoundInDatabaseWithReservationRequest(ClientId clientId, ReservationId reservationId) {
+    def clientReservations = loadPersistedClientReservationRequests(clientId)
     assert clientReservations.contains(reservationId)
   }
   
-  private void clientReservationsShouldBeFoundInDatabaseBeingEmpty(ClientId clientId) {
-    def clientReservations = loadPersistedClientReservations(clientId)
+  private void clientReservationRequestsShouldBeFoundInDatabaseBeingEmpty(ClientId clientId) {
+    def clientReservations = loadPersistedClientReservationRequests(clientId)
     assert clientReservations.isEmpty()
   }
   
-  ClientReservationRequests loadPersistedClientReservations(ClientId clientId) {
-    Option<ClientReservationRequests> loaded = clientReservationsRepository.findBy(clientId)
-    ClientReservationRequests clientReservations = loaded.getOrElseThrow({
+  ClientReservationRequests loadPersistedClientReservationRequests(ClientId clientId) {
+    Option<ClientReservationRequests> loaded = clientReservationRequestsRepository.findBy(clientId)
+    ClientReservationRequests clientReservationRequests = loaded.getOrElseThrow({
       new IllegalStateException("should have been persisted")
     })
-    return clientReservations
+    return clientReservationRequests
   }
   
 }

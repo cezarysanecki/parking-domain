@@ -10,7 +10,7 @@ import pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ClientI
 import pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ReservationId
 import pl.cezarysanecki.parkingdomain.requestingreservation.view.parkingspot.model.ParkingSpotReservationRequestsViews
 
-class CancellingReservationOnParkingSpotAcceptanceTest extends AbstractReservingAcceptanceTest {
+class CancellingReservationRequestForParkingSpotAcceptanceTest extends AbstractRequestingReservationsAcceptanceTest {
   
   @Autowired
   RequestingReservationForWholeParkingSpot reservingWholeParkingSpot

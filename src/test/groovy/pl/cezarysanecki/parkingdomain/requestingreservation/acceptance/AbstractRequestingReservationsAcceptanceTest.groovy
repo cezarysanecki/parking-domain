@@ -20,7 +20,7 @@ import spock.lang.Specification
 @SpringBootTest(classes = [
     RequestingReservationConfig.class, ParkingConfig.class,
     EventPublisherTestConfig.class])
-abstract class AbstractReservingAcceptanceTest extends Specification {
+abstract class AbstractRequestingReservationsAcceptanceTest extends Specification {
   
   @Autowired
   RegisteringVehicle registeringVehicle

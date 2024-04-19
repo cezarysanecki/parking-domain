@@ -10,8 +10,8 @@ import spock.lang.Specification
 import spock.lang.Subject
 
 import static RequestingReservationForWholeParkingSpot.Command
-import static pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ClientReservationsFixture.clientReservationsWithReservation
-import static pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ClientReservationsFixture.noClientReservations
+import static pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ClientReservationsFixture.clientWithReservationRequest
+import static pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ClientReservationsFixture.clientWithNoReservationRequests
 
 class RequestingReservationForPartOfParkingSpotTest extends Specification {
   
@@ -22,13 +22,13 @@ class RequestingReservationForPartOfParkingSpotTest extends Specification {
   
   def "allow to request client reservation for part of parking spot"() {
     given:
-      def clientReservations = noClientReservations()
+      def clientReservationRequests = clientWithNoReservationRequests()
     and:
-      clientReservationsRepository.findBy(clientReservations.clientId) >> Option.of(clientReservations)
+      clientReservationsRepository.findBy(clientReservationRequests.clientId) >> Option.of(clientReservationRequests)
     
     when:
       def result = reservingWholeParkingSpot.requestReservation(
-          new Command(clientReservations.clientId, ParkingSpotId.newOne()))
+          new Command(clientReservationRequests.clientId, ParkingSpotId.newOne()))
     
     then:
       result.isSuccess()
@@ -52,13 +52,13 @@ class RequestingReservationForPartOfParkingSpotTest extends Specification {
   
   def "reject requesting client reservation for part of parking spot when client has reached limit"() {
     given:
-      def clientReservations = clientReservationsWithReservation(ReservationId.newOne())
+      def clientReservationRequests = clientWithReservationRequest(ReservationId.newOne())
     and:
-      clientReservationsRepository.findBy(clientReservations.clientId) >> Option.of(clientReservations)
+      clientReservationsRepository.findBy(clientReservationRequests.clientId) >> Option.of(clientReservationRequests)
     
     when:
       def result = reservingWholeParkingSpot.requestReservation(
-          new Command(clientReservations.clientId, ParkingSpotId.newOne()))
+          new Command(clientReservationRequests.clientId, ParkingSpotId.newOne()))
     
     then:
       result.isSuccess()

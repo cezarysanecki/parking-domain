@@ -11,25 +11,25 @@ import spock.lang.Specification
 import spock.lang.Subject
 
 import static RequestingReservationForPartOfParkingSpot.Command
-import static pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ClientReservationsFixture.clientReservationsWithReservation
-import static pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ClientReservationsFixture.noClientReservations
+import static pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ClientReservationsFixture.clientWithNoReservationRequests
+import static pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ClientReservationsFixture.clientWithReservationRequest
 
 class RequestingReservationForWholeParkingSpotTest extends Specification {
   
-  ClientReservationRequestsRepository clientReservationsRepository = Mock()
+  ClientReservationRequestsRepository clientReservationRequestsRepository = Mock()
   
   @Subject
-  RequestingReservationForPartOfParkingSpot reservingPartOfParkingSpot = new RequestingReservationForPartOfParkingSpot(clientReservationsRepository)
+  RequestingReservationForPartOfParkingSpot requestingReservationForPartOfParkingSpot = new RequestingReservationForPartOfParkingSpot(clientReservationRequestsRepository)
   
   def "allow to request client reservation for whole parking spot"() {
     given:
-      def clientReservations = noClientReservations()
+      def clientReservationRequests = clientWithNoReservationRequests()
     and:
-      clientReservationsRepository.findBy(clientReservations.clientId) >> Option.of(clientReservations)
+      clientReservationRequestsRepository.findBy(clientReservationRequests.clientId) >> Option.of(clientReservationRequests)
     
     when:
-      def result = reservingPartOfParkingSpot.requestReservation(
-          new Command(clientReservations.clientId, ParkingSpotId.newOne(), VehicleSize.of(2)))
+      def result = requestingReservationForPartOfParkingSpot.requestReservation(
+          new Command(clientReservationRequests.clientId, ParkingSpotId.newOne(), VehicleSize.of(2)))
     
     then:
       result.isSuccess()
@@ -40,10 +40,10 @@ class RequestingReservationForWholeParkingSpotTest extends Specification {
     given:
       def clientId = ClientId.newOne()
     and:
-      clientReservationsRepository.findBy(clientId) >> Option.none()
+      clientReservationRequestsRepository.findBy(clientId) >> Option.none()
     
     when:
-      def result = reservingPartOfParkingSpot.requestReservation(
+      def result = requestingReservationForPartOfParkingSpot.requestReservation(
           new Command(clientId, ParkingSpotId.newOne(), VehicleSize.of(2)))
     
     then:
@@ -53,12 +53,12 @@ class RequestingReservationForWholeParkingSpotTest extends Specification {
   
   def "reject requesting client reservation for whole parking spot when client has reached limit"() {
     given:
-      def clientReservations = clientReservationsWithReservation(ReservationId.newOne())
+      def clientReservations = clientWithReservationRequest(ReservationId.newOne())
     and:
-      clientReservationsRepository.findBy(clientReservations.clientId) >> Option.of(clientReservations)
+      clientReservationRequestsRepository.findBy(clientReservations.clientId) >> Option.of(clientReservations)
     
     when:
-      def result = reservingPartOfParkingSpot.requestReservation(
+      def result = requestingReservationForPartOfParkingSpot.requestReservation(
           new Command(clientReservations.clientId, ParkingSpotId.newOne(), VehicleSize.of(2)))
     
     then:

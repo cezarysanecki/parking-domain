@@ -8,21 +8,21 @@ import spock.lang.Specification
 import spock.lang.Subject
 
 import static CancellingReservationRequest.Command
-import static pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ClientReservationsFixture.clientReservationsWithReservation
-import static pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ClientReservationsFixture.noClientReservations
+import static pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ClientReservationsFixture.clientWithReservationRequest
+import static pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ClientReservationsFixture.clientWithNoReservationRequests
 
 class CancellingReservationRequestTest extends Specification {
   
-  ClientReservationRequestsRepository clientReservationsRepository = Mock()
+  ClientReservationRequestsRepository clientReservationRequestsRepository = Mock()
   
   @Subject
-  CancellingReservationRequest cancellingReservationRequest = new CancellingReservationRequest(clientReservationsRepository)
+  CancellingReservationRequest cancellingReservationRequest = new CancellingReservationRequest(clientReservationRequestsRepository)
   
   def "allow to cancel client reservation request"() {
     given:
       def reservationId = ReservationId.newOne()
     and:
-      clientReservationsRepository.findBy(reservationId) >> Option.of(clientReservationsWithReservation(reservationId))
+      clientReservationRequestsRepository.findBy(reservationId) >> Option.of(clientWithReservationRequest(reservationId))
     
     when:
       def result = cancellingReservationRequest.cancelReservationRequest(new Command(reservationId))
@@ -36,7 +36,7 @@ class CancellingReservationRequestTest extends Specification {
     given:
       def reservationId = ReservationId.newOne()
     and:
-      clientReservationsRepository.findBy(reservationId) >> Option.of(noClientReservations())
+      clientReservationRequestsRepository.findBy(reservationId) >> Option.of(clientWithNoReservationRequests())
     
     when:
       def result = cancellingReservationRequest.cancelReservationRequest(new Command(reservationId))
@@ -46,11 +46,11 @@ class CancellingReservationRequestTest extends Specification {
       result.get() in Result.Rejection
   }
   
-  def "fail to cancel client reservation request when cannot find client reservations for such reservation"() {
+  def "fail to cancel client reservation request when cannot find client reservations for such reservation request"() {
     given:
       def reservationId = ReservationId.newOne()
     and:
-      clientReservationsRepository.findBy(reservationId) >> Option.none()
+      clientReservationRequestsRepository.findBy(reservationId) >> Option.none()
     
     when:
       def result = cancellingReservationRequest.cancelReservationRequest(new Command(reservationId))
