@@ -6,10 +6,10 @@ import java.util.Set;
 import java.util.UUID;
 
 @Value
-public class ParkingSpotReservationsView {
+public class ParkingSpotReservationRequestsView {
 
     UUID parkingSpotId;
     int spaceLeft;
-    Set<UUID> currentReservations;
+    Set<UUID> currentReservationRequests;
 
 }

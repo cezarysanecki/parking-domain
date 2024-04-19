@@ -13,12 +13,12 @@ import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.parking.vehicle.application.RegisteringVehicle
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleId
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleSize
-import pl.cezarysanecki.parkingdomain.requestingreservation.RequestingReservation
+import pl.cezarysanecki.parkingdomain.requestingreservation.RequestingReservationConfig
 import spock.lang.Specification
 
 @ActiveProfiles("local")
 @SpringBootTest(classes = [
-    RequestingReservation.class, ParkingConfig.class,
+    RequestingReservationConfig.class, ParkingConfig.class,
     EventPublisherTestConfig.class])
 abstract class AbstractReservingAcceptanceTest extends Specification {
   

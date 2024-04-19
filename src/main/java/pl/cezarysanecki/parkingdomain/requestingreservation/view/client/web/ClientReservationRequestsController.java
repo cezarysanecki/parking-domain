@@ -18,8 +18,8 @@ import pl.cezarysanecki.parkingdomain.requestingreservation.client.application.R
 import pl.cezarysanecki.parkingdomain.requestingreservation.client.application.RequestingReservationForWholeParkingSpot;
 import pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ClientId;
 import pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ReservationId;
-import pl.cezarysanecki.parkingdomain.requestingreservation.view.client.model.ClientReservationsView;
-import pl.cezarysanecki.parkingdomain.requestingreservation.view.client.model.ClientReservationsViews;
+import pl.cezarysanecki.parkingdomain.requestingreservation.view.client.model.ClientReservationRequestsView;
+import pl.cezarysanecki.parkingdomain.requestingreservation.view.client.model.ClientReservationRequestsViews;
 
 import java.util.UUID;
 
@@ -27,21 +27,21 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @RestController
 @RequiredArgsConstructor
-class ClientReservationsController {
+class ClientReservationRequestsController {
 
-    private final ClientReservationsViews clientReservationsViews;
+    private final ClientReservationRequestsViews clientReservationRequestsViews;
     private final RequestingReservationForPartOfParkingSpot requestingReservationForPartOfParkingSpot;
     private final RequestingReservationForWholeParkingSpot requestingReservationForWholeParkingSpot;
     private final CancellingReservationRequest cancellingReservationRequest;
 
-    @GetMapping("/client-reservations/{clientId}")
-    ResponseEntity<ClientReservationsView> getClientReservations(@PathVariable UUID clientId) {
-        ClientReservationsView clientReservationsView = clientReservationsViews.getClientReservationsViewFor(ClientId.of(clientId));
-        return ResponseEntity.ok(clientReservationsView);
+    @GetMapping("/client-reservation-requests/{clientId}")
+    ResponseEntity<ClientReservationRequestsView> getClientReservations(@PathVariable UUID clientId) {
+        ClientReservationRequestsView clientReservationRequestsView = clientReservationRequestsViews.getClientReservationRequestsViewFor(ClientId.of(clientId));
+        return ResponseEntity.ok(clientReservationRequestsView);
     }
 
-    @PostMapping("/client-reservations/{clientId}/part-parking-spot")
-    ResponseEntity reservePartOfParkingSpot(@PathVariable UUID clientId, @RequestBody ReservePartOfParkingSpotRequest request) {
+    @PostMapping("/client-reservation-requests/{clientId}/part-of-parking-spot")
+    ResponseEntity requestsReservationForPartOfParkingSpot(@PathVariable UUID clientId, @RequestBody RequestReservationForPartOfParkingSpotRequest request) {
         Try<Result> result = requestingReservationForPartOfParkingSpot.requestReservation(
                 new RequestingReservationForPartOfParkingSpot.Command(
                         ClientId.of(clientId),
@@ -52,8 +52,8 @@ class ClientReservationsController {
                 .getOrElse(ResponseEntity.status(INTERNAL_SERVER_ERROR).build());
     }
 
-    @PostMapping("/client-reservations/{clientId}/whole-parking-spot")
-    ResponseEntity reserveWholeParkingSpot(@PathVariable UUID clientId, @RequestBody ReserveWholeParkingSpotRequest request) {
+    @PostMapping("/client-reservation-requests/{clientId}/whole-parking-spot")
+    ResponseEntity requestsReservationForWholeParkingSpot(@PathVariable UUID clientId, @RequestBody RequestReservationForWholeParkingSpotRequest request) {
         Try<Result> result = requestingReservationForWholeParkingSpot.requestReservation(
                 new RequestingReservationForWholeParkingSpot.Command(
                         ClientId.of(clientId),
@@ -63,7 +63,7 @@ class ClientReservationsController {
                 .getOrElse(ResponseEntity.status(INTERNAL_SERVER_ERROR).build());
     }
 
-    @DeleteMapping("/client-reservations/reservation/{reservationId}")
+    @DeleteMapping("/client-reservation-requests/{reservationId}")
     ResponseEntity cancel(@PathVariable UUID reservationId) {
         Try<Result> result = cancellingReservationRequest.cancelReservationRequest(
                 new CancellingReservationRequest.Command(ReservationId.of(reservationId)));
@@ -75,12 +75,12 @@ class ClientReservationsController {
 }
 
 @Data
-class ReservePartOfParkingSpotRequest {
+class RequestReservationForPartOfParkingSpotRequest {
     UUID parkingSpotId;
     Integer vehicleSize;
 }
 
 @Data
-class ReserveWholeParkingSpotRequest {
+class RequestReservationForWholeParkingSpotRequest {
     UUID parkingSpotId;
 }

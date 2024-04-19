@@ -8,7 +8,7 @@ import pl.cezarysanecki.parkingdomain.requestingreservation.client.application.R
 import pl.cezarysanecki.parkingdomain.requestingreservation.client.application.RequestingReservationForWholeParkingSpot
 import pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ClientId
 import pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ReservationId
-import pl.cezarysanecki.parkingdomain.requestingreservation.view.parkingspot.model.ParkingSpotReservationsViews
+import pl.cezarysanecki.parkingdomain.requestingreservation.view.parkingspot.model.ParkingSpotReservationRequestsViews
 
 class AllowingToReserveParkingSpotAcceptanceTest extends AbstractReservingAcceptanceTest {
   
@@ -18,7 +18,7 @@ class AllowingToReserveParkingSpotAcceptanceTest extends AbstractReservingAccept
   RequestingReservationForPartOfParkingSpot reservingPartOfParkingSpot
   
   @Autowired
-  ParkingSpotReservationsViews parkingSpotReservationsViews
+  ParkingSpotReservationRequestsViews parkingSpotReservationsViews
   
   def "reserve whole parking spot"() {
     given:
@@ -62,7 +62,7 @@ class AllowingToReserveParkingSpotAcceptanceTest extends AbstractReservingAccept
     assert parkingSpotReservationsViews.getAllParkingSpots()
         .any {
           it.parkingSpotId == parkingSpotId.value
-              && it.currentReservations.contains(reservationId.value)
+              && it.currentReservationRequests.contains(reservationId.value)
         }
   }
   

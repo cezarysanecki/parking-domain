@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pl.cezarysanecki.parkingdomain.requestingreservation.view.parkingspot.model.ParkingSpotReservationsView;
-import pl.cezarysanecki.parkingdomain.requestingreservation.view.parkingspot.model.ParkingSpotReservationsViews;
+import pl.cezarysanecki.parkingdomain.requestingreservation.view.parkingspot.model.ParkingSpotReservationRequestsView;
+import pl.cezarysanecki.parkingdomain.requestingreservation.view.parkingspot.model.ParkingSpotReservationRequestsViews;
 
 import java.util.Set;
 
@@ -13,17 +13,17 @@ import java.util.Set;
 @RequiredArgsConstructor
 class ParkingSpotReservationsController {
 
-    private final ParkingSpotReservationsViews parkingSpotReservationsViews;
+    private final ParkingSpotReservationRequestsViews parkingSpotReservationRequestsViews;
 
-    @GetMapping("/parking-spot-reservations")
-    ResponseEntity<Set<ParkingSpotReservationsView>> getAll() {
-        Set<ParkingSpotReservationsView> allParkingSpotReservations = parkingSpotReservationsViews.getAllParkingSpots();
+    @GetMapping("/parking-spot-reservation-requests")
+    ResponseEntity<Set<ParkingSpotReservationRequestsView>> getAll() {
+        Set<ParkingSpotReservationRequestsView> allParkingSpotReservations = parkingSpotReservationRequestsViews.getAllParkingSpots();
         return ResponseEntity.ok(allParkingSpotReservations);
     }
 
-    @GetMapping("/parking-spot-reservations/available")
-    ResponseEntity<Set<ParkingSpotReservationsView>> getAllAvailable() {
-        Set<ParkingSpotReservationsView> allParkingSpotReservations = parkingSpotReservationsViews.getAvailableParkingSpots();
+    @GetMapping("/parking-spot-reservation-requests/available")
+    ResponseEntity<Set<ParkingSpotReservationRequestsView>> getAllAvailable() {
+        Set<ParkingSpotReservationRequestsView> allParkingSpotReservations = parkingSpotReservationRequestsViews.getAvailableParkingSpots();
         return ResponseEntity.ok(allParkingSpotReservations);
     }
 

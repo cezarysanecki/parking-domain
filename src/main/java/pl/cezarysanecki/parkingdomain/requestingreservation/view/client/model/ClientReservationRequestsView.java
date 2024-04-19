@@ -6,9 +6,9 @@ import java.util.Set;
 import java.util.UUID;
 
 @Value
-public class ClientReservationsView {
+public class ClientReservationRequestsView {
 
     UUID clientId;
-    Set<UUID> currentReservations;
+    Set<UUID> currentReservationRequests;
 
 }

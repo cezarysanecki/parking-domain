@@ -5,9 +5,9 @@ import pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ClientI
 import static pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ClientReservationRequestsEvent.ReservationRequestCancelled;
 import static pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ClientReservationRequestsEvent.ReservationForPartOfParkingSpotRequested;
 
-public interface ClientReservationsViews {
+public interface ClientReservationRequestsViews {
 
-    ClientReservationsView getClientReservationsViewFor(ClientId clientId);
+    ClientReservationRequestsView getClientReservationRequestsViewFor(ClientId clientId);
 
     void handle(ReservationForPartOfParkingSpotRequested event);
 
