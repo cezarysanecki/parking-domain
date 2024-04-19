@@ -11,7 +11,7 @@ import static pl.cezarysanecki.parkingdomain.parking.parkingspot.application.Cre
 
 @Slf4j
 @RequiredArgsConstructor
-public class ParkingSpotEventsHandler {
+public class CreatingParkingSpotReservationRequestsEventsHandler {
 
     private final ParkingSpotReservationRequestsRepository parkingSpotReservationRequestsRepository;
 

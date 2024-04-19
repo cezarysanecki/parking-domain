@@ -19,7 +19,7 @@ import static pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.m
 
 @Slf4j
 @RequiredArgsConstructor
-public class HandlingClientCancelledReservationEventHandler {
+public class CancellingParkingSpotRequestReservationEventHandler {
 
     private final ParkingSpotReservationRequestsRepository parkingSpotReservationRequestsRepository;
 

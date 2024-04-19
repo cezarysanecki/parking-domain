@@ -16,7 +16,7 @@ class RequestingReservationForWholeParkingSpotTest extends Specification {
       def reservationId = ReservationId.newOne()
     
     when:
-      def result = parkingSpotReservations.reserveWhole(reservationId)
+      def result = parkingSpotReservations.storeForWhole(reservationId)
     
     then:
       result.isRight()
@@ -33,7 +33,7 @@ class RequestingReservationForWholeParkingSpotTest extends Specification {
       def reservationId = ReservationId.newOne()
     
     when:
-      def result = parkingSpotReservations.reserveWhole(reservationId)
+      def result = parkingSpotReservations.storeForWhole(reservationId)
     
     then:
       result.isLeft()

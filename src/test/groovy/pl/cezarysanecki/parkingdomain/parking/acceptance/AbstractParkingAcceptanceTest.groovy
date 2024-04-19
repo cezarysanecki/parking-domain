@@ -14,7 +14,7 @@ import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.parking.vehicle.application.RegisteringVehicle
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleId
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleSize
-import pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.application.ParkingSpotReservationsFinder
+import pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.application.FindingParkingSpotReservationRequests
 import spock.lang.Specification
 
 @ActiveProfiles("local")
@@ -24,7 +24,7 @@ import spock.lang.Specification
 abstract class AbstractParkingAcceptanceTest extends Specification {
   
   @MockBean
-  ParkingSpotReservationsFinder parkingSpotReservationsFinder
+  FindingParkingSpotReservationRequests parkingSpotReservationsFinder
   
   @Autowired
   RegisteringVehicle registeringVehicle

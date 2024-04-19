@@ -41,7 +41,7 @@ public class ClientReservationRequests {
 
     public Either<ReservationRequestCancellationFailed, ReservationRequestCancelled> cancel(ReservationId reservationId) {
         if (!reservations.contains(reservationId)) {
-            return announceFailure(new ReservationRequestCancellationFailed(clientId, reservationId, "there is no such reservation"));
+            return announceFailure(new ReservationRequestCancellationFailed(clientId, reservationId, "there is no such reservation request"));
         }
         return announceSuccess(new ReservationRequestCancelled(clientId, reservationId));
     }

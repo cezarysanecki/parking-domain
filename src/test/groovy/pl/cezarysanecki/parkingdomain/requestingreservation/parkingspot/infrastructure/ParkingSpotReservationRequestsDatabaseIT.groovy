@@ -16,7 +16,7 @@ import pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.Pa
 import spock.lang.Specification
 
 import static pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationRequestEvent.ParkingSpotReservationRequestCancelled
-import static pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationRequestEvent.PartRequestOfParkingSpotReserved
+import static pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationRequestEvent.ReservationRequestForPartOfParkingSpotStored
 
 @ActiveProfiles("local")
 @SpringBootTest(classes = [ParkingSpotReservationRequestsConfig.class])
@@ -54,9 +54,9 @@ class ParkingSpotReservationRequestsDatabaseIT extends Specification {
       parkingSpotReservationsShouldBeFoundInDatabaseBeingFree(parkingSpotId)
   }
   
-  private PartRequestOfParkingSpotReserved createReservationForPartOfParkingSpot(
+  private ReservationRequestForPartOfParkingSpotStored createReservationForPartOfParkingSpot(
       ParkingSpotId parkingSpotId, ReservationId reservationId, VehicleSize vehicleSize) {
-    return new PartRequestOfParkingSpotReserved(parkingSpotId, reservationId, vehicleSize)
+    return new ReservationRequestForPartOfParkingSpotStored(parkingSpotId, reservationId, vehicleSize)
   }
   
   private ParkingSpotReservationRequestCancelled cancelParkingSpotReservation(ParkingSpotId parkingSpotId, ReservationId reservationId) {

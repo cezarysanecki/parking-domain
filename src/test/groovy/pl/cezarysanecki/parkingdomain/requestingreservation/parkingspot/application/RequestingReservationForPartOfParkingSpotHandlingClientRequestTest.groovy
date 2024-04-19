@@ -10,8 +10,8 @@ import spock.lang.Specification
 import spock.lang.Subject
 
 import static pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ClientReservationRequestsEvent.ReservationForPartOfParkingSpotRequested
-import static pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationRequestEvent.RequestingParkingSpotReservationFailed
-import static pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationRequestEvent.PartRequestOfParkingSpotReserved
+import static pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationRequestEvent.StoringParkingSpotReservationRequestFailed
+import static pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationRequestEvent.ReservationRequestForPartOfParkingSpotStored
 import static pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationsFixture.fullyReservedParkingSpotBy
 import static pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationsFixture.noParkingSpotReservations
 
@@ -23,7 +23,7 @@ class RequestingReservationForPartOfParkingSpotHandlingClientRequestTest extends
   ParkingSpotReservationRequestsRepository parkingSpotReservationsRepository = Mock()
   
   @Subject
-  HandlingClientReservationsEventHandler clientReservationsEventHandler = new HandlingClientReservationsEventHandler(parkingSpotReservationsRepository)
+  StoringParkingSpotReservationRequestEventHandler clientReservationsEventHandler = new StoringParkingSpotReservationRequestEventHandler(parkingSpotReservationsRepository)
   
   def "reserve part of parking spot when client made a request for it"() {
     given:
@@ -42,7 +42,7 @@ class RequestingReservationForPartOfParkingSpotHandlingClientRequestTest extends
         it.parkingSpotId == parkingSpotReservations.parkingSpotId
             && it.reservationId == reservationId
             && it.vehicleSize == vehicleSize
-      } as PartRequestOfParkingSpotReserved)
+      } as ReservationRequestForPartOfParkingSpotStored)
   }
   
   def "reject reserving part of parking spot when client made a request for it when there is not enough place"() {
@@ -59,7 +59,7 @@ class RequestingReservationForPartOfParkingSpotHandlingClientRequestTest extends
       1 * parkingSpotReservationsRepository.publish({
         it.parkingSpotId == parkingSpotReservations.parkingSpotId
             && it.reservationId == reservationId
-      } as RequestingParkingSpotReservationFailed)
+      } as StoringParkingSpotReservationRequestFailed)
   }
   
   def "reject reserving part of parking spot when client made a request for it when parking spot reservations does not exist"() {
@@ -76,7 +76,7 @@ class RequestingReservationForPartOfParkingSpotHandlingClientRequestTest extends
       1 * parkingSpotReservationsRepository.publish({
         it.parkingSpotId == parkingSpotId
             && it.reservationId == reservationId
-      } as RequestingParkingSpotReservationFailed)
+      } as StoringParkingSpotReservationRequestFailed)
   }
   
 }

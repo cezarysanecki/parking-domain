@@ -18,7 +18,7 @@ class RequestingReservationForPartOfParkingSpotTest extends Specification {
       def vehicleSize = VehicleSize.of(2)
     
     when:
-      def result = parkingSpotReservations.reservePart(reservationId, vehicleSize)
+      def result = parkingSpotReservations.storeForPart(reservationId, vehicleSize)
     
     then:
       result.isRight()
@@ -36,7 +36,7 @@ class RequestingReservationForPartOfParkingSpotTest extends Specification {
       def reservationId = ReservationId.newOne()
     
     when:
-      def result = parkingSpotReservations.reservePart(reservationId, VehicleSize.of(3))
+      def result = parkingSpotReservations.storeForPart(reservationId, VehicleSize.of(3))
     
     then:
       result.isLeft()

@@ -13,8 +13,8 @@ import java.util.stream.Collectors;
 
 import static pl.cezarysanecki.parkingdomain.parking.parkingspot.application.CreatingParkingSpot.ParkingSpotCreated;
 import static pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationRequestEvent.ParkingSpotReservationRequestCancelled;
-import static pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationRequestEvent.PartRequestOfParkingSpotReserved;
-import static pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationRequestEvent.WholeRequestParkingSpotReserved;
+import static pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationRequestEvent.ReservationRequestForPartOfParkingSpotStored;
+import static pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationRequestEvent.ReservationRequestForWholeParkingSpotStored;
 
 class InMemoryParkingSpotReservationsViewRepository implements ParkingSpotReservationsViews {
 
@@ -46,7 +46,7 @@ class InMemoryParkingSpotReservationsViewRepository implements ParkingSpotReserv
 
     @Override
     @ViewEventListener
-    public void handle(WholeRequestParkingSpotReserved event) {
+    public void handle(ReservationRequestForWholeParkingSpotStored event) {
         ParkingSpotReservationsViewEntity entity = DATABASE.get(event.getParkingSpotId());
         entity.currentReservations.add(new ParkingSpotReservationsViewEntity.VehicleReservationEntity(
                 event.getReservationId().getValue(),
@@ -56,7 +56,7 @@ class InMemoryParkingSpotReservationsViewRepository implements ParkingSpotReserv
 
     @Override
     @ViewEventListener
-    public void handle(PartRequestOfParkingSpotReserved event) {
+    public void handle(ReservationRequestForPartOfParkingSpotStored event) {
         ParkingSpotReservationsViewEntity entity = DATABASE.get(event.getParkingSpotId());
         entity.currentReservations.add(new ParkingSpotReservationsViewEntity.VehicleReservationEntity(
                 event.getReservationId().getValue(),

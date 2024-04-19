@@ -29,7 +29,7 @@ class CancellingReservationRequestAfterFailedClientReservationTest extends Speci
     
     when:
       parkingSpotReservationsEventHandler.handle(
-          new ParkingSpotReservationRequestEvent.RequestingParkingSpotReservationFailed(ParkingSpotId.newOne(), reservationId, "any reason"))
+          new ParkingSpotReservationRequestEvent.StoringParkingSpotReservationRequestFailed(ParkingSpotId.newOne(), reservationId, "any reason"))
     
     then:
       1 * clientReservationsRepository.publish({
