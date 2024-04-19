@@ -1,21 +1,22 @@
 package pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model
 
+
 import pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ReservationId
 import spock.lang.Specification
 
 import static pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationsFixture.fullyReservedParkingSpotBy
 import static pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationsFixture.noParkingSpotReservations
 
-class CancellingParkingSpotReservationTest extends Specification {
+class RequestingReservationForWholeParkingSpotTest extends Specification {
   
-  def "allow to cancel parking spot reservation"() {
+  def "allow to reserve whole parking spot"() {
     given:
-      def reservationId = ReservationId.newOne()
+      def parkingSpotReservations = noParkingSpotReservations()
     and:
-      def parkingSpotReservations = fullyReservedParkingSpotBy(reservationId)
+      def reservationId = ReservationId.newOne()
     
     when:
-      def result = parkingSpotReservations.cancel(reservationId)
+      def result = parkingSpotReservations.storeForWhole(reservationId)
     
     then:
       result.isRight()
@@ -25,21 +26,21 @@ class CancellingParkingSpotReservationTest extends Specification {
       }
   }
   
-  def "reject cancelling reservation for parking spot when this is no such reservation for that parking spot"() {
+  def "reject reserving whole parking spot when there is at least one reservation"() {
     given:
-      def parkingSpotReservations = noParkingSpotReservations()
+      def parkingSpotReservations = fullyReservedParkingSpotBy(ReservationId.newOne())
     and:
       def reservationId = ReservationId.newOne()
     
     when:
-      def result = parkingSpotReservations.cancel(reservationId)
+      def result = parkingSpotReservations.storeForWhole(reservationId)
     
     then:
       result.isLeft()
       result.getLeft().with {
         assert it.parkingSpotId == parkingSpotReservations.parkingSpotId
         assert it.reservationId == reservationId
-        assert it.reason == "there is no such reservation request on that parking spot"
+        assert it.reason == "there are reservation requests for this parking spot"
       }
   }
   

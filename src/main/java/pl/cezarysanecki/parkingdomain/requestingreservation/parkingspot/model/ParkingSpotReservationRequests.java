@@ -6,7 +6,7 @@ import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotOccupation;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleSize;
 import pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ReservationId;
-import pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationRequestEvent.WholeRequestParkingSpotReserved;
+import pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationRequestEvent.ReservationRequestForWholeParkingSpotStored;
 
 import java.util.Set;
 
@@ -14,8 +14,8 @@ import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announc
 import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announceSuccess;
 import static pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationRequestEvent.ParkingSpotReservationRequestCancellationFailed;
 import static pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationRequestEvent.ParkingSpotReservationRequestCancelled;
-import static pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationRequestEvent.ParkingSpotReservationRequestFailed;
-import static pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationRequestEvent.PartRequestOfParkingSpotReserved;
+import static pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationRequestEvent.ReservationRequestForPartOfParkingSpotStored;
+import static pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationRequestEvent.StoringParkingSpotReservationRequestFailed;
 
 @Value
 public class ParkingSpotReservationRequests {
@@ -24,23 +24,23 @@ public class ParkingSpotReservationRequests {
     ParkingSpotOccupation reservedOccupation;
     Set<ReservationId> reservations;
 
-    public Either<ParkingSpotReservationRequestFailed, PartRequestOfParkingSpotReserved> reservePart(ReservationId reservationId, VehicleSize vehicleSize) {
+    public Either<StoringParkingSpotReservationRequestFailed, ReservationRequestForPartOfParkingSpotStored> storeForPart(ReservationId reservationId, VehicleSize vehicleSize) {
         if (!reservedOccupation.canHandle(vehicleSize)) {
-            return announceFailure(new ParkingSpotReservationRequestFailed(parkingSpotId, reservationId, "not to many parking spot space"));
+            return announceFailure(new StoringParkingSpotReservationRequestFailed(parkingSpotId, reservationId, "not enough parking spot space"));
         }
-        return announceSuccess(new PartRequestOfParkingSpotReserved(parkingSpotId, reservationId, vehicleSize));
+        return announceSuccess(new ReservationRequestForPartOfParkingSpotStored(parkingSpotId, reservationId, vehicleSize));
     }
 
-    public Either<ParkingSpotReservationRequestFailed, WholeRequestParkingSpotReserved> reserveWhole(ReservationId reservationId) {
+    public Either<StoringParkingSpotReservationRequestFailed, ReservationRequestForWholeParkingSpotStored> storeForWhole(ReservationId reservationId) {
         if (!reservations.isEmpty()) {
-            return announceFailure(new ParkingSpotReservationRequestFailed(parkingSpotId, reservationId, "there are reservations for this parking spot"));
+            return announceFailure(new StoringParkingSpotReservationRequestFailed(parkingSpotId, reservationId, "there are reservation requests for this parking spot"));
         }
-        return announceSuccess(new WholeRequestParkingSpotReserved(parkingSpotId, reservationId));
+        return announceSuccess(new ReservationRequestForWholeParkingSpotStored(parkingSpotId, reservationId));
     }
 
     public Either<ParkingSpotReservationRequestCancellationFailed, ParkingSpotReservationRequestCancelled> cancel(ReservationId reservationId) {
         if (!reservations.contains(reservationId)) {
-            return announceFailure(new ParkingSpotReservationRequestCancellationFailed(parkingSpotId, reservationId, "there is no such reservation on that parking spot"));
+            return announceFailure(new ParkingSpotReservationRequestCancellationFailed(parkingSpotId, reservationId, "there is no such reservation request on that parking spot"));
         }
         return announceSuccess(new ParkingSpotReservationRequestCancelled(parkingSpotId, reservationId));
     }

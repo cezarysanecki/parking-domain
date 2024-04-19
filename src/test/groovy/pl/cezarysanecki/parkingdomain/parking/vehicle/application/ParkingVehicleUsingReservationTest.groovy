@@ -5,7 +5,7 @@ import pl.cezarysanecki.parkingdomain.commons.commands.Result
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.Vehicles
 import pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ReservationId
-import pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.application.ParkingSpotReservationsFinder
+import pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.application.FindingParkingSpotReservationRequests
 import spock.lang.Specification
 import spock.lang.Subject
 
@@ -15,7 +15,7 @@ import static pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleFixtur
 class ParkingVehicleUsingReservationTest extends Specification {
   
   Vehicles vehicles = Mock()
-  ParkingSpotReservationsFinder parkingSpotReservationsFinder = Mock()
+  FindingParkingSpotReservationRequests parkingSpotReservationsFinder = Mock()
   
   ReservationId reservationId = ReservationId.newOne()
   

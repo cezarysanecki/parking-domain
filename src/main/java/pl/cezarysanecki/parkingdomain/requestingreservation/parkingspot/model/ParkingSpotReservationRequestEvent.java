@@ -12,7 +12,7 @@ public interface ParkingSpotReservationRequestEvent extends DomainEvent {
     ParkingSpotId getParkingSpotId();
 
     @Value
-    class PartRequestOfParkingSpotReserved implements ParkingSpotReservationRequestEvent {
+    class ReservationRequestForPartOfParkingSpotStored implements ParkingSpotReservationRequestEvent {
 
         @NonNull ParkingSpotId parkingSpotId;
         @NonNull ReservationId reservationId;
@@ -21,7 +21,7 @@ public interface ParkingSpotReservationRequestEvent extends DomainEvent {
     }
 
     @Value
-    class WholeRequestParkingSpotReserved implements ParkingSpotReservationRequestEvent {
+    class ReservationRequestForWholeParkingSpotStored implements ParkingSpotReservationRequestEvent {
 
         @NonNull ParkingSpotId parkingSpotId;
         @NonNull ReservationId reservationId;
@@ -29,7 +29,7 @@ public interface ParkingSpotReservationRequestEvent extends DomainEvent {
     }
 
     @Value
-    class ParkingSpotReservationRequestFailed implements ParkingSpotReservationRequestEvent {
+    class StoringParkingSpotReservationRequestFailed implements ParkingSpotReservationRequestEvent {
 
         @NonNull ParkingSpotId parkingSpotId;
         @NonNull ReservationId reservationId;

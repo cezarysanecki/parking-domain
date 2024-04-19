@@ -1,45 +1,49 @@
 package pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model
 
+import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleSize
 import pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ReservationId
 import spock.lang.Specification
 
-import static pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationsFixture.fullyReservedParkingSpotBy
 import static pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationsFixture.noParkingSpotReservations
+import static pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationsFixture.noParkingSpotReservationsWithCapacity
 
-class CancellingParkingSpotReservationTest extends Specification {
+class RequestingReservationForPartOfParkingSpotTest extends Specification {
   
-  def "allow to cancel parking spot reservation"() {
+  def "allow to reserve part of parking spot"() {
     given:
+      def parkingSpotReservations = noParkingSpotReservations()
+    and:
       def reservationId = ReservationId.newOne()
     and:
-      def parkingSpotReservations = fullyReservedParkingSpotBy(reservationId)
+      def vehicleSize = VehicleSize.of(2)
     
     when:
-      def result = parkingSpotReservations.cancel(reservationId)
+      def result = parkingSpotReservations.storeForPart(reservationId, vehicleSize)
     
     then:
       result.isRight()
       result.get().with {
         assert it.parkingSpotId == parkingSpotReservations.parkingSpotId
         assert it.reservationId == reservationId
+        assert it.vehicleSize == vehicleSize
       }
   }
   
-  def "reject cancelling reservation for parking spot when this is no such reservation for that parking spot"() {
+  def "reject reserving part of parking spot when there is not enough space"() {
     given:
-      def parkingSpotReservations = noParkingSpotReservations()
+      def parkingSpotReservations = noParkingSpotReservationsWithCapacity(2)
     and:
       def reservationId = ReservationId.newOne()
     
     when:
-      def result = parkingSpotReservations.cancel(reservationId)
+      def result = parkingSpotReservations.storeForPart(reservationId, VehicleSize.of(3))
     
     then:
       result.isLeft()
       result.getLeft().with {
         assert it.parkingSpotId == parkingSpotReservations.parkingSpotId
         assert it.reservationId == reservationId
-        assert it.reason == "there is no such reservation request on that parking spot"
+        assert it.reason == "not enough parking spot space"
       }
   }
   

@@ -1,8 +1,7 @@
-package pl.cezarysanecki.parkingdomain.parking.acceptance
+package pl.cezarysanecki.parkingdomain.requestingreservation.acceptance
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.ActiveProfiles
 import pl.cezarysanecki.parkingdomain.commons.commands.Result
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisherTestConfig
@@ -14,17 +13,14 @@ import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.parking.vehicle.application.RegisteringVehicle
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleId
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleSize
-import pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.application.FindingParkingSpotReservationRequests
+import pl.cezarysanecki.parkingdomain.requestingreservation.RequestingReservationConfig
 import spock.lang.Specification
 
 @ActiveProfiles("local")
 @SpringBootTest(classes = [
-    ParkingConfig.class,
+    RequestingReservationConfig.class, ParkingConfig.class,
     EventPublisherTestConfig.class])
-abstract class AbstractParkingAcceptanceTest extends Specification {
-  
-  @MockBean
-  FindingParkingSpotReservationRequests parkingSpotReservationsFinder
+abstract class AbstractRequestingReservationsAcceptanceTest extends Specification {
   
   @Autowired
   RegisteringVehicle registeringVehicle

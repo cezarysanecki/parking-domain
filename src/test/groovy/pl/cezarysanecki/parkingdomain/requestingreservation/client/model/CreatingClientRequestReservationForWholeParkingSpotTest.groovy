@@ -3,8 +3,8 @@ package pl.cezarysanecki.parkingdomain.requestingreservation.client.model
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId
 import spock.lang.Specification
 
-import static pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ClientReservationsFixture.clientReservationsWithReservation
-import static pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ClientReservationsFixture.noClientReservations
+import static pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ClientReservationsFixture.clientWithReservationRequest
+import static pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ClientReservationsFixture.clientWithNoReservationRequests
 
 class CreatingClientRequestReservationForWholeParkingSpotTest extends Specification {
   
@@ -12,15 +12,15 @@ class CreatingClientRequestReservationForWholeParkingSpotTest extends Specificat
     given:
       def parkingSpotId = ParkingSpotId.newOne()
     and:
-      def clientReservations = noClientReservations()
+      def clientReservationRequests = clientWithNoReservationRequests()
     
     when:
-      def result = clientReservations.createRequest(parkingSpotId)
+      def result = clientReservationRequests.createRequest(parkingSpotId)
     
     then:
       result.isRight()
       result.get().with {
-        assert it.clientId == clientReservations.clientId
+        assert it.clientId == clientReservationRequests.clientId
         assert it.parkingSpotId == parkingSpotId
       }
   }
@@ -29,15 +29,15 @@ class CreatingClientRequestReservationForWholeParkingSpotTest extends Specificat
     given:
       def parkingSpotId = ParkingSpotId.newOne()
     and:
-      def clientReservations = clientReservationsWithReservation(ReservationId.newOne())
+      def clientReservationRequests = clientWithReservationRequest(ReservationId.newOne())
     
     when:
-      def result = clientReservations.createRequest(parkingSpotId)
+      def result = clientReservationRequests.createRequest(parkingSpotId)
     
     then:
       result.isLeft()
       result.getLeft().with {
-        assert it.clientId == clientReservations.clientId
+        assert it.clientId == clientReservationRequests.clientId
         assert it.reason == "client has too many requests"
       }
   }
