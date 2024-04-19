@@ -39,7 +39,7 @@ class CancellingParkingSpotReservationTest extends Specification {
       result.getLeft().with {
         assert it.parkingSpotId == parkingSpotReservations.parkingSpotId
         assert it.reservationId == reservationId
-        assert it.reason == "there is no such reservation on that parking spot"
+        assert it.reason == "there is no such reservation request on that parking spot"
       }
   }
   

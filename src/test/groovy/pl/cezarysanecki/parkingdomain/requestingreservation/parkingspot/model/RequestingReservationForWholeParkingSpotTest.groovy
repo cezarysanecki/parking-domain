@@ -40,7 +40,7 @@ class RequestingReservationForWholeParkingSpotTest extends Specification {
       result.getLeft().with {
         assert it.parkingSpotId == parkingSpotReservations.parkingSpotId
         assert it.reservationId == reservationId
-        assert it.reason == "there are reservations for this parking spot"
+        assert it.reason == "there are reservation requests for this parking spot"
       }
   }
   
