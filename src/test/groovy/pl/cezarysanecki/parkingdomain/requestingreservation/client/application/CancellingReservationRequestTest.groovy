@@ -2,18 +2,18 @@ package pl.cezarysanecki.parkingdomain.requestingreservation.client.application
 
 import io.vavr.control.Option
 import pl.cezarysanecki.parkingdomain.commons.commands.Result
-import pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ClientReservationsRepository
+import pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ClientReservationRequestsRepository
 import pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ReservationId
 import spock.lang.Specification
 import spock.lang.Subject
 
-import static pl.cezarysanecki.parkingdomain.requestingreservation.client.application.CancellingReservationRequest.Command
+import static CancellingReservationRequest.Command
 import static pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ClientReservationsFixture.clientReservationsWithReservation
 import static pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ClientReservationsFixture.noClientReservations
 
 class CancellingReservationRequestTest extends Specification {
   
-  ClientReservationsRepository clientReservationsRepository = Mock()
+  ClientReservationRequestsRepository clientReservationsRepository = Mock()
   
   @Subject
   CancellingReservationRequest cancellingReservationRequest = new CancellingReservationRequest(clientReservationsRepository)

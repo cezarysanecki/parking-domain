@@ -6,12 +6,12 @@ import pl.cezarysanecki.parkingdomain.commons.events.DomainEvent;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleSize;
 
-public interface ClientReservationsEvent extends DomainEvent {
+public interface ClientReservationRequestsEvent extends DomainEvent {
 
     ClientId getClientId();
 
     @Value
-    class ReservationForPartOfParkingSpotSubmitted implements ClientReservationsEvent {
+    class ReservationForPartOfParkingSpotRequested implements ClientReservationRequestsEvent {
 
         @NonNull ClientId clientId;
         @NonNull ReservationId reservationId;
@@ -21,7 +21,7 @@ public interface ClientReservationsEvent extends DomainEvent {
     }
 
     @Value
-    class ReservationForWholeParkingSpotSubmitted implements ClientReservationsEvent {
+    class ReservationForWholeParkingSpotRequested implements ClientReservationRequestsEvent {
 
         @NonNull ClientId clientId;
         @NonNull ReservationId reservationId;
@@ -30,7 +30,7 @@ public interface ClientReservationsEvent extends DomainEvent {
     }
 
     @Value
-    class ReservationSubmissionFailed implements ClientReservationsEvent {
+    class RequestingReservationFailed implements ClientReservationRequestsEvent {
 
         @NonNull ClientId clientId;
         @NonNull String reason;
@@ -38,7 +38,7 @@ public interface ClientReservationsEvent extends DomainEvent {
     }
 
     @Value
-    class ReservationRequestCancelled implements ClientReservationsEvent {
+    class ReservationRequestCancelled implements ClientReservationRequestsEvent {
 
         @NonNull ClientId clientId;
         @NonNull ReservationId reservationId;
@@ -46,7 +46,7 @@ public interface ClientReservationsEvent extends DomainEvent {
     }
 
     @Value
-    class ReservationRequestCancellationFailed implements ClientReservationsEvent {
+    class ReservationRequestCancellationFailed implements ClientReservationRequestsEvent {
 
         @NonNull ClientId clientId;
         @NonNull ReservationId reservationId;

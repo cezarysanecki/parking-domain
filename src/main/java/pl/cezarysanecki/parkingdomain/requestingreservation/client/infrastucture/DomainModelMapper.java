@@ -3,7 +3,7 @@ package pl.cezarysanecki.parkingdomain.requestingreservation.client.infrastuctur
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ClientId;
-import pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ClientReservations;
+import pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ClientReservationRequests;
 import pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ReservationId;
 
 import java.util.stream.Collectors;
@@ -11,8 +11,8 @@ import java.util.stream.Collectors;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 class DomainModelMapper {
 
-    static ClientReservations map(ClientReservationsEntity entity) {
-        return new ClientReservations(
+    static ClientReservationRequests map(ClientReservationRequestsEntity entity) {
+        return new ClientReservationRequests(
                 ClientId.of(entity.clientId),
                 entity.reservations.stream()
                         .map(ReservationId::of)

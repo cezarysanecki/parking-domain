@@ -11,7 +11,7 @@ import pl.cezarysanecki.parkingdomain.parking.vehicle.application.ParkingVehicle
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleId
 import pl.cezarysanecki.parkingdomain.parking.view.vehicle.model.VehicleViews
 import pl.cezarysanecki.parkingdomain.requestingreservation.RequestingReservation
-import pl.cezarysanecki.parkingdomain.requestingreservation.client.application.ReservingWholeParkingSpot
+import pl.cezarysanecki.parkingdomain.requestingreservation.client.application.RequestingReservationForWholeParkingSpot
 import pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ClientId
 import pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ReservationId
 import pl.cezarysanecki.parkingdomain.requestingreservation.view.parkingspot.model.ParkingSpotReservationsViews
@@ -25,7 +25,7 @@ import static pl.cezarysanecki.parkingdomain.parking.vehicle.application.Parking
 class AllowingToParkOnReservedParkingSpotAcceptanceTest extends AbstractReservingAcceptanceTest {
   
   @Autowired
-  ReservingWholeParkingSpot reservingWholeParkingSpot
+  RequestingReservationForWholeParkingSpot reservingWholeParkingSpot
   @Autowired
   ParkingVehicle parkingVehicle
   
@@ -71,7 +71,7 @@ class AllowingToParkOnReservedParkingSpotAcceptanceTest extends AbstractReservin
   }
   
   private ReservationId reserveWholeParkingSpotFor(ClientId clientId, ParkingSpotId parkingSpotId) {
-    def result = reservingWholeParkingSpot.requestReservation(new ReservingWholeParkingSpot.Command(
+    def result = reservingWholeParkingSpot.requestReservation(new RequestingReservationForWholeParkingSpot.Command(
         clientId, parkingSpotId))
     return (result.get() as Result.Success<ReservationId>).getResult()
   }

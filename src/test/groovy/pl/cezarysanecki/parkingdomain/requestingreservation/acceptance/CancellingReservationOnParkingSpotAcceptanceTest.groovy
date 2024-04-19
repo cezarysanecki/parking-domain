@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import pl.cezarysanecki.parkingdomain.commons.commands.Result
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.requestingreservation.client.application.CancellingReservationRequest
-import pl.cezarysanecki.parkingdomain.requestingreservation.client.application.ReservingPartOfParkingSpot
-import pl.cezarysanecki.parkingdomain.requestingreservation.client.application.ReservingWholeParkingSpot
+import pl.cezarysanecki.parkingdomain.requestingreservation.client.application.RequestingReservationForPartOfParkingSpot
+import pl.cezarysanecki.parkingdomain.requestingreservation.client.application.RequestingReservationForWholeParkingSpot
 import pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ClientId
 import pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ReservationId
 import pl.cezarysanecki.parkingdomain.requestingreservation.view.parkingspot.model.ParkingSpotReservationsViews
@@ -13,9 +13,9 @@ import pl.cezarysanecki.parkingdomain.requestingreservation.view.parkingspot.mod
 class CancellingReservationOnParkingSpotAcceptanceTest extends AbstractReservingAcceptanceTest {
   
   @Autowired
-  ReservingWholeParkingSpot reservingWholeParkingSpot
+  RequestingReservationForWholeParkingSpot reservingWholeParkingSpot
   @Autowired
-  ReservingPartOfParkingSpot reservingPartOfParkingSpot
+  RequestingReservationForPartOfParkingSpot reservingPartOfParkingSpot
   @Autowired
   CancellingReservationRequest cancellingReservationRequest
   
@@ -38,7 +38,7 @@ class CancellingReservationOnParkingSpotAcceptanceTest extends AbstractReserving
   }
   
   private ReservationId reserveWholeParkingSpotFor(ClientId clientId, ParkingSpotId parkingSpotId) {
-    def result = reservingWholeParkingSpot.requestReservation(new ReservingWholeParkingSpot.Command(
+    def result = reservingWholeParkingSpot.requestReservation(new RequestingReservationForWholeParkingSpot.Command(
         clientId, parkingSpotId))
     return (result.get() as Result.Success<ReservationId>).getResult()
   }

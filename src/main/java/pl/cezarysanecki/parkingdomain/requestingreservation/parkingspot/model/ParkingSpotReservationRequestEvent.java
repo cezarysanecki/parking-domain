@@ -29,7 +29,7 @@ public interface ParkingSpotReservationRequestEvent extends DomainEvent {
     }
 
     @Value
-    class ParkingSpotReservationRequestFailed implements ParkingSpotReservationRequestEvent {
+    class RequestingParkingSpotReservationFailed implements ParkingSpotReservationRequestEvent {
 
         @NonNull ParkingSpotId parkingSpotId;
         @NonNull ReservationId reservationId;

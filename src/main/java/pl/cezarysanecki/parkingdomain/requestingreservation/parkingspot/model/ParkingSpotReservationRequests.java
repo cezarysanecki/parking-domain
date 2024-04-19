@@ -14,7 +14,7 @@ import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announc
 import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announceSuccess;
 import static pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationRequestEvent.ParkingSpotReservationRequestCancellationFailed;
 import static pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationRequestEvent.ParkingSpotReservationRequestCancelled;
-import static pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationRequestEvent.ParkingSpotReservationRequestFailed;
+import static pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationRequestEvent.RequestingParkingSpotReservationFailed;
 import static pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationRequestEvent.PartRequestOfParkingSpotReserved;
 
 @Value
@@ -24,16 +24,16 @@ public class ParkingSpotReservationRequests {
     ParkingSpotOccupation reservedOccupation;
     Set<ReservationId> reservations;
 
-    public Either<ParkingSpotReservationRequestFailed, PartRequestOfParkingSpotReserved> reservePart(ReservationId reservationId, VehicleSize vehicleSize) {
+    public Either<RequestingParkingSpotReservationFailed, PartRequestOfParkingSpotReserved> reservePart(ReservationId reservationId, VehicleSize vehicleSize) {
         if (!reservedOccupation.canHandle(vehicleSize)) {
-            return announceFailure(new ParkingSpotReservationRequestFailed(parkingSpotId, reservationId, "not to many parking spot space"));
+            return announceFailure(new RequestingParkingSpotReservationFailed(parkingSpotId, reservationId, "not to many parking spot space"));
         }
         return announceSuccess(new PartRequestOfParkingSpotReserved(parkingSpotId, reservationId, vehicleSize));
     }
 
-    public Either<ParkingSpotReservationRequestFailed, WholeRequestParkingSpotReserved> reserveWhole(ReservationId reservationId) {
+    public Either<RequestingParkingSpotReservationFailed, WholeRequestParkingSpotReserved> reserveWhole(ReservationId reservationId) {
         if (!reservations.isEmpty()) {
-            return announceFailure(new ParkingSpotReservationRequestFailed(parkingSpotId, reservationId, "there are reservations for this parking spot"));
+            return announceFailure(new RequestingParkingSpotReservationFailed(parkingSpotId, reservationId, "there are reservations for this parking spot"));
         }
         return announceSuccess(new WholeRequestParkingSpotReserved(parkingSpotId, reservationId));
     }

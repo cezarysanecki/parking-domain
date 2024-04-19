@@ -7,7 +7,7 @@ import spock.lang.Specification
 import static pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationsFixture.noParkingSpotReservations
 import static pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationsFixture.noParkingSpotReservationsWithCapacity
 
-class ReservingPartOfParkingSpotTest extends Specification {
+class RequestingReservationForPartOfParkingSpotTest extends Specification {
   
   def "allow to reserve part of parking spot"() {
     given:
