@@ -12,21 +12,21 @@ import static pl.cezarysanecki.parkingdomain.parking.parkingspot.application.Cre
 
 class CreatingParkingSpotReservationRequestsTest extends Specification {
   
-  ParkingSpotReservationRequestsRepository parkingSpotReservationsRepository = Mock()
+  ParkingSpotReservationRequestsRepository parkingSpotReservationRequestsRepository = Mock()
   
   @Subject
-  CreatingParkingSpotReservationRequestsEventsHandler parkingSpotEventsHandler = new CreatingParkingSpotReservationRequestsEventsHandler(parkingSpotReservationsRepository)
+  CreatingParkingSpotReservationRequestsEventsHandler creatingParkingSpotReservationRequestsEventsHandler = new CreatingParkingSpotReservationRequestsEventsHandler(parkingSpotReservationRequestsRepository)
   
-  def "create parking spot reservations when parking spot is created"() {
+  def "create parking spot reservation requests when parking spot is created"() {
     given:
       def parkingSpotId = ParkingSpotId.newOne()
       def parkingSpotCapacity = ParkingSpotCapacity.of(4)
     
     when:
-      parkingSpotEventsHandler.handle(new ParkingSpotCreated(parkingSpotId, parkingSpotCapacity, ParkingSpotCategory.Bronze))
+      creatingParkingSpotReservationRequestsEventsHandler.handle(new ParkingSpotCreated(parkingSpotId, parkingSpotCapacity, ParkingSpotCategory.Bronze))
     
     then:
-      1 * parkingSpotReservationsRepository.createUsing(parkingSpotId, parkingSpotCapacity)
+      1 * parkingSpotReservationRequestsRepository.createUsing(parkingSpotId, parkingSpotCapacity)
   }
   
 }

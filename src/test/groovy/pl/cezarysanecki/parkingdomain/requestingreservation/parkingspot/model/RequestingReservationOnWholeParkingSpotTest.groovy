@@ -1,21 +1,22 @@
 package pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model
 
+
 import pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ReservationId
 import spock.lang.Specification
 
 import static pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationsFixture.parkingSpotWithoutPlaceForReservationRequests
 import static pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.model.ParkingSpotReservationsFixture.parkingSpotWithoutReservationRequests
 
-class CancellingParkingSpotReservationTest extends Specification {
+class RequestingReservationOnWholeParkingSpotTest extends Specification {
   
-  def "allow to cancel parking spot reservation request"() {
+  def "allow to request reservation on whole parking spot"() {
     given:
-      def reservationId = ReservationId.newOne()
+      def parkingSpotReservationRequests = parkingSpotWithoutReservationRequests()
     and:
-      def parkingSpotReservationRequests = parkingSpotWithoutPlaceForReservationRequests(reservationId)
+      def reservationId = ReservationId.newOne()
     
     when:
-      def result = parkingSpotReservationRequests.cancel(reservationId)
+      def result = parkingSpotReservationRequests.storeForWhole(reservationId)
     
     then:
       result.isRight()
@@ -25,21 +26,21 @@ class CancellingParkingSpotReservationTest extends Specification {
       }
   }
   
-  def "reject cancelling reservation request for parking spot when this is no such request for that parking spot"() {
+  def "reject requesting reservation on whole parking spot when there is at least one request"() {
     given:
-      def parkingSpotReservationRequests = parkingSpotWithoutReservationRequests()
+      def parkingSpotReservationRequests = parkingSpotWithoutPlaceForReservationRequests(ReservationId.newOne())
     and:
       def reservationId = ReservationId.newOne()
     
     when:
-      def result = parkingSpotReservationRequests.cancel(reservationId)
+      def result = parkingSpotReservationRequests.storeForWhole(reservationId)
     
     then:
       result.isLeft()
       result.getLeft().with {
         assert it.parkingSpotId == parkingSpotReservationRequests.parkingSpotId
         assert it.reservationId == reservationId
-        assert it.reason == "there is no such reservation request on that parking spot"
+        assert it.reason == "there are reservation requests for this parking spot"
       }
   }
   
