@@ -1,0 +1,11 @@
+meta {
+  name: Get parking spot reservation requests
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/parking-spot-reservation-requests
+  body: json
+  auth: none
+}

@@ -41,7 +41,7 @@ class ClientReservationRequestsController {
     }
 
     @PostMapping("/client-reservation-requests/{clientId}/part-of-parking-spot")
-    ResponseEntity requestsReservationForPartOfParkingSpot(@PathVariable UUID clientId, @RequestBody RequestReservationForPartOfParkingSpotRequest request) {
+    ResponseEntity requestsReservationOnPartOfParkingSpot(@PathVariable UUID clientId, @RequestBody RequestReservationOnPartOfParkingSpotRequest request) {
         Try<Result> result = requestingReservationForPartOfParkingSpot.requestReservation(
                 new RequestingReservationForPartOfParkingSpot.Command(
                         ClientId.of(clientId),
@@ -53,7 +53,7 @@ class ClientReservationRequestsController {
     }
 
     @PostMapping("/client-reservation-requests/{clientId}/whole-parking-spot")
-    ResponseEntity requestsReservationForWholeParkingSpot(@PathVariable UUID clientId, @RequestBody RequestReservationForWholeParkingSpotRequest request) {
+    ResponseEntity requestsReservationOnWholeParkingSpot(@PathVariable UUID clientId, @RequestBody RequestReservationOnWholeParkingSpotRequest request) {
         Try<Result> result = requestingReservationForWholeParkingSpot.requestReservation(
                 new RequestingReservationForWholeParkingSpot.Command(
                         ClientId.of(clientId),
@@ -75,12 +75,12 @@ class ClientReservationRequestsController {
 }
 
 @Data
-class RequestReservationForPartOfParkingSpotRequest {
+class RequestReservationOnPartOfParkingSpotRequest {
     UUID parkingSpotId;
     Integer vehicleSize;
 }
 
 @Data
-class RequestReservationForWholeParkingSpotRequest {
+class RequestReservationOnWholeParkingSpotRequest {
     UUID parkingSpotId;
 }
