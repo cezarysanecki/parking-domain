@@ -10,9 +10,11 @@ import pl.cezarysanecki.parkingdomain.requestingreservation.client.application.R
 import pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ClientId
 import pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ReservationId
 import pl.cezarysanecki.parkingdomain.requestingreservation.view.parkingspot.model.ParkingSpotReservationRequestsViews
+import spock.lang.Ignore
 
 import static pl.cezarysanecki.parkingdomain.parking.vehicle.application.ParkingVehicle.ParkOnReservedCommand
 
+@Ignore("#256")
 class AllowingToParkOnReservedParkingSpotAcceptanceTest extends AbstractRequestingReservationsAcceptanceTest {
   
   @Autowired

@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
-import pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.application.FindingParkingSpotReservationRequests;
+import pl.cezarysanecki.parkingdomain.parking.parkingspot.application.FindingParkingSpotReservations;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.application.DrivingVehicleAway;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.application.ParkingSpotEventsHandler;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.application.ParkingVehicle;
@@ -17,7 +17,7 @@ import pl.cezarysanecki.parkingdomain.parking.vehicle.model.Vehicles;
 public class VehicleConfig {
 
     private final EventPublisher eventPublisher;
-    private final FindingParkingSpotReservationRequests findingParkingSpotReservationRequests;
+    private final FindingParkingSpotReservations findingParkingSpotReservationRequests;
 
     @Bean
     RegisteringVehicle registeringVehicle(Vehicles vehicles) {

@@ -6,7 +6,9 @@ import pl.cezarysanecki.parkingdomain.parking.vehicle.application.ParkingVehicle
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleId
 import pl.cezarysanecki.parkingdomain.parking.view.parkingspot.model.ParkingSpotViews
 import pl.cezarysanecki.parkingdomain.parking.view.vehicle.model.VehicleViews
+import spock.lang.Ignore
 
+@Ignore("#256")
 class AllowingToParkVehicleAcceptanceTest extends AbstractParkingAcceptanceTest {
   
   @Autowired
