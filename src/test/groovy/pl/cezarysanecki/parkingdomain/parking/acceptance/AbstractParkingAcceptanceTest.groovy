@@ -8,13 +8,13 @@ import pl.cezarysanecki.parkingdomain.commons.commands.Result
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisherTestConfig
 import pl.cezarysanecki.parkingdomain.parking.ParkingConfig
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.application.CreatingParkingSpot
+import pl.cezarysanecki.parkingdomain.parking.parkingspot.application.FindingParkingSpotReservations
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotCapacity
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotCategory
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.parking.vehicle.application.RegisteringVehicle
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleId
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleSize
-import pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.application.FindingParkingSpotReservationRequests
 import spock.lang.Specification
 
 @ActiveProfiles("local")
@@ -24,7 +24,7 @@ import spock.lang.Specification
 abstract class AbstractParkingAcceptanceTest extends Specification {
   
   @MockBean
-  FindingParkingSpotReservationRequests parkingSpotReservationsFinder
+  FindingParkingSpotReservations parkingSpotReservationsFinder
   
   @Autowired
   RegisteringVehicle registeringVehicle
@@ -41,6 +41,5 @@ abstract class AbstractParkingAcceptanceTest extends Specification {
     def result = registeringVehicle.register(new RegisteringVehicle.Command(VehicleSize.of(size)))
     return (result.get() as Result.Success<VehicleId>).getResult()
   }
-  
   
 }

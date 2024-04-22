@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
-import pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.application.FindingParkingSpotReservationRequests;
+import pl.cezarysanecki.parkingdomain.parking.parkingspot.application.FindingParkingSpotReservations;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.Vehicle;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleId;
@@ -28,13 +28,15 @@ import static pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleEvent.
 public class ParkingVehicle {
 
     private final Vehicles vehicles;
-    private final FindingParkingSpotReservationRequests findingParkingSpotReservationRequests;
+    private final FindingParkingSpotReservations findingParkingSpotReservations;
 
     @Value
     public static class ParkOnChosenCommand {
 
-        @NonNull VehicleId vehicleId;
-        @NonNull ParkingSpotId parkingSpotId;
+        @NonNull
+        VehicleId vehicleId;
+        @NonNull
+        ParkingSpotId parkingSpotId;
 
     }
 
@@ -54,8 +56,10 @@ public class ParkingVehicle {
     @Value
     public static class ParkOnReservedCommand {
 
-        @NonNull VehicleId vehicleId;
-        @NonNull ReservationId reservationId;
+        @NonNull
+        VehicleId vehicleId;
+        @NonNull
+        ReservationId reservationId;
 
     }
 
@@ -99,8 +103,8 @@ public class ParkingVehicle {
     }
 
     private ParkingSpotId findParkingSpotIdBy(ReservationId reservationId) {
-        return findingParkingSpotReservationRequests.findParkingSpotIdBy(reservationId)
-                .getOrElseThrow(() -> new IllegalStateException("cannot find parking spot for reservation with id " + reservationId));
+        return findingParkingSpotReservations.findParkingSpotIdByAssigned(reservationId)
+                .getOrElseThrow(() -> new IllegalStateException("cannot find parking spot with reservation with id " + reservationId));
     }
 
 }

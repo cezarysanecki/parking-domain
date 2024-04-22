@@ -5,7 +5,7 @@ import pl.cezarysanecki.parkingdomain.commons.commands.Result
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.Vehicles
 import pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ReservationId
-import pl.cezarysanecki.parkingdomain.requestingreservation.parkingspot.application.FindingParkingSpotReservationRequests
+import pl.cezarysanecki.parkingdomain.parking.parkingspot.application.FindingParkingSpotReservations
 import spock.lang.Specification
 import spock.lang.Subject
 
@@ -15,7 +15,7 @@ import static pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleFixtur
 class ParkingVehicleUsingReservationTest extends Specification {
   
   Vehicles vehicles = Mock()
-  FindingParkingSpotReservationRequests parkingSpotReservationsFinder = Mock()
+  FindingParkingSpotReservations parkingSpotReservationsFinder = Mock()
   
   ReservationId reservationId = ReservationId.newOne()
   
@@ -28,7 +28,7 @@ class ParkingVehicleUsingReservationTest extends Specification {
     and:
       vehicles.findBy(vehicle.vehicleInformation.vehicleId) >> Option.of(vehicle)
     and:
-      parkingSpotReservationsFinder.findParkingSpotIdBy(reservationId) >> Option.of(ParkingSpotId.newOne())
+      parkingSpotReservationsFinder.findParkingSpotIdByAssigned(reservationId) >> Option.of(ParkingSpotId.newOne())
     
     when:
       def result = parkingVehicle.park(new ParkOnReservedCommand(vehicle.vehicleInformation.vehicleId, reservationId))
@@ -44,7 +44,7 @@ class ParkingVehicleUsingReservationTest extends Specification {
     and:
       vehicles.findBy(vehicle.vehicleInformation.vehicleId) >> Option.of(vehicle)
     and:
-      parkingSpotReservationsFinder.findParkingSpotIdBy(reservationId) >> Option.none()
+      parkingSpotReservationsFinder.findParkingSpotIdByAssigned(reservationId) >> Option.none()
     
     when:
       def result = parkingVehicle.park(new ParkOnReservedCommand(vehicle.vehicleInformation.vehicleId, reservationId))
