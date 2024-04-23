@@ -240,7 +240,7 @@ in the current project during the MVP phase. Certainly, I will create an anemic 
 - Observability
 - Profiling
 - Documentation
-- Bi-temporal event
+- Bi-temporal events
 - jMeter
 
 ## Scratches
