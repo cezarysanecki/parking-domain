@@ -17,7 +17,7 @@ import pl.cezarysanecki.parkingdomain.parking.vehicle.model.Vehicles;
 public class VehicleConfig {
 
     private final EventPublisher eventPublisher;
-    private final FindingParkingSpotReservations findingParkingSpotReservationRequests;
+    private final FindingParkingSpotReservations findingParkingSpotReservations;
 
     @Bean
     RegisteringVehicle registeringVehicle(Vehicles vehicles) {
@@ -26,7 +26,7 @@ public class VehicleConfig {
 
     @Bean
     ParkingVehicle parkingVehicle(Vehicles vehicles) {
-        return new ParkingVehicle(vehicles, findingParkingSpotReservationRequests);
+        return new ParkingVehicle(vehicles, findingParkingSpotReservations);
     }
 
     @Bean

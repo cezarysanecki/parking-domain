@@ -25,7 +25,7 @@ class AllowingToParkOnReservedParkingSpotAcceptanceTest extends AbstractParkingA
   @Autowired
   VehicleViews vehicleViews
   @Autowired
-  ParkingSpotRequestsViews parkingSpotReservationRequestsViews
+  ParkingSpotRequestsViews parkingSpotRequestsViews
   
   def "allow to park on reserved parking spot"() {
     given:
@@ -70,7 +70,7 @@ class AllowingToParkOnReservedParkingSpotAcceptanceTest extends AbstractParkingA
   }
   
   private void thereIsReservation(ParkingSpotId parkingSpotId, ReservationId reservationId) {
-    assert parkingSpotReservationRequestsViews.getAllParkingSpots()
+    assert parkingSpotRequestsViews.getAllParkingSpots()
         .any {
           it.parkingSpotId == parkingSpotId.value
               && it.currentRequests.contains(reservationId.value)
