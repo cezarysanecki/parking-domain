@@ -6,9 +6,9 @@ import java.util.Set;
 import java.util.UUID;
 
 @AllArgsConstructor
-class ClientReservationRequestsViewEntity {
+class ClientRequestsViewEntity {
 
     UUID clientId;
-    Set<UUID> currentReservationRequests;
+    Set<UUID> currentRequests;
 
 }

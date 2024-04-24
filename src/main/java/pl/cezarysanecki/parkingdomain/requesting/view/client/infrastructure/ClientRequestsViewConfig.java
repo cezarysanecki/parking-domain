@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import pl.cezarysanecki.parkingdomain.requesting.view.client.model.ClientReservationRequestsViews;
+import pl.cezarysanecki.parkingdomain.requesting.view.client.model.ClientRequestsViews;
 
 @Configuration
 @RequiredArgsConstructor
@@ -12,8 +12,8 @@ public class ClientRequestsViewConfig {
 
     @Bean
     @Profile("local")
-    ClientReservationRequestsViews clientReservationRequestsViews() {
-        return new InMemoryClientReservationRequestsViewRepository();
+    ClientRequestsViews clientRequestsViews() {
+        return new InMemoryClientRequestsViewRepository();
     }
 
 }

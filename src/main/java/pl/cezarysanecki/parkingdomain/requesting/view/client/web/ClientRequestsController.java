@@ -17,9 +17,9 @@ import pl.cezarysanecki.parkingdomain.requesting.client.application.CancellingRe
 import pl.cezarysanecki.parkingdomain.requesting.client.application.MakingRequestForPartOfParkingSpot;
 import pl.cezarysanecki.parkingdomain.requesting.client.application.MakingRequestForWholeParkingSpot;
 import pl.cezarysanecki.parkingdomain.requesting.client.model.ClientId;
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ReservationId;
-import pl.cezarysanecki.parkingdomain.requesting.view.client.model.ClientReservationRequestsView;
-import pl.cezarysanecki.parkingdomain.requesting.view.client.model.ClientReservationRequestsViews;
+import pl.cezarysanecki.parkingdomain.requesting.client.model.RequestId;
+import pl.cezarysanecki.parkingdomain.requesting.view.client.model.ClientRequestsView;
+import pl.cezarysanecki.parkingdomain.requesting.view.client.model.ClientRequestsViews;
 
 import java.util.UUID;
 
@@ -27,21 +27,21 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @RestController
 @RequiredArgsConstructor
-class ClientReservationRequestsController {
+class ClientRequestsController {
 
-    private final ClientReservationRequestsViews clientReservationRequestsViews;
+    private final ClientRequestsViews clientRequestsViews;
     private final MakingRequestForPartOfParkingSpot makingRequestForPartOfParkingSpot;
     private final MakingRequestForWholeParkingSpot makingRequestForWholeParkingSpot;
     private final CancellingRequest cancellingRequest;
 
-    @GetMapping("/client-reservation-requests/{clientId}")
-    ResponseEntity<ClientReservationRequestsView> getClientReservations(@PathVariable UUID clientId) {
-        ClientReservationRequestsView clientReservationRequestsView = clientReservationRequestsViews.getClientReservationRequestsViewFor(ClientId.of(clientId));
-        return ResponseEntity.ok(clientReservationRequestsView);
+    @GetMapping("/client-requests/{clientId}")
+    ResponseEntity<ClientRequestsView> getClientRequests(@PathVariable UUID clientId) {
+        ClientRequestsView clientRequestsView = clientRequestsViews.getClientRequestsViewFor(ClientId.of(clientId));
+        return ResponseEntity.ok(clientRequestsView);
     }
 
-    @PostMapping("/client-reservation-requests/{clientId}/part-of-parking-spot")
-    ResponseEntity requestsReservationOnPartOfParkingSpot(@PathVariable UUID clientId, @RequestBody RequestReservationOnPartOfParkingSpotRequest request) {
+    @PostMapping("/client-requests/{clientId}/part-of-parking-spot")
+    ResponseEntity requestPartOfParkingSpot(@PathVariable UUID clientId, @RequestBody RequestPartOfParkingSpotRequest request) {
         Try<Result> result = makingRequestForPartOfParkingSpot.makeRequest(
                 new MakingRequestForPartOfParkingSpot.Command(
                         ClientId.of(clientId),
@@ -52,8 +52,8 @@ class ClientReservationRequestsController {
                 .getOrElse(ResponseEntity.status(INTERNAL_SERVER_ERROR).build());
     }
 
-    @PostMapping("/client-reservation-requests/{clientId}/whole-parking-spot")
-    ResponseEntity requestsReservationOnWholeParkingSpot(@PathVariable UUID clientId, @RequestBody RequestReservationOnWholeParkingSpotRequest request) {
+    @PostMapping("/client-requests/{clientId}/whole-parking-spot")
+    ResponseEntity requestWholeParkingSpot(@PathVariable UUID clientId, @RequestBody RequestWholeParkingSpotRequest request) {
         Try<Result> result = makingRequestForWholeParkingSpot.makeRequest(
                 new MakingRequestForWholeParkingSpot.Command(
                         ClientId.of(clientId),
@@ -63,10 +63,10 @@ class ClientReservationRequestsController {
                 .getOrElse(ResponseEntity.status(INTERNAL_SERVER_ERROR).build());
     }
 
-    @DeleteMapping("/client-reservation-requests/{reservationId}")
-    ResponseEntity cancel(@PathVariable UUID reservationId) {
+    @DeleteMapping("/client-requests/{requestId}")
+    ResponseEntity cancel(@PathVariable UUID requestId) {
         Try<Result> result = cancellingRequest.cancelRequest(
-                new CancellingRequest.Command(ReservationId.of(reservationId)));
+                new CancellingRequest.Command(RequestId.of(requestId)));
         return result
                 .map(success -> ResponseEntity.ok().build())
                 .getOrElse(ResponseEntity.status(INTERNAL_SERVER_ERROR).build());
@@ -75,12 +75,12 @@ class ClientReservationRequestsController {
 }
 
 @Data
-class RequestReservationOnPartOfParkingSpotRequest {
+class RequestPartOfParkingSpotRequest {
     UUID parkingSpotId;
     Integer vehicleSize;
 }
 
 @Data
-class RequestReservationOnWholeParkingSpotRequest {
+class RequestWholeParkingSpotRequest {
     UUID parkingSpotId;
 }
