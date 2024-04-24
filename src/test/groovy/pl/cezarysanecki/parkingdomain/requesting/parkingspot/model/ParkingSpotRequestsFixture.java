@@ -4,26 +4,26 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotOccupation;
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ReservationId;
+import pl.cezarysanecki.parkingdomain.requesting.client.model.RequestId;
 
 import java.util.Set;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class ParkingSpotReservationsFixture {
+public class ParkingSpotRequestsFixture {
 
-    public static ParkingSpotRequests parkingSpotWithoutReservationRequests() {
+    public static ParkingSpotRequests parkingSpotWithoutRequests() {
         return new ParkingSpotRequests(
                 ParkingSpotId.newOne(), ParkingSpotOccupation.of(0, 4), Set.of());
     }
 
-    public static ParkingSpotRequests parkingSpotWithoutPlaceForReservationRequestsWithCapacity(int capacity) {
+    public static ParkingSpotRequests parkingSpotWithoutPlaceForRequestsWithCapacity(int capacity) {
         return new ParkingSpotRequests(
                 ParkingSpotId.newOne(), ParkingSpotOccupation.of(0, capacity), Set.of());
     }
 
-    public static ParkingSpotRequests parkingSpotWithoutPlaceForReservationRequests(ReservationId reservationId) {
+    public static ParkingSpotRequests parkingSpotWithoutPlaceForAnyRequests(RequestId requestId) {
         return new ParkingSpotRequests(
-                ParkingSpotId.newOne(), ParkingSpotOccupation.of(4, 4), Set.of(reservationId));
+                ParkingSpotId.newOne(), ParkingSpotOccupation.of(4, 4), Set.of(requestId));
     }
 
 }

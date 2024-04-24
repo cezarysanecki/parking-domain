@@ -5,44 +5,44 @@ import pl.cezarysanecki.parkingdomain.commons.commands.Result
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.requesting.client.model.ClientId
 import pl.cezarysanecki.parkingdomain.requesting.client.model.ClientRequestsRepository
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ReservationId
+import pl.cezarysanecki.parkingdomain.requesting.client.model.RequestId
 import spock.lang.Specification
 import spock.lang.Subject
 
 import static MakingRequestForWholeParkingSpot.Command
-import static pl.cezarysanecki.parkingdomain.requesting.client.model.ClientReservationsFixture.clientWithRequest
-import static pl.cezarysanecki.parkingdomain.requesting.client.model.ClientReservationsFixture.clientWithNoRequests
+import static pl.cezarysanecki.parkingdomain.requesting.client.model.ClientRequestsFixture.clientWithNoRequests
+import static pl.cezarysanecki.parkingdomain.requesting.client.model.ClientRequestsFixture.clientWithRequest
 
 class MakingRequestForPartOfParkingSpotTest extends Specification {
   
-  ClientRequestsRepository clientReservationsRepository = Mock()
+  ClientRequestsRepository clientRequestsRepository = Mock()
   
   @Subject
-  MakingRequestForWholeParkingSpot reservingWholeParkingSpot = new MakingRequestForWholeParkingSpot(clientReservationsRepository)
+  MakingRequestForWholeParkingSpot makingRequestForWholeParkingSpot = new MakingRequestForWholeParkingSpot(clientRequestsRepository)
   
-  def "allow to request client reservation for part of parking spot"() {
+  def "allow to make client request for part of parking spot"() {
     given:
-      def clientReservationRequests = clientWithNoRequests()
+      def clientRequests = clientWithNoRequests()
     and:
-      clientReservationsRepository.findBy(clientReservationRequests.clientId) >> Option.of(clientReservationRequests)
+      clientRequestsRepository.findBy(clientRequests.clientId) >> Option.of(clientRequests)
     
     when:
-      def result = reservingWholeParkingSpot.makeRequest(
-          new Command(clientReservationRequests.clientId, ParkingSpotId.newOne()))
+      def result = makingRequestForWholeParkingSpot.makeRequest(
+          new Command(clientRequests.clientId, ParkingSpotId.newOne()))
     
     then:
       result.isSuccess()
       result.get() in Result.Success
   }
   
-  def "allow to request client reservation for part of parking spot even when client is not present"() {
+  def "allow to make client request for part of parking spot even when client is not present"() {
     given:
       def clientId = ClientId.newOne()
     and:
-      clientReservationsRepository.findBy(clientId) >> Option.none()
+      clientRequestsRepository.findBy(clientId) >> Option.none()
     
     when:
-      def result = reservingWholeParkingSpot.makeRequest(
+      def result = makingRequestForWholeParkingSpot.makeRequest(
           new Command(clientId, ParkingSpotId.newOne()))
     
     then:
@@ -50,15 +50,15 @@ class MakingRequestForPartOfParkingSpotTest extends Specification {
       result.get() in Result.Success
   }
   
-  def "reject requesting client reservation for part of parking spot when client has reached limit"() {
+  def "reject making client request for part of parking spot when client has reached limit"() {
     given:
-      def clientReservationRequests = clientWithRequest(ReservationId.newOne())
+      def clientRequests = clientWithRequest(RequestId.newOne())
     and:
-      clientReservationsRepository.findBy(clientReservationRequests.clientId) >> Option.of(clientReservationRequests)
+      clientRequestsRepository.findBy(clientRequests.clientId) >> Option.of(clientRequests)
     
     when:
-      def result = reservingWholeParkingSpot.makeRequest(
-          new Command(clientReservationRequests.clientId, ParkingSpotId.newOne()))
+      def result = makingRequestForWholeParkingSpot.makeRequest(
+          new Command(clientRequests.clientId, ParkingSpotId.newOne()))
     
     then:
       result.isSuccess()

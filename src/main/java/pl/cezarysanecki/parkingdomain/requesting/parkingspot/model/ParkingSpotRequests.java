@@ -12,10 +12,10 @@ import java.util.Set;
 
 import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announceFailure;
 import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announceSuccess;
+import static pl.cezarysanecki.parkingdomain.requesting.parkingspot.model.ParkingSpotRequestEvent.StoringParkingSpotRequestFailed;
 import static pl.cezarysanecki.parkingdomain.requesting.parkingspot.model.ParkingSpotRequestEvent.ParkingSpotRequestCancellationFailed;
 import static pl.cezarysanecki.parkingdomain.requesting.parkingspot.model.ParkingSpotRequestEvent.ParkingSpotRequestCancelled;
 import static pl.cezarysanecki.parkingdomain.requesting.parkingspot.model.ParkingSpotRequestEvent.RequestForPartOfParkingSpotStored;
-import static pl.cezarysanecki.parkingdomain.requesting.parkingspot.model.ParkingSpotRequestEvent.StoringParkingSpotRequestFailed;
 
 @Value
 public class ParkingSpotRequests {
@@ -24,14 +24,14 @@ public class ParkingSpotRequests {
     ParkingSpotOccupation requestedOccupation;
     Set<RequestId> requests;
 
-    public Either<StoringParkingSpotRequestFailed, RequestForPartOfParkingSpotStored> storeForPart(RequestId requestId, VehicleSize vehicleSize) {
+    public Either<StoringParkingSpotRequestFailed, RequestForPartOfParkingSpotStored> storeRequest(RequestId requestId, VehicleSize vehicleSize) {
         if (!requestedOccupation.canHandle(vehicleSize)) {
             return announceFailure(new StoringParkingSpotRequestFailed(parkingSpotId, requestId, "not enough parking spot space"));
         }
         return announceSuccess(new RequestForPartOfParkingSpotStored(parkingSpotId, requestId, vehicleSize));
     }
 
-    public Either<StoringParkingSpotRequestFailed, RequestForWholeParkingSpotStored> storeForWhole(RequestId requestId) {
+    public Either<StoringParkingSpotRequestFailed, RequestForWholeParkingSpotStored> storeRequest(RequestId requestId) {
         if (!requests.isEmpty()) {
             return announceFailure(new StoringParkingSpotRequestFailed(parkingSpotId, requestId, "there are requests for this parking spot"));
         }

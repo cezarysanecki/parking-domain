@@ -9,7 +9,7 @@ import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotCapacity
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleSize
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ReservationId
+import pl.cezarysanecki.parkingdomain.requesting.client.model.RequestId
 import pl.cezarysanecki.parkingdomain.requesting.parkingspot.infrastucture.ParkingSpotRequestsConfig
 import pl.cezarysanecki.parkingdomain.requesting.parkingspot.model.ParkingSpotRequests
 import pl.cezarysanecki.parkingdomain.requesting.parkingspot.model.ParkingSpotRequestsRepository
@@ -28,57 +28,57 @@ class ParkingSpotRequestsDatabaseIT extends Specification {
   EventPublisher eventPublisher
   
   @Autowired
-  ParkingSpotRequestsRepository parkingSpotReservationRequestsRepository
+  ParkingSpotRequestsRepository parkingSpotRequestsRepository
   
-  def "persistence of parking spot reservation requests in real database should work"() {
+  def "persistence of parking spot requests in real database should work"() {
     given:
-      parkingSpotReservationRequestsRepository.createUsing(parkingSpotId, ParkingSpotCapacity.of(4))
+      parkingSpotRequestsRepository.createUsing(parkingSpotId, ParkingSpotCapacity.of(4))
     and:
-      def firstReservation = ReservationId.newOne()
-      def secondReservation = ReservationId.newOne()
+      def firstRequest = RequestId.newOne()
+      def secondRequest = RequestId.newOne()
     
     when:
-      parkingSpotReservationRequestsRepository.publish(createReservationRequestOnPartOfParkingSpot(
-          parkingSpotId, firstReservation, VehicleSize.of(2)))
+      parkingSpotRequestsRepository.publish(makeRequestOnPartOfParkingSpot(
+          parkingSpotId, firstRequest, VehicleSize.of(2)))
     and:
-      parkingSpotReservationRequestsRepository.publish(createReservationRequestOnPartOfParkingSpot(
-          parkingSpotId, secondReservation, VehicleSize.of(2)))
+      parkingSpotRequestsRepository.publish(makeRequestOnPartOfParkingSpot(
+          parkingSpotId, secondRequest, VehicleSize.of(2)))
     then:
-      parkingSpotReservationRequestsShouldBeFoundInDatabaseCannotHandlingMoreReservations(parkingSpotId)
+      parkingSpotRequestsShouldBeFoundInDatabaseCannotHandlingMoreRequests(parkingSpotId)
     
     when:
-      parkingSpotReservationRequestsRepository.publish(cancelParkingSpotReservationRequest(parkingSpotId, firstReservation))
+      parkingSpotRequestsRepository.publish(cancelParkingSpotRequest(parkingSpotId, firstRequest))
     and:
-      parkingSpotReservationRequestsRepository.publish(cancelParkingSpotReservationRequest(parkingSpotId, secondReservation))
+      parkingSpotRequestsRepository.publish(cancelParkingSpotRequest(parkingSpotId, secondRequest))
     then:
-      parkingSpotReservationRequestsShouldBeFoundInDatabaseBeingFree(parkingSpotId)
+      parkingSpotRequestsShouldBeFoundInDatabaseBeingFree(parkingSpotId)
   }
   
-  private RequestForPartOfParkingSpotStored createReservationRequestOnPartOfParkingSpot(
-      ParkingSpotId parkingSpotId, ReservationId reservationId, VehicleSize vehicleSize) {
-    return new RequestForPartOfParkingSpotStored(parkingSpotId, reservationId, vehicleSize)
+  private static RequestForPartOfParkingSpotStored makeRequestOnPartOfParkingSpot(
+      ParkingSpotId parkingSpotId, RequestId requestId, VehicleSize vehicleSize) {
+    return new RequestForPartOfParkingSpotStored(parkingSpotId, requestId, vehicleSize)
   }
   
-  private ParkingSpotRequestCancelled cancelParkingSpotReservationRequest(ParkingSpotId parkingSpotId, ReservationId reservationId) {
-    return new ParkingSpotRequestCancelled(parkingSpotId, reservationId)
+  private static ParkingSpotRequestCancelled cancelParkingSpotRequest(ParkingSpotId parkingSpotId, RequestId requestId) {
+    return new ParkingSpotRequestCancelled(parkingSpotId, requestId)
   }
   
-  private void parkingSpotReservationRequestsShouldBeFoundInDatabaseCannotHandlingMoreReservations(ParkingSpotId parkingSpotId) {
-    def parkingSpotReservationRequests = loadPersistedParkingSpotReservationRequests(parkingSpotId)
-    assert parkingSpotReservationRequests.cannotHandleMore()
+  private void parkingSpotRequestsShouldBeFoundInDatabaseCannotHandlingMoreRequests(ParkingSpotId parkingSpotId) {
+    def parkingSpotRequests = loadPersistedParkingSpotRequests(parkingSpotId)
+    assert parkingSpotRequests.cannotHandleMore()
   }
   
-  private void parkingSpotReservationRequestsShouldBeFoundInDatabaseBeingFree(ParkingSpotId parkingSpotId) {
-    def parkingSpotReservationRequests = loadPersistedParkingSpotReservationRequests(parkingSpotId)
-    assert parkingSpotReservationRequests.isFree()
+  private void parkingSpotRequestsShouldBeFoundInDatabaseBeingFree(ParkingSpotId parkingSpotId) {
+    def parkingSpotRequests = loadPersistedParkingSpotRequests(parkingSpotId)
+    assert parkingSpotRequests.isFree()
   }
   
-  ParkingSpotRequests loadPersistedParkingSpotReservationRequests(ParkingSpotId parkingSpotId) {
-    Option<ParkingSpotRequests> loaded = parkingSpotReservationRequestsRepository.findBy(parkingSpotId)
-    ParkingSpotRequests parkingSpotReservations = loaded.getOrElseThrow({
+  private ParkingSpotRequests loadPersistedParkingSpotRequests(ParkingSpotId parkingSpotId) {
+    Option<ParkingSpotRequests> loaded = parkingSpotRequestsRepository.findBy(parkingSpotId)
+    ParkingSpotRequests parkingSpotRequests = loaded.getOrElseThrow({
       new IllegalStateException("should have been persisted")
     })
-    return parkingSpotReservations
+    return parkingSpotRequests
   }
   
 }

@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import java.util.Set;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class ClientReservationsFixture {
+public class ClientRequestsFixture {
 
     public static ClientRequests clientWithNoRequests() {
         return new ClientRequests(ClientId.newOne(), Set.of());

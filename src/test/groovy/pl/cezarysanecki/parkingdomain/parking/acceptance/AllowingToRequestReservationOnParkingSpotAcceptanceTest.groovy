@@ -3,17 +3,16 @@ package pl.cezarysanecki.parkingdomain.parking.acceptance
 import org.springframework.beans.factory.annotation.Autowired
 import pl.cezarysanecki.parkingdomain.commons.commands.Result
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId
+import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ReservationId
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleSize
-import pl.cezarysanecki.parkingdomain.requesting.acceptance.AbstractRequestingAcceptanceTest
 import pl.cezarysanecki.parkingdomain.requesting.client.application.MakingRequestForPartOfParkingSpot
 import pl.cezarysanecki.parkingdomain.requesting.client.application.MakingRequestForWholeParkingSpot
 import pl.cezarysanecki.parkingdomain.requesting.client.model.ClientId
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ReservationId
 import pl.cezarysanecki.parkingdomain.requesting.view.parkingspot.model.ParkingSpotRequestsViews
 import spock.lang.Ignore
 
 @Ignore("#256")
-class AllowingToRequestReservationOnParkingSpotAcceptanceTest extends AbstractRequestingAcceptanceTest {
+class AllowingToRequestReservationOnParkingSpotAcceptanceTest extends AbstractParkingAcceptanceTest {
   
   @Autowired
   MakingRequestForWholeParkingSpot requestingReservationForWholeParkingSpot

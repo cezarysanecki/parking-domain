@@ -1,6 +1,5 @@
 package pl.cezarysanecki.parkingdomain.requesting.parkingspot.application
 
-
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotCapacity
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotCategory
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId
@@ -12,21 +11,21 @@ import static pl.cezarysanecki.parkingdomain.parking.parkingspot.application.Cre
 
 class CreatingParkingSpotRequestsTest extends Specification {
   
-  ParkingSpotRequestsRepository parkingSpotReservationRequestsRepository = Mock()
+  ParkingSpotRequestsRepository parkingSpotRequestsRepository = Mock()
   
   @Subject
-  CreatingParkingSpotRequestsEventsHandler creatingParkingSpotReservationRequestsEventsHandler = new CreatingParkingSpotRequestsEventsHandler(parkingSpotReservationRequestsRepository)
+  CreatingParkingSpotRequestsEventsHandler creatingParkingSpotRequestsEventsHandler = new CreatingParkingSpotRequestsEventsHandler(parkingSpotRequestsRepository)
   
-  def "create parking spot reservation requests when parking spot is created"() {
+  def "create parking spot requests when parking spot is created"() {
     given:
       def parkingSpotId = ParkingSpotId.newOne()
       def parkingSpotCapacity = ParkingSpotCapacity.of(4)
     
     when:
-      creatingParkingSpotReservationRequestsEventsHandler.handle(new ParkingSpotCreated(parkingSpotId, parkingSpotCapacity, ParkingSpotCategory.Bronze))
+      creatingParkingSpotRequestsEventsHandler.handle(new ParkingSpotCreated(parkingSpotId, parkingSpotCapacity, ParkingSpotCategory.Bronze))
     
     then:
-      1 * parkingSpotReservationRequestsRepository.createUsing(parkingSpotId, parkingSpotCapacity)
+      1 * parkingSpotRequestsRepository.createUsing(parkingSpotId, parkingSpotCapacity)
   }
   
 }

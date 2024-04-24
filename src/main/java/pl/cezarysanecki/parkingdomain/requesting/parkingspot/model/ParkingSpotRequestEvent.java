@@ -15,8 +15,7 @@ public interface ParkingSpotRequestEvent extends DomainEvent {
     class RequestForPartOfParkingSpotStored implements ParkingSpotRequestEvent {
 
         @NonNull ParkingSpotId parkingSpotId;
-        @NonNull
-        RequestId requestId;
+        @NonNull RequestId requestId;
         @NonNull VehicleSize vehicleSize;
 
     }
