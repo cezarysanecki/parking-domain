@@ -12,7 +12,7 @@ public class ClientRequestsViewConfig {
 
     @Bean
     @Profile("local")
-    ClientRequestsViews clientRequestsViews() {
+    InMemoryClientRequestsViewRepository clientRequestsViews() {
         return new InMemoryClientRequestsViewRepository();
     }
 

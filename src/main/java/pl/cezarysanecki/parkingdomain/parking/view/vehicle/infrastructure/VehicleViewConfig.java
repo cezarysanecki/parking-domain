@@ -12,7 +12,7 @@ public class VehicleViewConfig {
 
     @Bean
     @Profile("local")
-    VehicleViews vehicleViews() {
+    InMemoryVehicleViewRepository vehicleViews() {
         return new InMemoryVehicleViewRepository();
     }
 

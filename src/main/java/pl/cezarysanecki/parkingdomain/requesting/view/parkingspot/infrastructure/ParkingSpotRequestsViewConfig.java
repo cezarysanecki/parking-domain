@@ -12,7 +12,7 @@ public class ParkingSpotRequestsViewConfig {
 
     @Bean
     @Profile("local")
-    ParkingSpotRequestsViews parkingSpotRequestsViews() {
+    InMemoryParkingSpotRequestsViewRepository parkingSpotRequestsViews() {
         return new InMemoryParkingSpotRequestsViewRepository();
     }
 

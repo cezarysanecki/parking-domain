@@ -39,7 +39,7 @@ public class ClientRequestsConfig {
 
     @Bean
     @Profile("local")
-    ClientRequestsRepository clientRequestsRepository() {
+    InMemoryClientRequestsRepository clientRequestsRepository() {
         return new InMemoryClientRequestsRepository(eventPublisher);
     }
 
