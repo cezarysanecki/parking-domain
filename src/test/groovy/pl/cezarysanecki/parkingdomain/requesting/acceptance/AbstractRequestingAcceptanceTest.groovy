@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.parking.acceptance
+package pl.cezarysanecki.parkingdomain.requesting.acceptance
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -13,13 +13,15 @@ import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.parking.vehicle.application.RegisteringVehicle
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleId
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleSize
+import pl.cezarysanecki.parkingdomain.requesting.RequestingConfig
 import spock.lang.Specification
 
 @ActiveProfiles("local")
 @SpringBootTest(classes = [
     ParkingConfig.class,
+    RequestingConfig.class,
     EventPublisherTestConfig.class])
-abstract class AbstractParkingAcceptanceTest extends Specification {
+abstract class AbstractRequestingAcceptanceTest extends Specification {
   
   @Autowired
   CreatingParkingSpot creatingParkingSpot
@@ -36,5 +38,6 @@ abstract class AbstractParkingAcceptanceTest extends Specification {
     def result = registeringVehicle.register(new RegisteringVehicle.Command(VehicleSize.of(size)))
     return (result.get() as Result.Success<VehicleId>).getResult()
   }
+  
   
 }

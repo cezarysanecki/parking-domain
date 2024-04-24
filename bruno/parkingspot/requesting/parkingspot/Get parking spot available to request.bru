@@ -1,0 +1,11 @@
+meta {
+  name: Get parking spot available to request
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/parking-spot-requests/available
+  body: json
+  auth: none
+}
