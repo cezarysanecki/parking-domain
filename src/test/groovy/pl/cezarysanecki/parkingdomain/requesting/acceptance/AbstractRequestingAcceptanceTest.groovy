@@ -18,14 +18,15 @@ import spock.lang.Specification
 
 @ActiveProfiles("local")
 @SpringBootTest(classes = [
-    RequestingConfig.class, ParkingConfig.class,
+    ParkingConfig.class,
+    RequestingConfig.class,
     EventPublisherTestConfig.class])
-abstract class AbstractRequestingReservationsAcceptanceTest extends Specification {
+abstract class AbstractRequestingAcceptanceTest extends Specification {
   
   @Autowired
-  RegisteringVehicle registeringVehicle
-  @Autowired
   CreatingParkingSpot creatingParkingSpot
+  @Autowired
+  RegisteringVehicle registeringVehicle
   
   ParkingSpotId createParkingSpot(int capacity) {
     def result = creatingParkingSpot.create(new CreatingParkingSpot.Command(

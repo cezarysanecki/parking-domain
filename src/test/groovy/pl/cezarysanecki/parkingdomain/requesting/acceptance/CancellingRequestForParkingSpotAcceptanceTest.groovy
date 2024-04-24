@@ -7,47 +7,47 @@ import pl.cezarysanecki.parkingdomain.requesting.client.application.CancellingRe
 import pl.cezarysanecki.parkingdomain.requesting.client.application.MakingRequestForPartOfParkingSpot
 import pl.cezarysanecki.parkingdomain.requesting.client.application.MakingRequestForWholeParkingSpot
 import pl.cezarysanecki.parkingdomain.requesting.client.model.ClientId
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ReservationId
+import pl.cezarysanecki.parkingdomain.requesting.client.model.RequestId
 import pl.cezarysanecki.parkingdomain.requesting.view.parkingspot.model.ParkingSpotRequestsViews
 
-class CancellingRequestForParkingSpotAcceptanceTest extends AbstractRequestingReservationsAcceptanceTest {
+class CancellingRequestForParkingSpotAcceptanceTest extends AbstractRequestingAcceptanceTest {
   
   @Autowired
-  MakingRequestForWholeParkingSpot reservingWholeParkingSpot
+  MakingRequestForWholeParkingSpot makingRequestForWholeParkingSpot
   @Autowired
-  MakingRequestForPartOfParkingSpot reservingPartOfParkingSpot
+  MakingRequestForPartOfParkingSpot makingRequestForPartOfParkingSpot
   @Autowired
-  CancellingRequest cancellingReservationRequest
+  CancellingRequest cancellingRequest
   
   @Autowired
-  ParkingSpotRequestsViews parkingSpotReservationsViews
+  ParkingSpotRequestsViews parkingSpotRequestsViews
   
-  def "cancel reservation on parking spot"() {
+  def "cancel parking spot request"() {
     given:
       ClientId clientId = ClientId.newOne()
     and:
       def parkingSpotId = createParkingSpot(4)
     and:
-      def reservationId = reserveWholeParkingSpotFor(clientId, parkingSpotId)
+      def requestId = makeRequestForWholeParkingSpot(clientId, parkingSpotId)
     
     when:
-      cancellingReservationRequest.cancelRequest(new CancellingRequest.Command(reservationId))
+      cancellingRequest.cancelRequest(new CancellingRequest.Command(requestId))
     
     then:
-      thereIsNoSuchReservationOn(parkingSpotId, reservationId)
+      thereIsNoSuchRequestOn(parkingSpotId, requestId)
   }
   
-  private ReservationId reserveWholeParkingSpotFor(ClientId clientId, ParkingSpotId parkingSpotId) {
-    def result = reservingWholeParkingSpot.makeRequest(new MakingRequestForWholeParkingSpot.Command(
+  private RequestId makeRequestForWholeParkingSpot(ClientId clientId, ParkingSpotId parkingSpotId) {
+    def result = makingRequestForWholeParkingSpot.makeRequest(new MakingRequestForWholeParkingSpot.Command(
         clientId, parkingSpotId))
-    return (result.get() as Result.Success<ReservationId>).getResult()
+    return (result.get() as Result.Success<RequestId>).getResult()
   }
   
-  void thereIsNoSuchReservationOn(ParkingSpotId parkingSpotId, ReservationId reservationId) {
-    assert parkingSpotReservationsViews.getAllParkingSpots()
+  void thereIsNoSuchRequestOn(ParkingSpotId parkingSpotId, RequestId requestId) {
+    assert parkingSpotRequestsViews.getAllParkingSpots()
         .find { it.parkingSpotId == parkingSpotId.value }
         .every {
-          !it.currentRequests.contains(reservationId.value)
+          !it.currentRequests.contains(requestId.value)
         }
   }
   
