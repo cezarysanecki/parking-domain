@@ -3,7 +3,6 @@ package pl.cezarysanecki.parkingdomain.requesting.client.application;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ReservationId;
 import pl.cezarysanecki.parkingdomain.requesting.client.application.CancellingRequest.Command;
 import pl.cezarysanecki.parkingdomain.requesting.client.model.RequestId;
 
@@ -16,10 +15,10 @@ public class CancellingRequestEventHandler {
     private final CancellingRequest cancellingRequest;
 
     @EventListener
-    public void handle(StoringParkingSpotRequestFailed storingParkingSpotReservationRequestFailed) {
-        ReservationId reservationId = storingParkingSpotReservationRequestFailed.getReservationId();
+    public void handle(StoringParkingSpotRequestFailed storingParkingSpotRequestFailed) {
+        RequestId requestId = storingParkingSpotRequestFailed.getRequestId();
 
-        cancellingRequest.cancelRequest(new Command(RequestId.of(reservationId.getValue())))
+        cancellingRequest.cancelRequest(new Command(requestId))
                 .onFailure(exception -> log.error(exception.getMessage(), exception));
     }
 

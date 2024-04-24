@@ -53,7 +53,7 @@ class ParkingSpotRequestsEntity {
     static class VehicleRequestEntity {
 
         @NonNull UUID requestId;
-        @NonNull int size;
+        int size;
 
     }
 
