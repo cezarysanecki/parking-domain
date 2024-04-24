@@ -11,6 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static pl.cezarysanecki.parkingdomain.requesting.client.model.ClientRequestsEvent.RequestCancelled;
 import static pl.cezarysanecki.parkingdomain.requesting.client.model.ClientRequestsEvent.RequestForPartOfParkingSpotMade;
+import static pl.cezarysanecki.parkingdomain.requesting.client.model.ClientRequestsEvent.RequestForWholeParkingSpotMade;
 
 class InMemoryClientRequestsViewRepository implements ClientRequestsViews {
 
@@ -25,6 +26,16 @@ class InMemoryClientRequestsViewRepository implements ClientRequestsViews {
     @Override
     @ViewEventListener
     public void handle(RequestForPartOfParkingSpotMade event) {
+        ClientId clientId = event.getClientId();
+
+        ClientRequestsViewEntity entity = DATABASE.getOrDefault(clientId, new ClientRequestsViewEntity(clientId.getValue(), new HashSet<>()));
+        entity.currentRequests.add(event.getRequestId().getValue());
+        DATABASE.put(clientId, entity);
+    }
+
+    @Override
+    @ViewEventListener
+    public void handle(RequestForWholeParkingSpotMade event) {
         ClientId clientId = event.getClientId();
 
         ClientRequestsViewEntity entity = DATABASE.getOrDefault(clientId, new ClientRequestsViewEntity(clientId.getValue(), new HashSet<>()));
