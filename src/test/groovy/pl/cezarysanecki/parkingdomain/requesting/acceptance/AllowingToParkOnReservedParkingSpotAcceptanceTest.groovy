@@ -9,7 +9,7 @@ import pl.cezarysanecki.parkingdomain.parking.view.vehicle.model.VehicleViews
 import pl.cezarysanecki.parkingdomain.requesting.client.application.MakingRequestForWholeParkingSpot
 import pl.cezarysanecki.parkingdomain.requesting.client.model.ClientId
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ReservationId
-import pl.cezarysanecki.parkingdomain.requesting.view.parkingspot.model.ParkingSpotReservationRequestsViews
+import pl.cezarysanecki.parkingdomain.requesting.view.parkingspot.model.ParkingSpotRequestsViews
 import spock.lang.Ignore
 
 import static pl.cezarysanecki.parkingdomain.parking.vehicle.application.ParkingVehicle.ParkOnReservedCommand
@@ -25,7 +25,7 @@ class AllowingToParkOnReservedParkingSpotAcceptanceTest extends AbstractRequesti
   @Autowired
   VehicleViews vehicleViews
   @Autowired
-  ParkingSpotReservationRequestsViews parkingSpotReservationRequestsViews
+  ParkingSpotRequestsViews parkingSpotReservationRequestsViews
   
   def "allow to park on reserved parking spot"() {
     given:
@@ -73,7 +73,7 @@ class AllowingToParkOnReservedParkingSpotAcceptanceTest extends AbstractRequesti
     assert parkingSpotReservationRequestsViews.getAllParkingSpots()
         .any {
           it.parkingSpotId == parkingSpotId.value
-              && it.currentReservationRequests.contains(reservationId.value)
+              && it.currentRequests.contains(reservationId.value)
         }
   }
   

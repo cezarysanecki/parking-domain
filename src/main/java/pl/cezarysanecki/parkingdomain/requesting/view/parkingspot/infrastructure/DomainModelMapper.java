@@ -2,19 +2,19 @@ package pl.cezarysanecki.parkingdomain.requesting.view.parkingspot.infrastructur
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import pl.cezarysanecki.parkingdomain.requesting.view.parkingspot.model.ParkingSpotReservationRequestsView;
+import pl.cezarysanecki.parkingdomain.requesting.view.parkingspot.model.ParkingSpotRequestsView;
 
 import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 class DomainModelMapper {
 
-    static ParkingSpotReservationRequestsView map(ParkingSpotReservationRequestsViewEntity entity) {
-        return new ParkingSpotReservationRequestsView(
+    static ParkingSpotRequestsView map(ParkingSpotRequestsViewEntity entity) {
+        return new ParkingSpotRequestsView(
                 entity.parkingSpotId,
                 entity.capacity - entity.currentOccupation(),
-                entity.currentReservations.stream()
-                        .map(vehicleReservationEntity -> vehicleReservationEntity.reservationId)
+                entity.currentRequests.stream()
+                        .map(vehicleRequestEntity -> vehicleRequestEntity.requestId)
                         .collect(Collectors.toUnmodifiableSet()));
     }
 

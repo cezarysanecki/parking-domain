@@ -8,11 +8,11 @@ import static pl.cezarysanecki.parkingdomain.parking.parkingspot.application.Cre
 import static pl.cezarysanecki.parkingdomain.requesting.parkingspot.model.ParkingSpotRequestEvent.ParkingSpotRequestCancelled;
 import static pl.cezarysanecki.parkingdomain.requesting.parkingspot.model.ParkingSpotRequestEvent.RequestForWholeParkingSpotStored;
 
-public interface ParkingSpotReservationRequestsViews {
+public interface ParkingSpotRequestsViews {
 
-    Set<ParkingSpotReservationRequestsView> getAllParkingSpots();
+    Set<ParkingSpotRequestsView> getAllParkingSpots();
 
-    Set<ParkingSpotReservationRequestsView> getAvailableParkingSpots();
+    Set<ParkingSpotRequestsView> getAvailableParkingSpots();
 
     void handle(ParkingSpotCreated event);
 

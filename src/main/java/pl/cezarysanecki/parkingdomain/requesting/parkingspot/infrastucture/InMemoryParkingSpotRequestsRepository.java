@@ -45,7 +45,7 @@ class InMemoryParkingSpotRequestsRepository implements ParkingSpotRequestsReposi
                         DATABASE.values()
                                 .stream()
                                 .filter(entity -> entity.requests.stream()
-                                        .anyMatch(vehicleEntity -> vehicleEntity.requestId.equals(requestId.getValue())))
+                                        .anyMatch(vehicleRequestEntity -> vehicleRequestEntity.requestId.equals(requestId.getValue())))
                                 .findFirst())
                 .map(DomainModelMapper::map);
     }

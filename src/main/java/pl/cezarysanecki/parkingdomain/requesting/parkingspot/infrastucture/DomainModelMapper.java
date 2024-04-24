@@ -17,11 +17,11 @@ class DomainModelMapper {
                 ParkingSpotId.of(entity.parkingSpotId),
                 ParkingSpotOccupation.of(
                         entity.requests.stream()
-                                .map(vehicleEntity -> vehicleEntity.size)
+                                .map(vehicleRequestEntity -> vehicleRequestEntity.size)
                                 .reduce(0, Integer::sum),
                         entity.capacity),
                 entity.requests.stream()
-                        .map(vehicleEntity -> vehicleEntity.requestId)
+                        .map(vehicleRequestEntity -> vehicleRequestEntity.requestId)
                         .map(RequestId::of)
                         .collect(Collectors.toUnmodifiableSet()));
     }

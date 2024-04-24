@@ -2,8 +2,8 @@ package pl.cezarysanecki.parkingdomain.requesting.view.parkingspot.infrastructur
 
 import pl.cezarysanecki.parkingdomain.commons.view.ViewEventListener;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.requesting.view.parkingspot.model.ParkingSpotReservationRequestsView;
-import pl.cezarysanecki.parkingdomain.requesting.view.parkingspot.model.ParkingSpotReservationRequestsViews;
+import pl.cezarysanecki.parkingdomain.requesting.view.parkingspot.model.ParkingSpotRequestsView;
+import pl.cezarysanecki.parkingdomain.requesting.view.parkingspot.model.ParkingSpotRequestsViews;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -16,19 +16,19 @@ import static pl.cezarysanecki.parkingdomain.requesting.parkingspot.model.Parkin
 import static pl.cezarysanecki.parkingdomain.requesting.parkingspot.model.ParkingSpotRequestEvent.RequestForPartOfParkingSpotStored;
 import static pl.cezarysanecki.parkingdomain.requesting.parkingspot.model.ParkingSpotRequestEvent.RequestForWholeParkingSpotStored;
 
-class InMemoryParkingSpotReservationRequestsViewRepository implements ParkingSpotReservationRequestsViews {
+class InMemoryParkingSpotRequestsViewRepository implements ParkingSpotRequestsViews {
 
-    private static final Map<ParkingSpotId, ParkingSpotReservationRequestsViewEntity> DATABASE = new ConcurrentHashMap<>();
+    private static final Map<ParkingSpotId, ParkingSpotRequestsViewEntity> DATABASE = new ConcurrentHashMap<>();
 
     @Override
-    public Set<ParkingSpotReservationRequestsView> getAllParkingSpots() {
+    public Set<ParkingSpotRequestsView> getAllParkingSpots() {
         return DATABASE.values().stream()
                 .map(DomainModelMapper::map)
                 .collect(Collectors.toUnmodifiableSet());
     }
 
     @Override
-    public Set<ParkingSpotReservationRequestsView> getAvailableParkingSpots() {
+    public Set<ParkingSpotRequestsView> getAvailableParkingSpots() {
         return DATABASE.values().stream()
                 .filter(entity -> entity.currentOccupation() < entity.capacity)
                 .map(DomainModelMapper::map)
@@ -38,7 +38,7 @@ class InMemoryParkingSpotReservationRequestsViewRepository implements ParkingSpo
     @Override
     @ViewEventListener
     public void handle(ParkingSpotCreated event) {
-        DATABASE.put(event.getParkingSpotId(), new ParkingSpotReservationRequestsViewEntity(
+        DATABASE.put(event.getParkingSpotId(), new ParkingSpotRequestsViewEntity(
                 event.getParkingSpotId().getValue(),
                 event.getParkingSpotCapacity().getValue(),
                 new HashSet<>()));
@@ -47,9 +47,9 @@ class InMemoryParkingSpotReservationRequestsViewRepository implements ParkingSpo
     @Override
     @ViewEventListener
     public void handle(RequestForWholeParkingSpotStored event) {
-        ParkingSpotReservationRequestsViewEntity entity = DATABASE.get(event.getParkingSpotId());
-        entity.currentReservations.add(new ParkingSpotReservationRequestsViewEntity.VehicleReservationRequestEntity(
-                event.getReservationId().getValue(),
+        ParkingSpotRequestsViewEntity entity = DATABASE.get(event.getParkingSpotId());
+        entity.currentRequests.add(new ParkingSpotRequestsViewEntity.VehicleRequestEntity(
+                event.getRequestId().getValue(),
                 entity.capacity));
         DATABASE.put(event.getParkingSpotId(), entity);
     }
@@ -57,9 +57,9 @@ class InMemoryParkingSpotReservationRequestsViewRepository implements ParkingSpo
     @Override
     @ViewEventListener
     public void handle(RequestForPartOfParkingSpotStored event) {
-        ParkingSpotReservationRequestsViewEntity entity = DATABASE.get(event.getParkingSpotId());
-        entity.currentReservations.add(new ParkingSpotReservationRequestsViewEntity.VehicleReservationRequestEntity(
-                event.getReservationId().getValue(),
+        ParkingSpotRequestsViewEntity entity = DATABASE.get(event.getParkingSpotId());
+        entity.currentRequests.add(new ParkingSpotRequestsViewEntity.VehicleRequestEntity(
+                event.getRequestId().getValue(),
                 event.getVehicleSize().getValue()));
         DATABASE.put(event.getParkingSpotId(), entity);
     }
@@ -67,8 +67,8 @@ class InMemoryParkingSpotReservationRequestsViewRepository implements ParkingSpo
     @Override
     @ViewEventListener
     public void handle(ParkingSpotRequestCancelled event) {
-        ParkingSpotReservationRequestsViewEntity entity = DATABASE.get(event.getParkingSpotId());
-        entity.currentReservations.removeIf(vehicleReservationRequestEntity -> vehicleReservationRequestEntity.reservationId.equals(event.getReservationId().getValue()));
+        ParkingSpotRequestsViewEntity entity = DATABASE.get(event.getParkingSpotId());
+        entity.currentRequests.removeIf(vehicleRequestEntity -> vehicleRequestEntity.requestId.equals(event.getRequestId().getValue()));
         DATABASE.put(event.getParkingSpotId(), entity);
     }
 

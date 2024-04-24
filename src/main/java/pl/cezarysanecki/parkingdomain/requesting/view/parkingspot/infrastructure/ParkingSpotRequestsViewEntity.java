@@ -6,21 +6,21 @@ import java.util.Set;
 import java.util.UUID;
 
 @AllArgsConstructor
-class ParkingSpotReservationRequestsViewEntity {
+class ParkingSpotRequestsViewEntity {
 
     UUID parkingSpotId;
     int capacity;
-    Set<VehicleReservationRequestEntity> currentReservations;
+    Set<VehicleRequestEntity> currentRequests;
 
     int currentOccupation() {
-        return currentReservations.stream()
-                .map(vehicleReservationRequest -> vehicleReservationRequest.size)
+        return currentRequests.stream()
+                .map(vehicleRequestEntity -> vehicleRequestEntity.size)
                 .reduce(0, Integer::sum);
     }
 
     @AllArgsConstructor
-    static class VehicleReservationRequestEntity {
-        UUID reservationId;
+    static class VehicleRequestEntity {
+        UUID requestId;
         int size;
     }
 
