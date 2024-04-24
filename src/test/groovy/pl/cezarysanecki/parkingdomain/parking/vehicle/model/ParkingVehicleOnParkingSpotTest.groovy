@@ -2,7 +2,7 @@ package pl.cezarysanecki.parkingdomain.parking.vehicle.model
 
 
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId
-import pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ReservationId
+import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ReservationId
 import spock.lang.Specification
 
 import static pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleFixture.notParkedVehicle

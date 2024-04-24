@@ -12,7 +12,7 @@ import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpots;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleId;
-import pl.cezarysanecki.parkingdomain.requestingreservation.client.model.ReservationId;
+import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ReservationId;
 
 import java.util.HashSet;
 import java.util.Map;
