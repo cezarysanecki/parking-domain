@@ -33,7 +33,7 @@ public class ParkingSpotRequestsConfig {
 
     @Bean
     @Profile("local")
-    ParkingSpotRequestsRepository parkingSpotRequestsRepository() {
+    InMemoryParkingSpotRequestsRepository parkingSpotRequestsRepository() {
         return new InMemoryParkingSpotRequestsRepository(eventPublisher);
     }
 

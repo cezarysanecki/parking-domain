@@ -41,7 +41,7 @@ public class VehicleConfig {
 
     @Bean
     @Profile("local")
-    Vehicles vehicles() {
+    InMemoryVehicleRepository vehicles() {
         return new InMemoryVehicleRepository(eventPublisher);
     }
 
