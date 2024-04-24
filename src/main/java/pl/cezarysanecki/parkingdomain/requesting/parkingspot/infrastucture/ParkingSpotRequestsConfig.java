@@ -5,10 +5,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
-import pl.cezarysanecki.parkingdomain.requesting.parkingspot.application.CancellingParkingSpotRequestReservationEventHandler;
-import pl.cezarysanecki.parkingdomain.requesting.parkingspot.application.StoringParkingSpotReservationRequestEventHandler;
-import pl.cezarysanecki.parkingdomain.requesting.parkingspot.application.CreatingParkingSpotReservationRequestsEventsHandler;
-import pl.cezarysanecki.parkingdomain.requesting.parkingspot.model.ParkingSpotReservationRequestsRepository;
+import pl.cezarysanecki.parkingdomain.requesting.parkingspot.application.CancellingParkingSpotRequestEventHandler;
+import pl.cezarysanecki.parkingdomain.requesting.parkingspot.application.CreatingParkingSpotRequestsEventsHandler;
+import pl.cezarysanecki.parkingdomain.requesting.parkingspot.application.StoringParkingSpotRequestEventHandler;
+import pl.cezarysanecki.parkingdomain.requesting.parkingspot.model.ParkingSpotRequestsRepository;
 
 @Configuration
 @RequiredArgsConstructor
@@ -17,24 +17,24 @@ public class ParkingSpotRequestsConfig {
     private final EventPublisher eventPublisher;
 
     @Bean
-    StoringParkingSpotReservationRequestEventHandler savingParkingSpotReservationRequestEventHandler(ParkingSpotReservationRequestsRepository parkingSpotReservationRequestsRepository) {
-        return new StoringParkingSpotReservationRequestEventHandler(parkingSpotReservationRequestsRepository);
+    StoringParkingSpotRequestEventHandler storingParkingSpotRequestEventHandler(ParkingSpotRequestsRepository parkingSpotRequestsRepository) {
+        return new StoringParkingSpotRequestEventHandler(parkingSpotRequestsRepository);
     }
 
     @Bean
-    CancellingParkingSpotRequestReservationEventHandler cancellingParkingSpotRequestReservationEventHandler(ParkingSpotReservationRequestsRepository parkingSpotReservationRequestsRepository) {
-        return new CancellingParkingSpotRequestReservationEventHandler(parkingSpotReservationRequestsRepository);
+    CancellingParkingSpotRequestEventHandler cancellingParkingSpotRequestEventHandler(ParkingSpotRequestsRepository parkingSpotRequestsRepository) {
+        return new CancellingParkingSpotRequestEventHandler(parkingSpotRequestsRepository);
     }
 
     @Bean
-    CreatingParkingSpotReservationRequestsEventsHandler creatingParkingSpotReservationRequestsEventsHandler(ParkingSpotReservationRequestsRepository parkingSpotReservationRequestsRepository) {
-        return new CreatingParkingSpotReservationRequestsEventsHandler(parkingSpotReservationRequestsRepository);
+    CreatingParkingSpotRequestsEventsHandler creatingParkingSpotRequestsEventsHandler(ParkingSpotRequestsRepository parkingSpotRequestsRepository) {
+        return new CreatingParkingSpotRequestsEventsHandler(parkingSpotRequestsRepository);
     }
 
     @Bean
     @Profile("local")
-    ParkingSpotReservationRequestsRepository parkingSpotReservationRequestsRepository() {
-        return new InMemoryParkingSpotReservationRequestsRepository(eventPublisher);
+    ParkingSpotRequestsRepository parkingSpotRequestsRepository() {
+        return new InMemoryParkingSpotRequestsRepository(eventPublisher);
     }
 
 }

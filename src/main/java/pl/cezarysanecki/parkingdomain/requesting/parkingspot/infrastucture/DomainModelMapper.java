@@ -4,25 +4,25 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotOccupation;
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ReservationId;
-import pl.cezarysanecki.parkingdomain.requesting.parkingspot.model.ParkingSpotReservationRequests;
+import pl.cezarysanecki.parkingdomain.requesting.client.model.RequestId;
+import pl.cezarysanecki.parkingdomain.requesting.parkingspot.model.ParkingSpotRequests;
 
 import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 class DomainModelMapper {
 
-    static ParkingSpotReservationRequests map(ParkingSpotReservationRequestsEntity entity) {
-        return new ParkingSpotReservationRequests(
+    static ParkingSpotRequests map(ParkingSpotRequestsEntity entity) {
+        return new ParkingSpotRequests(
                 ParkingSpotId.of(entity.parkingSpotId),
                 ParkingSpotOccupation.of(
-                        entity.reservationRequests.stream()
-                                .map(vehicleReservationEntity -> vehicleReservationEntity.size)
+                        entity.requests.stream()
+                                .map(vehicleEntity -> vehicleEntity.size)
                                 .reduce(0, Integer::sum),
                         entity.capacity),
-                entity.reservationRequests.stream()
-                        .map(vehicleReservationEntity -> vehicleReservationEntity.reservationId)
-                        .map(ReservationId::of)
+                entity.requests.stream()
+                        .map(vehicleEntity -> vehicleEntity.requestId)
+                        .map(RequestId::of)
                         .collect(Collectors.toUnmodifiableSet()));
     }
 

@@ -4,18 +4,18 @@ package pl.cezarysanecki.parkingdomain.requesting.parkingspot.application
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotCapacity
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotCategory
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId
-import pl.cezarysanecki.parkingdomain.requesting.parkingspot.model.ParkingSpotReservationRequestsRepository
+import pl.cezarysanecki.parkingdomain.requesting.parkingspot.model.ParkingSpotRequestsRepository
 import spock.lang.Specification
 import spock.lang.Subject
 
 import static pl.cezarysanecki.parkingdomain.parking.parkingspot.application.CreatingParkingSpot.ParkingSpotCreated
 
-class CreatingParkingSpotReservationRequestsTest extends Specification {
+class CreatingParkingSpotRequestsTest extends Specification {
   
-  ParkingSpotReservationRequestsRepository parkingSpotReservationRequestsRepository = Mock()
+  ParkingSpotRequestsRepository parkingSpotReservationRequestsRepository = Mock()
   
   @Subject
-  CreatingParkingSpotReservationRequestsEventsHandler creatingParkingSpotReservationRequestsEventsHandler = new CreatingParkingSpotReservationRequestsEventsHandler(parkingSpotReservationRequestsRepository)
+  CreatingParkingSpotRequestsEventsHandler creatingParkingSpotReservationRequestsEventsHandler = new CreatingParkingSpotRequestsEventsHandler(parkingSpotReservationRequestsRepository)
   
   def "create parking spot reservation requests when parking spot is created"() {
     given:

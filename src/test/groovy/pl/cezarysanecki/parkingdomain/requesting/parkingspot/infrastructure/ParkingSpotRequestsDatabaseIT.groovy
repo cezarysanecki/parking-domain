@@ -11,16 +11,16 @@ import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleSize
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ReservationId
 import pl.cezarysanecki.parkingdomain.requesting.parkingspot.infrastucture.ParkingSpotRequestsConfig
-import pl.cezarysanecki.parkingdomain.requesting.parkingspot.model.ParkingSpotReservationRequests
-import pl.cezarysanecki.parkingdomain.requesting.parkingspot.model.ParkingSpotReservationRequestsRepository
+import pl.cezarysanecki.parkingdomain.requesting.parkingspot.model.ParkingSpotRequests
+import pl.cezarysanecki.parkingdomain.requesting.parkingspot.model.ParkingSpotRequestsRepository
 import spock.lang.Specification
 
-import static pl.cezarysanecki.parkingdomain.requesting.parkingspot.model.ParkingSpotReservationRequestEvent.ParkingSpotReservationRequestCancelled
-import static pl.cezarysanecki.parkingdomain.requesting.parkingspot.model.ParkingSpotReservationRequestEvent.ReservationRequestForPartOfParkingSpotStored
+import static pl.cezarysanecki.parkingdomain.requesting.parkingspot.model.ParkingSpotRequestEvent.ParkingSpotRequestCancelled
+import static pl.cezarysanecki.parkingdomain.requesting.parkingspot.model.ParkingSpotRequestEvent.RequestForPartOfParkingSpotStored
 
 @ActiveProfiles("local")
 @SpringBootTest(classes = [ParkingSpotRequestsConfig.class])
-class ParkingSpotReservationRequestsDatabaseIT extends Specification {
+class ParkingSpotRequestsDatabaseIT extends Specification {
   
   def parkingSpotId = ParkingSpotId.newOne()
   
@@ -28,7 +28,7 @@ class ParkingSpotReservationRequestsDatabaseIT extends Specification {
   EventPublisher eventPublisher
   
   @Autowired
-  ParkingSpotReservationRequestsRepository parkingSpotReservationRequestsRepository
+  ParkingSpotRequestsRepository parkingSpotReservationRequestsRepository
   
   def "persistence of parking spot reservation requests in real database should work"() {
     given:
@@ -54,13 +54,13 @@ class ParkingSpotReservationRequestsDatabaseIT extends Specification {
       parkingSpotReservationRequestsShouldBeFoundInDatabaseBeingFree(parkingSpotId)
   }
   
-  private ReservationRequestForPartOfParkingSpotStored createReservationRequestOnPartOfParkingSpot(
+  private RequestForPartOfParkingSpotStored createReservationRequestOnPartOfParkingSpot(
       ParkingSpotId parkingSpotId, ReservationId reservationId, VehicleSize vehicleSize) {
-    return new ReservationRequestForPartOfParkingSpotStored(parkingSpotId, reservationId, vehicleSize)
+    return new RequestForPartOfParkingSpotStored(parkingSpotId, reservationId, vehicleSize)
   }
   
-  private ParkingSpotReservationRequestCancelled cancelParkingSpotReservationRequest(ParkingSpotId parkingSpotId, ReservationId reservationId) {
-    return new ParkingSpotReservationRequestCancelled(parkingSpotId, reservationId)
+  private ParkingSpotRequestCancelled cancelParkingSpotReservationRequest(ParkingSpotId parkingSpotId, ReservationId reservationId) {
+    return new ParkingSpotRequestCancelled(parkingSpotId, reservationId)
   }
   
   private void parkingSpotReservationRequestsShouldBeFoundInDatabaseCannotHandlingMoreReservations(ParkingSpotId parkingSpotId) {
@@ -73,9 +73,9 @@ class ParkingSpotReservationRequestsDatabaseIT extends Specification {
     assert parkingSpotReservationRequests.isFree()
   }
   
-  ParkingSpotReservationRequests loadPersistedParkingSpotReservationRequests(ParkingSpotId parkingSpotId) {
-    Option<ParkingSpotReservationRequests> loaded = parkingSpotReservationRequestsRepository.findBy(parkingSpotId)
-    ParkingSpotReservationRequests parkingSpotReservations = loaded.getOrElseThrow({
+  ParkingSpotRequests loadPersistedParkingSpotReservationRequests(ParkingSpotId parkingSpotId) {
+    Option<ParkingSpotRequests> loaded = parkingSpotReservationRequestsRepository.findBy(parkingSpotId)
+    ParkingSpotRequests parkingSpotReservations = loaded.getOrElseThrow({
       new IllegalStateException("should have been persisted")
     })
     return parkingSpotReservations

@@ -9,7 +9,7 @@ import spock.lang.Subject
 
 import static pl.cezarysanecki.parkingdomain.requesting.client.model.ClientRequestsEvent.RequestCancelled
 import static pl.cezarysanecki.parkingdomain.requesting.client.model.ClientReservationsFixture.clientWithRequest
-import static pl.cezarysanecki.parkingdomain.requesting.parkingspot.model.ParkingSpotReservationRequestEvent.StoringParkingSpotReservationRequestFailed
+import static pl.cezarysanecki.parkingdomain.requesting.parkingspot.model.ParkingSpotRequestEvent.StoringParkingSpotRequestFailed
 
 class CancellingReservationRequestAfterFailedClientTest extends Specification {
   
@@ -28,7 +28,7 @@ class CancellingReservationRequestAfterFailedClientTest extends Specification {
       clientReservationRequestsRepository.findBy(reservationId) >> Option.of(clientReservationRequests)
     
     when:
-      cancellingReservationRequestEventHandler.handle(new StoringParkingSpotReservationRequestFailed(
+      cancellingReservationRequestEventHandler.handle(new StoringParkingSpotRequestFailed(
           ParkingSpotId.newOne(), reservationId, "any reason"))
     
     then:

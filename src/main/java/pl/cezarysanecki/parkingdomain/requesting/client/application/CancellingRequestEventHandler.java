@@ -7,7 +7,7 @@ import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ReservationId;
 import pl.cezarysanecki.parkingdomain.requesting.client.application.CancellingRequest.Command;
 import pl.cezarysanecki.parkingdomain.requesting.client.model.RequestId;
 
-import static pl.cezarysanecki.parkingdomain.requesting.parkingspot.model.ParkingSpotReservationRequestEvent.StoringParkingSpotReservationRequestFailed;
+import static pl.cezarysanecki.parkingdomain.requesting.parkingspot.model.ParkingSpotRequestEvent.StoringParkingSpotRequestFailed;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -16,7 +16,7 @@ public class CancellingRequestEventHandler {
     private final CancellingRequest cancellingRequest;
 
     @EventListener
-    public void handle(StoringParkingSpotReservationRequestFailed storingParkingSpotReservationRequestFailed) {
+    public void handle(StoringParkingSpotRequestFailed storingParkingSpotReservationRequestFailed) {
         ReservationId reservationId = storingParkingSpotReservationRequestFailed.getReservationId();
 
         cancellingRequest.cancelRequest(new Command(RequestId.of(reservationId.getValue())))
