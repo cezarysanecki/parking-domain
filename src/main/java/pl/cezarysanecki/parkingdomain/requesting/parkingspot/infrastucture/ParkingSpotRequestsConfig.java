@@ -17,17 +17,23 @@ public class ParkingSpotRequestsConfig {
     private final EventPublisher eventPublisher;
 
     @Bean
-    StoringParkingSpotRequestEventHandler storingParkingSpotRequestEventHandler(ParkingSpotRequestsRepository parkingSpotRequestsRepository) {
+    StoringParkingSpotRequestEventHandler storingParkingSpotRequestEventHandler(
+            ParkingSpotRequestsRepository parkingSpotRequestsRepository
+    ) {
         return new StoringParkingSpotRequestEventHandler(parkingSpotRequestsRepository);
     }
 
     @Bean
-    CancellingParkingSpotRequestEventHandler cancellingParkingSpotRequestEventHandler(ParkingSpotRequestsRepository parkingSpotRequestsRepository) {
+    CancellingParkingSpotRequestEventHandler cancellingParkingSpotRequestEventHandler(
+            ParkingSpotRequestsRepository parkingSpotRequestsRepository
+    ) {
         return new CancellingParkingSpotRequestEventHandler(parkingSpotRequestsRepository);
     }
 
     @Bean
-    CreatingParkingSpotRequestsEventsHandler creatingParkingSpotRequestsEventsHandler(ParkingSpotRequestsRepository parkingSpotRequestsRepository) {
+    CreatingParkingSpotRequestsEventsHandler creatingParkingSpotRequestsEventsHandler(
+            ParkingSpotRequestsRepository parkingSpotRequestsRepository
+    ) {
         return new CreatingParkingSpotRequestsEventsHandler(parkingSpotRequestsRepository);
     }
 
