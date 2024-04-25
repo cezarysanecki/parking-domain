@@ -7,7 +7,9 @@ spring:
   h2:
     console:
       enabled: true
-
+  quartz:
+    job-store-type: memory
+# to configure jdbc read: https://medium.com/turkcell/spring-boot-quartz-scheduler-1-c61bbbafdbbb
 logging:
   level:
     pl.cezarysanecki.parkingdomain: DEBUG
