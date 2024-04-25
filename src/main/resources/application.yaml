@@ -1,0 +1,20 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:parking-domain
+    driverClassName: org.h2.Driver
+    username: sa
+    password: password
+  h2:
+    console:
+      enabled: true
+  quartz:
+    job-store-type: memory
+# to configure jdbc read: https://medium.com/turkcell/spring-boot-quartz-scheduler-1-c61bbbafdbbb
+
+job:
+  makingRequestsValidJob:
+    cronExpression: "0/2 * * * * ?"
+
+logging:
+  level:
+    pl.cezarysanecki.parkingdomain: DEBUG
