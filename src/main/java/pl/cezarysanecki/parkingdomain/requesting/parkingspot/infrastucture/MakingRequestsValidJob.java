@@ -9,6 +9,8 @@ import org.quartz.JobExecutionContext;
 @DisallowConcurrentExecution
 class MakingRequestsValidJob implements Job {
 
+
+
     @Override
     public void execute(final JobExecutionContext jobExecutionContext) {
         log.debug("BLA BLA");
