@@ -63,4 +63,5 @@ class InMemoryParkingSpotRequestsRepository implements ParkingSpotRequestsReposi
         }
         eventPublisher.publish(parkingSpotRequestEvent.normalize());
     }
+
 }
