@@ -11,7 +11,7 @@ class MakingRequestsValidJob implements Job {
 
     @Override
     public void execute(final JobExecutionContext jobExecutionContext) {
-        log.debug("BLA BLA BLA");
+        log.debug("BLA BLA BLA BLA");
     }
 
 }
