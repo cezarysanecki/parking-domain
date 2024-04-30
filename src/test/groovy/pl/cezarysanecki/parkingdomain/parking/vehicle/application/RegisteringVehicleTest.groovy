@@ -1,13 +1,11 @@
 package pl.cezarysanecki.parkingdomain.parking.vehicle.application
 
-import pl.cezarysanecki.parkingdomain.catalogue.vehicle.RegisteringVehicle
-import pl.cezarysanecki.parkingdomain.catalogue.vehicle.VehicleRegistered
-import pl.cezarysanecki.parkingdomain.catalogue.vehicle.VehicleSize
+import pl.cezarysanecki.parkingdomain.management.vehicle.RegisteringVehicle
+import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleRegistered
+import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleSize
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.Vehicles
 import spock.lang.Specification
 import spock.lang.Subject
-
-import static pl.cezarysanecki.parkingdomain.catalogue.vehicle.RegisteringVehicle.Command
 
 class RegisteringVehicleTest extends Specification {
   

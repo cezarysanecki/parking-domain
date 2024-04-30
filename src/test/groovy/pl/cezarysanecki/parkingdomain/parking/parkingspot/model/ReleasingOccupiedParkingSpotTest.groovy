@@ -1,6 +1,6 @@
 package pl.cezarysanecki.parkingdomain.parking.parkingspot.model
 
-import pl.cezarysanecki.parkingdomain.catalogue.vehicle.VehicleId
+import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleId
 import spock.lang.Specification
 
 import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotFixture.fullyOccupiedBy

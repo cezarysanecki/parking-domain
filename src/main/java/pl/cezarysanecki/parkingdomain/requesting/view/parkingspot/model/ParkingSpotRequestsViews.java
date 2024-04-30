@@ -4,7 +4,7 @@ import pl.cezarysanecki.parkingdomain.requesting.parkingspot.model.ParkingSpotRe
 
 import java.util.Set;
 
-import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.ParkingSpotAdded;
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotAdded;
 import static pl.cezarysanecki.parkingdomain.requesting.parkingspot.model.ParkingSpotRequestEvent.ParkingSpotRequestCancelled;
 import static pl.cezarysanecki.parkingdomain.requesting.parkingspot.model.ParkingSpotRequestEvent.RequestForWholeParkingSpotStored;
 

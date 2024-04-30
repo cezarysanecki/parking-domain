@@ -1,7 +1,7 @@
 package pl.cezarysanecki.parkingdomain.parking.vehicle.model
 
 
-import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.ParkingSpotId
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId
 import spock.lang.Specification
 
 import static pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleFixture.notParkedVehicle

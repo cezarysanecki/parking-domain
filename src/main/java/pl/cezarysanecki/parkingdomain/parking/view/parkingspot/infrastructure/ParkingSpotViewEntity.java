@@ -1,7 +1,7 @@
 package pl.cezarysanecki.parkingdomain.parking.view.parkingspot.infrastructure;
 
 import lombok.AllArgsConstructor;
-import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.ParkingSpotCategory;
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory;
 
 import java.util.Set;
 import java.util.UUID;

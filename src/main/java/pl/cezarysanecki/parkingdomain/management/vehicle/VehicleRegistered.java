@@ -1,7 +1,7 @@
-package pl.cezarysanecki.parkingdomain.catalogue.vehicle;
+package pl.cezarysanecki.parkingdomain.management.vehicle;
 
 import pl.cezarysanecki.parkingdomain.commons.events.DomainEvent;
-import pl.cezarysanecki.parkingdomain.catalogue.client.ClientId;
+import pl.cezarysanecki.parkingdomain.management.client.ClientId;
 
 public record VehicleRegistered(
         VehicleId vehicleId,

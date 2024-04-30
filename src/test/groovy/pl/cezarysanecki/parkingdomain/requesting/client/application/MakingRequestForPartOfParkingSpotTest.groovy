@@ -2,8 +2,8 @@ package pl.cezarysanecki.parkingdomain.requesting.client.application
 
 import io.vavr.control.Option
 import pl.cezarysanecki.parkingdomain.commons.commands.Result
-import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.ParkingSpotId
-import pl.cezarysanecki.parkingdomain.catalogue.client.ClientId
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId
+import pl.cezarysanecki.parkingdomain.management.client.ClientId
 import pl.cezarysanecki.parkingdomain.requesting.client.model.ClientRequestsRepository
 import pl.cezarysanecki.parkingdomain.requesting.client.model.RequestId
 import spock.lang.Specification

@@ -3,9 +3,9 @@ package pl.cezarysanecki.parkingdomain.parking.view.parkingspot.infrastructure;
 import io.vavr.control.Option;
 import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.commons.view.ViewEventListener;
-import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.catalogue.vehicle.VehicleId;
-import pl.cezarysanecki.parkingdomain.catalogue.vehicle.VehicleSize;
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
+import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleId;
+import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleSize;
 import pl.cezarysanecki.parkingdomain.parking.view.parkingspot.infrastructure.ParkingSpotViewEntity.ParkedVehicleView;
 import pl.cezarysanecki.parkingdomain.parking.view.parkingspot.model.ParkingSpotView;
 import pl.cezarysanecki.parkingdomain.parking.view.parkingspot.model.ParkingSpotViews;
@@ -16,7 +16,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.ParkingSpotAdded;
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotAdded;
 import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.ParkingSpotLeft;
 import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.ParkingSpotOccupied;
 

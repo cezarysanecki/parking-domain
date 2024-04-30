@@ -1,10 +1,10 @@
-package pl.cezarysanecki.parkingdomain.catalogue.vehicle;
+package pl.cezarysanecki.parkingdomain.management.vehicle;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.Value;
-import pl.cezarysanecki.parkingdomain.catalogue.client.ClientId;
+import pl.cezarysanecki.parkingdomain.management.client.ClientId;
 
 import java.util.UUID;
 

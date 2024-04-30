@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.catalogue.parkingspot;
+package pl.cezarysanecki.parkingdomain.management.parkingspot;
 
 import pl.cezarysanecki.parkingdomain.commons.events.DomainEvent;
 

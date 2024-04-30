@@ -1,6 +1,6 @@
 package pl.cezarysanecki.parkingdomain.parking.view.parkingspot.model;
 
-import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.ParkingSpotAdded;
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotAdded;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.ParkingSpotLeft;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.ParkingSpotOccupied;
 

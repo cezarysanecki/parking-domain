@@ -3,9 +3,9 @@ package pl.cezarysanecki.parkingdomain.parking.view.vehicle.infrastructure;
 import io.vavr.control.Option;
 import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.commons.view.ViewEventListener;
-import pl.cezarysanecki.parkingdomain.catalogue.vehicle.VehicleRegistered;
+import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleRegistered;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleEvent.VehicleDroveAway;
-import pl.cezarysanecki.parkingdomain.catalogue.vehicle.VehicleId;
+import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleId;
 import pl.cezarysanecki.parkingdomain.parking.view.vehicle.model.VehicleView;
 import pl.cezarysanecki.parkingdomain.parking.view.vehicle.model.VehicleViews;
 

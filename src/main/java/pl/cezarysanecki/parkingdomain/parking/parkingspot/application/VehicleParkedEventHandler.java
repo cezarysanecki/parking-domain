@@ -5,11 +5,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
-import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.ParkingSpotId;
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpots;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleEvent.VehicleParked;
-import pl.cezarysanecki.parkingdomain.catalogue.vehicle.VehicleId;
-import pl.cezarysanecki.parkingdomain.catalogue.vehicle.VehicleSize;
+import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleId;
+import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleSize;
 
 import static io.vavr.API.$;
 import static io.vavr.API.Case;

@@ -5,15 +5,15 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.ActiveProfiles
-import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.ParkingSpotAdded
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotAdded
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpot
-import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.ParkingSpotCapacity
-import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.ParkingSpotCategory
-import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.ParkingSpotId
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCapacity
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpots
-import pl.cezarysanecki.parkingdomain.catalogue.vehicle.VehicleId
-import pl.cezarysanecki.parkingdomain.catalogue.vehicle.VehicleSize
+import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleId
+import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleSize
 import spock.lang.Specification
 
 import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.ParkingSpotOccupied

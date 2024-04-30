@@ -1,9 +1,9 @@
 package pl.cezarysanecki.parkingdomain.parking.parkingspot.application
 
-import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.AddingParkingSpot
-import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.ParkingSpotCapacity
-import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.ParkingSpotCategory
-import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.ParkingSpotAdded
+import pl.cezarysanecki.parkingdomain.management.parkingspot.AddingParkingSpot
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCapacity
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotAdded
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpots
 import spock.lang.Specification
 import spock.lang.Subject

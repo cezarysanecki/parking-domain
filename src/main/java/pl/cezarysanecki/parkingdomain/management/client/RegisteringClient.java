@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.catalogue.client;
+package pl.cezarysanecki.parkingdomain.management.client;
 
 import io.vavr.control.Try;
 import lombok.AccessLevel;

@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.catalogue.client;
+package pl.cezarysanecki.parkingdomain.management.client;
 
 import pl.cezarysanecki.parkingdomain.commons.events.DomainEvent;
 

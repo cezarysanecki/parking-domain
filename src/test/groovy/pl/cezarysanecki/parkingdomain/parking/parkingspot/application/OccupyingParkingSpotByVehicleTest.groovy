@@ -1,11 +1,11 @@
 package pl.cezarysanecki.parkingdomain.parking.parkingspot.application
 
 import io.vavr.control.Option
-import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.ParkingSpotId
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpots
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleEvent
-import pl.cezarysanecki.parkingdomain.catalogue.vehicle.VehicleId
-import pl.cezarysanecki.parkingdomain.catalogue.vehicle.VehicleSize
+import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleId
+import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleSize
 import spock.lang.Specification
 import spock.lang.Subject
 

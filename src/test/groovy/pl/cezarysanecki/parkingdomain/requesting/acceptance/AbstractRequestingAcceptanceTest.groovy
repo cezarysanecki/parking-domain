@@ -6,13 +6,13 @@ import org.springframework.test.context.ActiveProfiles
 import pl.cezarysanecki.parkingdomain.commons.commands.Result
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisherTestConfig
 import pl.cezarysanecki.parkingdomain.parking.ParkingConfig
-import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.AddingParkingSpot
-import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.ParkingSpotCapacity
-import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.ParkingSpotCategory
-import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.ParkingSpotId
-import pl.cezarysanecki.parkingdomain.catalogue.vehicle.RegisteringVehicle
-import pl.cezarysanecki.parkingdomain.catalogue.vehicle.VehicleId
-import pl.cezarysanecki.parkingdomain.catalogue.vehicle.VehicleSize
+import pl.cezarysanecki.parkingdomain.management.parkingspot.AddingParkingSpot
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCapacity
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId
+import pl.cezarysanecki.parkingdomain.management.vehicle.RegisteringVehicle
+import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleId
+import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleSize
 import pl.cezarysanecki.parkingdomain.requesting.RequestingConfig
 import spock.lang.Specification
 

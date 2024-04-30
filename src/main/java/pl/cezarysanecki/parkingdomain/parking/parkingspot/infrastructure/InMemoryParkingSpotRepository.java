@@ -3,15 +3,15 @@ package pl.cezarysanecki.parkingdomain.parking.parkingspot.infrastructure;
 import io.vavr.API;
 import io.vavr.control.Option;
 import lombok.RequiredArgsConstructor;
-import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.ParkingSpotAdded;
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotAdded;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.application.FindingParkingSpotReservations;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent;
-import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.ParkingSpotId;
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpots;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ReservationId;
-import pl.cezarysanecki.parkingdomain.catalogue.vehicle.VehicleId;
+import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleId;
 
 import java.util.HashSet;
 import java.util.Map;

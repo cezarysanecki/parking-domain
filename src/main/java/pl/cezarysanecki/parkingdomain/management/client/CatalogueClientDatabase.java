@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.catalogue.client;
+package pl.cezarysanecki.parkingdomain.management.client;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

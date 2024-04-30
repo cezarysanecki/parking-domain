@@ -2,9 +2,9 @@ package pl.cezarysanecki.parkingdomain.requesting.client.model;
 
 import io.vavr.control.Either;
 import lombok.Value;
-import pl.cezarysanecki.parkingdomain.catalogue.client.ClientId;
-import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.catalogue.vehicle.VehicleSize;
+import pl.cezarysanecki.parkingdomain.management.client.ClientId;
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
+import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleSize;
 import pl.cezarysanecki.parkingdomain.requesting.client.model.ClientRequestsEvent.RequestForWholeParkingSpotMade;
 
 import java.util.Set;

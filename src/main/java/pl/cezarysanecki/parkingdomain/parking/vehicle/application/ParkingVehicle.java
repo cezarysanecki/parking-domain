@@ -8,9 +8,9 @@ import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.application.FindingParkingSpotReservations;
-import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.ParkingSpotId;
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.Vehicle;
-import pl.cezarysanecki.parkingdomain.catalogue.vehicle.VehicleId;
+import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleId;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.Vehicles;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ReservationId;
 

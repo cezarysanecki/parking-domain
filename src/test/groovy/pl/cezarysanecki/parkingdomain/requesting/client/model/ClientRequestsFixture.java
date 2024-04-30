@@ -2,7 +2,7 @@ package pl.cezarysanecki.parkingdomain.requesting.client.model;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import pl.cezarysanecki.parkingdomain.catalogue.client.ClientId;
+import pl.cezarysanecki.parkingdomain.management.client.ClientId;
 
 import java.util.Set;
 

@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.catalogue.parkingspot;
+package pl.cezarysanecki.parkingdomain.management.parkingspot;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

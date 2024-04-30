@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.catalogue.vehicle;
+package pl.cezarysanecki.parkingdomain.management.client;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -8,19 +8,19 @@ import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 
 @Configuration
 @RequiredArgsConstructor
-public class VehicleConfig {
+public class CatalogueClientConfig {
 
     private final EventPublisher eventPublisher;
 
     @Bean
-    RegisteringVehicle registeringVehicle(CatalogueVehicleDatabase catalogueVehicleDatabase) {
-        return new RegisteringVehicle(catalogueVehicleDatabase, eventPublisher);
+    RegisteringClient registeringClient(CatalogueClientDatabase catalogueParkingSpotDatabase) {
+        return new RegisteringClient(catalogueParkingSpotDatabase, eventPublisher);
     }
 
     @Bean
     @Profile("local")
-    CatalogueVehicleDatabase catalogueVehicleDatabase() {
-        return new CatalogueVehicleDatabase.InMemoryCatalogueVehicleDatabase();
+    CatalogueClientDatabase catalogueClientDatabase() {
+        return new CatalogueClientDatabase.InMemoryCatalogueClientDatabase();
     }
 
 }

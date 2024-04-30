@@ -6,9 +6,9 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.ActiveProfiles
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher
-import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.ParkingSpotId
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.requesting.client.infrastucture.ClientRequestsConfig
-import pl.cezarysanecki.parkingdomain.catalogue.client.ClientId
+import pl.cezarysanecki.parkingdomain.management.client.ClientId
 import pl.cezarysanecki.parkingdomain.requesting.client.model.ClientRequests
 import pl.cezarysanecki.parkingdomain.requesting.client.model.ClientRequestsRepository
 import pl.cezarysanecki.parkingdomain.requesting.client.model.RequestId

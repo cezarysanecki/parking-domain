@@ -1,7 +1,7 @@
 package pl.cezarysanecki.parkingdomain.requesting.view.client.infrastructure;
 
 import pl.cezarysanecki.parkingdomain.commons.view.ViewEventListener;
-import pl.cezarysanecki.parkingdomain.catalogue.client.ClientId;
+import pl.cezarysanecki.parkingdomain.management.client.ClientId;
 import pl.cezarysanecki.parkingdomain.requesting.view.client.model.ClientRequestsView;
 import pl.cezarysanecki.parkingdomain.requesting.view.client.model.ClientRequestsViews;
 

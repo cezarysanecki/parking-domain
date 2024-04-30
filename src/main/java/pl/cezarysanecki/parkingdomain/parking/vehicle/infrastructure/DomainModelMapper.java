@@ -2,10 +2,10 @@ package pl.cezarysanecki.parkingdomain.parking.vehicle.infrastructure;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.ParkingSpotId;
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.Vehicle;
-import pl.cezarysanecki.parkingdomain.catalogue.vehicle.VehicleId;
-import pl.cezarysanecki.parkingdomain.catalogue.vehicle.VehicleSize;
+import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleId;
+import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleSize;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleInformation;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)

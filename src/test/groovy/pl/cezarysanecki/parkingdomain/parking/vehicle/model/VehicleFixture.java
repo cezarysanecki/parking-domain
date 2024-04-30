@@ -3,9 +3,9 @@ package pl.cezarysanecki.parkingdomain.parking.vehicle.model;
 import io.vavr.control.Option;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.catalogue.vehicle.VehicleId;
-import pl.cezarysanecki.parkingdomain.catalogue.vehicle.VehicleSize;
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
+import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleId;
+import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleSize;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class VehicleFixture {

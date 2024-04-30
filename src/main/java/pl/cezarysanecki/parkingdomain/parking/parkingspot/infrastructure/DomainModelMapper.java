@@ -3,9 +3,9 @@ package pl.cezarysanecki.parkingdomain.parking.parkingspot.infrastructure;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpot;
-import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.ParkingSpotId;
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotOccupation;
-import pl.cezarysanecki.parkingdomain.catalogue.vehicle.VehicleId;
+import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleId;
 
 import java.util.stream.Collectors;
 
