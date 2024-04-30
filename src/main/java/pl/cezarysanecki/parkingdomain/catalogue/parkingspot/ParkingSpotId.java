@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.parking.parkingspot.model;
+package pl.cezarysanecki.parkingdomain.catalogue.parkingspot;
 
 import lombok.Value;
 

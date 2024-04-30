@@ -2,7 +2,7 @@ package pl.cezarysanecki.parkingdomain.requesting.acceptance
 
 import org.springframework.beans.factory.annotation.Autowired
 import pl.cezarysanecki.parkingdomain.commons.commands.Result
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId
+import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.requesting.client.application.CancellingRequest
 import pl.cezarysanecki.parkingdomain.requesting.client.application.MakingRequestForPartOfParkingSpot
 import pl.cezarysanecki.parkingdomain.requesting.client.application.MakingRequestForWholeParkingSpot

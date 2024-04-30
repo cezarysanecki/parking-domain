@@ -4,7 +4,7 @@ import pl.cezarysanecki.parkingdomain.requesting.parkingspot.model.ParkingSpotRe
 
 import java.util.Set;
 
-import static pl.cezarysanecki.parkingdomain.parking.parkingspot.application.CreatingParkingSpot.ParkingSpotCreated;
+import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.ParkingSpotAdded;
 import static pl.cezarysanecki.parkingdomain.requesting.parkingspot.model.ParkingSpotRequestEvent.ParkingSpotRequestCancelled;
 import static pl.cezarysanecki.parkingdomain.requesting.parkingspot.model.ParkingSpotRequestEvent.RequestForWholeParkingSpotStored;
 
@@ -14,7 +14,7 @@ public interface ParkingSpotRequestsViews {
 
     Set<ParkingSpotRequestsView> getAvailableParkingSpots();
 
-    void handle(ParkingSpotCreated event);
+    void handle(ParkingSpotAdded event);
 
     void handle(RequestForWholeParkingSpotStored event);
 

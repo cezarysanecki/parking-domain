@@ -3,7 +3,7 @@ package pl.cezarysanecki.parkingdomain.parking.vehicle.model;
 import io.vavr.control.Option;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId;
+import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.ParkingSpotId;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class VehicleFixture {

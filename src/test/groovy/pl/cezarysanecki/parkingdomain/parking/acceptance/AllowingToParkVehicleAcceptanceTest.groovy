@@ -1,7 +1,7 @@
 package pl.cezarysanecki.parkingdomain.parking.acceptance
 
 import org.springframework.beans.factory.annotation.Autowired
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId
+import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.parking.vehicle.application.ParkingVehicle
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleId
 import pl.cezarysanecki.parkingdomain.parking.view.parkingspot.model.ParkingSpotViews

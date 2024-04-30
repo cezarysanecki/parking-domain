@@ -1,6 +1,6 @@
 package pl.cezarysanecki.parkingdomain.parking.view.parkingspot.model;
 
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.application.CreatingParkingSpot.ParkingSpotCreated;
+import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.ParkingSpotAdded;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.ParkingSpotLeft;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.ParkingSpotOccupied;
 
@@ -10,7 +10,7 @@ public interface ParkingSpotViews {
 
     Set<ParkingSpotView> queryForAvailableParkingSpots();
 
-    void handle(ParkingSpotCreated event);
+    void handle(ParkingSpotAdded event);
 
     void handle(ParkingSpotOccupied event);
 
