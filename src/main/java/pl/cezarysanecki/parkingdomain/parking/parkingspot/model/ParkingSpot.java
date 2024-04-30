@@ -20,37 +20,34 @@ import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSp
 public class ParkingSpot {
 
     @NonNull
-    ParkingSpotInformation parkingSpotInformation;
+    ParkingSpotId parkingSpotId;
+    @NonNull
+    ParkingSpotOccupation parkingSpotOccupation;
     @NonNull
     Set<VehicleId> parkedVehicles;
 
     public Either<ParkingSpotOccupationFailed, ParkingSpotOccupiedEvents> occupy(VehicleId vehicleId, VehicleSize vehicleSize) {
-        ParkingSpotOccupation parkingSpotOccupation = parkingSpotInformation.getParkingSpotOccupation();
         if (!parkingSpotOccupation.canHandle(vehicleSize)) {
-            return announceFailure(new ParkingSpotOccupationFailed(parkingSpotInformation.getParkingSpotId(), vehicleId, "there is not enough space for vehicle"));
+            return announceFailure(new ParkingSpotOccupationFailed(parkingSpotId, vehicleId, "there is not enough space for vehicle"));
         }
 
-        ParkingSpotOccupied parkingSpotOccupied = new ParkingSpotOccupied(parkingSpotInformation.getParkingSpotId(), vehicleId, vehicleSize);
+        ParkingSpotOccupied parkingSpotOccupied = new ParkingSpotOccupied(parkingSpotId, vehicleId, vehicleSize);
         if (parkingSpotOccupation.occupyWith(vehicleSize).isFull()) {
-            return announceSuccess(events(parkingSpotInformation.getParkingSpotId(), parkingSpotOccupied, new FullyOccupied(parkingSpotInformation.getParkingSpotId())));
+            return announceSuccess(events(parkingSpotId, parkingSpotOccupied, new FullyOccupied(parkingSpotId)));
         }
-        return announceSuccess(events(parkingSpotInformation.getParkingSpotId(), parkingSpotOccupied));
+        return announceSuccess(events(parkingSpotId, parkingSpotOccupied));
     }
 
     public Either<ParkingSpotEvent.ParkingSpotLeavingOutFailed, ParkingSpotEvent.ParkingSpotLeftEvents> release(VehicleId vehicleId) {
         if (!parkedVehicles.contains(vehicleId)) {
-            return announceFailure(new ParkingSpotEvent.ParkingSpotLeavingOutFailed(parkingSpotInformation.getParkingSpotId(), vehicleId, "vehicle is not parked there"));
+            return announceFailure(new ParkingSpotEvent.ParkingSpotLeavingOutFailed(parkingSpotId, vehicleId, "vehicle is not parked there"));
         }
 
-        ParkingSpotEvent.ParkingSpotLeft parkingSpotLeft = new ParkingSpotEvent.ParkingSpotLeft(parkingSpotInformation.getParkingSpotId(), vehicleId);
+        ParkingSpotEvent.ParkingSpotLeft parkingSpotLeft = new ParkingSpotEvent.ParkingSpotLeft(parkingSpotId, vehicleId);
         if (parkedVehicles.stream().allMatch(vehicleId::equals)) {
-            return announceSuccess(ParkingSpotEvent.ParkingSpotLeftEvents.events(parkingSpotInformation.getParkingSpotId(), parkingSpotLeft, new ParkingSpotEvent.CompletelyFreedUp(parkingSpotInformation.getParkingSpotId())));
+            return announceSuccess(ParkingSpotEvent.ParkingSpotLeftEvents.events(parkingSpotId, parkingSpotLeft, new ParkingSpotEvent.CompletelyFreedUp(parkingSpotId)));
         }
-        return announceSuccess(ParkingSpotEvent.ParkingSpotLeftEvents.events(parkingSpotInformation.getParkingSpotId(), parkingSpotLeft));
-    }
-
-    public ParkingSpotId getParkingSpotId() {
-        return parkingSpotInformation.getParkingSpotId();
+        return announceSuccess(ParkingSpotEvent.ParkingSpotLeftEvents.events(parkingSpotId, parkingSpotLeft));
     }
 
 }

@@ -55,12 +55,12 @@ class ParkingSpotsDatabaseIT extends Specification {
   
   private void parkingSpotShouldBeFoundInDatabaseBeingEmpty(ParkingSpotId parkingSpotId) {
     def openParkingSpot = loadPersistedOpenParkingSpot(parkingSpotId)
-    assert openParkingSpot.parkingSpotInformation.parkingSpotOccupation.isEmpty()
+    assert openParkingSpot.parkingSpotOccupation.isEmpty()
   }
   
   private void parkingSpotShouldBeFoundInDatabaseBeingFull(ParkingSpotId parkingSpotId) {
     def openParkingSpot = loadPersistedOpenParkingSpot(parkingSpotId)
-    assert openParkingSpot.parkingSpotInformation.parkingSpotOccupation.isFull()
+    assert openParkingSpot.parkingSpotOccupation.isFull()
   }
   
   ParkingSpot loadPersistedOpenParkingSpot(ParkingSpotId parkingSpotId) {
