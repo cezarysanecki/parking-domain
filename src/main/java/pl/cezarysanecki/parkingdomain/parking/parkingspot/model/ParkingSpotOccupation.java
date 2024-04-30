@@ -25,8 +25,8 @@ public class ParkingSpotOccupation {
         return new ParkingSpotOccupation(currentOccupation, capacity);
     }
 
-    public boolean canHandle(VehicleSize vehicleSize) {
-        return currentOccupation + vehicleSize.getValue() <= capacity;
+    public boolean cannotHandle(VehicleSize vehicleSize) {
+        return currentOccupation + vehicleSize.getValue() > capacity;
     }
 
     public ParkingSpotOccupation occupyWith(VehicleSize vehicleSize) {

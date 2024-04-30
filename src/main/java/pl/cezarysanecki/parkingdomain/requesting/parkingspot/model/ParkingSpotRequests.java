@@ -25,7 +25,7 @@ public class ParkingSpotRequests {
     Set<RequestId> requests;
 
     public Either<StoringParkingSpotRequestFailed, RequestForPartOfParkingSpotStored> storeRequest(RequestId requestId, VehicleSize vehicleSize) {
-        if (!requestedOccupation.canHandle(vehicleSize)) {
+        if (requestedOccupation.cannotHandle(vehicleSize)) {
             return announceFailure(new StoringParkingSpotRequestFailed(parkingSpotId, requestId, "not enough parking spot space"));
         }
         return announceSuccess(new RequestForPartOfParkingSpotStored(parkingSpotId, requestId, vehicleSize));

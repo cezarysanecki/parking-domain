@@ -28,7 +28,7 @@ public class ParkingSpot {
     Set<VehicleId> parkedVehicles;
 
     public Either<ParkingSpotOccupationFailed, ParkingSpotOccupiedEvents> occupy(VehicleId vehicleId, VehicleSize vehicleSize) {
-        if (!parkingSpotOccupation.canHandle(vehicleSize)) {
+        if (parkingSpotOccupation.cannotHandle(vehicleSize)) {
             return announceFailure(new ParkingSpotOccupationFailed(parkingSpotId, vehicleId, "there is not enough space for vehicle"));
         }
 
