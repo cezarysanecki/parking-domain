@@ -4,8 +4,8 @@ import io.vavr.control.Option
 import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpots
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleEvent
-import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleId
-import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleSize
+import pl.cezarysanecki.parkingdomain.catalogue.vehicle.VehicleId
+import pl.cezarysanecki.parkingdomain.catalogue.vehicle.VehicleSize
 import spock.lang.Specification
 import spock.lang.Subject
 

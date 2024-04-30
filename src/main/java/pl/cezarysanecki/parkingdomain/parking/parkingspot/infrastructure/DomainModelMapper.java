@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpot;
 import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotOccupation;
-import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleId;
+import pl.cezarysanecki.parkingdomain.catalogue.vehicle.VehicleId;
 
 import java.util.stream.Collectors;
 

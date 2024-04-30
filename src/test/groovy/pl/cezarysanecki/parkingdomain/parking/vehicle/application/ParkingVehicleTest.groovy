@@ -3,7 +3,7 @@ package pl.cezarysanecki.parkingdomain.parking.vehicle.application
 import io.vavr.control.Option
 import pl.cezarysanecki.parkingdomain.commons.commands.Result
 import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.ParkingSpotId
-import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleId
+import pl.cezarysanecki.parkingdomain.catalogue.vehicle.VehicleId
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.Vehicles
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.application.FindingParkingSpotReservations
 import spock.lang.Specification

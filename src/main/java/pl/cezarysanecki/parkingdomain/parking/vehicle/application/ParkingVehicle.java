@@ -10,7 +10,7 @@ import pl.cezarysanecki.parkingdomain.commons.commands.Result;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.application.FindingParkingSpotReservations;
 import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.Vehicle;
-import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleId;
+import pl.cezarysanecki.parkingdomain.catalogue.vehicle.VehicleId;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.Vehicles;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ReservationId;
 
@@ -79,22 +79,22 @@ public class ParkingVehicle {
     }
 
     private Result publishEvents(VehicleParkingFailed vehicleParkingFailed) {
-        log.debug("failed to park vehicle with id {}, reason: {}", vehicleParkingFailed.getVehicleId(), vehicleParkingFailed.getReason());
+        log.debug("failed to park vehicle with id {}, reason: {}", vehicleParkingFailed.vehicleId(), vehicleParkingFailed.getReason());
         vehicles.publish(vehicleParkingFailed);
         return Result.Rejection.with(vehicleParkingFailed.getReason());
     }
 
     private Result publishEvents(VehicleParked vehicleParked) {
-        log.debug("successfully park vehicle with id {} on parking spot with id {}", vehicleParked.getVehicleId(), vehicleParked.getParkingSpotId());
+        log.debug("successfully park vehicle with id {} on parking spot with id {}", vehicleParked.vehicleId(), vehicleParked.getParkingSpotId());
         vehicles.publish(vehicleParked);
-        return new Result.Success<>(vehicleParked.getVehicleId());
+        return new Result.Success<>(vehicleParked.vehicleId());
     }
 
     private Result publishEvents(VehicleParkedEvents vehicleParkedEvents) {
         ParkingSpotId parkingSpotId = vehicleParkedEvents.getVehicleParked().getParkingSpotId();
-        log.debug("successfully park vehicle with id {} using parking spot with id {}", vehicleParkedEvents.getVehicleId(), parkingSpotId);
+        log.debug("successfully park vehicle with id {} using parking spot with id {}", vehicleParkedEvents.vehicleId(), parkingSpotId);
         vehicles.publish(vehicleParkedEvents);
-        return new Result.Success<>(vehicleParkedEvents.getVehicleId());
+        return new Result.Success<>(vehicleParkedEvents.vehicleId());
     }
 
     private Vehicle load(VehicleId vehicleId) {

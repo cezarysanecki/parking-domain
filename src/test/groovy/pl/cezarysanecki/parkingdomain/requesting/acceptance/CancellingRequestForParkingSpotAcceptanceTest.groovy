@@ -6,7 +6,7 @@ import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.requesting.client.application.CancellingRequest
 import pl.cezarysanecki.parkingdomain.requesting.client.application.MakingRequestForPartOfParkingSpot
 import pl.cezarysanecki.parkingdomain.requesting.client.application.MakingRequestForWholeParkingSpot
-import pl.cezarysanecki.parkingdomain.requesting.client.model.ClientId
+import pl.cezarysanecki.parkingdomain.catalogue.client.ClientId
 import pl.cezarysanecki.parkingdomain.requesting.client.model.RequestId
 import pl.cezarysanecki.parkingdomain.requesting.view.parkingspot.model.ParkingSpotRequestsViews
 

@@ -1,7 +1,7 @@
 package pl.cezarysanecki.parkingdomain.parking.parkingspot.model
 
-import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleId
-import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleSize
+import pl.cezarysanecki.parkingdomain.catalogue.vehicle.VehicleId
+import pl.cezarysanecki.parkingdomain.catalogue.vehicle.VehicleSize
 import spock.lang.Specification
 
 import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotFixture.emptyOpenParkingSpotWithCapacity

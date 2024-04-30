@@ -3,7 +3,7 @@ package pl.cezarysanecki.parkingdomain.parking.parkingspot.model;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleId;
+import pl.cezarysanecki.parkingdomain.catalogue.vehicle.VehicleId;
 
 import java.util.Set;
 

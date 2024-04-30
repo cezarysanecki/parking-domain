@@ -5,16 +5,16 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.ActiveProfiles
+import pl.cezarysanecki.parkingdomain.catalogue.vehicle.VehicleRegistered
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher
 import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.Vehicle
-import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleId
-import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleSize
+import pl.cezarysanecki.parkingdomain.catalogue.vehicle.VehicleId
+import pl.cezarysanecki.parkingdomain.catalogue.vehicle.VehicleSize
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.Vehicles
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.application.FindingParkingSpotReservations
 import spock.lang.Specification
 
-import static pl.cezarysanecki.parkingdomain.parking.vehicle.application.RegisteringVehicle.VehicleRegistered
 import static pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleEvent.VehicleParked
 
 @ActiveProfiles("local")

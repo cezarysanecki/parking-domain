@@ -8,7 +8,7 @@ import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
 import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.requesting.client.model.ClientId;
+import pl.cezarysanecki.parkingdomain.catalogue.client.ClientId;
 import pl.cezarysanecki.parkingdomain.requesting.client.model.ClientRequests;
 import pl.cezarysanecki.parkingdomain.requesting.client.model.ClientRequestsEvent.RequestForWholeParkingSpotMade;
 import pl.cezarysanecki.parkingdomain.requesting.client.model.ClientRequestsRepository;

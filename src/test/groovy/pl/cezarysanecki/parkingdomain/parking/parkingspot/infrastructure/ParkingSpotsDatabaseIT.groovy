@@ -12,8 +12,8 @@ import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.ParkingSpotCapacity
 import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.ParkingSpotCategory
 import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpots
-import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleId
-import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleSize
+import pl.cezarysanecki.parkingdomain.catalogue.vehicle.VehicleId
+import pl.cezarysanecki.parkingdomain.catalogue.vehicle.VehicleSize
 import spock.lang.Specification
 
 import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.ParkingSpotOccupied

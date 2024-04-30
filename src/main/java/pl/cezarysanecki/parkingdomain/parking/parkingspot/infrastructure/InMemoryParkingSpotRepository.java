@@ -11,7 +11,7 @@ import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent
 import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpots;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ReservationId;
-import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleId;
+import pl.cezarysanecki.parkingdomain.catalogue.vehicle.VehicleId;
 
 import java.util.HashSet;
 import java.util.Map;

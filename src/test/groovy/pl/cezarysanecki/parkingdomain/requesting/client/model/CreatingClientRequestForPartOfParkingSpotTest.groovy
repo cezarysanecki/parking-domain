@@ -1,7 +1,7 @@
 package pl.cezarysanecki.parkingdomain.requesting.client.model
 
 import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.ParkingSpotId
-import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleSize
+import pl.cezarysanecki.parkingdomain.catalogue.vehicle.VehicleSize
 import spock.lang.Specification
 
 import static ClientRequestsFixture.clientWithNoRequests

@@ -5,8 +5,8 @@ import lombok.NonNull;
 import lombok.Value;
 import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.ParkingSpotOccupationFailed;
-import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleId;
-import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleSize;
+import pl.cezarysanecki.parkingdomain.catalogue.vehicle.VehicleId;
+import pl.cezarysanecki.parkingdomain.catalogue.vehicle.VehicleSize;
 
 import java.util.Set;
 

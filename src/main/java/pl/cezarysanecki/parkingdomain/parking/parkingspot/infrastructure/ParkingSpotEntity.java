@@ -4,8 +4,8 @@ import io.vavr.API;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent;
-import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleId;
-import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleSize;
+import pl.cezarysanecki.parkingdomain.catalogue.vehicle.VehicleId;
+import pl.cezarysanecki.parkingdomain.catalogue.vehicle.VehicleSize;
 
 import java.util.Set;
 import java.util.UUID;

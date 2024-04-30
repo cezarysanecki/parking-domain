@@ -13,8 +13,8 @@ public class CatalogueParkingSpotConfig {
     private final EventPublisher eventPublisher;
 
     @Bean
-    AddingParkingSpot addingParkingSpot(CatalogueParkingSpotDatabase database) {
-        return new AddingParkingSpot(database, eventPublisher);
+    AddingParkingSpot addingParkingSpot(CatalogueParkingSpotDatabase catalogueParkingSpotDatabase) {
+        return new AddingParkingSpot(catalogueParkingSpotDatabase, eventPublisher);
     }
 
     @Bean

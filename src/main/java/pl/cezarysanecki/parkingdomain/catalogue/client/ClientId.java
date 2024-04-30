@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.requesting.client.model;
+package pl.cezarysanecki.parkingdomain.catalogue.client;
 
 import lombok.Value;
 

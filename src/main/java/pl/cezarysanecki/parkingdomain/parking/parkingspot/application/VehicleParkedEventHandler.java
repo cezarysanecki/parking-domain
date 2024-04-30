@@ -8,8 +8,8 @@ import pl.cezarysanecki.parkingdomain.commons.commands.Result;
 import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpots;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleEvent.VehicleParked;
-import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleId;
-import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleSize;
+import pl.cezarysanecki.parkingdomain.catalogue.vehicle.VehicleId;
+import pl.cezarysanecki.parkingdomain.catalogue.vehicle.VehicleSize;
 
 import static io.vavr.API.$;
 import static io.vavr.API.Case;
@@ -27,7 +27,7 @@ public class VehicleParkedEventHandler {
 
     @EventListener
     public void handle(VehicleParked vehicleParked) {
-        VehicleId vehicleId = vehicleParked.getVehicleId();
+        VehicleId vehicleId = vehicleParked.vehicleId();
         VehicleSize vehicleSize = vehicleParked.getVehicleSize();
         ParkingSpotId parkingSpotId = vehicleParked.getParkingSpotId();
 

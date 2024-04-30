@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
 import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleId;
+import pl.cezarysanecki.parkingdomain.catalogue.vehicle.VehicleId;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.application.DrivingVehicleAway;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.application.ParkingVehicle;
 import pl.cezarysanecki.parkingdomain.parking.view.vehicle.model.VehicleView;
