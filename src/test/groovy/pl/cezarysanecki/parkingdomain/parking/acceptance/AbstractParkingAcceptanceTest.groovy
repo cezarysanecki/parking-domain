@@ -6,10 +6,10 @@ import org.springframework.test.context.ActiveProfiles
 import pl.cezarysanecki.parkingdomain.commons.commands.Result
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisherTestConfig
 import pl.cezarysanecki.parkingdomain.parking.ParkingConfig
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.application.CreatingParkingSpot
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotCapacity
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotCategory
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId
+import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.AddingParkingSpot
+import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.ParkingSpotCapacity
+import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.ParkingSpotCategory
+import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.parking.vehicle.application.RegisteringVehicle
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleId
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleSize
@@ -22,13 +22,14 @@ import spock.lang.Specification
 abstract class AbstractParkingAcceptanceTest extends Specification {
   
   @Autowired
-  CreatingParkingSpot creatingParkingSpot
+  AddingParkingSpot creatingParkingSpot
   @Autowired
   RegisteringVehicle registeringVehicle
   
   ParkingSpotId createParkingSpot(int capacity) {
-    def result = creatingParkingSpot.create(new CreatingParkingSpot.Command(
-        ParkingSpotCapacity.of(capacity), ParkingSpotCategory.Gold))
+    final AddingParkingSpot.Command command = new AddingParkingSpot.Command(
+        ParkingSpotCapacity.of(capacity), ParkingSpotCategory.Gold)
+    def result = creatingParkingSpot.addParkingSpot(command.parkingSpotCapacity, command.parkingSpotCategory)
     return (result.get() as Result.Success<ParkingSpotId>).getResult()
   }
   

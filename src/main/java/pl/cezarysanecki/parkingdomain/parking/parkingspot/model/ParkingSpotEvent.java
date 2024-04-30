@@ -4,6 +4,7 @@ import io.vavr.collection.List;
 import io.vavr.control.Option;
 import lombok.NonNull;
 import lombok.Value;
+import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.commons.events.DomainEvent;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleId;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleSize;

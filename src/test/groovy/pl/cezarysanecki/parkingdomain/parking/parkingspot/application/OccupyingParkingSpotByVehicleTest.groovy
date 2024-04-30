@@ -1,7 +1,7 @@
 package pl.cezarysanecki.parkingdomain.parking.parkingspot.application
 
 import io.vavr.control.Option
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId
+import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpots
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleEvent
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleId

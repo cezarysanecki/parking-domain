@@ -3,7 +3,7 @@ package pl.cezarysanecki.parkingdomain.parking.view.parkingspot.infrastructure;
 import io.vavr.control.Option;
 import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.commons.view.ViewEventListener;
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId;
+import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleId;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleSize;
 import pl.cezarysanecki.parkingdomain.parking.view.parkingspot.infrastructure.ParkingSpotViewEntity.ParkedVehicleView;
@@ -16,7 +16,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-import static pl.cezarysanecki.parkingdomain.parking.parkingspot.application.CreatingParkingSpot.ParkingSpotCreated;
+import pl.cezarysanecki.parkingdomain.catalogue.parkingspot.ParkingSpotAdded;
 import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.ParkingSpotLeft;
 import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.ParkingSpotOccupied;
 
@@ -44,13 +44,13 @@ class InMemoryParkingSpotViewRepository implements ParkingSpotViews {
 
     @Override
     @ViewEventListener
-    public void handle(ParkingSpotCreated event) {
-        DATABASE.put(event.getParkingSpotId(), new ParkingSpotViewEntity(
-                event.getParkingSpotId().getValue(),
+    public void handle(ParkingSpotAdded event) {
+        DATABASE.put(event.parkingSpotId(), new ParkingSpotViewEntity(
+                event.parkingSpotId().getValue(),
                 new HashSet<>(),
-                event.getParkingSpotCapacity().getValue(),
-                event.getParkingSpotCategory()));
-        log.debug("creating parking spot view with id {}", event.getParkingSpotId());
+                event.capacity().getValue(),
+                event.category()));
+        log.debug("creating parking spot view with id {}", event.parkingSpotId());
     }
 
     @Override
