@@ -1,13 +1,14 @@
 package pl.cezarysanecki.parkingdomain.catalogue.parkingspot;
 
 import io.vavr.control.Try;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 
 @Slf4j
-@RequiredArgsConstructor
+@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 public class AddingParkingSpot {
 
     private final CatalogueParkingSpotDatabase database;
