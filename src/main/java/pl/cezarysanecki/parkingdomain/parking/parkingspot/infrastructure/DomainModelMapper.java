@@ -2,8 +2,7 @@ package pl.cezarysanecki.parkingdomain.parking.parkingspot.infrastructure;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.OccupiedParkingSpot;
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.OpenParkingSpot;
+import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotInformation;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotOccupation;
@@ -14,12 +13,8 @@ import java.util.stream.Collectors;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 class DomainModelMapper {
 
-    static OpenParkingSpot mapOpen(ParkingSpotEntity entity) {
-        return new OpenParkingSpot(mapInformation(entity));
-    }
-
-    static OccupiedParkingSpot mapOccupied(ParkingSpotEntity entity) {
-        return new OccupiedParkingSpot(
+    static ParkingSpot map(ParkingSpotEntity entity) {
+        return new ParkingSpot(
                 mapInformation(entity),
                 entity.vehicles.stream()
                         .map(vehicle -> VehicleId.of(vehicle.vehicleId))

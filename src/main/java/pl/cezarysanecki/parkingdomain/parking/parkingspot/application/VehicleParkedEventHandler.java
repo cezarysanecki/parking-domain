@@ -31,7 +31,7 @@ public class VehicleParkedEventHandler {
         VehicleSize vehicleSize = vehicleParked.getVehicleSize();
         ParkingSpotId parkingSpotId = vehicleParked.getParkingSpotId();
 
-        parkingSpots.findOpenBy(parkingSpotId)
+        parkingSpots.findBy(parkingSpotId)
                 .map(openParkingSpot -> {
                     Either<ParkingSpotOccupationFailed, ParkingSpotOccupiedEvents> result = openParkingSpot.occupy(vehicleId, vehicleSize);
                     return Match(result).of(

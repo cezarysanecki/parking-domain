@@ -27,9 +27,9 @@ public class VehicleDroveAwayEventHandler {
     public void handle(VehicleDroveAway vehicleDroveAway) {
         VehicleId vehicleId = vehicleDroveAway.getVehicleId();
 
-        parkingSpots.findOccupiedBy(vehicleId)
-                .map(occupiedParkingSpot -> {
-                    Either<ParkingSpotLeavingOutFailed, ParkingSpotLeftEvents> result = occupiedParkingSpot.release(vehicleId);
+        parkingSpots.findBy(vehicleId)
+                .map(parkingSpot -> {
+                    Either<ParkingSpotLeavingOutFailed, ParkingSpotLeftEvents> result = parkingSpot.release(vehicleId);
                     return Match(result).of(
                             Case($Left($()), this::publishEvents),
                             Case($Right($()), this::publishEvents));

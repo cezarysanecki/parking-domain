@@ -23,7 +23,7 @@ class ReleasingParkingSpotByVehicleTest extends Specification {
     and:
       def occupiedParkingSpot = occupiedBy(VehicleId.newOne(), vehicle)
     and:
-      parkingSpots.findOccupiedBy(vehicle) >> Option.of(occupiedParkingSpot)
+      parkingSpots.findBy(vehicle) >> Option.of(occupiedParkingSpot)
     
     when:
       vehicleDroveAwayEventHandler.handle(new VehicleDroveAway(vehicle))
@@ -42,7 +42,7 @@ class ReleasingParkingSpotByVehicleTest extends Specification {
     and:
       def occupiedParkingSpot = fullyOccupiedBy(vehicle)
     and:
-      parkingSpots.findOccupiedBy(vehicle) >> Option.of(occupiedParkingSpot)
+      parkingSpots.findBy(vehicle) >> Option.of(occupiedParkingSpot)
     
     when:
       vehicleDroveAwayEventHandler.handle(new VehicleDroveAway(vehicle))
@@ -61,7 +61,7 @@ class ReleasingParkingSpotByVehicleTest extends Specification {
     and:
       def occupiedParkingSpot = fullyOccupiedBy(VehicleId.newOne())
     and:
-      parkingSpots.findOccupiedBy(vehicle) >> Option.of(occupiedParkingSpot)
+      parkingSpots.findBy(vehicle) >> Option.of(occupiedParkingSpot)
     
     when:
       vehicleDroveAwayEventHandler.handle(new VehicleDroveAway(vehicle))

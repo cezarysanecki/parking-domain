@@ -24,7 +24,7 @@ class OccupyingParkingSpotByVehicleTest extends Specification {
     given:
       def openParkingSpot = emptyOpenParkingSpotWithCapacity(4)
     and:
-      parkingSpots.findOpenBy(openParkingSpot.parkingSpotId) >> Option.of(openParkingSpot)
+      parkingSpots.findBy(openParkingSpot.parkingSpotId) >> Option.of(openParkingSpot)
     
     when:
       vehicleParkedEventHandler.handle(new VehicleEvent.VehicleParked(
@@ -42,7 +42,7 @@ class OccupyingParkingSpotByVehicleTest extends Specification {
     given:
       def openParkingSpot = emptyOpenParkingSpotWithCapacity(4)
     and:
-      parkingSpots.findOpenBy(openParkingSpot.parkingSpotId) >> Option.of(openParkingSpot)
+      parkingSpots.findBy(openParkingSpot.parkingSpotId) >> Option.of(openParkingSpot)
     
     when:
       vehicleParkedEventHandler.handle(new VehicleEvent.VehicleParked(
@@ -62,7 +62,7 @@ class OccupyingParkingSpotByVehicleTest extends Specification {
     and:
       def openParkingSpot = emptyOpenParkingSpotWithCapacity(2)
     and:
-      parkingSpots.findOpenBy(openParkingSpot.parkingSpotId) >> Option.of(openParkingSpot)
+      parkingSpots.findBy(openParkingSpot.parkingSpotId) >> Option.of(openParkingSpot)
     
     when:
       vehicleParkedEventHandler.handle(new VehicleEvent.VehicleParked(
@@ -81,7 +81,7 @@ class OccupyingParkingSpotByVehicleTest extends Specification {
     and:
       def parkingSpotId = ParkingSpotId.newOne()
     and:
-      parkingSpots.findOpenBy(parkingSpotId) >> Option.none()
+      parkingSpots.findBy(parkingSpotId) >> Option.none()
     
     when:
       vehicleParkedEventHandler.handle(new VehicleEvent.VehicleParked(

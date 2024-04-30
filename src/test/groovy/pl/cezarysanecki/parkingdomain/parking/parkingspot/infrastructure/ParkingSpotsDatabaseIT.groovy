@@ -6,7 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.ActiveProfiles
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.OpenParkingSpot
+import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpot
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotCapacity
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotCategory
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId
@@ -55,17 +55,17 @@ class ParkingSpotsDatabaseIT extends Specification {
   
   private void parkingSpotShouldBeFoundInDatabaseBeingEmpty(ParkingSpotId parkingSpotId) {
     def openParkingSpot = loadPersistedOpenParkingSpot(parkingSpotId)
-    assert openParkingSpot.getParkingSpotOccupation().isEmpty()
+    assert openParkingSpot.parkingSpotInformation.parkingSpotOccupation.isEmpty()
   }
   
   private void parkingSpotShouldBeFoundInDatabaseBeingFull(ParkingSpotId parkingSpotId) {
     def openParkingSpot = loadPersistedOpenParkingSpot(parkingSpotId)
-    assert openParkingSpot.getParkingSpotOccupation().isFull()
+    assert openParkingSpot.parkingSpotInformation.parkingSpotOccupation.isFull()
   }
   
-  OpenParkingSpot loadPersistedOpenParkingSpot(ParkingSpotId parkingSpotId) {
-    Option<OpenParkingSpot> loaded = parkingSpots.findOpenBy(parkingSpotId)
-    OpenParkingSpot openParkingSpot = loaded.getOrElseThrow({
+  ParkingSpot loadPersistedOpenParkingSpot(ParkingSpotId parkingSpotId) {
+    Option<ParkingSpot> loaded = parkingSpots.findBy(parkingSpotId)
+    ParkingSpot openParkingSpot = loaded.getOrElseThrow({
       new IllegalStateException("should have been persisted")
     })
     return openParkingSpot

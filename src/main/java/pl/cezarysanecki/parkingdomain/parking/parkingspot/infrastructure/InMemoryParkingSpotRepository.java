@@ -6,13 +6,12 @@ import lombok.RequiredArgsConstructor;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.application.CreatingParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.application.FindingParkingSpotReservations;
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.OccupiedParkingSpot;
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.OpenParkingSpot;
+import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpots;
-import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleId;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ReservationId;
+import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleId;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -36,19 +35,19 @@ class InMemoryParkingSpotRepository implements ParkingSpots, FindingParkingSpotR
     }
 
     @Override
-    public Option<OpenParkingSpot> findOpenBy(ParkingSpotId parkingSpotId) {
+    public Option<ParkingSpot> findBy(ParkingSpotId parkingSpotId) {
         return Option.of(DATABASE.get(parkingSpotId))
-                .map(DomainModelMapper::mapOpen);
+                .map(DomainModelMapper::map);
     }
 
     @Override
-    public Option<OccupiedParkingSpot> findOccupiedBy(VehicleId vehicleId) {
+    public Option<ParkingSpot> findBy(VehicleId vehicleId) {
         return Option.ofOptional(
                         DATABASE.values().stream()
                                 .filter(entity -> entity.vehicles.stream()
                                         .anyMatch(vehicle -> vehicle.vehicleId.equals(vehicleId.getValue())))
                                 .findFirst())
-                .map(DomainModelMapper::mapOccupied);
+                .map(DomainModelMapper::map);
     }
 
     @Override

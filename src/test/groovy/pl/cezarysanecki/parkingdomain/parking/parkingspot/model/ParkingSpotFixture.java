@@ -9,27 +9,28 @@ import java.util.Set;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ParkingSpotFixture {
 
-    public static OccupiedParkingSpot fullyOccupiedBy(VehicleId vehicleId) {
-        return new OccupiedParkingSpot(
+    public static ParkingSpot fullyOccupiedBy(VehicleId vehicleId) {
+        return new ParkingSpot(
                 ParkingSpotInformation.of(
                         ParkingSpotId.newOne(),
                         ParkingSpotOccupation.of(0, 4)),
                 Set.of(vehicleId));
     }
 
-    public static OccupiedParkingSpot occupiedBy(VehicleId... vehicleIds) {
-        return new OccupiedParkingSpot(
+    public static ParkingSpot occupiedBy(VehicleId... vehicleIds) {
+        return new ParkingSpot(
                 ParkingSpotInformation.of(
                         ParkingSpotId.newOne(),
                         ParkingSpotOccupation.of(0, 4)),
                 Set.of(vehicleIds));
     }
 
-    public static OpenParkingSpot emptyOpenParkingSpotWithCapacity(int capacity) {
-        return new OpenParkingSpot(
+    public static ParkingSpot emptyOpenParkingSpotWithCapacity(int capacity) {
+        return new ParkingSpot(
                 ParkingSpotInformation.of(
                         ParkingSpotId.newOne(),
-                        ParkingSpotOccupation.of(0, capacity)));
+                        ParkingSpotOccupation.of(0, capacity)),
+                Set.of());
     }
 
 }

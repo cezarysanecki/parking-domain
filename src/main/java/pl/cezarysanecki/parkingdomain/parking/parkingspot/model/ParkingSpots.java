@@ -5,9 +5,9 @@ import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleId;
 
 public interface ParkingSpots {
 
-    Option<OpenParkingSpot> findOpenBy(ParkingSpotId parkingSpotId);
+    Option<ParkingSpot> findBy(ParkingSpotId parkingSpotId);
 
-    Option<OccupiedParkingSpot> findOccupiedBy(VehicleId vehicleId);
+    Option<ParkingSpot> findBy(VehicleId vehicleId);
 
     void publish(ParkingSpotEvent parkingSpotEvent);
 
