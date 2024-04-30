@@ -6,7 +6,7 @@ import spock.lang.Specification
 
 import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotFixture.emptyOpenParkingSpotWithCapacity
 
-class OccupyingOpenParkingSpotTest extends Specification {
+class OccupyingParkingSpotTest extends Specification {
   
   def "allow to occupy parking spot by vehicle"() {
     given:
