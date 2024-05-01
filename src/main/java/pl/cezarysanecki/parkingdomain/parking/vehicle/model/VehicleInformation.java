@@ -2,7 +2,7 @@ package pl.cezarysanecki.parkingdomain.parking.vehicle.model;
 
 import lombok.NonNull;
 import lombok.Value;
-import pl.cezarysanecki.parkingdomain.management.vehicle.SpotUnits;
+import pl.cezarysanecki.parkingdomain.parking.parkingspot.SpotUnits;
 import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleId;
 
 @Value(staticConstructor = "of")

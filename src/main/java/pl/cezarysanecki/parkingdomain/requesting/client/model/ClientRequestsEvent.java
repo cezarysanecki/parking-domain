@@ -5,7 +5,7 @@ import lombok.Value;
 import pl.cezarysanecki.parkingdomain.management.client.ClientId;
 import pl.cezarysanecki.parkingdomain.commons.events.DomainEvent;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.management.vehicle.SpotUnits;
+import pl.cezarysanecki.parkingdomain.parking.parkingspot.SpotUnits;
 
 public interface ClientRequestsEvent extends DomainEvent {
 

@@ -10,7 +10,7 @@ import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.parking.Vehicle
 import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleId
-import pl.cezarysanecki.parkingdomain.management.vehicle.SpotUnits
+import pl.cezarysanecki.parkingdomain.parking.parkingspot.SpotUnits
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.Vehicles
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.application.FindingParkingSpotReservations
 import spock.lang.Specification

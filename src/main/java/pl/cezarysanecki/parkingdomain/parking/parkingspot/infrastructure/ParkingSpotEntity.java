@@ -3,7 +3,7 @@ package pl.cezarysanecki.parkingdomain.parking.parkingspot.infrastructure;
 import io.vavr.API;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import pl.cezarysanecki.parkingdomain.management.vehicle.SpotUnits;
+import pl.cezarysanecki.parkingdomain.parking.parkingspot.SpotUnits;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent;
 import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleId;
 

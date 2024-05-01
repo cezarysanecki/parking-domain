@@ -4,7 +4,7 @@ import io.vavr.control.Option;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.management.vehicle.SpotUnits;
+import pl.cezarysanecki.parkingdomain.parking.parkingspot.SpotUnits;
 import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleId;
 import pl.cezarysanecki.parkingdomain.parking.Vehicle;
 

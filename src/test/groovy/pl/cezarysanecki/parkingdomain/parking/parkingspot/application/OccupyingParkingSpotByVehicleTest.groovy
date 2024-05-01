@@ -5,7 +5,7 @@ import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpots
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleEvent
 import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleId
-import pl.cezarysanecki.parkingdomain.management.vehicle.SpotUnits
+import pl.cezarysanecki.parkingdomain.parking.parkingspot.SpotUnits
 import spock.lang.Specification
 import spock.lang.Subject
 

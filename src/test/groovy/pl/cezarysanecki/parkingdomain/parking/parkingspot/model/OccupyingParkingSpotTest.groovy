@@ -2,7 +2,7 @@ package pl.cezarysanecki.parkingdomain.parking.parkingspot.model
 
 
 import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleId
-import pl.cezarysanecki.parkingdomain.management.vehicle.SpotUnits
+import pl.cezarysanecki.parkingdomain.parking.parkingspot.SpotUnits
 import spock.lang.Specification
 
 import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotFixture.emptyOpenParkingSpotWithCapacity

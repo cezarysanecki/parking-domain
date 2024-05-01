@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.management.vehicle;
+package pl.cezarysanecki.parkingdomain.parking.parkingspot;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

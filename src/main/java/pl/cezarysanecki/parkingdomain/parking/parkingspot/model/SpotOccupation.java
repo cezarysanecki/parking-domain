@@ -1,6 +1,6 @@
 package pl.cezarysanecki.parkingdomain.parking.parkingspot.model;
 
-import pl.cezarysanecki.parkingdomain.management.vehicle.SpotUnits;
+import pl.cezarysanecki.parkingdomain.parking.parkingspot.SpotUnits;
 
 public class SpotOccupation {
 
