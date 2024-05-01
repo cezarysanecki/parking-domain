@@ -5,12 +5,12 @@ import pl.cezarysanecki.parkingdomain.management.client.ClientId;
 
 public record VehicleRegistered(
         VehicleId vehicleId,
-        VehicleSize vehicleSize,
+        SpotUnits spotUnits,
         ClientId assignedTo
 ) implements DomainEvent {
 
     VehicleRegistered(Vehicle vehicle) {
-        this(vehicle.getVehicleId(), vehicle.getVehicleSize(), vehicle.getAssignedTo());
+        this(vehicle.getVehicleId(), vehicle.getSpotUnits(), vehicle.getAssignedTo());
     }
 
 }

@@ -15,7 +15,7 @@ class Vehicle {
     @NonNull
     VehicleId vehicleId;
     @NonNull
-    VehicleSize vehicleSize;
+    SpotUnits spotUnits;
     @NonNull
     Make make;
     @NonNull
@@ -24,7 +24,7 @@ class Vehicle {
     ClientId assignedTo;
 
     Vehicle(UUID vehicleId, int size, String make, String model, UUID clientId) {
-        this(VehicleId.of(vehicleId), VehicleSize.of(size), new Make(make), new Model(model), ClientId.of(clientId));
+        this(VehicleId.of(vehicleId), SpotUnits.of(size), new Make(make), new Model(model), ClientId.of(clientId));
     }
 
 }

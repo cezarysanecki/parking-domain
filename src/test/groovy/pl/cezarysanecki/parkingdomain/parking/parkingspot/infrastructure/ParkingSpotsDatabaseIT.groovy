@@ -7,13 +7,13 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.ActiveProfiles
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotAdded
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpot
+import pl.cezarysanecki.parkingdomain.parking.ParkingSpot
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCapacity
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpots
 import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleId
-import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleSize
+import pl.cezarysanecki.parkingdomain.management.vehicle.SpotUnits
 import spock.lang.Specification
 
 import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.ParkingSpotOccupied
@@ -50,17 +50,17 @@ class ParkingSpotsDatabaseIT extends Specification {
   }
   
   private ParkingSpotOccupied occupyParkingSpot(ParkingSpotId parkingSpotId, int vehicleSize) {
-    return new ParkingSpotOccupied(parkingSpotId, VehicleId.newOne(), VehicleSize.of(vehicleSize))
+    return new ParkingSpotOccupied(parkingSpotId, VehicleId.newOne(), SpotUnits.of(vehicleSize))
   }
   
   private void parkingSpotShouldBeFoundInDatabaseBeingEmpty(ParkingSpotId parkingSpotId) {
     def openParkingSpot = loadPersistedOpenParkingSpot(parkingSpotId)
-    assert openParkingSpot.parkingSpotOccupation.isEmpty()
+    assert openParkingSpot.spotOccupation.isEmpty()
   }
   
   private void parkingSpotShouldBeFoundInDatabaseBeingFull(ParkingSpotId parkingSpotId) {
     def openParkingSpot = loadPersistedOpenParkingSpot(parkingSpotId)
-    assert openParkingSpot.parkingSpotOccupation.isFull()
+    assert openParkingSpot.spotOccupation.isFull()
   }
   
   ParkingSpot loadPersistedOpenParkingSpot(ParkingSpotId parkingSpotId) {

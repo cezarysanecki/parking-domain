@@ -1,13 +1,13 @@
 package pl.cezarysanecki.parkingdomain.parking.parkingspot.model;
 
-import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleSize;
+import pl.cezarysanecki.parkingdomain.management.vehicle.SpotUnits;
 
-public class ParkingSpotOccupation {
+public class SpotOccupation {
 
     int currentOccupation;
     int capacity;
 
-    private ParkingSpotOccupation(int currentOccupation, int capacity) {
+    private SpotOccupation(int currentOccupation, int capacity) {
         if (currentOccupation < 0) {
             throw new IllegalArgumentException("current occupation cannot be negative");
         }
@@ -21,16 +21,16 @@ public class ParkingSpotOccupation {
         this.capacity = capacity;
     }
 
-    public static ParkingSpotOccupation of(int currentOccupation, int capacity) {
-        return new ParkingSpotOccupation(currentOccupation, capacity);
+    public static SpotOccupation of(int currentOccupation, int capacity) {
+        return new SpotOccupation(currentOccupation, capacity);
     }
 
-    public boolean cannotHandle(VehicleSize vehicleSize) {
-        return currentOccupation + vehicleSize.getValue() > capacity;
+    public boolean cannotHandle(SpotUnits spotUnits) {
+        return currentOccupation + spotUnits.getValue() > capacity;
     }
 
-    public ParkingSpotOccupation occupyWith(VehicleSize vehicleSize) {
-        return new ParkingSpotOccupation(currentOccupation + vehicleSize.getValue(), capacity);
+    public SpotOccupation occupyWith(SpotUnits spotUnits) {
+        return new SpotOccupation(currentOccupation + spotUnits.getValue(), capacity);
     }
 
     public boolean isEmpty() {

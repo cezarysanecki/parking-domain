@@ -1,7 +1,7 @@
 package pl.cezarysanecki.parkingdomain.requesting.client.model
 
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId
-import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleSize
+import pl.cezarysanecki.parkingdomain.management.vehicle.SpotUnits
 import spock.lang.Specification
 
 import static ClientRequestsFixture.clientWithNoRequests
@@ -12,7 +12,7 @@ class CreatingClientRequestForPartOfParkingSpotTest extends Specification {
   def "allow to make client request for part of parking spot"() {
     given:
       def parkingSpotId = ParkingSpotId.newOne()
-      def vehicleSize = VehicleSize.of(2)
+      def vehicleSize = SpotUnits.of(2)
     and:
       def clientRequests = clientWithNoRequests()
     
@@ -24,14 +24,14 @@ class CreatingClientRequestForPartOfParkingSpotTest extends Specification {
       result.get().with {
         assert it.clientId == clientRequests.clientId
         assert it.parkingSpotId == parkingSpotId
-        assert it.vehicleSize == vehicleSize
+        assert it.spotUnits == vehicleSize
       }
   }
   
   def "reject making client request for part of parking spot when limit of request is reached"() {
     given:
       def parkingSpotId = ParkingSpotId.newOne()
-      def vehicleSize = VehicleSize.of(2)
+      def vehicleSize = SpotUnits.of(2)
     and:
       def clientRequests = clientWithRequest(RequestId.newOne())
     

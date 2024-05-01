@@ -60,7 +60,7 @@ class InMemoryParkingSpotRequestsViewRepository implements ParkingSpotRequestsVi
         ParkingSpotRequestsViewEntity entity = DATABASE.get(event.getParkingSpotId());
         entity.currentRequests.add(new ParkingSpotRequestsViewEntity.VehicleRequestEntity(
                 event.getRequestId().getValue(),
-                event.getVehicleSize().getValue()));
+                event.getSpotUnits().getValue()));
         DATABASE.put(event.getParkingSpotId(), entity);
     }
 

@@ -23,7 +23,7 @@ class ParkingVehicleOnParkingSpotTest extends Specification {
       result.isRight()
       result.get().with {
         assert it.vehicleId == vehicle.vehicleInformation.vehicleId
-        assert it.vehicleSize == vehicle.vehicleInformation.vehicleSize
+        assert it.spotUnits == vehicle.vehicleInformation.spotUnits
         assert it.parkingSpotId == parkingSpotId
       }
   }
@@ -62,7 +62,7 @@ class ParkingVehicleOnParkingSpotTest extends Specification {
         assert it.vehicleId == vehicle.vehicleInformation.vehicleId
         
         def vehicleParked = it.vehicleParked
-        assert vehicleParked.vehicleSize == vehicle.vehicleInformation.vehicleSize
+        assert vehicleParked.spotUnits == vehicle.vehicleInformation.spotUnits
         assert vehicleParked.parkingSpotId == parkingSpotId
         
         def fulfilledReservation = it.fulfilledReservation.get()

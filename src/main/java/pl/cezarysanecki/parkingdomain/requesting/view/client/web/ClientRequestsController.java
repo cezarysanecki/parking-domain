@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleSize;
+import pl.cezarysanecki.parkingdomain.management.vehicle.SpotUnits;
 import pl.cezarysanecki.parkingdomain.requesting.client.application.CancellingRequest;
 import pl.cezarysanecki.parkingdomain.requesting.client.application.MakingRequestForPartOfParkingSpot;
 import pl.cezarysanecki.parkingdomain.requesting.client.application.MakingRequestForWholeParkingSpot;
@@ -46,7 +46,7 @@ class ClientRequestsController {
                 new MakingRequestForPartOfParkingSpot.Command(
                         ClientId.of(clientId),
                         ParkingSpotId.of(request.parkingSpotId),
-                        VehicleSize.of(request.vehicleSize)));
+                        SpotUnits.of(request.vehicleSize)));
         return result
                 .map(success -> ResponseEntity.ok().build())
                 .getOrElse(ResponseEntity.status(INTERNAL_SERVER_ERROR).build());

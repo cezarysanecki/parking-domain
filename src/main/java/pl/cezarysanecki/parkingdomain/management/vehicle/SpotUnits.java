@@ -6,15 +6,15 @@ import lombok.Value;
 
 @Value
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class VehicleSize {
+public class SpotUnits {
 
     int value;
 
-    public static VehicleSize of(int value) {
+    public static SpotUnits of(int value) {
         if (value <= 0) {
             throw new IllegalArgumentException("vehicle size must be positive");
         }
-        return new VehicleSize(value);
+        return new SpotUnits(value);
     }
 
 }

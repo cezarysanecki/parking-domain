@@ -8,7 +8,7 @@ import org.springframework.test.context.ActiveProfiles
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCapacity
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId
-import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleSize
+import pl.cezarysanecki.parkingdomain.management.vehicle.SpotUnits
 import pl.cezarysanecki.parkingdomain.requesting.client.model.RequestId
 import pl.cezarysanecki.parkingdomain.requesting.parkingspot.infrastucture.ParkingSpotRequestsConfig
 import pl.cezarysanecki.parkingdomain.requesting.parkingspot.model.ParkingSpotRequests
@@ -39,10 +39,10 @@ class ParkingSpotRequestsDatabaseIT extends Specification {
     
     when:
       parkingSpotRequestsRepository.publish(makeRequestOnPartOfParkingSpot(
-          parkingSpotId, firstRequest, VehicleSize.of(2)))
+          parkingSpotId, firstRequest, SpotUnits.of(2)))
     and:
       parkingSpotRequestsRepository.publish(makeRequestOnPartOfParkingSpot(
-          parkingSpotId, secondRequest, VehicleSize.of(2)))
+          parkingSpotId, secondRequest, SpotUnits.of(2)))
     then:
       parkingSpotRequestsShouldBeFoundInDatabaseCannotHandlingMoreRequests(parkingSpotId)
     
@@ -55,7 +55,7 @@ class ParkingSpotRequestsDatabaseIT extends Specification {
   }
   
   private static RequestForPartOfParkingSpotStored makeRequestOnPartOfParkingSpot(
-      ParkingSpotId parkingSpotId, RequestId requestId, VehicleSize vehicleSize) {
+      ParkingSpotId parkingSpotId, RequestId requestId, SpotUnits vehicleSize) {
     return new RequestForPartOfParkingSpotStored(parkingSpotId, requestId, vehicleSize)
   }
   

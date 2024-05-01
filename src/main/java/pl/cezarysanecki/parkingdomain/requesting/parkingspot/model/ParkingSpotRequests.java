@@ -3,8 +3,8 @@ package pl.cezarysanecki.parkingdomain.requesting.parkingspot.model;
 import io.vavr.control.Either;
 import lombok.Value;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotOccupation;
-import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleSize;
+import pl.cezarysanecki.parkingdomain.management.vehicle.SpotUnits;
+import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.SpotOccupation;
 import pl.cezarysanecki.parkingdomain.requesting.client.model.RequestId;
 import pl.cezarysanecki.parkingdomain.requesting.parkingspot.model.ParkingSpotRequestEvent.RequestForWholeParkingSpotStored;
 
@@ -21,14 +21,14 @@ import static pl.cezarysanecki.parkingdomain.requesting.parkingspot.model.Parkin
 public class ParkingSpotRequests {
 
     ParkingSpotId parkingSpotId;
-    ParkingSpotOccupation requestedOccupation;
+    SpotOccupation requestedOccupation;
     Set<RequestId> requests;
 
-    public Either<StoringParkingSpotRequestFailed, RequestForPartOfParkingSpotStored> storeRequest(RequestId requestId, VehicleSize vehicleSize) {
-        if (requestedOccupation.cannotHandle(vehicleSize)) {
+    public Either<StoringParkingSpotRequestFailed, RequestForPartOfParkingSpotStored> storeRequest(RequestId requestId, SpotUnits spotUnits) {
+        if (requestedOccupation.cannotHandle(spotUnits)) {
             return announceFailure(new StoringParkingSpotRequestFailed(parkingSpotId, requestId, "not enough parking spot space"));
         }
-        return announceSuccess(new RequestForPartOfParkingSpotStored(parkingSpotId, requestId, vehicleSize));
+        return announceSuccess(new RequestForPartOfParkingSpotStored(parkingSpotId, requestId, spotUnits));
     }
 
     public Either<StoringParkingSpotRequestFailed, RequestForWholeParkingSpotStored> storeRequest(RequestId requestId) {

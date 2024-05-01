@@ -5,7 +5,7 @@ import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpots
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleEvent
 import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleId
-import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleSize
+import pl.cezarysanecki.parkingdomain.management.vehicle.SpotUnits
 import spock.lang.Specification
 import spock.lang.Subject
 
@@ -28,7 +28,7 @@ class OccupyingParkingSpotByVehicleTest extends Specification {
     
     when:
       vehicleParkedEventHandler.handle(new VehicleEvent.VehicleParked(
-          VehicleId.newOne(), VehicleSize.of(2), openParkingSpot.parkingSpotId))
+          VehicleId.newOne(), SpotUnits.of(2), openParkingSpot.parkingSpotId))
     
     then:
       1 * parkingSpots.publish({
@@ -46,7 +46,7 @@ class OccupyingParkingSpotByVehicleTest extends Specification {
     
     when:
       vehicleParkedEventHandler.handle(new VehicleEvent.VehicleParked(
-          VehicleId.newOne(), VehicleSize.of(4), openParkingSpot.parkingSpotId))
+          VehicleId.newOne(), SpotUnits.of(4), openParkingSpot.parkingSpotId))
     
     then:
       1 * parkingSpots.publish({
@@ -66,7 +66,7 @@ class OccupyingParkingSpotByVehicleTest extends Specification {
     
     when:
       vehicleParkedEventHandler.handle(new VehicleEvent.VehicleParked(
-          vehicle, VehicleSize.of(4), openParkingSpot.parkingSpotId))
+          vehicle, SpotUnits.of(4), openParkingSpot.parkingSpotId))
     
     then:
       1 * parkingSpots.publish({
@@ -85,7 +85,7 @@ class OccupyingParkingSpotByVehicleTest extends Specification {
     
     when:
       vehicleParkedEventHandler.handle(new VehicleEvent.VehicleParked(
-          vehicle, VehicleSize.of(4), parkingSpotId))
+          vehicle, SpotUnits.of(4), parkingSpotId))
     
     then:
       1 * parkingSpots.publish({

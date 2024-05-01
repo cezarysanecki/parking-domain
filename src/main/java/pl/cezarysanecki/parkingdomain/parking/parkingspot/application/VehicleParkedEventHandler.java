@@ -6,10 +6,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
+import pl.cezarysanecki.parkingdomain.management.vehicle.SpotUnits;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpots;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleEvent.VehicleParked;
 import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleId;
-import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleSize;
 
 import static io.vavr.API.$;
 import static io.vavr.API.Case;
@@ -28,12 +28,12 @@ public class VehicleParkedEventHandler {
     @EventListener
     public void handle(VehicleParked vehicleParked) {
         VehicleId vehicleId = vehicleParked.vehicleId();
-        VehicleSize vehicleSize = vehicleParked.getVehicleSize();
+        SpotUnits spotUnits = vehicleParked.getSpotUnits();
         ParkingSpotId parkingSpotId = vehicleParked.getParkingSpotId();
 
         parkingSpots.findBy(parkingSpotId)
                 .map(openParkingSpot -> {
-                    Either<ParkingSpotOccupationFailed, ParkingSpotOccupiedEvents> result = openParkingSpot.occupy(vehicleId, vehicleSize);
+                    Either<ParkingSpotOccupationFailed, ParkingSpotOccupiedEvents> result = openParkingSpot.occupy(vehicleId, spotUnits);
                     return Match(result).of(
                             Case($Left($()), this::publishEvents),
                             Case($Right($()), this::publishEvents));

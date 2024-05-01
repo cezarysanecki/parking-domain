@@ -4,8 +4,8 @@ import io.vavr.collection.List;
 import io.vavr.control.Option;
 import lombok.NonNull;
 import lombok.Value;
+import pl.cezarysanecki.parkingdomain.management.vehicle.SpotUnits;
 import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleId;
-import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleSize;
 import pl.cezarysanecki.parkingdomain.commons.events.DomainEvent;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ReservationId;
@@ -19,7 +19,7 @@ public interface VehicleEvent extends DomainEvent {
 
         @NonNull VehicleId vehicleId;
         @NonNull
-        VehicleSize vehicleSize;
+        SpotUnits spotUnits;
         @NonNull ParkingSpotId parkingSpotId;
 
     }

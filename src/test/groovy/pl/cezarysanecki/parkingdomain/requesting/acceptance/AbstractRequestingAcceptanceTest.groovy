@@ -12,7 +12,7 @@ import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.management.vehicle.RegisteringVehicle
 import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleId
-import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleSize
+import pl.cezarysanecki.parkingdomain.management.vehicle.SpotUnits
 import pl.cezarysanecki.parkingdomain.requesting.RequestingConfig
 import spock.lang.Specification
 
@@ -36,7 +36,7 @@ abstract class AbstractRequestingAcceptanceTest extends Specification {
   }
   
   VehicleId registerVehicle(int size) {
-    def result = registeringVehicle.register(new RegisteringVehicle.Command(VehicleSize.of(size)))
+    def result = registeringVehicle.register(new RegisteringVehicle.Command(SpotUnits.of(size)))
     return (result.get() as Result.Success<VehicleId>).getResult()
   }
   

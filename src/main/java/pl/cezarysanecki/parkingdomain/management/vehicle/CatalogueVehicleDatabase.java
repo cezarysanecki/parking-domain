@@ -23,7 +23,7 @@ interface CatalogueVehicleDatabase {
                     vehicle.getVehicleId(),
                     new VehicleDatabaseRow(
                             vehicle.getVehicleId().getValue(),
-                            vehicle.getVehicleSize().getValue(),
+                            vehicle.getSpotUnits().getValue(),
                             vehicle.getMake().getMake(),
                             vehicle.getModel().getModel(),
                             vehicle.getAssignedTo().getValue()));

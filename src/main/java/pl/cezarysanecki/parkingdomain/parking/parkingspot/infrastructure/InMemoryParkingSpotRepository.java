@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotAdded;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.application.FindingParkingSpotReservations;
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpot;
+import pl.cezarysanecki.parkingdomain.parking.ParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpots;

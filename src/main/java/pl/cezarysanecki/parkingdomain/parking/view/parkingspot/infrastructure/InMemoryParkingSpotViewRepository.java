@@ -4,8 +4,8 @@ import io.vavr.control.Option;
 import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.commons.view.ViewEventListener;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
+import pl.cezarysanecki.parkingdomain.management.vehicle.SpotUnits;
 import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleId;
-import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleSize;
 import pl.cezarysanecki.parkingdomain.parking.view.parkingspot.infrastructure.ParkingSpotViewEntity.ParkedVehicleView;
 import pl.cezarysanecki.parkingdomain.parking.view.parkingspot.model.ParkingSpotView;
 import pl.cezarysanecki.parkingdomain.parking.view.parkingspot.model.ParkingSpotViews;
@@ -59,10 +59,10 @@ class InMemoryParkingSpotViewRepository implements ParkingSpotViews {
         Option.of(DATABASE.get(event.getParkingSpotId()))
                 .map(entity -> {
                     VehicleId vehicleId = event.getVehicleId();
-                    VehicleSize vehicleSize = event.getVehicleSize();
+                    SpotUnits spotUnits = event.getSpotUnits();
                     entity.parkedVehicles.add(new ParkedVehicleView(
                             vehicleId.getValue(),
-                            vehicleSize.getValue()));
+                            spotUnits.getValue()));
                     return entity;
                 });
         log.debug("updating parking spot view with id {} to decrease available capacity", event.getParkingSpotId());

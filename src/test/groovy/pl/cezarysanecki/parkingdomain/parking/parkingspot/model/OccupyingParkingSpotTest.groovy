@@ -1,7 +1,8 @@
 package pl.cezarysanecki.parkingdomain.parking.parkingspot.model
 
+
 import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleId
-import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleSize
+import pl.cezarysanecki.parkingdomain.management.vehicle.SpotUnits
 import spock.lang.Specification
 
 import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotFixture.emptyOpenParkingSpotWithCapacity
@@ -11,7 +12,7 @@ class OccupyingParkingSpotTest extends Specification {
   def "allow to occupy parking spot by vehicle"() {
     given:
       def vehicle = VehicleId.newOne()
-      def vehicleSize = VehicleSize.of(2)
+      def vehicleSize = SpotUnits.of(2)
     
     and:
       def openParkingSpot = emptyOpenParkingSpotWithCapacity(4)
@@ -34,7 +35,7 @@ class OccupyingParkingSpotTest extends Specification {
   def "allow to occupy parking spot by vehicle with full occupation"() {
     given:
       def vehicle = VehicleId.newOne()
-      def vehicleSize = VehicleSize.of(4)
+      def vehicleSize = SpotUnits.of(4)
     
     and:
       def openParkingSpot = emptyOpenParkingSpotWithCapacity(vehicleSize.getValue())
@@ -60,7 +61,7 @@ class OccupyingParkingSpotTest extends Specification {
   def "reject to occupy parking spot by vehicle when it does not have enough space"() {
     given:
       def vehicle = VehicleId.newOne()
-      def vehicleSize = VehicleSize.of(4)
+      def vehicleSize = SpotUnits.of(4)
     
     and:
       def openParkingSpot = emptyOpenParkingSpotWithCapacity(vehicleSize.getValue() - 1)

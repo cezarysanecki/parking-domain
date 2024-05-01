@@ -4,7 +4,7 @@ import io.vavr.control.Either;
 import lombok.Value;
 import pl.cezarysanecki.parkingdomain.management.client.ClientId;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleSize;
+import pl.cezarysanecki.parkingdomain.management.vehicle.SpotUnits;
 import pl.cezarysanecki.parkingdomain.requesting.client.model.ClientRequestsEvent.RequestForWholeParkingSpotMade;
 
 import java.util.Set;
@@ -26,11 +26,11 @@ public class ClientRequests {
         return new ClientRequests(clientId, Set.of());
     }
 
-    public Either<MakingRequestFailed, RequestForPartOfParkingSpotMade> createRequest(ParkingSpotId parkingSpotId, VehicleSize vehicleSize) {
+    public Either<MakingRequestFailed, RequestForPartOfParkingSpotMade> createRequest(ParkingSpotId parkingSpotId, SpotUnits spotUnits) {
         if (willBeTooManyRequests()) {
             return announceFailure(new MakingRequestFailed(clientId, "client has too many requests"));
         }
-        return announceSuccess(new RequestForPartOfParkingSpotMade(clientId, RequestId.newOne(), parkingSpotId, vehicleSize));
+        return announceSuccess(new RequestForPartOfParkingSpotMade(clientId, RequestId.newOne(), parkingSpotId, spotUnits));
     }
 
     public Either<MakingRequestFailed, RequestForWholeParkingSpotMade> createRequest(ParkingSpotId parkingSpotId) {

@@ -3,8 +3,8 @@ package pl.cezarysanecki.parkingdomain.requesting.client.application
 import io.vavr.control.Option
 import pl.cezarysanecki.parkingdomain.commons.commands.Result
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId
-import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleSize
 import pl.cezarysanecki.parkingdomain.management.client.ClientId
+import pl.cezarysanecki.parkingdomain.management.vehicle.SpotUnits
 import pl.cezarysanecki.parkingdomain.requesting.client.model.ClientRequestsRepository
 import pl.cezarysanecki.parkingdomain.requesting.client.model.RequestId
 import spock.lang.Specification
@@ -29,7 +29,7 @@ class MakingRequestForWholeParkingSpotTest extends Specification {
     
     when:
       def result = makingRequestForPartOfParkingSpot.makeRequest(
-          new Command(clientRequests.clientId, ParkingSpotId.newOne(), VehicleSize.of(2)))
+          new Command(clientRequests.clientId, ParkingSpotId.newOne(), SpotUnits.of(2)))
     
     then:
       result.isSuccess()
@@ -44,7 +44,7 @@ class MakingRequestForWholeParkingSpotTest extends Specification {
     
     when:
       def result = makingRequestForPartOfParkingSpot.makeRequest(
-          new Command(clientId, ParkingSpotId.newOne(), VehicleSize.of(2)))
+          new Command(clientId, ParkingSpotId.newOne(), SpotUnits.of(2)))
     
     then:
       result.isSuccess()
@@ -59,7 +59,7 @@ class MakingRequestForWholeParkingSpotTest extends Specification {
     
     when:
       def result = makingRequestForPartOfParkingSpot.makeRequest(
-          new Command(clientRequests.clientId, ParkingSpotId.newOne(), VehicleSize.of(2)))
+          new Command(clientRequests.clientId, ParkingSpotId.newOne(), SpotUnits.of(2)))
     
     then:
       result.isSuccess()
