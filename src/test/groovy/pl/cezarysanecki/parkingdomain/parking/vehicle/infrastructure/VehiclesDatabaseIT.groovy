@@ -5,16 +5,16 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.ActiveProfiles
+import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleRegistered
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId
-import pl.cezarysanecki.parkingdomain.parking.vehicle.model.Vehicle
-import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleId
-import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleSize
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId
+import pl.cezarysanecki.parkingdomain.parking.Vehicle
+import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleId
+import pl.cezarysanecki.parkingdomain.management.vehicle.SpotUnits
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.Vehicles
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.application.FindingParkingSpotReservations
 import spock.lang.Specification
 
-import static pl.cezarysanecki.parkingdomain.parking.vehicle.application.RegisteringVehicle.VehicleRegistered
 import static pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleEvent.VehicleParked
 
 @ActiveProfiles("local")
@@ -44,11 +44,11 @@ class VehiclesDatabaseIT extends Specification {
   }
   
   private VehicleRegistered vehicleRegistered(VehicleId vehicleId) {
-    return new VehicleRegistered(vehicleId, VehicleSize.of(2))
+    return new VehicleRegistered(vehicleId, SpotUnits.of(2))
   }
   
   private VehicleParked vehicleParked(VehicleId vehicleId) {
-    return new VehicleParked(vehicleId, VehicleSize.of(2), ParkingSpotId.newOne())
+    return new VehicleParked(vehicleId, SpotUnits.of(2), ParkingSpotId.newOne())
   }
   
   private void vehicleShouldBeFoundInDatabaseThatIsNotParked(VehicleId vehicleId) {

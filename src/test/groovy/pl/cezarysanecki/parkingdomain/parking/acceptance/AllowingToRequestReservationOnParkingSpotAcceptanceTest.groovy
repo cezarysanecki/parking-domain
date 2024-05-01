@@ -2,12 +2,12 @@ package pl.cezarysanecki.parkingdomain.parking.acceptance
 
 import org.springframework.beans.factory.annotation.Autowired
 import pl.cezarysanecki.parkingdomain.commons.commands.Result
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ReservationId
-import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleSize
+import pl.cezarysanecki.parkingdomain.management.vehicle.SpotUnits
 import pl.cezarysanecki.parkingdomain.requesting.client.application.MakingRequestForPartOfParkingSpot
 import pl.cezarysanecki.parkingdomain.requesting.client.application.MakingRequestForWholeParkingSpot
-import pl.cezarysanecki.parkingdomain.requesting.client.model.ClientId
+import pl.cezarysanecki.parkingdomain.management.client.ClientId
 import pl.cezarysanecki.parkingdomain.requesting.view.parkingspot.model.ParkingSpotRequestsViews
 import spock.lang.Ignore
 
@@ -56,7 +56,7 @@ class AllowingToRequestReservationOnParkingSpotAcceptanceTest extends AbstractPa
   
   private ReservationId reservePartOfParkingSpotFor(ClientId clientId, ParkingSpotId parkingSpotId, int vehicleSize) {
     def result = requestingReservationForPartOfParkingSpot.makeRequest(new MakingRequestForPartOfParkingSpot.Command(
-        clientId, parkingSpotId, VehicleSize.of(vehicleSize)))
+        clientId, parkingSpotId, SpotUnits.of(vehicleSize)))
     return (result.get() as Result.Success<ReservationId>).getResult()
   }
   

@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleSize;
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
+import pl.cezarysanecki.parkingdomain.management.vehicle.SpotUnits;
 import pl.cezarysanecki.parkingdomain.requesting.client.application.CancellingRequest;
 import pl.cezarysanecki.parkingdomain.requesting.client.application.MakingRequestForPartOfParkingSpot;
 import pl.cezarysanecki.parkingdomain.requesting.client.application.MakingRequestForWholeParkingSpot;
-import pl.cezarysanecki.parkingdomain.requesting.client.model.ClientId;
+import pl.cezarysanecki.parkingdomain.management.client.ClientId;
 import pl.cezarysanecki.parkingdomain.requesting.client.model.RequestId;
 import pl.cezarysanecki.parkingdomain.requesting.view.client.model.ClientRequestsView;
 import pl.cezarysanecki.parkingdomain.requesting.view.client.model.ClientRequestsViews;
@@ -46,7 +46,7 @@ class ClientRequestsController {
                 new MakingRequestForPartOfParkingSpot.Command(
                         ClientId.of(clientId),
                         ParkingSpotId.of(request.parkingSpotId),
-                        VehicleSize.of(request.vehicleSize)));
+                        SpotUnits.of(request.vehicleSize)));
         return result
                 .map(success -> ResponseEntity.ok().build())
                 .getOrElse(ResponseEntity.status(INTERNAL_SERVER_ERROR).build());

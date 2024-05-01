@@ -1,6 +1,6 @@
 package pl.cezarysanecki.parkingdomain.parking.view.vehicle.model;
 
-import pl.cezarysanecki.parkingdomain.parking.vehicle.application.RegisteringVehicle.VehicleRegistered;
+import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleRegistered;
 
 import java.util.Set;
 

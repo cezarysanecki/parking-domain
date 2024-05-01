@@ -3,10 +3,10 @@ package pl.cezarysanecki.parkingdomain.parking.vehicle.infrastructure;
 import io.vavr.control.Option;
 import lombok.RequiredArgsConstructor;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
-import pl.cezarysanecki.parkingdomain.parking.vehicle.application.RegisteringVehicle.VehicleRegistered;
-import pl.cezarysanecki.parkingdomain.parking.vehicle.model.Vehicle;
+import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleRegistered;
+import pl.cezarysanecki.parkingdomain.parking.Vehicle;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleEvent;
-import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleId;
+import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleId;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.Vehicles;
 
 import java.util.Map;
@@ -41,15 +41,15 @@ class InMemoryVehicleRepository implements Vehicles {
 
     private Vehicle createNewVehicle(VehicleRegistered domainEvent) {
         VehicleEntity entity = new VehicleEntity(
-                domainEvent.getVehicleId().getValue(),
+                domainEvent.vehicleId().getValue(),
                 Option.none(),
-                domainEvent.getVehicleSize().getValue());
-        DATABASE.put(domainEvent.getVehicleId(), entity);
+                domainEvent.spotUnits().getValue());
+        DATABASE.put(domainEvent.vehicleId(), entity);
         return DomainModelMapper.map(entity);
     }
 
     private Vehicle handleNextEvent(VehicleEvent domainEvent) {
-        VehicleEntity entity = DATABASE.get(domainEvent.getVehicleId());
+        VehicleEntity entity = DATABASE.get(domainEvent.vehicleId());
         entity.handle(domainEvent);
         return DomainModelMapper.map(entity);
     }

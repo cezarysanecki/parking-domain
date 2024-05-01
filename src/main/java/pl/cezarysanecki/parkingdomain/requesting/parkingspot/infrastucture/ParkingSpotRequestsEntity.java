@@ -33,7 +33,7 @@ class ParkingSpotRequestsEntity {
     private ParkingSpotRequestsEntity handle(RequestForPartOfParkingSpotStored requestForPartOfParkingSpotStored) {
         requests.add(new VehicleRequestEntity(
                 requestForPartOfParkingSpotStored.getRequestId().getValue(),
-                requestForPartOfParkingSpotStored.getVehicleSize().getValue()));
+                requestForPartOfParkingSpotStored.getSpotUnits().getValue()));
         return this;
     }
 

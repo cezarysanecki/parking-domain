@@ -1,9 +1,9 @@
 package pl.cezarysanecki.parkingdomain.requesting.parkingspot.application
 
 import io.vavr.control.Option
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId
-import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleSize
-import pl.cezarysanecki.parkingdomain.requesting.client.model.ClientId
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId
+import pl.cezarysanecki.parkingdomain.management.vehicle.SpotUnits
+import pl.cezarysanecki.parkingdomain.management.client.ClientId
 import pl.cezarysanecki.parkingdomain.requesting.client.model.RequestId
 import pl.cezarysanecki.parkingdomain.requesting.parkingspot.model.ParkingSpotRequestsRepository
 import spock.lang.Specification
@@ -27,7 +27,7 @@ class MakingRequestForPartOfParkingSpotHandlingClientRequestTest extends Specifi
   
   def "make request for part of parking spot when client made a request for it"() {
     given:
-      def vehicleSize = VehicleSize.of(2)
+      def vehicleSize = SpotUnits.of(2)
     and:
       def parkingSpotRequests = parkingSpotWithoutRequests()
     and:
@@ -53,7 +53,7 @@ class MakingRequestForPartOfParkingSpotHandlingClientRequestTest extends Specifi
     
     when:
       storingParkingSpotRequestEventHandler.handle(new RequestForPartOfParkingSpotMade(
-          clientId, requestId, parkingSpotRequests.parkingSpotId, VehicleSize.of(2)))
+          clientId, requestId, parkingSpotRequests.parkingSpotId, SpotUnits.of(2)))
     
     then:
       1 * parkingSpotRequestsRepository.publish({
@@ -70,7 +70,7 @@ class MakingRequestForPartOfParkingSpotHandlingClientRequestTest extends Specifi
     
     when:
       storingParkingSpotRequestEventHandler.handle(new RequestForPartOfParkingSpotMade(
-          clientId, requestId, parkingSpotId, VehicleSize.of(2)))
+          clientId, requestId, parkingSpotId, SpotUnits.of(2)))
     
     then:
       1 * parkingSpotRequestsRepository.publish({

@@ -9,7 +9,6 @@ import pl.cezarysanecki.parkingdomain.parking.parkingspot.application.FindingPar
 import pl.cezarysanecki.parkingdomain.parking.vehicle.application.DrivingVehicleAway;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.application.ParkingSpotEventsHandler;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.application.ParkingVehicle;
-import pl.cezarysanecki.parkingdomain.parking.vehicle.application.RegisteringVehicle;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.Vehicles;
 
 @Configuration
@@ -18,11 +17,6 @@ public class VehicleConfig {
 
     private final EventPublisher eventPublisher;
     private final FindingParkingSpotReservations findingParkingSpotReservations;
-
-    @Bean
-    RegisteringVehicle registeringVehicle(Vehicles vehicles) {
-        return new RegisteringVehicle(vehicles);
-    }
 
     @Bean
     ParkingVehicle parkingVehicle(Vehicles vehicles) {

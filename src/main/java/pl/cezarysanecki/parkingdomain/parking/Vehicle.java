@@ -1,12 +1,14 @@
-package pl.cezarysanecki.parkingdomain.parking.vehicle.model;
+package pl.cezarysanecki.parkingdomain.parking;
 
 import io.vavr.control.Either;
 import io.vavr.control.Option;
 import lombok.NonNull;
 import lombok.Value;
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId;
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
+import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleId;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleEvent.VehicleParked;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ReservationId;
+import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleInformation;
 
 import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announceFailure;
 import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announceSuccess;
@@ -29,7 +31,7 @@ public class Vehicle {
         if (parkedOn.isDefined()) {
             return announceFailure(new VehicleParkingFailed(vehicleInformation.getVehicleId(), "vehicle is already parked"));
         }
-        return announceSuccess(new VehicleParked(vehicleInformation.getVehicleId(), vehicleInformation.getVehicleSize(), parkingSpotId));
+        return announceSuccess(new VehicleParked(vehicleInformation.getVehicleId(), vehicleInformation.getSpotUnits(), parkingSpotId));
     }
 
     public Either<VehicleDrivingAwayFailed, VehicleDroveAway> driveAway() {
@@ -48,4 +50,5 @@ public class Vehicle {
 
         return announceSuccess(events(vehicleId, result.get(), new FulfilledReservation(vehicleId, reservationId)));
     }
+
 }

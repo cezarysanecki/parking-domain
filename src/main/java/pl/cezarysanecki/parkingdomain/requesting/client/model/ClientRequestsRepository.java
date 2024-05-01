@@ -1,6 +1,7 @@
 package pl.cezarysanecki.parkingdomain.requesting.client.model;
 
 import io.vavr.control.Option;
+import pl.cezarysanecki.parkingdomain.management.client.ClientId;
 
 public interface ClientRequestsRepository {
 

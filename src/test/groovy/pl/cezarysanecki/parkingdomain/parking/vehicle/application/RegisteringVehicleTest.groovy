@@ -1,13 +1,11 @@
 package pl.cezarysanecki.parkingdomain.parking.vehicle.application
 
-
-import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleSize
+import pl.cezarysanecki.parkingdomain.management.vehicle.RegisteringVehicle
+import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleRegistered
+import pl.cezarysanecki.parkingdomain.management.vehicle.SpotUnits
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.Vehicles
 import spock.lang.Specification
 import spock.lang.Subject
-
-import static pl.cezarysanecki.parkingdomain.parking.vehicle.application.RegisteringVehicle.Command
-import static pl.cezarysanecki.parkingdomain.parking.vehicle.application.RegisteringVehicle.VehicleRegistered
 
 class RegisteringVehicleTest extends Specification {
   
@@ -18,7 +16,7 @@ class RegisteringVehicleTest extends Specification {
   
   def "allow to register vehicle"() {
     given:
-      def vehicleSize = VehicleSize.of(2)
+      def vehicleSize = SpotUnits.of(2)
     
     when:
       def result = registeringVehicle.register(new Command(vehicleSize))
@@ -38,7 +36,7 @@ class RegisteringVehicleTest extends Specification {
       }
     
     when:
-      def result = registeringVehicle.register(new Command(VehicleSize.of(2)))
+      def result = registeringVehicle.register(new Command(SpotUnits.of(2)))
     
     then:
       result.isFailure()

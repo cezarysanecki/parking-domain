@@ -7,7 +7,7 @@ import org.springframework.context.event.EventListener;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpots;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleEvent.VehicleDroveAway;
-import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleId;
+import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleId;
 
 import static io.vavr.API.$;
 import static io.vavr.API.Case;
@@ -25,7 +25,7 @@ public class VehicleDroveAwayEventHandler {
 
     @EventListener
     public void handle(VehicleDroveAway vehicleDroveAway) {
-        VehicleId vehicleId = vehicleDroveAway.getVehicleId();
+        VehicleId vehicleId = vehicleDroveAway.vehicleId();
 
         parkingSpots.findBy(vehicleId)
                 .map(parkingSpot -> {

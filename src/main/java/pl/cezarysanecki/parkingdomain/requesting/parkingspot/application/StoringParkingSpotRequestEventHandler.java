@@ -5,9 +5,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleSize;
-import pl.cezarysanecki.parkingdomain.requesting.client.model.ClientRequestsEvent;
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
+import pl.cezarysanecki.parkingdomain.management.vehicle.SpotUnits;
 import pl.cezarysanecki.parkingdomain.requesting.client.model.RequestId;
 import pl.cezarysanecki.parkingdomain.requesting.parkingspot.model.ParkingSpotRequestEvent.RequestForWholeParkingSpotStored;
 import pl.cezarysanecki.parkingdomain.requesting.parkingspot.model.ParkingSpotRequestsRepository;
@@ -31,11 +30,11 @@ public class StoringParkingSpotRequestEventHandler {
     public void handle(RequestForPartOfParkingSpotMade requestForPartOfParkingSpotMade) {
         ParkingSpotId parkingSpotId = requestForPartOfParkingSpotMade.getParkingSpotId();
         RequestId requestId = requestForPartOfParkingSpotMade.getRequestId();
-        VehicleSize vehicleSize = requestForPartOfParkingSpotMade.getVehicleSize();
+        SpotUnits spotUnits = requestForPartOfParkingSpotMade.getSpotUnits();
 
         parkingSpotRequestsRepository.findBy(parkingSpotId)
                 .map(parkingSpotRequests -> {
-                    Either<StoringParkingSpotRequestFailed, RequestForPartOfParkingSpotStored> result = parkingSpotRequests.storeRequest(requestId, vehicleSize);
+                    Either<StoringParkingSpotRequestFailed, RequestForPartOfParkingSpotStored> result = parkingSpotRequests.storeRequest(requestId, spotUnits);
                     return Match(result).of(
                             Case($Left($()), this::publishEvents),
                             Case($Right($()), this::publishEvents));

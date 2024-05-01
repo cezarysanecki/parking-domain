@@ -1,16 +1,16 @@
-package pl.cezarysanecki.parkingdomain.requesting.client.model;
+package pl.cezarysanecki.parkingdomain.management.vehicle;
 
 import lombok.Value;
 
 import java.util.UUID;
 
 @Value(staticConstructor = "of")
-public class ClientId {
+public class VehicleId {
 
     UUID value;
 
-    public static ClientId newOne() {
-        return new ClientId(UUID.randomUUID());
+    public static VehicleId newOne() {
+        return new VehicleId(UUID.randomUUID());
     }
 
     @Override

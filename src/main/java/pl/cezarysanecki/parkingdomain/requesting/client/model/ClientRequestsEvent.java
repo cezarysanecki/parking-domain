@@ -2,9 +2,10 @@ package pl.cezarysanecki.parkingdomain.requesting.client.model;
 
 import lombok.NonNull;
 import lombok.Value;
+import pl.cezarysanecki.parkingdomain.management.client.ClientId;
 import pl.cezarysanecki.parkingdomain.commons.events.DomainEvent;
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleSize;
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
+import pl.cezarysanecki.parkingdomain.management.vehicle.SpotUnits;
 
 public interface ClientRequestsEvent extends DomainEvent {
 
@@ -16,7 +17,8 @@ public interface ClientRequestsEvent extends DomainEvent {
         @NonNull ClientId clientId;
         @NonNull RequestId requestId;
         @NonNull ParkingSpotId parkingSpotId;
-        @NonNull VehicleSize vehicleSize;
+        @NonNull
+        SpotUnits spotUnits;
 
     }
 

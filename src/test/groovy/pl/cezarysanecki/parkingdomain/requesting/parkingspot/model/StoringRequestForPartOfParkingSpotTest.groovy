@@ -1,6 +1,7 @@
 package pl.cezarysanecki.parkingdomain.requesting.parkingspot.model
 
-import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleSize
+
+import pl.cezarysanecki.parkingdomain.management.vehicle.SpotUnits
 import pl.cezarysanecki.parkingdomain.requesting.client.model.RequestId
 import spock.lang.Specification
 
@@ -15,7 +16,7 @@ class StoringRequestForPartOfParkingSpotTest extends Specification {
     and:
       def requestId = RequestId.newOne()
     and:
-      def vehicleSize = VehicleSize.of(2)
+      def vehicleSize = SpotUnits.of(2)
     
     when:
       def result = parkingSpotRequests.storeRequest(requestId, vehicleSize)
@@ -25,7 +26,7 @@ class StoringRequestForPartOfParkingSpotTest extends Specification {
       result.get().with {
         assert it.parkingSpotId == parkingSpotRequests.parkingSpotId
         assert it.requestId == requestId
-        assert it.vehicleSize == vehicleSize
+        assert it.spotUnits == vehicleSize
       }
   }
   
@@ -36,7 +37,7 @@ class StoringRequestForPartOfParkingSpotTest extends Specification {
       def requestId = RequestId.newOne()
     
     when:
-      def result = parkingSpotRequests.storeRequest(requestId, VehicleSize.of(3))
+      def result = parkingSpotRequests.storeRequest(requestId, SpotUnits.of(3))
     
     then:
       result.isLeft()

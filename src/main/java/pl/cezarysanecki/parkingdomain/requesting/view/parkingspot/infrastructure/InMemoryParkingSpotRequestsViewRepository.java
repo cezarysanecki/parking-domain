@@ -1,7 +1,7 @@
 package pl.cezarysanecki.parkingdomain.requesting.view.parkingspot.infrastructure;
 
 import pl.cezarysanecki.parkingdomain.commons.view.ViewEventListener;
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId;
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.requesting.view.parkingspot.model.ParkingSpotRequestsView;
 import pl.cezarysanecki.parkingdomain.requesting.view.parkingspot.model.ParkingSpotRequestsViews;
 
@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-import static pl.cezarysanecki.parkingdomain.parking.parkingspot.application.CreatingParkingSpot.ParkingSpotCreated;
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotAdded;
 import static pl.cezarysanecki.parkingdomain.requesting.parkingspot.model.ParkingSpotRequestEvent.ParkingSpotRequestCancelled;
 import static pl.cezarysanecki.parkingdomain.requesting.parkingspot.model.ParkingSpotRequestEvent.RequestForPartOfParkingSpotStored;
 import static pl.cezarysanecki.parkingdomain.requesting.parkingspot.model.ParkingSpotRequestEvent.RequestForWholeParkingSpotStored;
@@ -37,10 +37,10 @@ class InMemoryParkingSpotRequestsViewRepository implements ParkingSpotRequestsVi
 
     @Override
     @ViewEventListener
-    public void handle(ParkingSpotCreated event) {
-        DATABASE.put(event.getParkingSpotId(), new ParkingSpotRequestsViewEntity(
-                event.getParkingSpotId().getValue(),
-                event.getParkingSpotCapacity().getValue(),
+    public void handle(ParkingSpotAdded event) {
+        DATABASE.put(event.parkingSpotId(), new ParkingSpotRequestsViewEntity(
+                event.parkingSpotId().getValue(),
+                event.capacity().getValue(),
                 new HashSet<>()));
     }
 
@@ -60,7 +60,7 @@ class InMemoryParkingSpotRequestsViewRepository implements ParkingSpotRequestsVi
         ParkingSpotRequestsViewEntity entity = DATABASE.get(event.getParkingSpotId());
         entity.currentRequests.add(new ParkingSpotRequestsViewEntity.VehicleRequestEntity(
                 event.getRequestId().getValue(),
-                event.getVehicleSize().getValue()));
+                event.getSpotUnits().getValue()));
         DATABASE.put(event.getParkingSpotId(), entity);
     }
 

@@ -3,15 +3,15 @@ package pl.cezarysanecki.parkingdomain.parking.parkingspot.infrastructure;
 import io.vavr.API;
 import io.vavr.control.Option;
 import lombok.RequiredArgsConstructor;
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotAdded;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.application.CreatingParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.application.FindingParkingSpotReservations;
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpot;
+import pl.cezarysanecki.parkingdomain.parking.ParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent;
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId;
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpots;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ReservationId;
-import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleId;
+import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleId;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -53,17 +53,17 @@ class InMemoryParkingSpotRepository implements ParkingSpots, FindingParkingSpotR
     @Override
     public void publish(ParkingSpotEvent domainEvent) {
         Match(domainEvent).of(
-                API.Case(API.$(instanceOf(CreatingParkingSpot.ParkingSpotCreated.class)), this::createNewParkingSpot),
+                API.Case(API.$(instanceOf(ParkingSpotAdded.class)), this::createNewParkingSpot),
                 Case($(), this::handleNextEvent));
         eventPublisher.publish(domainEvent.normalize());
     }
 
-    private ParkingSpotEvent createNewParkingSpot(CreatingParkingSpot.ParkingSpotCreated domainEvent) {
+    private ParkingSpotEvent createNewParkingSpot(ParkingSpotAdded domainEvent) {
         ParkingSpotEntity entity = new ParkingSpotEntity(
-                domainEvent.getParkingSpotId().getValue(),
-                domainEvent.getParkingSpotCapacity().getValue(),
+                domainEvent.parkingSpotId().getValue(),
+                domainEvent.capacity().getValue(),
                 new HashSet<>());
-        DATABASE.put(domainEvent.getParkingSpotId(), entity);
+        DATABASE.put(domainEvent.parkingSpotId(), entity);
         return domainEvent;
     }
 

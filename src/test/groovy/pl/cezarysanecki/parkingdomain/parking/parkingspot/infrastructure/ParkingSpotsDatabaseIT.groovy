@@ -5,17 +5,17 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.ActiveProfiles
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotAdded
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpot
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotCapacity
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotCategory
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId
+import pl.cezarysanecki.parkingdomain.parking.ParkingSpot
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCapacity
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpots
-import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleId
-import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleSize
+import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleId
+import pl.cezarysanecki.parkingdomain.management.vehicle.SpotUnits
 import spock.lang.Specification
 
-import static pl.cezarysanecki.parkingdomain.parking.parkingspot.application.CreatingParkingSpot.ParkingSpotCreated
 import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.ParkingSpotOccupied
 
 @ActiveProfiles("local")
@@ -45,22 +45,22 @@ class ParkingSpotsDatabaseIT extends Specification {
       parkingSpotShouldBeFoundInDatabaseBeingFull(parkingSpotId)
   }
   
-  private ParkingSpotCreated parkingSpotCreated(ParkingSpotId parkingSpotId, int capacity) {
-    return new ParkingSpotCreated(parkingSpotId, ParkingSpotCapacity.of(capacity), ParkingSpotCategory.Gold)
+  private ParkingSpotAdded parkingSpotCreated(ParkingSpotId parkingSpotId, int capacity) {
+    return new ParkingSpotAdded(parkingSpotId, ParkingSpotCapacity.of(capacity), ParkingSpotCategory.Gold)
   }
   
   private ParkingSpotOccupied occupyParkingSpot(ParkingSpotId parkingSpotId, int vehicleSize) {
-    return new ParkingSpotOccupied(parkingSpotId, VehicleId.newOne(), VehicleSize.of(vehicleSize))
+    return new ParkingSpotOccupied(parkingSpotId, VehicleId.newOne(), SpotUnits.of(vehicleSize))
   }
   
   private void parkingSpotShouldBeFoundInDatabaseBeingEmpty(ParkingSpotId parkingSpotId) {
     def openParkingSpot = loadPersistedOpenParkingSpot(parkingSpotId)
-    assert openParkingSpot.parkingSpotOccupation.isEmpty()
+    assert openParkingSpot.spotOccupation.isEmpty()
   }
   
   private void parkingSpotShouldBeFoundInDatabaseBeingFull(ParkingSpotId parkingSpotId) {
     def openParkingSpot = loadPersistedOpenParkingSpot(parkingSpotId)
-    assert openParkingSpot.parkingSpotOccupation.isFull()
+    assert openParkingSpot.spotOccupation.isFull()
   }
   
   ParkingSpot loadPersistedOpenParkingSpot(ParkingSpotId parkingSpotId) {

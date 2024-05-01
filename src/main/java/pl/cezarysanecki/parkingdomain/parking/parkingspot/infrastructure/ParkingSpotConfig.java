@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.application.CreatingParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.application.VehicleDroveAwayEventHandler;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.application.VehicleParkedEventHandler;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpots;
@@ -15,11 +14,6 @@ import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpots;
 public class ParkingSpotConfig {
 
     private final EventPublisher eventPublisher;
-
-    @Bean
-    CreatingParkingSpot creatingParkingSpot(ParkingSpots parkingSpots) {
-        return new CreatingParkingSpot(parkingSpots);
-    }
 
     @Bean
     VehicleDroveAwayEventHandler vehicleDroveAwayEventHandler(ParkingSpots parkingSpots) {

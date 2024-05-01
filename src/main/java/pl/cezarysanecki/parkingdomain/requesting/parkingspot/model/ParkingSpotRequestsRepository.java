@@ -1,8 +1,8 @@
 package pl.cezarysanecki.parkingdomain.requesting.parkingspot.model;
 
 import io.vavr.control.Option;
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotCapacity;
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId;
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCapacity;
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.requesting.client.model.RequestId;
 
 public interface ParkingSpotRequestsRepository {

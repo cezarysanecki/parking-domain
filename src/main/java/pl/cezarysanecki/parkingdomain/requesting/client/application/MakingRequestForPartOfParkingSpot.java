@@ -7,9 +7,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleSize;
-import pl.cezarysanecki.parkingdomain.requesting.client.model.ClientId;
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
+import pl.cezarysanecki.parkingdomain.management.vehicle.SpotUnits;
+import pl.cezarysanecki.parkingdomain.management.client.ClientId;
 import pl.cezarysanecki.parkingdomain.requesting.client.model.ClientRequests;
 import pl.cezarysanecki.parkingdomain.requesting.client.model.ClientRequestsRepository;
 
@@ -35,18 +35,18 @@ public class MakingRequestForPartOfParkingSpot {
         @NonNull
         ParkingSpotId parkingSpotId;
         @NonNull
-        VehicleSize vehicleSize;
+        SpotUnits spotUnits;
 
     }
 
     public Try<Result> makeRequest(Command command) {
         ClientId clientId = command.getClientId();
         ParkingSpotId parkingSpotId = command.getParkingSpotId();
-        VehicleSize vehicleSize = command.getVehicleSize();
+        SpotUnits spotUnits = command.getSpotUnits();
 
         return Try.of(() -> {
             ClientRequests clientRequests = load(clientId);
-            Either<MakingRequestFailed, RequestForPartOfParkingSpotMade> result = clientRequests.createRequest(parkingSpotId, vehicleSize);
+            Either<MakingRequestFailed, RequestForPartOfParkingSpotMade> result = clientRequests.createRequest(parkingSpotId, spotUnits);
             return Match(result).of(
                     Case($Left($()), this::publishEvents),
                     Case($Right($()), this::publishEvents));

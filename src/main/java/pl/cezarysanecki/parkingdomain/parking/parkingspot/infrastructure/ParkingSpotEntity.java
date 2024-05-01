@@ -3,9 +3,9 @@ package pl.cezarysanecki.parkingdomain.parking.parkingspot.infrastructure;
 import io.vavr.API;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import pl.cezarysanecki.parkingdomain.management.vehicle.SpotUnits;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent;
-import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleId;
-import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleSize;
+import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleId;
 
 import java.util.Set;
 import java.util.UUID;
@@ -42,9 +42,9 @@ class ParkingSpotEntity {
 
     private ParkingSpotEntity handle(ParkingSpotOccupied domainEvent) {
         VehicleId vehicleId = domainEvent.getVehicleId();
-        VehicleSize vehicleSize = domainEvent.getVehicleSize();
+        SpotUnits spotUnits = domainEvent.getSpotUnits();
 
-        vehicles.add(new ParkingSpotVehicleEntity(vehicleId.getValue(), vehicleSize.getValue()));
+        vehicles.add(new ParkingSpotVehicleEntity(vehicleId.getValue(), spotUnits.getValue()));
         log.debug("occupying parking spot with id {} by vehicle with id {}", domainEvent.getParkingSpotId(), vehicleId);
         return this;
     }

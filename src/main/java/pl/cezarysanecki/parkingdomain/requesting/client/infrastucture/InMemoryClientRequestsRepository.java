@@ -3,7 +3,7 @@ package pl.cezarysanecki.parkingdomain.requesting.client.infrastucture;
 import io.vavr.control.Option;
 import lombok.RequiredArgsConstructor;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
-import pl.cezarysanecki.parkingdomain.requesting.client.model.ClientId;
+import pl.cezarysanecki.parkingdomain.management.client.ClientId;
 import pl.cezarysanecki.parkingdomain.requesting.client.model.ClientRequests;
 import pl.cezarysanecki.parkingdomain.requesting.client.model.ClientRequestsEvent;
 import pl.cezarysanecki.parkingdomain.requesting.client.model.ClientRequestsRepository;

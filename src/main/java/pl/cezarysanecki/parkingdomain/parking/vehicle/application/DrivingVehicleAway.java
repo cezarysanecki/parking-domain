@@ -7,9 +7,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
-import pl.cezarysanecki.parkingdomain.parking.vehicle.model.Vehicle;
+import pl.cezarysanecki.parkingdomain.parking.Vehicle;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleEvent.VehicleDrivingAwayFailed;
-import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleId;
+import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleId;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.Vehicles;
 
 import static io.vavr.API.$;
@@ -45,15 +45,15 @@ public class DrivingVehicleAway {
     }
 
     private Result publishEvents(VehicleDrivingAwayFailed vehicleDrivingAwayFailed) {
-        log.debug("failed to drive vehicle away with id {}, reason: {}", vehicleDrivingAwayFailed.getVehicleId(), vehicleDrivingAwayFailed.getReason());
+        log.debug("failed to drive vehicle away with id {}, reason: {}", vehicleDrivingAwayFailed.vehicleId(), vehicleDrivingAwayFailed.getReason());
         vehicles.publish(vehicleDrivingAwayFailed);
         return Result.Rejection.with(vehicleDrivingAwayFailed.getReason());
     }
 
     private Result publishEvents(VehicleDroveAway vehicleDroveAway) {
-        log.debug("successfully drive vehicle away with id {}", vehicleDroveAway.getVehicleId());
+        log.debug("successfully drive vehicle away with id {}", vehicleDroveAway.vehicleId());
         vehicles.publish(vehicleDroveAway);
-        return new Result.Success<>(vehicleDroveAway.getVehicleId());
+        return new Result.Success<>(vehicleDroveAway.vehicleId());
     }
 
     private Vehicle load(VehicleId vehicleId) {
