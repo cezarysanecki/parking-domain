@@ -1,7 +1,5 @@
 package pl.cezarysanecki.parkingdomain.parking.parkingspot.model;
 
-import pl.cezarysanecki.parkingdomain.management.vehicle.SpotUnits;
-
 public class SpotOccupation {
 
     int currentOccupation;

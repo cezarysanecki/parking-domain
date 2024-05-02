@@ -12,7 +12,7 @@ import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.management.vehicle.RegisteringVehicle
 import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleId
-import pl.cezarysanecki.parkingdomain.management.vehicle.SpotUnits
+import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.SpotUnits
 import pl.cezarysanecki.parkingdomain.requesting.RequestingConfig
 import spock.lang.Specification
 

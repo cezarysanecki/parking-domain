@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.ParkingSpotOccupationFailed;
+import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.OccupationFailed;
 import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleId;
 
 @Slf4j
@@ -15,8 +15,8 @@ public class ParkingSpotEventsHandler {
     private final DrivingVehicleAway drivingVehicleAway;
 
     @EventListener
-    public void handle(ParkingSpotOccupationFailed parkingSpotOccupationFailed) {
-        VehicleId vehicleId = parkingSpotOccupationFailed.getVehicleId();
+    public void handle(OccupationFailed occupationFailed) {
+        VehicleId vehicleId = occupationFailed.getVehicleId();
 
         drivingVehicleAway.driveAway(new DrivingVehicleAway.Command(vehicleId))
                 .onFailure(exception -> log.error(exception.getMessage(), exception));

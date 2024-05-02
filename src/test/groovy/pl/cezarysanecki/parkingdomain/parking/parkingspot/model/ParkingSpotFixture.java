@@ -4,7 +4,6 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleId;
-import pl.cezarysanecki.parkingdomain.parking.ParkingSpot;
 
 import java.util.Set;
 

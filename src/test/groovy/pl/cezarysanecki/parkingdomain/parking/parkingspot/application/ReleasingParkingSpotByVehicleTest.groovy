@@ -5,8 +5,8 @@ import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpots
 import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleId
 import spock.lang.Specification
 
-import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.ParkingSpotLeavingOutFailed
-import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.ParkingSpotLeftEvents
+import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.ReleasingFailed
+import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.ReleasedEvents
 import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotFixture.fullyOccupiedBy
 import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotFixture.occupiedBy
 import static pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleEvent.VehicleDroveAway
@@ -33,7 +33,7 @@ class ReleasingParkingSpotByVehicleTest extends Specification {
         it.parkingSpotId == occupiedParkingSpot.parkingSpotId
             && it.parkingSpotLeft
             && it.completelyFreedUp.isEmpty()
-      } as ParkingSpotLeftEvents)
+      } as ReleasedEvents)
   }
   
   def "should parking spot be left by vehicle and completely freed up if this is last vehicle"() {
@@ -52,7 +52,7 @@ class ReleasingParkingSpotByVehicleTest extends Specification {
         it.parkingSpotId == occupiedParkingSpot.parkingSpotId
             && it.parkingSpotLeft
             && it.completelyFreedUp.isDefined()
-      } as ParkingSpotLeftEvents)
+      } as ReleasedEvents)
   }
   
   def "fail to leave parking spot by vehicle that is not parked on it"() {
@@ -70,7 +70,7 @@ class ReleasingParkingSpotByVehicleTest extends Specification {
       1 * parkingSpots.publish({
         it.parkingSpotId == occupiedParkingSpot.parkingSpotId
             && it.vehicleId == vehicle
-      } as ParkingSpotLeavingOutFailed)
+      } as ReleasingFailed)
   }
   
 }

@@ -4,7 +4,6 @@ import io.vavr.control.Option;
 import lombok.RequiredArgsConstructor;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleRegistered;
-import pl.cezarysanecki.parkingdomain.parking.Vehicle;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleEvent;
 import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleId;
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.Vehicles;

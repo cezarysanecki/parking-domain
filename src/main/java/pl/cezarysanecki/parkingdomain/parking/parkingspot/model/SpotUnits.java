@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.management.vehicle;
+package pl.cezarysanecki.parkingdomain.parking.parkingspot.model;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +15,14 @@ public class SpotUnits {
             throw new IllegalArgumentException("vehicle size must be positive");
         }
         return new SpotUnits(value);
+    }
+
+    public boolean isLessThan(SpotUnits spotUnits) {
+        return value < spotUnits.value;
+    }
+
+    public boolean isEqualTo(SpotUnits spotUnits) {
+        return value == spotUnits.value;
     }
 
 }

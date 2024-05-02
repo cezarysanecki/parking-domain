@@ -6,7 +6,7 @@ import pl.cezarysanecki.parkingdomain.parking.vehicle.model.Vehicles
 import spock.lang.Specification
 import spock.lang.Subject
 
-import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.ParkingSpotOccupationFailed
+import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.OccupationFailed
 import static pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleEvent.VehicleDroveAway
 import static pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleFixture.parkedVehicleOn
 
@@ -27,7 +27,7 @@ class DrivingVehicleAwayAfterFailedParkingSpotOccupationTest extends Specificati
       vehicles.findBy(vehicle.vehicleInformation.vehicleId) >> Option.of(vehicle)
     
     when:
-      parkingSpotEventsHandler.handle(new ParkingSpotOccupationFailed(
+      parkingSpotEventsHandler.handle(new OccupationFailed(
           parkingSpotId, vehicle.vehicleInformation.vehicleId, "any reason"))
     
     then:

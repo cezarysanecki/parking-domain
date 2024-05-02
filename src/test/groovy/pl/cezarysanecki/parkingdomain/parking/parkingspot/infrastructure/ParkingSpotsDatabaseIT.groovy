@@ -7,16 +7,16 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.ActiveProfiles
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotAdded
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher
-import pl.cezarysanecki.parkingdomain.parking.ParkingSpot
+import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpot
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCapacity
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpots
 import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleId
-import pl.cezarysanecki.parkingdomain.management.vehicle.SpotUnits
+import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.SpotUnits
 import spock.lang.Specification
 
-import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.ParkingSpotOccupied
+import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.Occupied
 
 @ActiveProfiles("local")
 @SpringBootTest(classes = [ParkingSpotConfig.class])
@@ -49,8 +49,8 @@ class ParkingSpotsDatabaseIT extends Specification {
     return new ParkingSpotAdded(parkingSpotId, ParkingSpotCapacity.of(capacity), ParkingSpotCategory.Gold)
   }
   
-  private ParkingSpotOccupied occupyParkingSpot(ParkingSpotId parkingSpotId, int vehicleSize) {
-    return new ParkingSpotOccupied(parkingSpotId, VehicleId.newOne(), SpotUnits.of(vehicleSize))
+  private Occupied occupyParkingSpot(ParkingSpotId parkingSpotId, int vehicleSize) {
+    return new Occupied(parkingSpotId, VehicleId.newOne(), SpotUnits.of(vehicleSize))
   }
   
   private void parkingSpotShouldBeFoundInDatabaseBeingEmpty(ParkingSpotId parkingSpotId) {
