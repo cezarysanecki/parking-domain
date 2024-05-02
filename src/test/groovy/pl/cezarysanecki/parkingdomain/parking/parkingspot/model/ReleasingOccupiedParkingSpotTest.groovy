@@ -22,7 +22,7 @@ class ReleasingOccupiedParkingSpotTest extends Specification {
       result.get().with {
         assert it.parkingSpotId == occupiedParkingSpot.parkingSpotId
         
-        def parkingSpotLeft = it.parkingSpotLeft
+        def parkingSpotLeft = it.released
         assert parkingSpotLeft.parkingSpotId == occupiedParkingSpot.parkingSpotId
         assert parkingSpotLeft.vehicleId == vehicleToDriveAway
       }
@@ -42,7 +42,7 @@ class ReleasingOccupiedParkingSpotTest extends Specification {
       result.get().with {
         assert it.parkingSpotId == occupiedParkingSpot.parkingSpotId
         
-        def parkingSpotLeft = it.parkingSpotLeft
+        def parkingSpotLeft = it.released
         assert parkingSpotLeft.parkingSpotId == occupiedParkingSpot.parkingSpotId
         assert parkingSpotLeft.vehicleId == vehicleToDriveAway
         

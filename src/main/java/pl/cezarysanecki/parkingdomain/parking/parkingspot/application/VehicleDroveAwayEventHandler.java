@@ -14,8 +14,8 @@ import static io.vavr.API.Case;
 import static io.vavr.API.Match;
 import static io.vavr.Patterns.$Left;
 import static io.vavr.Patterns.$Right;
-import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.ParkingSpotLeavingOutFailed;
-import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.ParkingSpotLeftEvents;
+import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.ReleasingFailed;
+import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.ReleasedEvents;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -29,7 +29,7 @@ public class VehicleDroveAwayEventHandler {
 
         parkingSpots.findBy(vehicleId)
                 .map(parkingSpot -> {
-                    Either<ParkingSpotLeavingOutFailed, ParkingSpotLeftEvents> result = parkingSpot.release(vehicleId);
+                    Either<ReleasingFailed, ReleasedEvents> result = parkingSpot.release(vehicleId);
                     return Match(result).of(
                             Case($Left($()), this::publishEvents),
                             Case($Right($()), this::publishEvents));
@@ -37,16 +37,16 @@ public class VehicleDroveAwayEventHandler {
                 .onEmpty(() -> log.debug("cannot find occupied parking spot by vehicle with id {}", vehicleId));
     }
 
-    private Result publishEvents(ParkingSpotLeavingOutFailed parkingSpotLeavingOutFailed) {
-        log.debug("failed to leave parking spot with id {}, reason: {}", parkingSpotLeavingOutFailed.getParkingSpotId(), parkingSpotLeavingOutFailed.getReason());
-        parkingSpots.publish(parkingSpotLeavingOutFailed);
-        return Result.Rejection.with(parkingSpotLeavingOutFailed.getReason());
+    private Result publishEvents(ReleasingFailed releasingFailed) {
+        log.debug("failed to leave parking spot with id {}, reason: {}", releasingFailed.getParkingSpotId(), releasingFailed.getReason());
+        parkingSpots.publish(releasingFailed);
+        return Result.Rejection.with(releasingFailed.getReason());
     }
 
-    private Result publishEvents(ParkingSpotLeftEvents parkingSpotLeftEvents) {
-        log.debug("successfully left parking spot with id {}", parkingSpotLeftEvents.getParkingSpotId());
-        parkingSpots.publish(parkingSpotLeftEvents);
-        return new Result.Success<>(parkingSpotLeftEvents.getParkingSpotId());
+    private Result publishEvents(ReleasedEvents releasedEvents) {
+        log.debug("successfully left parking spot with id {}", releasedEvents.getParkingSpotId());
+        parkingSpots.publish(releasedEvents);
+        return new Result.Success<>(releasedEvents.getParkingSpotId());
     }
 
 }

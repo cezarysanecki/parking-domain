@@ -2,7 +2,7 @@ package pl.cezarysanecki.parkingdomain.requesting.parkingspot.application
 
 import io.vavr.control.Option
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.SpotUnits
+import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.SpotUnits
 import pl.cezarysanecki.parkingdomain.management.client.ClientId
 import pl.cezarysanecki.parkingdomain.requesting.client.model.RequestId
 import pl.cezarysanecki.parkingdomain.requesting.parkingspot.model.ParkingSpotRequestsRepository

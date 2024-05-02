@@ -2,7 +2,7 @@ package pl.cezarysanecki.parkingdomain.parking.vehicle.application
 
 import pl.cezarysanecki.parkingdomain.management.vehicle.RegisteringVehicle
 import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleRegistered
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.SpotUnits
+import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.SpotUnits
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.Vehicles
 import spock.lang.Specification
 import spock.lang.Subject

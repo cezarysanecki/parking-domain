@@ -4,7 +4,7 @@ import io.vavr.control.Option;
 import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.commons.view.ViewEventListener;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.SpotUnits;
+import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.SpotUnits;
 import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleId;
 import pl.cezarysanecki.parkingdomain.parking.view.parkingspot.infrastructure.ParkingSpotViewEntity.ParkedVehicleView;
 import pl.cezarysanecki.parkingdomain.parking.view.parkingspot.model.ParkingSpotView;
@@ -17,8 +17,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotAdded;
-import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.ParkingSpotLeft;
-import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.ParkingSpotOccupied;
+import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.Released;
+import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.Occupied;
 
 @Slf4j
 class InMemoryParkingSpotViewRepository implements ParkingSpotViews {
@@ -55,7 +55,7 @@ class InMemoryParkingSpotViewRepository implements ParkingSpotViews {
 
     @Override
     @ViewEventListener
-    public void handle(ParkingSpotOccupied event) {
+    public void handle(Occupied event) {
         Option.of(DATABASE.get(event.getParkingSpotId()))
                 .map(entity -> {
                     VehicleId vehicleId = event.getVehicleId();
@@ -70,7 +70,7 @@ class InMemoryParkingSpotViewRepository implements ParkingSpotViews {
 
     @Override
     @ViewEventListener
-    public void handle(ParkingSpotLeft event) {
+    public void handle(Released event) {
         Option.of(DATABASE.get(event.getParkingSpotId()))
                 .map(entity -> {
                     VehicleId vehicleId = event.getVehicleId();

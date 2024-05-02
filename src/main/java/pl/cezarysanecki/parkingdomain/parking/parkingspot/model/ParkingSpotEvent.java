@@ -4,20 +4,18 @@ import io.vavr.collection.List;
 import io.vavr.control.Option;
 import lombok.NonNull;
 import lombok.Value;
-import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.commons.events.DomainEvent;
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.SpotUnits;
-import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleId;
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
 
 public interface ParkingSpotEvent extends DomainEvent {
 
     ParkingSpotId getParkingSpotId();
 
     @Value
-    class ParkingSpotOccupied implements ParkingSpotEvent {
+    class Occupied implements ParkingSpotEvent {
 
-        @NonNull ParkingSpotId parkingSpotId;
-        @NonNull VehicleId vehicleId;
+        @NonNull
+        ParkingSpotId parkingSpotId;
         @NonNull
         SpotUnits spotUnits;
 
@@ -26,82 +24,94 @@ public interface ParkingSpotEvent extends DomainEvent {
     @Value
     class FullyOccupied implements ParkingSpotEvent {
 
-        @NonNull ParkingSpotId parkingSpotId;
+        @NonNull
+        ParkingSpotId parkingSpotId;
 
     }
 
     @Value
-    class ParkingSpotOccupiedEvents implements ParkingSpotEvent {
+    class OccupiedEvents implements ParkingSpotEvent {
 
-        @NonNull ParkingSpotId parkingSpotId;
-        @NonNull ParkingSpotOccupied parkingSpotOccupied;
-        @NonNull Option<FullyOccupied> fullyOccupied;
+        @NonNull
+        ParkingSpotId parkingSpotId;
+        @NonNull
+        Occupied occupied;
+        @NonNull
+        Option<FullyOccupied> fullyOccupied;
 
-        public static ParkingSpotOccupiedEvents events(ParkingSpotId parkingSpotId, ParkingSpotOccupied parkingSpotOccupied) {
-            return new ParkingSpotOccupiedEvents(parkingSpotId, parkingSpotOccupied, Option.none());
+        public static OccupiedEvents events(ParkingSpotId parkingSpotId, Occupied occupied) {
+            return new OccupiedEvents(parkingSpotId, occupied, Option.none());
         }
 
-        public static ParkingSpotOccupiedEvents events(ParkingSpotId parkingSpotId, ParkingSpotOccupied parkingSpotOccupied, FullyOccupied fullyOccupied) {
-            return new ParkingSpotOccupiedEvents(parkingSpotId, parkingSpotOccupied, Option.of(fullyOccupied));
-        }
-
-        @Override
-        public List<DomainEvent> normalize() {
-            return List.<DomainEvent>of(parkingSpotOccupied).appendAll(fullyOccupied.toList());
-        }
-    }
-
-    @Value
-    class ParkingSpotOccupationFailed implements ParkingSpotEvent {
-
-        @NonNull ParkingSpotId parkingSpotId;
-        @NonNull VehicleId vehicleId;
-        @NonNull String reason;
-
-    }
-
-    @Value
-    class ParkingSpotLeft implements ParkingSpotEvent {
-
-        @NonNull ParkingSpotId parkingSpotId;
-        @NonNull VehicleId vehicleId;
-
-    }
-
-    @Value
-    class CompletelyFreedUp implements ParkingSpotEvent {
-
-        @NonNull ParkingSpotId parkingSpotId;
-
-    }
-
-    @Value
-    class ParkingSpotLeftEvents implements ParkingSpotEvent {
-
-        @NonNull ParkingSpotId parkingSpotId;
-        @NonNull ParkingSpotLeft parkingSpotLeft;
-        @NonNull Option<CompletelyFreedUp> completelyFreedUp;
-
-        public static ParkingSpotLeftEvents events(ParkingSpotId parkingSpotId, ParkingSpotLeft parkingSpotLeft) {
-            return new ParkingSpotLeftEvents(parkingSpotId, parkingSpotLeft, Option.none());
-        }
-
-        public static ParkingSpotLeftEvents events(ParkingSpotId parkingSpotId, ParkingSpotLeft parkingSpotLeft, CompletelyFreedUp completelyFreedUp) {
-            return new ParkingSpotLeftEvents(parkingSpotId, parkingSpotLeft, Option.of(completelyFreedUp));
+        public static OccupiedEvents events(ParkingSpotId parkingSpotId, Occupied occupied, FullyOccupied fullyOccupied) {
+            return new OccupiedEvents(parkingSpotId, occupied, Option.of(fullyOccupied));
         }
 
         @Override
         public List<DomainEvent> normalize() {
-            return List.<DomainEvent>of(parkingSpotLeft).appendAll(completelyFreedUp.toList());
+            return List.<DomainEvent>of(occupied).appendAll(fullyOccupied.toList());
         }
     }
 
     @Value
-    class ParkingSpotLeavingOutFailed implements ParkingSpotEvent {
+    class OccupationFailed implements ParkingSpotEvent {
 
-        @NonNull ParkingSpotId parkingSpotId;
-        @NonNull VehicleId vehicleId;
-        @NonNull String reason;
+        @NonNull
+        ParkingSpotId parkingSpotId;
+        @NonNull
+        String reason;
+
+    }
+
+    @Value
+    class Released implements ParkingSpotEvent {
+
+        @NonNull
+        ParkingSpotId parkingSpotId;
+        @NonNull
+        SpotUnits spotUnits;
+
+    }
+
+    @Value
+    class CompletelyReleased implements ParkingSpotEvent {
+
+        @NonNull
+        ParkingSpotId parkingSpotId;
+
+    }
+
+    @Value
+    class ReleasedEvents implements ParkingSpotEvent {
+
+        @NonNull
+        ParkingSpotId parkingSpotId;
+        @NonNull
+        ParkingSpotEvent.Released released;
+        @NonNull
+        Option<CompletelyReleased> completelyFreedUp;
+
+        public static ReleasedEvents events(ParkingSpotId parkingSpotId, Released released) {
+            return new ReleasedEvents(parkingSpotId, released, Option.none());
+        }
+
+        public static ReleasedEvents events(ParkingSpotId parkingSpotId, Released released, CompletelyReleased completelyReleased) {
+            return new ReleasedEvents(parkingSpotId, released, Option.of(completelyReleased));
+        }
+
+        @Override
+        public List<DomainEvent> normalize() {
+            return List.<DomainEvent>of(released).appendAll(completelyFreedUp.toList());
+        }
+    }
+
+    @Value
+    class ReleasingFailed implements ParkingSpotEvent {
+
+        @NonNull
+        ParkingSpotId parkingSpotId;
+        @NonNull
+        String reason;
 
     }
 

@@ -5,12 +5,12 @@ import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpots
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleEvent
 import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleId
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.SpotUnits
+import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.SpotUnits
 import spock.lang.Specification
 import spock.lang.Subject
 
-import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.ParkingSpotOccupationFailed
-import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.ParkingSpotOccupiedEvents
+import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.OccupationFailed
+import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.OccupiedEvents
 import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotFixture.emptyOpenParkingSpotWithCapacity
 
 class OccupyingParkingSpotByVehicleTest extends Specification {
@@ -35,7 +35,7 @@ class OccupyingParkingSpotByVehicleTest extends Specification {
         it.parkingSpotId == openParkingSpot.parkingSpotId
             && it.parkingSpotOccupied
             && it.fullyOccupied.isEmpty()
-      } as ParkingSpotOccupiedEvents)
+      } as OccupiedEvents)
   }
   
   def "should occupy parking spot by vehicle and fully occupy it"() {
@@ -53,7 +53,7 @@ class OccupyingParkingSpotByVehicleTest extends Specification {
         it.parkingSpotId == openParkingSpot.parkingSpotId
             && it.parkingSpotOccupied
             && it.fullyOccupied.isDefined()
-      } as ParkingSpotOccupiedEvents)
+      } as OccupiedEvents)
   }
   
   def "fail to occupy parking spot by vehicle when parking spot does not have enough space"() {
@@ -72,7 +72,7 @@ class OccupyingParkingSpotByVehicleTest extends Specification {
       1 * parkingSpots.publish({
         it.parkingSpotId == openParkingSpot.parkingSpotId
             && it.vehicleId == vehicle
-      } as ParkingSpotOccupationFailed)
+      } as OccupationFailed)
   }
   
   def "fail to occupy parking spot by vehicle when parking spot does not exist"() {
@@ -91,7 +91,7 @@ class OccupyingParkingSpotByVehicleTest extends Specification {
       1 * parkingSpots.publish({
         it.parkingSpotId == parkingSpotId
             && it.vehicleId == vehicle
-      } as ParkingSpotOccupationFailed)
+      } as OccupationFailed)
   }
   
 }

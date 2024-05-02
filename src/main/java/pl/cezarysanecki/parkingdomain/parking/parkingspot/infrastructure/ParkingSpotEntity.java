@@ -3,7 +3,7 @@ package pl.cezarysanecki.parkingdomain.parking.parkingspot.infrastructure;
 import io.vavr.API;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.SpotUnits;
+import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.SpotUnits;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent;
 import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleId;
 
@@ -13,10 +13,10 @@ import java.util.UUID;
 import static io.vavr.API.$;
 import static io.vavr.API.Case;
 import static io.vavr.Predicates.instanceOf;
-import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.ParkingSpotLeft;
-import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.ParkingSpotLeftEvents;
-import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.ParkingSpotOccupied;
-import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.ParkingSpotOccupiedEvents;
+import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.Released;
+import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.ReleasedEvents;
+import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.Occupied;
+import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.OccupiedEvents;
 
 @Slf4j
 @AllArgsConstructor
@@ -28,19 +28,19 @@ class ParkingSpotEntity {
 
     ParkingSpotEntity handle(ParkingSpotEvent domainEvent) {
         return API.Match(domainEvent).of(
-                API.Case(API.$(instanceOf(ParkingSpotOccupiedEvents.class)), this::handle),
-                API.Case(API.$(instanceOf(ParkingSpotOccupied.class)), this::handle),
-                API.Case(API.$(instanceOf(ParkingSpotLeftEvents.class)), this::handle),
-                API.Case(API.$(instanceOf(ParkingSpotLeft.class)), this::handle),
+                API.Case(API.$(instanceOf(OccupiedEvents.class)), this::handle),
+                API.Case(API.$(instanceOf(Occupied.class)), this::handle),
+                API.Case(API.$(instanceOf(ReleasedEvents.class)), this::handle),
+                API.Case(API.$(instanceOf(Released.class)), this::handle),
                 Case($(), () -> this));
     }
 
-    private ParkingSpotEntity handle(ParkingSpotOccupiedEvents domainEvent) {
-        ParkingSpotOccupied event = domainEvent.getParkingSpotOccupied();
+    private ParkingSpotEntity handle(OccupiedEvents domainEvent) {
+        Occupied event = domainEvent.getOccupied();
         return handle(event);
     }
 
-    private ParkingSpotEntity handle(ParkingSpotOccupied domainEvent) {
+    private ParkingSpotEntity handle(Occupied domainEvent) {
         VehicleId vehicleId = domainEvent.getVehicleId();
         SpotUnits spotUnits = domainEvent.getSpotUnits();
 
@@ -49,12 +49,12 @@ class ParkingSpotEntity {
         return this;
     }
 
-    private ParkingSpotEntity handle(ParkingSpotLeftEvents domainEvent) {
-        ParkingSpotLeft event = domainEvent.getParkingSpotLeft();
+    private ParkingSpotEntity handle(ReleasedEvents domainEvent) {
+        Released event = domainEvent.getReleased();
         return handle(event);
     }
 
-    private ParkingSpotEntity handle(ParkingSpotLeft domainEvent) {
+    private ParkingSpotEntity handle(Released domainEvent) {
         VehicleId vehicleId = domainEvent.getVehicleId();
         vehicles.removeIf(vehicle -> vehicle.vehicleId.equals(vehicleId.getValue()));
         log.debug("driving away vehicle with id {}", vehicleId);
