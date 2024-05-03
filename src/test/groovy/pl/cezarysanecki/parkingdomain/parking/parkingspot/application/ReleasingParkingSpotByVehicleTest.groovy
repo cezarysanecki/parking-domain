@@ -32,7 +32,7 @@ class ReleasingParkingSpotByVehicleTest extends Specification {
       1 * parkingSpots.publish({
         it.parkingSpotId == occupiedParkingSpot.parkingSpotId
             && it.parkingSpotLeft
-            && it.completelyFreedUp.isEmpty()
+            && it.completelyFreedUp.isFull()
       } as ReleasedEvents)
   }
   

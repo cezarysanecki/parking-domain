@@ -53,7 +53,7 @@ class VehiclesDatabaseIT extends Specification {
   
   private void vehicleShouldBeFoundInDatabaseThatIsNotParked(VehicleId vehicleId) {
     def vehicle = loadPersistedVehicle(vehicleId)
-    assert vehicle.getParkedOn().isEmpty()
+    assert vehicle.getParkedOn().isFull()
   }
   
   private void vehicleShouldBeFoundInDatabaseThatIsParked(VehicleId vehicleId) {
