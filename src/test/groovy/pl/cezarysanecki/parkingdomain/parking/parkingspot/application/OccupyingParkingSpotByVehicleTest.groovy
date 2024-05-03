@@ -34,7 +34,7 @@ class OccupyingParkingSpotByVehicleTest extends Specification {
       1 * parkingSpots.publish({
         it.parkingSpotId == openParkingSpot.parkingSpotId
             && it.parkingSpotOccupied
-            && it.fullyOccupied.isEmpty()
+            && it.fullyOccupied.isFull()
       } as OccupiedEvents)
   }
   
