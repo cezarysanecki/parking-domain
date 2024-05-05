@@ -1,105 +1,95 @@
 package pl.cezarysanecki.parkingdomain.parking;
 
-import io.vavr.control.Either;
+import io.vavr.collection.Map;
+import io.vavr.collection.Set;
+import io.vavr.control.Option;
 import io.vavr.control.Try;
 import lombok.NonNull;
-import lombok.Value;
+import pl.cezarysanecki.parkingdomain.commons.aggregates.Version;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCapacity;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ReservationId;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.SpotUnits;
 
-import java.util.Optional;
-import java.util.Set;
-
-import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announceFailure;
-import static pl.cezarysanecki.parkingdomain.commons.events.EitherResult.announceSuccess;
-import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.CompletelyReleased;
-import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.FullyOccupied;
-import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.OccupationFailed;
-import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.Occupied;
-import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.OccupiedEvents;
-import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.OccupiedEvents.events;
-import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.Released;
-import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.ReleasedEvents;
-import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.ReleasingFailed;
-
-@Value
 public class ParkingSpot {
 
     @NonNull
-    ParkingSpotId parkingSpotId;
+    private final ParkingSpotId parkingSpotId;
     @NonNull
-    Set<Occupation> occupations;
+    private final ParkingSpotCapacity capacity;
     @NonNull
-    Set<Reservation> reservations;
+    private Set<Occupations> occupations;
     @NonNull
-    ParkingSpotCapacity capacity;
+    private Set<Reservation> reservations;
+    @NonNull
+    private final Version version;
 
-    public Try<OccupationId> occupy(SpotUnits spotUnits) {
-        if (spotUnits.getValue() + currentOccupation() > capacity.getValue()) {
-            return Try.failure(new IllegalArgumentException("not enough space"));
-        }
-        Occupation occupation = new Occupation(OccupationId.newOne(), spotUnits);
-        occupations.add(occupation);
-
-        return Try.of(() -> occupation.occupationId);
+    public ParkingSpot(
+            ParkingSpotId parkingSpotId,
+            ParkingSpotCapacity capacity,
+            Map<OccupationId, SpotUnits> occupations,
+            Map<ReservationId, SpotUnits> reservations,
+            Version version) {
+        this.parkingSpotId = parkingSpotId;
+        this.capacity = capacity;
+        this.occupations = occupations.map(entry -> new Occupations(entry._1, entry._2)).toSet();
+        this.reservations = reservations.map(entry -> new Reservation(entry._1, entry._2)).toSet();
+        this.version = version;
     }
 
-    public Either<OccupationFailed, OccupiedEvents> occupy(ReservationId reservationId) {
-        Optional<Reservation> presentReservation = reservations.stream()
-                .filter(reservation -> reservation.reservationId.equals(reservationId))
-                .findFirst();
+    public Try<OccupationId> occupy(SpotUnits spotUnits) {
+        if (exceedsAllowedSpace(spotUnits)) {
+            return Try.failure(new IllegalArgumentException("not enough space"));
+        }
+        Occupations occupations = new Occupations(OccupationId.newOne(), spotUnits);
+        this.occupations = this.occupations.add(occupations);
+
+        return Try.of(() -> occupations.occupationId);
+    }
+
+    public Try<OccupationId> occupy(ReservationId reservationId) {
+        Option<Reservation> presentReservation = reservations
+                .find(reservation -> reservation.reservationId.equals(reservationId));
         if (presentReservation.isEmpty()) {
-            return announceFailure(new OccupationFailed(parkingSpotId, "no such reservation"));
+            return Try.failure(new IllegalArgumentException("no such reservation"));
         }
 
         Reservation reservation = presentReservation.get();
-        Occupied occupied = new Occupied(parkingSpotId, reservation.spotUnits);
-        if (reservation.spotUnits.getValue() + currentOccupation() == capacity.getValue()) {
-            return announceSuccess(events(parkingSpotId, occupied, new FullyOccupied(parkingSpotId)));
-        }
-        return announceSuccess(events(parkingSpotId, occupied));
+        reservations = reservations.remove(reservation);
+
+        Occupations occupations = new Occupations(OccupationId.newOne(), reservation.spotUnits);
+        this.occupations = this.occupations.add(occupations);
+
+        return Try.of(() -> occupations.occupationId);
     }
 
-    public Either<ReleasingFailed, ReleasedEvents> release(OccupationId occupationId) {
-        Optional<Occupation> presentOccupation = occupations.stream()
-                .filter(occupation -> occupation.occupationId.equals(occupationId))
-                .findFirst();
+    public Try<OccupationId> release(OccupationId occupationId) {
+        Option<Occupations> presentOccupation = this.occupations
+                .find(occupations -> occupations.occupationId.equals(occupationId));
         if (presentOccupation.isEmpty()) {
-            return announceFailure(new ReleasingFailed(parkingSpotId, "there is no such occupation"));
+            return Try.failure(new IllegalArgumentException("no such occupation"));
         }
 
-        Occupation occupation = presentOccupation.get();
-        Released released = new Released(parkingSpotId, occupation.spotUnits);
-        if (currentOccupation() - occupation.spotUnits.getValue() == 0) {
-            return announceSuccess(ReleasedEvents.events(parkingSpotId, released, new CompletelyReleased(parkingSpotId)));
-        }
-        return announceSuccess(ReleasedEvents.events(parkingSpotId, released));
+        Occupations occupations = presentOccupation.get();
+        this.occupations = this.occupations.remove(occupations);
+
+        return Try.of(() -> occupations.occupationId);
     }
 
     private Integer currentOccupation() {
-        Integer occupationUnits = occupations.stream()
-                .map(Occupation::spotUnits)
+        Integer occupationUnits = occupations
+                .map(Occupations::spotUnits)
                 .map(SpotUnits::getValue)
-                .reduce(0, Integer::sum);
-        Integer reservationUnits = reservations.stream()
+                .reduce(Integer::sum);
+        Integer reservationUnits = reservations
                 .map(Reservation::spotUnits)
                 .map(SpotUnits::getValue)
-                .reduce(0, Integer::sum);
+                .reduce(Integer::sum);
         return occupationUnits + reservationUnits;
     }
 
-    private record Occupation(
-            @NonNull OccupationId occupationId,
-            @NonNull SpotUnits spotUnits
-    ) {
-    }
-
-    private record Reservation(
-            @NonNull ReservationId reservationId,
-            @NonNull SpotUnits spotUnits
-    ) {
+    private boolean exceedsAllowedSpace(SpotUnits spotUnits) {
+        return spotUnits.getValue() + currentOccupation() > capacity.getValue();
     }
 
 }
