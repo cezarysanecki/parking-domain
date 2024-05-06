@@ -1,9 +1,9 @@
 package pl.cezarysanecki.parkingdomain.parking;
 
 import io.vavr.collection.Map;
-import io.vavr.collection.Set;
 import io.vavr.control.Option;
 import io.vavr.control.Try;
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import pl.cezarysanecki.parkingdomain.commons.aggregates.Version;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCapacity;
@@ -11,6 +11,7 @@ import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ReservationId;
 import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.SpotUnits;
 
+@AllArgsConstructor
 public class ParkingSpot {
 
     @NonNull
@@ -18,71 +19,64 @@ public class ParkingSpot {
     @NonNull
     private final ParkingSpotCapacity capacity;
     @NonNull
-    private Set<Occupations> occupations;
+    private Map<OccupationId, SpotUnits> occupations;
     @NonNull
-    private Set<Reservation> reservations;
+    private Map<ReservationId, SpotUnits> reservations;
     @NonNull
     private final Version version;
-
-    public ParkingSpot(
-            ParkingSpotId parkingSpotId,
-            ParkingSpotCapacity capacity,
-            Map<OccupationId, SpotUnits> occupations,
-            Map<ReservationId, SpotUnits> reservations,
-            Version version) {
-        this.parkingSpotId = parkingSpotId;
-        this.capacity = capacity;
-        this.occupations = occupations.map(entry -> new Occupations(entry._1, entry._2)).toSet();
-        this.reservations = reservations.map(entry -> new Reservation(entry._1, entry._2)).toSet();
-        this.version = version;
-    }
 
     public Try<OccupationId> occupy(SpotUnits spotUnits) {
         if (exceedsAllowedSpace(spotUnits)) {
             return Try.failure(new IllegalArgumentException("not enough space"));
         }
-        Occupations occupations = new Occupations(OccupationId.newOne(), spotUnits);
-        this.occupations = this.occupations.add(occupations);
 
-        return Try.of(() -> occupations.occupationId);
+        OccupationId occupationId = OccupationId.newOne();
+        occupations = occupations.put(occupationId, spotUnits);
+
+        return Try.of(() -> occupationId);
+    }
+
+    public Try<OccupationId> occupyAll() {
+        if (currentOccupation() != 0) {
+            return Try.failure(new IllegalArgumentException("not fully released"));
+        }
+
+        OccupationId occupationId = OccupationId.newOne();
+        occupations = occupations.put(occupationId, SpotUnits.of(capacity.getValue()));
+
+        return Try.of(() -> occupationId);
     }
 
     public Try<OccupationId> occupy(ReservationId reservationId) {
-        Option<Reservation> presentReservation = reservations
-                .find(reservation -> reservation.reservationId.equals(reservationId));
-        if (presentReservation.isEmpty()) {
+        Option<SpotUnits> reservedUnits = reservations.get(reservationId);
+        if (reservations.containsKey(reservationId)) {
             return Try.failure(new IllegalArgumentException("no such reservation"));
         }
 
-        Reservation reservation = presentReservation.get();
-        reservations = reservations.remove(reservation);
+        reservations = reservations.remove(reservationId);
 
-        Occupations occupations = new Occupations(OccupationId.newOne(), reservation.spotUnits);
-        this.occupations = this.occupations.add(occupations);
+        OccupationId occupationId = OccupationId.newOne();
+        occupations = occupations.put(occupationId, reservedUnits.get());
 
-        return Try.of(() -> occupations.occupationId);
+        return Try.of(() -> occupationId);
     }
 
     public Try<OccupationId> release(OccupationId occupationId) {
-        Option<Occupations> presentOccupation = this.occupations
-                .find(occupations -> occupations.occupationId.equals(occupationId));
-        if (presentOccupation.isEmpty()) {
+        Option<SpotUnits> occupiedUnits = occupations.get(occupationId);
+        if (occupiedUnits.isEmpty()) {
             return Try.failure(new IllegalArgumentException("no such occupation"));
         }
 
-        Occupations occupations = presentOccupation.get();
-        this.occupations = this.occupations.remove(occupations);
+        occupations = occupations.remove(occupationId);
 
-        return Try.of(() -> occupations.occupationId);
+        return Try.of(() -> occupationId);
     }
 
     private Integer currentOccupation() {
-        Integer occupationUnits = occupations
-                .map(Occupations::spotUnits)
+        Integer occupationUnits = occupations.values()
                 .map(SpotUnits::getValue)
                 .reduce(Integer::sum);
-        Integer reservationUnits = reservations
-                .map(Reservation::spotUnits)
+        Integer reservationUnits = reservations.values()
                 .map(SpotUnits::getValue)
                 .reduce(Integer::sum);
         return occupationUnits + reservationUnits;
