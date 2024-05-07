@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.parking.view.parkingspot.web;
+package pl.cezarysanecki.parkingdomain.parking.web;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

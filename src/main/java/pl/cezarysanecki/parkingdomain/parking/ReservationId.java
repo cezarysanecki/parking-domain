@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.parking.parkingspot.model;
+package pl.cezarysanecki.parkingdomain.parking;
 
 import lombok.Value;
 
@@ -17,4 +17,5 @@ public class ReservationId {
     public String toString() {
         return value.toString();
     }
+
 }

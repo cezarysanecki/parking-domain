@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.parking.view.vehicle.web;
+package pl.cezarysanecki.parkingdomain.parking.web;
 
 import io.vavr.control.Try;
 import lombok.RequiredArgsConstructor;
