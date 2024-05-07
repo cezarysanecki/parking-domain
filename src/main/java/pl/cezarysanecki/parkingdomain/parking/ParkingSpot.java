@@ -4,15 +4,15 @@ import io.vavr.collection.Map;
 import io.vavr.control.Option;
 import io.vavr.control.Try;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NonNull;
 import pl.cezarysanecki.parkingdomain.commons.aggregates.Version;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCapacity;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ReservationId;
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.SpotUnits;
 
+@Getter
 @AllArgsConstructor
-public class ParkingSpot {
+class ParkingSpot {
 
     @NonNull
     private final ParkingSpotId parkingSpotId;
@@ -25,7 +25,7 @@ public class ParkingSpot {
     @NonNull
     private final Version version;
 
-    public Try<OccupationId> occupy(SpotUnits spotUnits) {
+    Try<OccupationId> occupy(SpotUnits spotUnits) {
         if (exceedsAllowedSpace(spotUnits)) {
             return Try.failure(new IllegalArgumentException("not enough space"));
         }
@@ -36,7 +36,7 @@ public class ParkingSpot {
         return Try.of(() -> occupationId);
     }
 
-    public Try<OccupationId> occupyAll() {
+    Try<OccupationId> occupyAll() {
         if (currentOccupation() != 0) {
             return Try.failure(new IllegalArgumentException("not fully released"));
         }
@@ -47,7 +47,7 @@ public class ParkingSpot {
         return Try.of(() -> occupationId);
     }
 
-    public Try<OccupationId> occupy(ReservationId reservationId) {
+    Try<OccupationId> occupy(ReservationId reservationId) {
         Option<SpotUnits> reservedUnits = reservations.get(reservationId);
         if (reservations.containsKey(reservationId)) {
             return Try.failure(new IllegalArgumentException("no such reservation"));
@@ -61,7 +61,7 @@ public class ParkingSpot {
         return Try.of(() -> occupationId);
     }
 
-    public Try<OccupationId> release(OccupationId occupationId) {
+    Try<OccupationId> release(OccupationId occupationId) {
         Option<SpotUnits> occupiedUnits = occupations.get(occupationId);
         if (occupiedUnits.isEmpty()) {
             return Try.failure(new IllegalArgumentException("no such occupation"));
@@ -72,7 +72,16 @@ public class ParkingSpot {
         return Try.of(() -> occupationId);
     }
 
-    private Integer currentOccupation() {
+    boolean isFull() {
+        return currentOccupation() == capacity.getValue();
+    }
+
+
+    int spaceLeft() {
+        return capacity.getValue() - currentOccupation();
+    }
+
+    private int currentOccupation() {
         Integer occupationUnits = occupations.values()
                 .map(SpotUnits::getValue)
                 .reduce(Integer::sum);
