@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.parking.model.infrastructure
+package pl.cezarysanecki.parkingdomain.parking.infrastructure
 
 import io.vavr.control.Option
 import org.springframework.beans.factory.annotation.Autowired

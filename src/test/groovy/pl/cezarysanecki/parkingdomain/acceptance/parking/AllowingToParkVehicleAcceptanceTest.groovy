@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.parking.acceptance
+package pl.cezarysanecki.parkingdomain.acceptance.parking
 
 import org.springframework.beans.factory.annotation.Autowired
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId
@@ -21,7 +21,7 @@ class AllowingToParkVehicleAcceptanceTest extends AbstractParkingAcceptanceTest 
   
   def "allow to park on parking spot if there is enough space"() {
     given:
-      def parkingSpotId = createParkingSpot(4)
+      def parkingSpotId = addParkingSpot(4)
     and:
       def firstVehicleId = registerVehicle(1)
     and:

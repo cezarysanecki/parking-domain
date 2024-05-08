@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.parking.acceptance
+package pl.cezarysanecki.parkingdomain.acceptance.parking
 
 import org.springframework.beans.factory.annotation.Autowired
 import pl.cezarysanecki.parkingdomain.parking.vehicle.application.ParkingVehicle
@@ -16,7 +16,7 @@ class NotAllowingToParkVehicleAcceptanceTest extends AbstractParkingAcceptanceTe
   
   def "cannot park on parking spot if vehicle is too big for left space"() {
     given:
-      def parkingSpotId = createParkingSpot(4)
+      def parkingSpotId = addParkingSpot(4)
     and:
       def firstVehicleId = registerVehicle(2)
     and:

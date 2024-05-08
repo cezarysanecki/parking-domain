@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.parking.model.application
+package pl.cezarysanecki.parkingdomain.parking.application
 
 import io.vavr.control.Option
 import pl.cezarysanecki.parkingdomain.parking.model.model.ParkingSpots
@@ -7,8 +7,8 @@ import spock.lang.Specification
 
 import static pl.cezarysanecki.parkingdomain.parking.model.model.ParkingSpotEvent.ReleasingFailed
 import static pl.cezarysanecki.parkingdomain.parking.model.model.ParkingSpotEvent.ReleasedEvents
-import static pl.cezarysanecki.parkingdomain.parking.model.model.ParkingSpotFixture.fullyOccupiedBy
-import static pl.cezarysanecki.parkingdomain.parking.model.model.ParkingSpotFixture.occupiedBy
+import static pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotFixture.fullyOccupiedBy
+import static pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotFixture.occupiedBy
 import static pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleEvent.VehicleDroveAway
 
 class ReleasingParkingSpotByVehicleTest extends Specification {

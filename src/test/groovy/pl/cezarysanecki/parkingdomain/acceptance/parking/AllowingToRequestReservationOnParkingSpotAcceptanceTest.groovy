@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.parking.acceptance
+package pl.cezarysanecki.parkingdomain.acceptance.parking
 
 import org.springframework.beans.factory.annotation.Autowired
 import pl.cezarysanecki.parkingdomain.commons.commands.Result
@@ -25,7 +25,7 @@ class AllowingToRequestReservationOnParkingSpotAcceptanceTest extends AbstractPa
     given:
       ClientId clientId = ClientId.newOne()
     and:
-      def parkingSpotId = createParkingSpot(4)
+      def parkingSpotId = addParkingSpot(4)
     
     when:
       def reservationId = reserveWholeParkingSpotFor(clientId, parkingSpotId)
@@ -38,7 +38,7 @@ class AllowingToRequestReservationOnParkingSpotAcceptanceTest extends AbstractPa
     given:
       ClientId clientId = ClientId.newOne()
     and:
-      def parkingSpotId = createParkingSpot(4)
+      def parkingSpotId = addParkingSpot(4)
     
     when:
       def reservationId = reservePartOfParkingSpotFor(clientId, parkingSpotId, 2)

@@ -1,38 +1,46 @@
-package pl.cezarysanecki.parkingdomain.parking.model.application
+package pl.cezarysanecki.parkingdomain.parking.application
 
 import io.vavr.control.Option
+import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId
-import pl.cezarysanecki.parkingdomain.parking.model.model.ParkingSpots
-import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleEvent
 import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleId
+import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryRepository
 import pl.cezarysanecki.parkingdomain.parking.model.model.SpotUnits
+import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotRepository
+import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.Reservation
+import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleEvent
 import spock.lang.Specification
 import spock.lang.Subject
 
+import static pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotFixture.emptyParkingSpotWithCapacity
 import static pl.cezarysanecki.parkingdomain.parking.model.model.ParkingSpotEvent.OccupationFailed
 import static pl.cezarysanecki.parkingdomain.parking.model.model.ParkingSpotEvent.OccupiedEvents
-import static pl.cezarysanecki.parkingdomain.parking.model.model.ParkingSpotFixture.emptyOpenParkingSpotWithCapacity
+import static pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotFixture.emptyParkingSpotWithReservation
 
 class OccupyingParkingSpotByVehicleTest extends Specification {
   
-  ParkingSpots parkingSpots = Mock()
+  EventPublisher eventPublisher = Mock()
+  BeneficiaryRepository beneficiaryRepository = Mock()
+  ParkingSpotRepository parkingSpotRepository = Mock()
   
   @Subject
-  VehicleParkedEventHandler vehicleParkedEventHandler = new VehicleParkedEventHandler(parkingSpots)
+  OccupyingParkingSpot occupyingParkingSpot = new OccupyingParkingSpot(
+      eventPublisher,
+      beneficiaryRepository,
+      parkingSpotRepository)
   
-  def "should occupy parking spot by vehicle"() {
+  def "should occupy parking spot by beneficiary"() {
     given:
-      def openParkingSpot = emptyOpenParkingSpotWithCapacity(4)
+      def emptyParkingSpot = emptyParkingSpotWithReservation(new Reservation())
     and:
-      parkingSpots.findBy(openParkingSpot.parkingSpotId) >> Option.of(openParkingSpot)
+      parkingSpotRepository.findBy(emptyParkingSpot.parkingSpotId) >> Option.of(emptyParkingSpot)
     
     when:
-      vehicleParkedEventHandler.handle(new VehicleEvent.VehicleParked(
-          VehicleId.newOne(), SpotUnits.of(2), openParkingSpot.parkingSpotId))
+      occupyingParkingSpot.occupy()
     
     then:
       1 * parkingSpots.publish({
-        it.parkingSpotId == openParkingSpot.parkingSpotId
+        it.parkingSpotId == emptyParkingSpot.parkingSpotId
             && it.parkingSpotOccupied
             && it.fullyOccupied.isFull()
       } as OccupiedEvents)
@@ -40,7 +48,7 @@ class OccupyingParkingSpotByVehicleTest extends Specification {
   
   def "should occupy parking spot by vehicle and fully occupy it"() {
     given:
-      def openParkingSpot = emptyOpenParkingSpotWithCapacity(4)
+      def openParkingSpot = emptyParkingSpotWithCapacity(4)
     and:
       parkingSpots.findBy(openParkingSpot.parkingSpotId) >> Option.of(openParkingSpot)
     
@@ -60,7 +68,7 @@ class OccupyingParkingSpotByVehicleTest extends Specification {
     given:
       def vehicle = VehicleId.newOne()
     and:
-      def openParkingSpot = emptyOpenParkingSpotWithCapacity(2)
+      def openParkingSpot = emptyParkingSpotWithCapacity(2)
     and:
       parkingSpots.findBy(openParkingSpot.parkingSpotId) >> Option.of(openParkingSpot)
     
