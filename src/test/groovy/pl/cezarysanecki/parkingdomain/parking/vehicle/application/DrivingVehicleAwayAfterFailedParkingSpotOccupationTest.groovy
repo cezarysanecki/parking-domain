@@ -6,7 +6,7 @@ import pl.cezarysanecki.parkingdomain.parking.vehicle.model.Vehicles
 import spock.lang.Specification
 import spock.lang.Subject
 
-import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.OccupationFailed
+import static pl.cezarysanecki.parkingdomain.parking.model.model.ParkingSpotEvent.OccupationFailed
 import static pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleEvent.VehicleDroveAway
 import static pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleFixture.parkedVehicleOn
 

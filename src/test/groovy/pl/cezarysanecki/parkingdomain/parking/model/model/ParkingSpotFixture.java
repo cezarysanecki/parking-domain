@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.parking.parkingspot.model;
+package pl.cezarysanecki.parkingdomain.parking.model.model;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

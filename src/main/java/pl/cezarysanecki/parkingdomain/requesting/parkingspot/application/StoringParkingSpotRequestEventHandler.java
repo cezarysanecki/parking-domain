@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.SpotUnits;
+import pl.cezarysanecki.parkingdomain.parking.model.model.SpotUnits;
 import pl.cezarysanecki.parkingdomain.requesting.client.model.RequestId;
 import pl.cezarysanecki.parkingdomain.requesting.parkingspot.model.ParkingSpotRequestEvent.RequestForWholeParkingSpotStored;
 import pl.cezarysanecki.parkingdomain.requesting.parkingspot.model.ParkingSpotRequestsRepository;

@@ -3,7 +3,7 @@ package pl.cezarysanecki.parkingdomain.parking.acceptance
 import org.springframework.beans.factory.annotation.Autowired
 import pl.cezarysanecki.parkingdomain.commons.commands.Result
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ReservationId
+import pl.cezarysanecki.parkingdomain.parking.model.model.ReservationId
 import pl.cezarysanecki.parkingdomain.parking.vehicle.application.ParkingVehicle
 import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleId
 import pl.cezarysanecki.parkingdomain.parking.view.vehicle.model.VehicleViews

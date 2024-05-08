@@ -3,8 +3,8 @@ package pl.cezarysanecki.parkingdomain.requesting.parkingspot.model;
 import io.vavr.control.Either;
 import lombok.Value;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.SpotUnits;
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.SpotOccupation;
+import pl.cezarysanecki.parkingdomain.parking.model.model.SpotUnits;
+import pl.cezarysanecki.parkingdomain.parking.model.model.SpotOccupation;
 import pl.cezarysanecki.parkingdomain.requesting.client.model.RequestId;
 import pl.cezarysanecki.parkingdomain.requesting.parkingspot.model.ParkingSpotRequestEvent.RequestForWholeParkingSpotStored;
 

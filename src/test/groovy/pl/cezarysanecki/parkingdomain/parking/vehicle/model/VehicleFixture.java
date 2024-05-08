@@ -4,7 +4,7 @@ import io.vavr.control.Option;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.SpotUnits;
+import pl.cezarysanecki.parkingdomain.parking.model.model.SpotUnits;
 import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleId;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)

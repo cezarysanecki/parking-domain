@@ -5,14 +5,14 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import pl.cezarysanecki.parkingdomain.commons.commands.Result
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisherTestConfig
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.ParkingConfig
+import pl.cezarysanecki.parkingdomain.parking.model.ParkingConfig
 import pl.cezarysanecki.parkingdomain.management.parkingspot.AddingParkingSpot
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCapacity
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.management.vehicle.RegisteringVehicle
 import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleId
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.SpotUnits
+import pl.cezarysanecki.parkingdomain.parking.model.model.SpotUnits
 import pl.cezarysanecki.parkingdomain.requesting.RequestingConfig
 import spock.lang.Specification
 

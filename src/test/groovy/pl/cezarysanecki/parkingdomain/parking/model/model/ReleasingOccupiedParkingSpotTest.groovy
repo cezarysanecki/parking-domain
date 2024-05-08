@@ -1,10 +1,10 @@
-package pl.cezarysanecki.parkingdomain.parking.parkingspot.model
+package pl.cezarysanecki.parkingdomain.parking.model.model
 
 import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleId
 import spock.lang.Specification
 
-import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotFixture.fullyOccupiedBy
-import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotFixture.occupiedBy
+import static pl.cezarysanecki.parkingdomain.parking.model.model.ParkingSpotFixture.fullyOccupiedBy
+import static pl.cezarysanecki.parkingdomain.parking.model.model.ParkingSpotFixture.occupiedBy
 
 class ReleasingOccupiedParkingSpotTest extends Specification {
   

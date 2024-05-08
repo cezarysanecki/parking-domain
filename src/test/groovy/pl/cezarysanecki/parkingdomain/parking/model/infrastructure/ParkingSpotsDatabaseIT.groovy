@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.parking.parkingspot.infrastructure
+package pl.cezarysanecki.parkingdomain.parking.model.infrastructure
 
 import io.vavr.control.Option
 import org.springframework.beans.factory.annotation.Autowired
@@ -7,16 +7,16 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.ActiveProfiles
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotAdded
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpot
+import pl.cezarysanecki.parkingdomain.parking.model.model.ParkingSpot
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCapacity
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpots
+import pl.cezarysanecki.parkingdomain.parking.model.model.ParkingSpots
 import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleId
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.SpotUnits
+import pl.cezarysanecki.parkingdomain.parking.model.model.SpotUnits
 import spock.lang.Specification
 
-import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.Occupied
+import static pl.cezarysanecki.parkingdomain.parking.model.model.ParkingSpotEvent.Occupied
 
 @ActiveProfiles("local")
 @SpringBootTest(classes = [ParkingSpotConfig.class])
