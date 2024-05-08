@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.SpotUnits;
+import pl.cezarysanecki.parkingdomain.parking.model.model.SpotUnits;
 import pl.cezarysanecki.parkingdomain.requesting.client.application.CancellingRequest;
 import pl.cezarysanecki.parkingdomain.requesting.client.application.MakingRequestForPartOfParkingSpot;
 import pl.cezarysanecki.parkingdomain.requesting.client.application.MakingRequestForWholeParkingSpot;

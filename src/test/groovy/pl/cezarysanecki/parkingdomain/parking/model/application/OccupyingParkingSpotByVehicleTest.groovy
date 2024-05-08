@@ -1,17 +1,17 @@
-package pl.cezarysanecki.parkingdomain.parking.parkingspot.application
+package pl.cezarysanecki.parkingdomain.parking.model.application
 
 import io.vavr.control.Option
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpots
+import pl.cezarysanecki.parkingdomain.parking.model.model.ParkingSpots
 import pl.cezarysanecki.parkingdomain.parking.vehicle.model.VehicleEvent
 import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleId
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.SpotUnits
+import pl.cezarysanecki.parkingdomain.parking.model.model.SpotUnits
 import spock.lang.Specification
 import spock.lang.Subject
 
-import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.OccupationFailed
-import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotEvent.OccupiedEvents
-import static pl.cezarysanecki.parkingdomain.parking.parkingspot.model.ParkingSpotFixture.emptyOpenParkingSpotWithCapacity
+import static pl.cezarysanecki.parkingdomain.parking.model.model.ParkingSpotEvent.OccupationFailed
+import static pl.cezarysanecki.parkingdomain.parking.model.model.ParkingSpotEvent.OccupiedEvents
+import static pl.cezarysanecki.parkingdomain.parking.model.model.ParkingSpotFixture.emptyOpenParkingSpotWithCapacity
 
 class OccupyingParkingSpotByVehicleTest extends Specification {
   

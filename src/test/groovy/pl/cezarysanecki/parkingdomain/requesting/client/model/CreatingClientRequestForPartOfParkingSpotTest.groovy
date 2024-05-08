@@ -1,7 +1,7 @@
 package pl.cezarysanecki.parkingdomain.requesting.client.model
 
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId
-import pl.cezarysanecki.parkingdomain.parking.parkingspot.model.SpotUnits
+import pl.cezarysanecki.parkingdomain.parking.model.model.SpotUnits
 import spock.lang.Specification
 
 import static ClientRequestsFixture.clientWithNoRequests
