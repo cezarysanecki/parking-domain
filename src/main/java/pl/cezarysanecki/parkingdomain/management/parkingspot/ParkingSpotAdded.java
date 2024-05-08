@@ -1,6 +1,7 @@
 package pl.cezarysanecki.parkingdomain.management.parkingspot;
 
 import pl.cezarysanecki.parkingdomain.commons.events.DomainEvent;
+import pl.cezarysanecki.parkingdomain.shared.ParkingSpotCapacity;
 
 public record ParkingSpotAdded(
         ParkingSpotId parkingSpotId,

@@ -8,7 +8,7 @@ import org.springframework.test.context.ActiveProfiles
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotAdded
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher
 import pl.cezarysanecki.parkingdomain.parking.model.model.ParkingSpot
-import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCapacity
+import pl.cezarysanecki.parkingdomain.shared.ParkingSpotCapacity
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.parking.model.model.ParkingSpots

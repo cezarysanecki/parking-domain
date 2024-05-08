@@ -12,7 +12,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-class InMemoryBeneficiaryRepository implements BeneficiaryRepository, BeneficiaryViewRepository {
+class InMemoryBeneficiaryRepository implements
+        BeneficiaryRepository,
+        BeneficiaryViewRepository {
 
     static final Map<BeneficiaryId, Beneficiary> DATABASE = new ConcurrentHashMap<>();
 

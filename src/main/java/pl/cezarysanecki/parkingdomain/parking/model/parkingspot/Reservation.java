@@ -15,7 +15,7 @@ public class Reservation {
     @NonNull
     SpotUnits spotUnits;
 
-    static Reservation newOne(BeneficiaryId beneficiaryId, SpotUnits spotUnits) {
+    public static Reservation newOne(BeneficiaryId beneficiaryId, SpotUnits spotUnits) {
         return new Reservation(beneficiaryId, ReservationId.newOne(), spotUnits);
     }
 

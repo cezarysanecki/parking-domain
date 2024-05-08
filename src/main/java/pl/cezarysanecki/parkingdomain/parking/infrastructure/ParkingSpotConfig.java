@@ -40,13 +40,13 @@ public class ParkingSpotConfig {
 
     @Bean
     @Profile("local")
-    BeneficiaryRepository beneficiaryRepository() {
+    InMemoryBeneficiaryRepository beneficiaryRepository() {
         return new InMemoryBeneficiaryRepository();
     }
 
     @Bean
     @Profile("local")
-    ParkingSpotRepository parkingSpotRepository() {
+    InMemoryParkingSpotRepository parkingSpotRepository() {
         return new InMemoryParkingSpotRepository();
     }
 

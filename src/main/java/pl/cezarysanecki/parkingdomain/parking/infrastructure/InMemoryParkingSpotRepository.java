@@ -14,7 +14,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static java.util.function.Predicate.not;
 
-class InMemoryParkingSpotRepository implements ParkingSpotRepository, ParkingSpotViewRepository {
+class InMemoryParkingSpotRepository implements
+        ParkingSpotRepository,
+        ParkingSpotViewRepository {
 
     static final Map<ParkingSpotId, ParkingSpot> DATABASE = new ConcurrentHashMap<>();
 

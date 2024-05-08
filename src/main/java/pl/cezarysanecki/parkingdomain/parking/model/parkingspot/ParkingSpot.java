@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
 import pl.cezarysanecki.parkingdomain.commons.aggregates.Version;
-import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCapacity;
+import pl.cezarysanecki.parkingdomain.shared.ParkingSpotCapacity;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryId;
 import pl.cezarysanecki.parkingdomain.shared.SpotUnits;

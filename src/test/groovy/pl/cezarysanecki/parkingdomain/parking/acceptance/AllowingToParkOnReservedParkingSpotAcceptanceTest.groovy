@@ -7,9 +7,9 @@ import pl.cezarysanecki.parkingdomain.parking.model.model.ReservationId
 import pl.cezarysanecki.parkingdomain.parking.vehicle.application.ParkingVehicle
 import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleId
 import pl.cezarysanecki.parkingdomain.parking.view.vehicle.model.VehicleViews
-import pl.cezarysanecki.parkingdomain.requesting.client.application.MakingRequestForWholeParkingSpot
+
 import pl.cezarysanecki.parkingdomain.management.client.ClientId
-import pl.cezarysanecki.parkingdomain.requesting.view.parkingspot.model.ParkingSpotRequestsViews
+import pl.cezarysanecki.parkingdomain.requestingreservation.web.parkingspot.model.ParkingSpotRequestsViews
 import spock.lang.Ignore
 
 import static pl.cezarysanecki.parkingdomain.parking.vehicle.application.ParkingVehicle.ParkOnReservedCommand
