@@ -15,7 +15,7 @@ public class Occupation {
     @NonNull
     SpotUnits spotUnits;
 
-    static Occupation newOne(BeneficiaryId beneficiaryId, SpotUnits spotUnits) {
+    public static Occupation newOne(BeneficiaryId beneficiaryId, SpotUnits spotUnits) {
         return new Occupation(beneficiaryId, OccupationId.newOne(), spotUnits);
     }
 

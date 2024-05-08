@@ -1,7 +1,7 @@
 package pl.cezarysanecki.parkingdomain.parking.model.application
 
 import pl.cezarysanecki.parkingdomain.management.parkingspot.AddingParkingSpot
-import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCapacity
+import pl.cezarysanecki.parkingdomain.shared.ParkingSpotCapacity
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotAdded
 import pl.cezarysanecki.parkingdomain.parking.model.model.ParkingSpots

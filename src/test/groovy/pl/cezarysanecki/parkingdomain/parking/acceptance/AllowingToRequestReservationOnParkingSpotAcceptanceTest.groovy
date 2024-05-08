@@ -5,10 +5,9 @@ import pl.cezarysanecki.parkingdomain.commons.commands.Result
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.parking.model.model.ReservationId
 import pl.cezarysanecki.parkingdomain.parking.model.model.SpotUnits
-import pl.cezarysanecki.parkingdomain.requesting.client.application.MakingRequestForPartOfParkingSpot
-import pl.cezarysanecki.parkingdomain.requesting.client.application.MakingRequestForWholeParkingSpot
+
 import pl.cezarysanecki.parkingdomain.management.client.ClientId
-import pl.cezarysanecki.parkingdomain.requesting.view.parkingspot.model.ParkingSpotRequestsViews
+import pl.cezarysanecki.parkingdomain.requestingreservation.web.parkingspot.model.ParkingSpotRequestsViews
 import spock.lang.Ignore
 
 @Ignore("#256")

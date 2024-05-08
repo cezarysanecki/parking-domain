@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.Value;
+import pl.cezarysanecki.parkingdomain.shared.ParkingSpotCapacity;
 
 import java.util.UUID;
 

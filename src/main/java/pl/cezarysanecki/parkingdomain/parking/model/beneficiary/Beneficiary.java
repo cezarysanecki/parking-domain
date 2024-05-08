@@ -5,6 +5,7 @@ import io.vavr.control.Try;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
+import pl.cezarysanecki.parkingdomain.commons.aggregates.Version;
 import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.Occupation;
 import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.OccupationId;
 import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.Reservation;
@@ -20,6 +21,8 @@ public class Beneficiary {
     private Set<ReservationId> reservations;
     @NonNull
     private Set<OccupationId> occupations;
+    @NonNull
+    private final Version version;
 
     public Try<Reservation> append(Reservation reservation) {
         reservations = reservations.add(reservation.getReservationId());
