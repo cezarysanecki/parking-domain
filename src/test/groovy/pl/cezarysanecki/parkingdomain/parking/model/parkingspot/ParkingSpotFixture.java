@@ -44,8 +44,18 @@ public class ParkingSpotFixture {
         return parkingSpot;
     }
 
-    public static ParkingSpot occupiedBy(Occupation occupation) {
+    public static ParkingSpot occupiedFullyBy(Occupation occupation) {
         ParkingSpotCapacity capacity = ParkingSpotCapacity.of(occupation.getSpotUnits().getValue());
+        return new ParkingSpot(
+                ParkingSpotId.newOne(),
+                capacity,
+                HashMap.of(occupation.getOccupationId(), occupation),
+                HashMap.empty(),
+                Version.zero());
+    }
+
+    public static ParkingSpot occupiedPartiallyBy(Occupation occupation) {
+        ParkingSpotCapacity capacity = ParkingSpotCapacity.of(occupation.getSpotUnits().getValue() + 1);
         return new ParkingSpot(
                 ParkingSpotId.newOne(),
                 capacity,

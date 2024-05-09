@@ -10,6 +10,7 @@ import lombok.NonNull;
 import pl.cezarysanecki.parkingdomain.commons.aggregates.Version;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryId;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ReservationRequest;
 import pl.cezarysanecki.parkingdomain.shared.ParkingSpotCapacity;
 import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
 
@@ -74,6 +75,16 @@ public class ParkingSpot {
         occupations = occupations.put(occupation.getOccupationId(), occupation);
 
         return Try.of(() -> occupation);
+    }
+
+    public Try<Reservation> reserveUsing(ReservationRequest reservationRequest) {
+        ReservationId reservationId = ReservationId.of(reservationRequest.getReservationRequestId().getValue());
+        Reservation reservation = new Reservation(
+                BeneficiaryId.of(reservationRequest.getReservationRequesterId().getValue()),
+                reservationId,
+                reservationRequest.getSpotUnits());
+        reservations = reservations.put(reservationId, reservation);
+        return Try.of(() -> reservation);
     }
 
     public Try<Occupation> release(OccupationId occupationId) {

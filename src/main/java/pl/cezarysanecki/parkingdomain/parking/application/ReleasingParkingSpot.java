@@ -21,8 +21,12 @@ public class ReleasingParkingSpot {
     private final ParkingSpotRepository parkingSpotRepository;
 
     public Try<Occupation> release(OccupationId occupationId) {
+        log.debug("releasing parking spot using occupation with id {}", occupationId);
+
         Beneficiary beneficiary = findBeneficiaryBy(occupationId);
         ParkingSpot parkingSpot = findParkingSpotBy(occupationId);
+
+        log.debug("releasing parking spot with id {} by beneficiary with id {}", parkingSpot.getParkingSpotId(), beneficiary.getBeneficiaryId());
 
         return parkingSpot.release(occupationId)
                 .flatMap(beneficiary::remove)

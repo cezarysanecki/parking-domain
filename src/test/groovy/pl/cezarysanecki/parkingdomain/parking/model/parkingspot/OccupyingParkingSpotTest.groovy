@@ -7,6 +7,7 @@ import spock.lang.Specification
 import static ParkingSpotFixture.emptyParkingSpotWithCapacity
 import static pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotFixture.emptyParkingSpotWithReservation
 import static pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotFixture.fullyOccupiedParkingSpot
+import static pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotFixture.occupiedPartiallyBy
 
 class OccupyingParkingSpotTest extends Specification {
   
@@ -78,6 +79,33 @@ class OccupyingParkingSpotTest extends Specification {
     
     when:
       def result = fullyOccupiedParkingSpot.occupy(beneficiary, spotUnits)
+    
+    then:
+      result.isFailure()
+  }
+  
+  def "reject to occupy whole parking spot by beneficiary when it is already occupied"() {
+    given:
+      def beneficiary = BeneficiaryId.newOne()
+    
+    and:
+      def fullyOccupiedParkingSpot = occupiedPartiallyBy(
+          Occupation.newOne(BeneficiaryId.newOne(), SpotUnits.of(1)))
+    
+    when:
+      def result = fullyOccupiedParkingSpot.occupyWhole(beneficiary)
+    
+    then:
+      result.isFailure()
+  }
+  
+  def "reject to occupy parking spot by beneficiary with reservation when there is no such reservation"() {
+    given:
+      def fullyOccupiedParkingSpot = emptyParkingSpotWithReservation(
+          Reservation.newOne(BeneficiaryId.newOne(), SpotUnits.of(4)))
+    
+    when:
+      def result = fullyOccupiedParkingSpot.occupyUsing(ReservationId.newOne())
     
     then:
       result.isFailure()

@@ -9,7 +9,7 @@ public interface ReservationRequesterViewRepository {
 
     record ReservationRequesterView(
             UUID reservationRequesterId,
-            List<UUID> reservationRequestId
+            List<UUID> reservationRequests
     ) {
     }
 

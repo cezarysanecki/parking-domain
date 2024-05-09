@@ -4,7 +4,7 @@ import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryId
 import pl.cezarysanecki.parkingdomain.shared.SpotUnits
 import spock.lang.Specification
 
-import static ParkingSpotFixture.occupiedBy
+import static ParkingSpotFixture.occupiedFullyBy
 
 class ReleasingParkingSpotTest extends Specification {
   
@@ -13,7 +13,7 @@ class ReleasingParkingSpotTest extends Specification {
       def beneficiary = BeneficiaryId.newOne()
       def occupation = Occupation.newOne(beneficiary, SpotUnits.of(4))
     and:
-      def occupiedParkingSpot = occupiedBy(occupation)
+      def occupiedParkingSpot = occupiedFullyBy(occupation)
     
     when:
       def result = occupiedParkingSpot.release(occupation.occupationId)
@@ -32,7 +32,7 @@ class ReleasingParkingSpotTest extends Specification {
       def beneficiary = BeneficiaryId.newOne()
       def occupation = Occupation.newOne(beneficiary, SpotUnits.of(4))
     and:
-      def occupiedParkingSpot = occupiedBy(occupation)
+      def occupiedParkingSpot = occupiedFullyBy(occupation)
     
     when:
       def result = occupiedParkingSpot.release(OccupationId.newOne())
