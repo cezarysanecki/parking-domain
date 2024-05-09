@@ -1,5 +1,6 @@
 package pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot;
 
+import io.vavr.collection.HashMap;
 import io.vavr.collection.Map;
 import io.vavr.control.Option;
 import io.vavr.control.Try;
@@ -24,6 +25,14 @@ public class ParkingSpotReservationRequests {
     private Map<ReservationRequestId, ReservationRequest> reservationRequests;
     @NonNull
     private final Version version;
+
+    public static ParkingSpotReservationRequests newOne(ParkingSpotId parkingSpotId, ParkingSpotCapacity capacity) {
+        return new ParkingSpotReservationRequests(
+                parkingSpotId,
+                capacity,
+                HashMap.empty(),
+                Version.zero());
+    }
 
     public Try<ReservationRequest> storeRequest(ReservationRequesterId requesterId, SpotUnits spotUnits) {
         if (exceedsAllowedSpace(spotUnits)) {

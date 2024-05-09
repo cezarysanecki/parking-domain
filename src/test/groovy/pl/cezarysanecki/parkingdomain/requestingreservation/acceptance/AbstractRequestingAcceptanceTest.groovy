@@ -3,42 +3,33 @@ package pl.cezarysanecki.parkingdomain.requestingreservation.acceptance
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
-import pl.cezarysanecki.parkingdomain.commons.commands.Result
+import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisherTestConfig
-import pl.cezarysanecki.parkingdomain.parking.model.ParkingConfig
-import pl.cezarysanecki.parkingdomain.management.parkingspot.AddingParkingSpot
-import pl.cezarysanecki.parkingdomain.shared.ParkingSpotCapacity
+import pl.cezarysanecki.parkingdomain.management.client.ClientId
+import pl.cezarysanecki.parkingdomain.management.client.ClientRegistered
+import pl.cezarysanecki.parkingdomain.management.client.PhoneNumber
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotAdded
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId
-import pl.cezarysanecki.parkingdomain.management.vehicle.RegisteringVehicle
-import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleId
-import pl.cezarysanecki.parkingdomain.parking.model.model.SpotUnits
-
+import pl.cezarysanecki.parkingdomain.requestingreservation.infrastucture.RequestingReservationConfig
+import pl.cezarysanecki.parkingdomain.shared.ParkingSpotCapacity
 import spock.lang.Specification
 
 @ActiveProfiles("local")
 @SpringBootTest(classes = [
-    ParkingConfig.class,
-    RequestingConfig.class,
+    RequestingReservationConfig.class,
     EventPublisherTestConfig.class])
 abstract class AbstractRequestingAcceptanceTest extends Specification {
   
   @Autowired
-  AddingParkingSpot creatingParkingSpot
-  @Autowired
-  RegisteringVehicle registeringVehicle
+  EventPublisher eventPublisher
   
-  ParkingSpotId createParkingSpot(int capacity) {
-    final AddingParkingSpot.Command command = new AddingParkingSpot.Command(
-        ParkingSpotCapacity.of(capacity), ParkingSpotCategory.Gold)
-    def result = creatingParkingSpot.addParkingSpot(command.parkingSpotCapacity, command.parkingSpotCategory)
-    return (result.get() as Result.Success<ParkingSpotId>).getResult()
+  ParkingSpotId addParkingSpot(int capacity, ParkingSpotCategory category) {
+    eventPublisher.publish(new ParkingSpotAdded(ParkingSpotId.newOne(), ParkingSpotCapacity.of(capacity), category))
   }
   
-  VehicleId registerVehicle(int size) {
-    def result = registeringVehicle.register(new RegisteringVehicle.Command(SpotUnits.of(size)))
-    return (result.get() as Result.Success<VehicleId>).getResult()
+  ClientId registerClient(String phoneNumber) {
+    eventPublisher.publish(new ClientRegistered(ClientId.newOne(), PhoneNumber.of(phoneNumber)))
   }
-  
   
 }

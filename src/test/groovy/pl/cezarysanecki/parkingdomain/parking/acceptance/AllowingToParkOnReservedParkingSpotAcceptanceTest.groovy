@@ -1,96 +1,81 @@
 package pl.cezarysanecki.parkingdomain.parking.acceptance
 
 import org.springframework.beans.factory.annotation.Autowired
-import pl.cezarysanecki.parkingdomain.commons.commands.Result
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId
-import pl.cezarysanecki.parkingdomain.parking.model.model.ReservationId
-import pl.cezarysanecki.parkingdomain.parking.vehicle.application.ParkingVehicle
-import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleId
-import pl.cezarysanecki.parkingdomain.parking.view.vehicle.model.VehicleViews
+import pl.cezarysanecki.parkingdomain.parking.application.OccupyingParkingSpot
+import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryId
+import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ReservationId
+import pl.cezarysanecki.parkingdomain.parking.web.BeneficiaryViewRepository
+import pl.cezarysanecki.parkingdomain.parking.web.ParkingSpotViewRepository
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterId
+import pl.cezarysanecki.parkingdomain.shared.SpotUnits
 
-import pl.cezarysanecki.parkingdomain.management.client.ClientId
-import pl.cezarysanecki.parkingdomain.requestingreservation.web.parkingspot.model.ParkingSpotRequestsViews
-import spock.lang.Ignore
-
-import static pl.cezarysanecki.parkingdomain.parking.vehicle.application.ParkingVehicle.ParkOnReservedCommand
-
-@Ignore("#256")
 class AllowingToParkOnReservedParkingSpotAcceptanceTest extends AbstractParkingAcceptanceTest {
   
   @Autowired
-  MakingRequestForWholeParkingSpot requestingReservationForWholeParkingSpot
+  OccupyingParkingSpot occupyingParkingSpot
   @Autowired
-  ParkingVehicle parkingVehicle
+  ParkingSpotViewRepository parkingSpotViewRepository
+  @Autowired
+  BeneficiaryViewRepository beneficiaryViewRepository
   
-  @Autowired
-  VehicleViews vehicleViews
-  @Autowired
-  ParkingSpotRequestsViews parkingSpotRequestsViews
+  ParkingSpotId parkingSpotId
+  BeneficiaryId beneficiaryId
+  
+  def setup() {
+    def clientId = registerClient("123123123")
+    
+    parkingSpotId = addParkingSpot(4, ParkingSpotCategory.Gold)
+    beneficiaryId = BeneficiaryId.of(clientId.value)
+  }
   
   def "allow to park on reserved parking spot"() {
     given:
-      ClientId clientId = ClientId.newOne()
-    and:
-      def parkingSpotId = createParkingSpot(4)
-      def vehicleId = registerVehicle(2)
-    and:
-      def reservationId = reserveWholeParkingSpotFor(clientId, parkingSpotId)
+      def reservationId = reserveParkingSpot(
+          parkingSpotId, ReservationRequesterId.of(beneficiaryId.value), SpotUnits.of(2))
     
     when:
-      parkingVehicle.park(new ParkOnReservedCommand(vehicleId, reservationId))
+      def occupation = occupyingParkingSpot.occupy(reservationId)
     
     then:
-      thereIsReservation(parkingSpotId, reservationId)
+      parkingSpotHasSpaceLeft(parkingSpotId, 2)
     and:
-      vehicleIsParkedOn(parkingSpotId, vehicleId)
+      beneficiaryContainsOccupation(beneficiaryId, occupation)
   }
   
-  def "reject to park on reserved parking spot if this is not reserved for this client"() {
-    given:
-      ClientId clientId = ClientId.newOne()
-    and:
-      def parkingSpotId = createParkingSpot(4)
-      def vehicleId = registerVehicle(2)
-    and:
-      def reservationId = reserveWholeParkingSpotFor(clientId, parkingSpotId)
-    
+  def "reject to park on reserved parking spot if this is not reserved for this beneficiary"() {
     when:
-      parkingVehicle.park(new ParkOnReservedCommand(vehicleId, ReservationId.newOne()))
+      occupyingParkingSpot.occupy(ReservationId.newOne())
     
     then:
-      thereIsReservation(parkingSpotId, reservationId)
+      parkingSpotHasSpaceLeft(parkingSpotId, 4)
     and:
-      vehicleIsNotParkedOn(parkingSpotId, vehicleId)
+      beneficiaryDoesNotHaveAnyOccupations(beneficiaryId)
   }
   
-  private ReservationId reserveWholeParkingSpotFor(ClientId clientId, ParkingSpotId parkingSpotId) {
-    def result = requestingReservationForWholeParkingSpot.makeRequest(new MakingRequestForWholeParkingSpot.Command(
-        clientId, parkingSpotId))
-    return (result.get() as Result.Success<ReservationId>).getResult()
-  }
-  
-  private void thereIsReservation(ParkingSpotId parkingSpotId, ReservationId reservationId) {
-    assert parkingSpotRequestsViews.getAllParkingSpots()
-        .any {
-          it.parkingSpotId == parkingSpotId.value
-              && it.currentRequests.contains(reservationId.value)
+  private void beneficiaryContainsOccupation(BeneficiaryId beneficiaryId, occupation) {
+    beneficiaryViewRepository.queryForAllBeneficiaries()
+        .find { it.beneficiaryId() == beneficiaryId.value }
+        .with {
+          assert it.occupations().contains(occupation.get().occupationId.value)
         }
   }
   
-  private void vehicleIsParkedOn(ParkingSpotId parkingSpotId, VehicleId vehicleId) {
-    def parkedVehicles = vehicleViews.queryForParkedVehicles()
-        .stream()
-        .filter { ParkingSpotId.of(it.parkingSpotId) == parkingSpotId }
-        .toList()
-    assert parkedVehicles.any { it.vehicleId == vehicleId.value }
+  private void beneficiaryDoesNotHaveAnyOccupations(BeneficiaryId beneficiaryId) {
+    beneficiaryViewRepository.queryForAllBeneficiaries()
+        .find { it.beneficiaryId() == beneficiaryId.value }
+        .with {
+          assert it.occupations().isEmpty()
+        }
   }
   
-  private void vehicleIsNotParkedOn(ParkingSpotId parkingSpotId, VehicleId vehicleId) {
-    def parkedVehicles = vehicleViews.queryForParkedVehicles()
-        .stream()
-        .filter { ParkingSpotId.of(it.parkingSpotId) == parkingSpotId }
-        .toList()
-    assert parkedVehicles.every() { it.vehicleId != vehicleId.value }
+  private void parkingSpotHasSpaceLeft(ParkingSpotId parkingSpotId, Integer spaceLeft) {
+    parkingSpotViewRepository.queryForAllAvailableParkingSpots()
+        .find { it -> it.parkingSpotId() == parkingSpotId.value }
+        .with {
+          assert it.spaceLeft() == spaceLeft
+        }
   }
   
 }

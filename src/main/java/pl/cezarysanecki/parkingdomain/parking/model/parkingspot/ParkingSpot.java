@@ -1,5 +1,6 @@
 package pl.cezarysanecki.parkingdomain.parking.model.parkingspot;
 
+import io.vavr.collection.HashMap;
 import io.vavr.collection.Map;
 import io.vavr.control.Option;
 import io.vavr.control.Try;
@@ -7,9 +8,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
 import pl.cezarysanecki.parkingdomain.commons.aggregates.Version;
-import pl.cezarysanecki.parkingdomain.shared.ParkingSpotCapacity;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryId;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ReservationRequest;
+import pl.cezarysanecki.parkingdomain.shared.ParkingSpotCapacity;
 import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
 
 @Getter
@@ -26,6 +28,15 @@ public class ParkingSpot {
     private Map<ReservationId, Reservation> reservations;
     @NonNull
     private final Version version;
+
+    public static ParkingSpot newOne(ParkingSpotCapacity capacity) {
+        return new ParkingSpot(
+                ParkingSpotId.newOne(),
+                capacity,
+                HashMap.empty(),
+                HashMap.empty(),
+                Version.zero());
+    }
 
     public Try<Occupation> occupy(BeneficiaryId beneficiaryId, SpotUnits spotUnits) {
         if (exceedsAllowedSpace(spotUnits)) {
@@ -64,6 +75,16 @@ public class ParkingSpot {
         occupations = occupations.put(occupation.getOccupationId(), occupation);
 
         return Try.of(() -> occupation);
+    }
+
+    public Try<Reservation> reserveUsing(ReservationRequest reservationRequest) {
+        ReservationId reservationId = ReservationId.of(reservationRequest.getReservationRequestId().getValue());
+        Reservation reservation = new Reservation(
+                BeneficiaryId.of(reservationRequest.getReservationRequesterId().getValue()),
+                reservationId,
+                reservationRequest.getSpotUnits());
+        reservations = reservations.put(reservationId, reservation);
+        return Try.of(() -> reservation);
     }
 
     public Try<Occupation> release(OccupationId occupationId) {

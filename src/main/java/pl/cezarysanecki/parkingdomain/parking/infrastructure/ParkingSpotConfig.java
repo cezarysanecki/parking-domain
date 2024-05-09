@@ -7,6 +7,9 @@ import org.springframework.context.annotation.Profile;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 import pl.cezarysanecki.parkingdomain.parking.application.OccupyingParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.application.ReleasingParkingSpot;
+import pl.cezarysanecki.parkingdomain.parking.application.ReservingParkingSpotEventHandler;
+import pl.cezarysanecki.parkingdomain.parking.application.StoringBeneficiaryEventHandler;
+import pl.cezarysanecki.parkingdomain.parking.application.StoringParkingSpotEventHandler;
 import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryRepository;
 import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotRepository;
 
@@ -36,6 +39,27 @@ public class ParkingSpotConfig {
                 eventPublisher,
                 beneficiaryRepository,
                 parkingSpotRepository);
+    }
+
+    @Bean
+    StoringParkingSpotEventHandler storingParkingSpotEventHandler(
+            ParkingSpotRepository parkingSpotRepository
+    ) {
+        return new StoringParkingSpotEventHandler(parkingSpotRepository);
+    }
+
+    @Bean
+    StoringBeneficiaryEventHandler storingBeneficiaryEventHandler(
+            BeneficiaryRepository beneficiaryRepository
+    ) {
+        return new StoringBeneficiaryEventHandler(beneficiaryRepository);
+    }
+
+    @Bean
+    ReservingParkingSpotEventHandler reservingParkingSpotEventHandler(
+            ParkingSpotRepository parkingSpotRepository
+    ) {
+        return new ReservingParkingSpotEventHandler(parkingSpotRepository);
     }
 
     @Bean

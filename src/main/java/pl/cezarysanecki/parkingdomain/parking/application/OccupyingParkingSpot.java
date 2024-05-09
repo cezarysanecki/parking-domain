@@ -28,6 +28,7 @@ public class OccupyingParkingSpot {
             ParkingSpotId parkingSpotId,
             SpotUnits spotUnits
     ) {
+        log.debug("occupying parking spot with id {} by beneficiary with id {}", parkingSpotId, beneficiaryId);
         Beneficiary beneficiary = findBeneficiaryBy(beneficiaryId);
         ParkingSpot parkingSpot = findParkingSpotBy(parkingSpotId);
 
@@ -43,6 +44,8 @@ public class OccupyingParkingSpot {
     }
 
     public Try<Occupation> occupy(ReservationId reservationId) {
+        log.debug("occupying parking spot using reservation with id {}", reservationId);
+
         ParkingSpot parkingSpot = findParkingSpotBy(reservationId);
 
         Try<Occupation> occupationResult = parkingSpot.occupyUsing(reservationId);
@@ -53,6 +56,8 @@ public class OccupyingParkingSpot {
 
         Occupation occupation = occupationResult.get();
         Beneficiary beneficiary = findBeneficiaryBy(occupation.getBeneficiaryId());
+
+        log.debug("occupying parking spot with id {} by beneficiary with id {}", parkingSpot.getParkingSpotId(), beneficiary.getBeneficiaryId());
 
         return beneficiary.append(occupation)
                 .onFailure(exception -> log.error("cannot occupy parking spot, reason: {}", exception.getMessage()))
@@ -68,6 +73,8 @@ public class OccupyingParkingSpot {
             BeneficiaryId beneficiaryId,
             ParkingSpotId parkingSpotId
     ) {
+        log.debug("occupying whole parking spot with id {} by beneficiary with id {}", parkingSpotId, beneficiaryId);
+
         Beneficiary beneficiary = findBeneficiaryBy(beneficiaryId);
         ParkingSpot parkingSpot = findParkingSpotBy(parkingSpotId);
 

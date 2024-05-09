@@ -1,44 +1,59 @@
 package pl.cezarysanecki.parkingdomain.parking.acceptance
 
 import org.springframework.beans.factory.annotation.Autowired
-import pl.cezarysanecki.parkingdomain.parking.vehicle.application.ParkingVehicle
-import pl.cezarysanecki.parkingdomain.management.vehicle.VehicleId
-import pl.cezarysanecki.parkingdomain.parking.view.vehicle.model.VehicleViews
-import spock.lang.Ignore
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId
+import pl.cezarysanecki.parkingdomain.parking.application.OccupyingParkingSpot
+import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryId
+import pl.cezarysanecki.parkingdomain.parking.web.BeneficiaryViewRepository
+import pl.cezarysanecki.parkingdomain.parking.web.ParkingSpotViewRepository
+import pl.cezarysanecki.parkingdomain.shared.SpotUnits
 
-@Ignore("#256")
 class NotAllowingToParkVehicleAcceptanceTest extends AbstractParkingAcceptanceTest {
   
   @Autowired
-  ParkingVehicle parkingVehicle
+  OccupyingParkingSpot occupyingParkingSpot
   @Autowired
-  VehicleViews vehicleViews
+  ParkingSpotViewRepository parkingSpotViewRepository
+  @Autowired
+  BeneficiaryViewRepository beneficiaryViewRepository
   
-  def "cannot park on parking spot if vehicle is too big for left space"() {
+  ParkingSpotId parkingSpotId
+  
+  def setup() {
+    parkingSpotId = addParkingSpot(4, ParkingSpotCategory.Gold)
+  }
+  
+  def "reject to park on parking spot if there is not enough space"() {
     given:
-      def parkingSpotId = createParkingSpot(4)
+      def parkingSpotId = addParkingSpot(4, ParkingSpotCategory.Gold)
     and:
-      def firstVehicleId = registerVehicle(2)
+      def firstBeneficiaryId = BeneficiaryId.of(registerClient("123123123").value)
     and:
-      parkingVehicle.park(new ParkingVehicle.ParkOnChosenCommand(firstVehicleId, parkingSpotId))
-    and:
-      def secondVehicleId = registerVehicle(3)
+      def secondBeneficiaryId = BeneficiaryId.of(registerClient("321321321").value)
     
     when:
-      parkingVehicle.park(new ParkingVehicle.ParkOnChosenCommand(secondVehicleId, parkingSpotId))
+      occupyingParkingSpot.occupy(BeneficiaryId.of(firstBeneficiaryId.value), parkingSpotId, SpotUnits.of(4))
+    and:
+      occupyingParkingSpot.occupy(BeneficiaryId.of(secondBeneficiaryId.value), parkingSpotId, SpotUnits.of(4))
     
     then:
-      thisVehicleIsParked(firstVehicleId)
+      parkingSpotHasNoSpaceLeft(parkingSpotId)
     and:
-      thisVehicleIsNotParked(secondVehicleId)
+      beneficiaryDoesNotHaveAnyOccupations(secondBeneficiaryId)
   }
   
-  void thisVehicleIsParked(VehicleId vehicleId) {
-    assert vehicleViews.queryForParkedVehicles().any { it.vehicleId == vehicleId.value }
+  private void parkingSpotHasNoSpaceLeft(ParkingSpotId parkingSpotId) {
+    parkingSpotViewRepository.queryForAllAvailableParkingSpots()
+        .each { it -> it.parkingSpotId() != parkingSpotId.value }
   }
   
-  void thisVehicleIsNotParked(VehicleId vehicleId) {
-    assert vehicleViews.queryForNotParkedVehicles().any { it.vehicleId == vehicleId.value }
+  private void beneficiaryDoesNotHaveAnyOccupations(BeneficiaryId beneficiaryId) {
+    beneficiaryViewRepository.queryForAllBeneficiaries()
+        .find { it.beneficiaryId() == beneficiaryId.value }
+        .with {
+          assert it.occupations().isEmpty()
+        }
   }
   
 }

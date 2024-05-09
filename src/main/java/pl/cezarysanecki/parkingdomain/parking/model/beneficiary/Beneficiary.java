@@ -1,5 +1,6 @@
 package pl.cezarysanecki.parkingdomain.parking.model.beneficiary;
 
+import io.vavr.collection.HashSet;
 import io.vavr.collection.Set;
 import io.vavr.control.Try;
 import lombok.AllArgsConstructor;
@@ -23,6 +24,10 @@ public class Beneficiary {
     private Set<OccupationId> occupations;
     @NonNull
     private final Version version;
+
+    public static Beneficiary newOne(BeneficiaryId beneficiaryId) {
+        return new Beneficiary(beneficiaryId, HashSet.empty(), HashSet.empty(), Version.zero());
+    }
 
     public Try<Reservation> append(Reservation reservation) {
         reservations = reservations.add(reservation.getReservationId());

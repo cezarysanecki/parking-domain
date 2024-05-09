@@ -11,6 +11,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 import pl.cezarysanecki.parkingdomain.requestingreservation.application.CancellingReservationRequest;
+import pl.cezarysanecki.parkingdomain.requestingreservation.application.StoringParkingSpotEventHandler;
+import pl.cezarysanecki.parkingdomain.requestingreservation.application.StoringRequesterEventHandler;
 import pl.cezarysanecki.parkingdomain.requestingreservation.application.StoringReservationRequest;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequestsRepository;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterRepository;
@@ -43,6 +45,20 @@ public class RequestingReservationConfig {
                 eventPublisher,
                 reservationRequesterRepository,
                 parkingSpotReservationRequestsRepository);
+    }
+
+    @Bean
+    StoringParkingSpotEventHandler storingParkingSpotEventHandler(
+            ParkingSpotReservationRequestsRepository parkingSpotReservationRequestsRepository
+    ) {
+        return new StoringParkingSpotEventHandler(parkingSpotReservationRequestsRepository);
+    }
+
+    @Bean
+    StoringRequesterEventHandler storingRequesterEventHandler(
+            ReservationRequesterRepository reservationRequesterRepository
+    ) {
+        return new StoringRequesterEventHandler(reservationRequesterRepository);
     }
 
     @Bean
