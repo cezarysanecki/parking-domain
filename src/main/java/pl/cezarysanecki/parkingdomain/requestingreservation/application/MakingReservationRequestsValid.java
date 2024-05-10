@@ -3,11 +3,13 @@ package pl.cezarysanecki.parkingdomain.requestingreservation.application;
 import io.vavr.collection.List;
 import io.vavr.control.Option;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequestsEvents.ReservationRequestConfirmed;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequestsRepository;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ValidReservationRequest;
 
+@Slf4j
 @RequiredArgsConstructor
 public class MakingReservationRequestsValid {
 
@@ -23,6 +25,8 @@ public class MakingReservationRequestsValid {
                                     parkingSpotReservationRequests.getParkingSpotId(), validReservationRequest));
                 })
                 .toList();
+
+        log.debug("Found {} requests to make them valid", events.size());
 
         return events
                 .flatMap(event -> {

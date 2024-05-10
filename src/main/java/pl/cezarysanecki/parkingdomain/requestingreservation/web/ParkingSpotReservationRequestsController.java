@@ -35,7 +35,7 @@ class ParkingSpotReservationRequestsController {
 
     @GetMapping("/parking-spots/available")
     ResponseEntity<List<CapacityView>> availableParkingSpots() {
-        return ok(parkingSpotReservationRequestsViewRepository.queryForAllAvailableParkingSpots());
+        return ok(parkingSpotReservationRequestsViewRepository.queryForAllAvailableParkingSpots().asJava());
     }
 
     @PostMapping("/parking-spot/store")
