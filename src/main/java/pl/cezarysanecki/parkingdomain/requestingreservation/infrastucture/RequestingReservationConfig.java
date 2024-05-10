@@ -13,6 +13,7 @@ import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 import pl.cezarysanecki.parkingdomain.requestingreservation.application.CancellingReservationRequest;
 import pl.cezarysanecki.parkingdomain.requestingreservation.application.CreatingParkingSpotReservationRequestsEventHandler;
 import pl.cezarysanecki.parkingdomain.requestingreservation.application.CreatingReservationRequesterEventHandler;
+import pl.cezarysanecki.parkingdomain.requestingreservation.application.MakingReservationRequestsValid;
 import pl.cezarysanecki.parkingdomain.requestingreservation.application.StoringReservationRequest;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequestsRepository;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterRepository;
@@ -59,6 +60,15 @@ public class RequestingReservationConfig {
             ReservationRequesterRepository reservationRequesterRepository
     ) {
         return new CreatingReservationRequesterEventHandler(reservationRequesterRepository);
+    }
+
+    @Bean
+    MakingReservationRequestsValid makingReservationRequestsValid(
+            ParkingSpotReservationRequestsRepository parkingSpotReservationRequestsRepository
+    ) {
+        return new MakingReservationRequestsValid(
+                eventPublisher,
+                parkingSpotReservationRequestsRepository);
     }
 
     @Bean
