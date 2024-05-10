@@ -1,6 +1,7 @@
 package pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot;
 
 import io.vavr.collection.HashMap;
+import io.vavr.collection.List;
 import io.vavr.collection.Map;
 import io.vavr.control.Option;
 import io.vavr.control.Try;
@@ -55,6 +56,14 @@ public class ParkingSpotReservationRequests {
         reservationRequests = reservationRequests.remove(reservationRequestId);
 
         return Try.of(() -> reservationRequest);
+    }
+
+    public List<ValidReservationRequest> makeValid() {
+        List<ValidReservationRequest> validReservationRequests = reservationRequests.values()
+                .map(ValidReservationRequest::from)
+                .toList();
+        reservationRequests = HashMap.empty();
+        return validReservationRequests;
     }
 
     public int spaceLeft() {

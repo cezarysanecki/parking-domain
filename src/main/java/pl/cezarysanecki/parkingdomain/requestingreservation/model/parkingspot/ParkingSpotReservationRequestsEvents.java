@@ -16,7 +16,7 @@ public interface ParkingSpotReservationRequestsEvents extends DomainEvent {
 
     record ReservationRequestConfirmed(
             @NonNull ParkingSpotId parkingSpotId,
-            @NonNull ReservationRequest reservationRequest
+            @NonNull ValidReservationRequest validReservationRequest
     ) implements ParkingSpotReservationRequestsEvents {
     }
 

@@ -10,7 +10,7 @@ import org.quartz.JobExecutionContext;
 class MakingRequestsValidJob implements Job {
 
     @Override
-    public void execute(final JobExecutionContext jobExecutionContext) {
+    public void execute(JobExecutionContext jobExecutionContext) {
         log.debug("BLA BLA BLA BLA");
     }
 
