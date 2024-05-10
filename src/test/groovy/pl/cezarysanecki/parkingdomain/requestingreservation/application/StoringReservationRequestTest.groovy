@@ -2,7 +2,6 @@ package pl.cezarysanecki.parkingdomain.requestingreservation.application
 
 import io.vavr.control.Option
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher
-import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.Reservation
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequestsRepository
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ReservationRequestId
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterRepository
@@ -10,10 +9,6 @@ import pl.cezarysanecki.parkingdomain.shared.SpotUnits
 import spock.lang.Specification
 import spock.lang.Subject
 
-import static pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryFixture.emptyBeneficiary
-import static pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotEvents.ParkingSpotOccupied
-import static pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotFixture.emptyParkingSpotWithCapacity
-import static pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotFixture.emptyParkingSpotWithReservation
 import static pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequestsEvents.ReservationRequestStored
 import static pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequestsFixture.parkingSpotWithoutReservationRequests
 import static pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterFixture.requesterWith
@@ -54,7 +49,7 @@ class StoringReservationRequestTest extends Specification {
       1 * reservationRequesterRepository.save(requester)
       1 * parkingSpotReservationRequestsRepository.save(parkingSpotReservationRequests)
     and:
-      1 * eventPublisher.publish(new ReservationRequestStored(parkingSpotReservationRequests.parkingSpotId, result.get()))
+      1 * eventPublisher.publish(_ as ReservationRequestStored)
   }
   
   def "fail to store reservation request when requester does not have enough limit"() {

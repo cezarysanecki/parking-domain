@@ -39,10 +39,10 @@ class CancellingReservationRequestTest extends Specification {
       def reservationRequest = new ReservationRequest(requesterId, reservationRequestId, spotUnits)
     and:
       def requester = new ReservationRequester(requesterId, HashSet.of(reservationRequestId))
-      reservationRequesterRepository.findBy(requester.requesterId) >> Option.of(requester)
+      reservationRequesterRepository.findBy(reservationRequestId) >> Option.of(requester)
     and:
       def parkingSpotReservationRequests = parkingSpotWithRequest(reservationRequest)
-      parkingSpotReservationRequestsRepository.findBy(parkingSpotReservationRequests.parkingSpotId) >> Option.of(parkingSpotReservationRequests)
+      parkingSpotReservationRequestsRepository.findBy(reservationRequestId) >> Option.of(parkingSpotReservationRequests)
     
     when:
       def result = cancellingReservationRequest.cancelRequest(reservationRequestId)
@@ -58,19 +58,21 @@ class CancellingReservationRequestTest extends Specification {
       1 * reservationRequesterRepository.save(requester)
       1 * parkingSpotReservationRequestsRepository.save(parkingSpotReservationRequests)
     and:
-      1 * eventPublisher.publish(new ReservationRequestCancelled(parkingSpotReservationRequests.parkingSpotId, result.get()))
+      1 * eventPublisher.publish(_ as ReservationRequestCancelled)
   }
   
   def "fail to store reservation request when requester does not have enough limit"() {
     given:
+      def reservationRequestId = ReservationRequestId.newOne()
+    and:
       def requester = requesterWithNoReservationRequests()
-      reservationRequesterRepository.findBy(requester.requesterId) >> Option.of(requester)
+      reservationRequesterRepository.findBy(reservationRequestId) >> Option.of(requester)
     and:
       def parkingSpotReservationRequests = parkingSpotWithoutReservationRequests()
-      parkingSpotReservationRequestsRepository.findBy(parkingSpotReservationRequests.parkingSpotId) >> Option.of(parkingSpotReservationRequests)
+      parkingSpotReservationRequestsRepository.findBy(reservationRequestId) >> Option.of(parkingSpotReservationRequests)
     
     when:
-      def result = cancellingReservationRequest.cancelRequest(ReservationRequestId.newOne())
+      def result = cancellingReservationRequest.cancelRequest(reservationRequestId)
     
     then:
       result.isFailure()

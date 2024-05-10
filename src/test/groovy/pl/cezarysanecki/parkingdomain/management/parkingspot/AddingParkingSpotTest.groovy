@@ -27,6 +27,11 @@ class AddingParkingSpotTest extends Specification {
       1 * database.saveNew({
         it.capacity == parkingSpotCapacity
             && it.category == parkingSpotCategory
+      } as ParkingSpot)
+    and:
+      1 * eventPublisher.publish({
+        it.capacity == parkingSpotCapacity
+            && it.category == parkingSpotCategory
       } as ParkingSpotAdded)
   }
   

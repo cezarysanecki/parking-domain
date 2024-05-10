@@ -69,7 +69,8 @@ public class ParkingSpotReservationRequests {
         return reservationRequests.values()
                 .map(ReservationRequest::getSpotUnits)
                 .map(SpotUnits::getValue)
-                .reduce(Integer::sum);
+                .reduceOption(Integer::sum)
+                .getOrElse(0);
     }
 
     private boolean exceedsAllowedSpace(SpotUnits spotUnits) {
