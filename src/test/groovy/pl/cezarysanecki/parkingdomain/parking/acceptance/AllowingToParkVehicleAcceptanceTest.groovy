@@ -23,7 +23,7 @@ class AllowingToParkVehicleAcceptanceTest extends AbstractParkingAcceptanceTest 
   BeneficiaryId beneficiaryId
   
   def setup() {
-    def clientId = registerClient("123123123")
+    def clientId = registerBeneficiary("123123123")
     
     parkingSpotId = addParkingSpot(4, ParkingSpotCategory.Gold)
     beneficiaryId = BeneficiaryId.of(clientId.value)

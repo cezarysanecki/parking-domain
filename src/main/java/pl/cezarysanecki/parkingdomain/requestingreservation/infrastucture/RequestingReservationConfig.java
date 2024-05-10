@@ -11,8 +11,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 import pl.cezarysanecki.parkingdomain.requestingreservation.application.CancellingReservationRequest;
-import pl.cezarysanecki.parkingdomain.requestingreservation.application.StoringParkingSpotEventHandler;
-import pl.cezarysanecki.parkingdomain.requestingreservation.application.StoringRequesterEventHandler;
+import pl.cezarysanecki.parkingdomain.requestingreservation.application.CreatingParkingSpotReservationRequestsEventHandler;
+import pl.cezarysanecki.parkingdomain.requestingreservation.application.CreatingReservationRequesterEventHandler;
 import pl.cezarysanecki.parkingdomain.requestingreservation.application.StoringReservationRequest;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequestsRepository;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterRepository;
@@ -48,17 +48,17 @@ public class RequestingReservationConfig {
     }
 
     @Bean
-    StoringParkingSpotEventHandler storingParkingSpotEventHandler(
+    CreatingParkingSpotReservationRequestsEventHandler creatingParkingSpotReservationRequestsEventHandler(
             ParkingSpotReservationRequestsRepository parkingSpotReservationRequestsRepository
     ) {
-        return new StoringParkingSpotEventHandler(parkingSpotReservationRequestsRepository);
+        return new CreatingParkingSpotReservationRequestsEventHandler(parkingSpotReservationRequestsRepository);
     }
 
     @Bean
-    StoringRequesterEventHandler storingRequesterEventHandler(
+    CreatingReservationRequesterEventHandler creatingReservationRequesterEventHandler(
             ReservationRequesterRepository reservationRequesterRepository
     ) {
-        return new StoringRequesterEventHandler(reservationRequesterRepository);
+        return new CreatingReservationRequesterEventHandler(reservationRequesterRepository);
     }
 
     @Bean

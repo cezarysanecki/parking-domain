@@ -24,22 +24,16 @@ class AllowingToRequestReservationOnParkingSpotAcceptanceTest extends AbstractPa
   ReservationRequesterId requesterId
   
   def setup() {
-    def clientId = registerClient("123123123")
+    def clientId = registerBeneficiary("123123123")
     
     parkingSpotId = addParkingSpot(4, ParkingSpotCategory.Gold)
     requesterId = ReservationRequesterId.of(clientId.value)
   }
   
-  
   def "request reservation for parking spot"() {
-    given:
-      def parkingSpotId = addParkingSpot(4, ParkingSpotCategory.Gold)
-    and:
-      def clientId = registerClient("123123123")
-    
     when:
       def reservationRequest = storingReservationRequest.storeRequest(
-          ReservationRequesterId.of(clientId.value), parkingSpotId, SpotUnits.of(2))
+          requesterId, parkingSpotId, SpotUnits.of(2))
     
     then:
       parkingSpotHasSpaceLeft(parkingSpotId, 2)
@@ -48,14 +42,9 @@ class AllowingToRequestReservationOnParkingSpotAcceptanceTest extends AbstractPa
   }
   
   def "request reservation for whole parking spot"() {
-    given:
-      def parkingSpotId = addParkingSpot(4, ParkingSpotCategory.Gold)
-    and:
-      def clientId = registerClient("123123123")
-    
     when:
       def reservationRequest = storingReservationRequest.storeRequest(
-          ReservationRequesterId.of(clientId.value), parkingSpotId, SpotUnits.of(4))
+          requesterId, parkingSpotId, SpotUnits.of(4))
     
     then:
       parkingSpotHasNoSpaceLeft(parkingSpotId)

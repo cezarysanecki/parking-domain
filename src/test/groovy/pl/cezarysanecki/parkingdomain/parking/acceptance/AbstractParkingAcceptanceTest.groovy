@@ -12,6 +12,7 @@ import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotAdded
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.parking.infrastructure.ParkingSpotConfig
+import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryId
 import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ReservationId
 import pl.cezarysanecki.parkingdomain.requestingreservation.infrastucture.RequestingReservationConfig
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ReservationRequest
@@ -33,16 +34,21 @@ abstract class AbstractParkingAcceptanceTest extends Specification {
   EventPublisher eventPublisher
   
   ParkingSpotId addParkingSpot(int capacity, ParkingSpotCategory category) {
-    eventPublisher.publish(new ParkingSpotAdded(ParkingSpotId.newOne(), ParkingSpotCapacity.of(capacity), category))
+    def parkingSpotId = ParkingSpotId.newOne()
+    eventPublisher.publish(new ParkingSpotAdded(parkingSpotId, ParkingSpotCapacity.of(capacity), category))
+    return parkingSpotId
   }
   
-  ClientId registerClient(String phoneNumber) {
-    eventPublisher.publish(new ClientRegistered(ClientId.newOne(), PhoneNumber.of(phoneNumber)))
+  BeneficiaryId registerBeneficiary(String phoneNumber) {
+    def clientId = ClientId.newOne()
+    eventPublisher.publish(new ClientRegistered(clientId, PhoneNumber.of(phoneNumber)))
+    return BeneficiaryId.of(clientId.value)
   }
   
   ReservationId reserveParkingSpot(ParkingSpotId parkingSpotId, ReservationRequesterId requesterId, SpotUnits spotUnits) {
-    eventPublisher.publish(new ReservationRequestConfirmed(
-        parkingSpotId, ReservationRequest.newOne(requesterId, spotUnits)))
+    def reservationRequest = ReservationRequest.newOne(requesterId, spotUnits)
+    eventPublisher.publish(new ReservationRequestConfirmed(parkingSpotId, reservationRequest))
+    return ReservationId.of(reservationRequest.reservationRequestId.value)
   }
   
 }

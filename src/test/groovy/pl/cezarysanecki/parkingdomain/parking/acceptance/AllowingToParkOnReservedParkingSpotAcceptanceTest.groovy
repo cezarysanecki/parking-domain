@@ -24,10 +24,8 @@ class AllowingToParkOnReservedParkingSpotAcceptanceTest extends AbstractParkingA
   BeneficiaryId beneficiaryId
   
   def setup() {
-    def clientId = registerClient("123123123")
-    
     parkingSpotId = addParkingSpot(4, ParkingSpotCategory.Gold)
-    beneficiaryId = BeneficiaryId.of(clientId.value)
+    beneficiaryId = registerBeneficiary("123123123")
   }
   
   def "allow to park on reserved parking spot"() {
@@ -49,6 +47,8 @@ class AllowingToParkOnReservedParkingSpotAcceptanceTest extends AbstractParkingA
       occupyingParkingSpot.occupy(ReservationId.newOne())
     
     then:
+      thrown(IllegalStateException.class)
+    and:
       parkingSpotHasSpaceLeft(parkingSpotId, 4)
     and:
       beneficiaryDoesNotHaveAnyOccupations(beneficiaryId)

@@ -9,13 +9,13 @@ import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotRepos
 
 @Slf4j
 @RequiredArgsConstructor
-public class StoringParkingSpotEventHandler {
+public class CreatingParkingSpotEventHandler {
 
     private final ParkingSpotRepository parkingSpotRepository;
 
     @EventListener
     public void handle(ParkingSpotAdded event) {
-        ParkingSpot parkingSpot = ParkingSpot.newOne(event.capacity());
+        ParkingSpot parkingSpot = ParkingSpot.newOne(event.parkingSpotId(), event.capacity());
         log.debug("storing parking spot as placement with id: {}", parkingSpot.getParkingSpotId());
         parkingSpotRepository.save(parkingSpot);
     }
