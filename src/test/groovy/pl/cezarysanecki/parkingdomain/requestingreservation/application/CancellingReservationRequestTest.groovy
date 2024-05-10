@@ -1,58 +1,78 @@
 package pl.cezarysanecki.parkingdomain.requestingreservation.application
 
+import io.vavr.collection.HashSet
 import io.vavr.control.Option
-import pl.cezarysanecki.parkingdomain.commons.commands.Result
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterRepository
+import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequestsRepository
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ReservationRequest
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ReservationRequestId
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequester
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterId
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterRepository
+import pl.cezarysanecki.parkingdomain.shared.SpotUnits
 import spock.lang.Specification
 import spock.lang.Subject
 
-import static pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ClientRequestsFixture.clientWithNoRequests
-import static pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ClientRequestsFixture.clientWithRequest
+import static pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequestsEvents.ReservationRequestCancelled
+import static pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequestsFixture.parkingSpotWithRequest
+import static pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequestsFixture.parkingSpotWithoutReservationRequests
+import static pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterFixture.requesterWithNoReservationRequests
 
 class CancellingReservationRequestTest extends Specification {
   
-  ReservationRequesterRepository clientRequestsRepository = Mock()
+  EventPublisher eventPublisher = Mock()
+  ReservationRequesterRepository reservationRequesterRepository = Mock()
+  ParkingSpotReservationRequestsRepository parkingSpotReservationRequestsRepository = Mock()
   
   @Subject
-  CancellingReservationRequest cancellingRequest = new CancellingReservationRequest(clientRequestsRepository)
+  CancellingReservationRequest cancellingReservationRequest = new CancellingReservationRequest(
+      eventPublisher,
+      reservationRequesterRepository,
+      parkingSpotReservationRequestsRepository)
   
-  def "allow to cancel client request"() {
+  def "should cancel reservation request"() {
     given:
-      def requestId = ReservationRequestId.newOne()
+      def requesterId = ReservationRequesterId.newOne()
+      def reservationRequestId = ReservationRequestId.newOne()
+      def spotUnits = SpotUnits.of(2)
     and:
-      clientRequestsRepository.findBy(requestId) >> Option.of(clientWithRequest(requestId))
+      def reservationRequest = new ReservationRequest(requesterId, reservationRequestId, spotUnits)
+    and:
+      def requester = new ReservationRequester(requesterId, HashSet.of(reservationRequestId))
+      reservationRequesterRepository.findBy(reservationRequestId) >> Option.of(requester)
+    and:
+      def parkingSpotReservationRequests = parkingSpotWithRequest(reservationRequest)
+      parkingSpotReservationRequestsRepository.findBy(reservationRequestId) >> Option.of(parkingSpotReservationRequests)
     
     when:
-      def result = cancellingRequest.cancelRequest(new Command(requestId))
+      def result = cancellingReservationRequest.cancelRequest(reservationRequestId)
     
     then:
       result.isSuccess()
-      result.get() in Result.Success
+      result.get().with {
+        assert it.reservationRequesterId == requesterId
+        assert it.reservationRequestId == reservationRequestId
+        assert it.spotUnits == spotUnits
+      }
+    and:
+      1 * reservationRequesterRepository.save(requester)
+      1 * parkingSpotReservationRequestsRepository.save(parkingSpotReservationRequests)
+    and:
+      1 * eventPublisher.publish(_ as ReservationRequestCancelled)
   }
   
-  def "reject cancelling client request when there is no such for client"() {
+  def "fail to store reservation request when requester does not have enough limit"() {
     given:
-      def requestId = ReservationRequestId.newOne()
+      def reservationRequestId = ReservationRequestId.newOne()
     and:
-      clientRequestsRepository.findBy(requestId) >> Option.of(clientWithNoRequests())
+      def requester = requesterWithNoReservationRequests()
+      reservationRequesterRepository.findBy(reservationRequestId) >> Option.of(requester)
+    and:
+      def parkingSpotReservationRequests = parkingSpotWithoutReservationRequests()
+      parkingSpotReservationRequestsRepository.findBy(reservationRequestId) >> Option.of(parkingSpotReservationRequests)
     
     when:
-      def result = cancellingRequest.cancelRequest(new Command(requestId))
-    
-    then:
-      result.isSuccess()
-      result.get() in Result.Rejection
-  }
-  
-  def "fail to cancel client request when cannot find client requests for such request"() {
-    given:
-      def requestId = ReservationRequestId.newOne()
-    and:
-      clientRequestsRepository.findBy(requestId) >> Option.none()
-    
-    when:
-      def result = cancellingRequest.cancelRequest(new Command(requestId))
+      def result = cancellingReservationRequest.cancelRequest(reservationRequestId)
     
     then:
       result.isFailure()

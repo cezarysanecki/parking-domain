@@ -9,7 +9,7 @@ import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.Pa
 
 @Slf4j
 @RequiredArgsConstructor
-public class StoringParkingSpotEventHandler {
+public class CreatingParkingSpotReservationRequestsEventHandler {
 
     private final ParkingSpotReservationRequestsRepository parkingSpotReservationRequestsRepository;
 

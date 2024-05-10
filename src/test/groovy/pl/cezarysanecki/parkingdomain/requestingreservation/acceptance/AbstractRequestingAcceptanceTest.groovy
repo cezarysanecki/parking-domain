@@ -12,6 +12,7 @@ import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotAdded
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.requestingreservation.infrastucture.RequestingReservationConfig
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterId
 import pl.cezarysanecki.parkingdomain.shared.ParkingSpotCapacity
 import spock.lang.Specification
 
@@ -25,11 +26,15 @@ abstract class AbstractRequestingAcceptanceTest extends Specification {
   EventPublisher eventPublisher
   
   ParkingSpotId addParkingSpot(int capacity, ParkingSpotCategory category) {
-    eventPublisher.publish(new ParkingSpotAdded(ParkingSpotId.newOne(), ParkingSpotCapacity.of(capacity), category))
+    def parkingSpotId = ParkingSpotId.newOne()
+    eventPublisher.publish(new ParkingSpotAdded(parkingSpotId, ParkingSpotCapacity.of(capacity), category))
+    return parkingSpotId
   }
   
-  ClientId registerClient(String phoneNumber) {
-    eventPublisher.publish(new ClientRegistered(ClientId.newOne(), PhoneNumber.of(phoneNumber)))
+  ReservationRequesterId registerRequester(String phoneNumber) {
+    def clientId = ClientId.newOne()
+    eventPublisher.publish(new ClientRegistered(clientId, PhoneNumber.of(phoneNumber)))
+    return ReservationRequesterId.of(clientId.value)
   }
   
 }

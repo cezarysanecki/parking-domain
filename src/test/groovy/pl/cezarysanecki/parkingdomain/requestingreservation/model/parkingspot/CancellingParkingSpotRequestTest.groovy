@@ -1,46 +1,48 @@
 package pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot
 
-
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterId
+import pl.cezarysanecki.parkingdomain.shared.SpotUnits
 import spock.lang.Specification
 
-import static ParkingSpotRequestsFixture.parkingSpotWithoutPlaceForAnyRequests
-import static ParkingSpotRequestsFixture.parkingSpotWithoutRequests
+import static pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequestsFixture.parkingSpotWithRequest
 
 class CancellingParkingSpotRequestTest extends Specification {
   
-  def "allow to cancel parking spot request"() {
+  def "allow to cancel parking spot reservation request"() {
     given:
-      def requestId = ReservationRequestId.newOne()
+      def requesterId = ReservationRequesterId.newOne()
+      def spotUnits = SpotUnits.of(2)
     and:
-      def parkingSpotRequests = parkingSpotWithoutPlaceForAnyRequests(requestId)
+      def reservationRequest = ReservationRequest.newOne(requesterId, spotUnits)
+    and:
+      def parkingSpotReservationRequests = parkingSpotWithRequest(reservationRequest)
     
     when:
-      def result = parkingSpotRequests.cancel(requestId)
+      def result = parkingSpotReservationRequests.cancel(reservationRequest.reservationRequestId)
     
     then:
-      result.isRight()
+      result.isSuccess()
       result.get().with {
-        assert it.parkingSpotId == parkingSpotRequests.parkingSpotId
-        assert it.reservationRequestId == requestId
+        assert it.reservationRequesterId == requesterId
+        assert it.reservationRequestId == reservationRequest.reservationRequestId
+        assert it.spotUnits == spotUnits
       }
   }
   
-  def "reject cancelling request for parking spot when this is no such request for that parking spot"() {
+  def "reject cancelling reservation request for parking spot when this is no such request for that parking spot"() {
     given:
-      def parkingSpotRequests = parkingSpotWithoutRequests()
+      def requesterId = ReservationRequesterId.newOne()
+      def spotUnits = SpotUnits.of(2)
     and:
-      def requestId = ReservationRequestId.newOne()
+      def reservationRequest = ReservationRequest.newOne(requesterId, spotUnits)
+    and:
+      def parkingSpotReservationRequests = parkingSpotWithRequest(reservationRequest)
     
     when:
-      def result = parkingSpotRequests.cancel(requestId)
+      def result = parkingSpotReservationRequests.cancel(ReservationRequestId.newOne())
     
     then:
-      result.isLeft()
-      result.getLeft().with {
-        assert it.parkingSpotId == parkingSpotRequests.parkingSpotId
-        assert it.reservationRequestId == requestId
-        assert it.reason == "there is no such request on that parking spot"
-      }
+      result.isFailure()
   }
   
 }

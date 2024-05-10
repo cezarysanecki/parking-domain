@@ -5,11 +5,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
+import pl.cezarysanecki.parkingdomain.parking.application.CreatingBeneficiaryEventHandler;
+import pl.cezarysanecki.parkingdomain.parking.application.CreatingParkingSpotEventHandler;
 import pl.cezarysanecki.parkingdomain.parking.application.OccupyingParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.application.ReleasingParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.application.ReservingParkingSpotEventHandler;
-import pl.cezarysanecki.parkingdomain.parking.application.StoringBeneficiaryEventHandler;
-import pl.cezarysanecki.parkingdomain.parking.application.StoringParkingSpotEventHandler;
 import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryRepository;
 import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotRepository;
 
@@ -42,17 +42,17 @@ public class ParkingSpotConfig {
     }
 
     @Bean
-    StoringParkingSpotEventHandler storingParkingSpotEventHandler(
+    CreatingParkingSpotEventHandler creatingParkingSpotEventHandler(
             ParkingSpotRepository parkingSpotRepository
     ) {
-        return new StoringParkingSpotEventHandler(parkingSpotRepository);
+        return new CreatingParkingSpotEventHandler(parkingSpotRepository);
     }
 
     @Bean
-    StoringBeneficiaryEventHandler storingBeneficiaryEventHandler(
+    CreatingBeneficiaryEventHandler creatingBeneficiaryEventHandler(
             BeneficiaryRepository beneficiaryRepository
     ) {
-        return new StoringBeneficiaryEventHandler(beneficiaryRepository);
+        return new CreatingBeneficiaryEventHandler(beneficiaryRepository);
     }
 
     @Bean

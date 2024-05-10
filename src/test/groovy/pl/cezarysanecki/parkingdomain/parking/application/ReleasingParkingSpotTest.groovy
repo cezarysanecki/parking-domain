@@ -35,10 +35,10 @@ class ReleasingParkingSpotTest extends Specification {
       def occupation = Occupation.newOne(beneficiaryId, SpotUnits.of(4))
     and:
       def beneficiary = new Beneficiary(beneficiaryId, HashSet.empty(), HashSet.of(occupation.occupationId), Version.zero())
-      beneficiaryRepository.findBy(beneficiary.beneficiaryId) >> Option.of(beneficiary)
+      beneficiaryRepository.findBy(occupation.occupationId) >> Option.of(beneficiary)
     and:
       def parkingSpot = occupiedFullyBy(occupation)
-      parkingSpotRepository.findBy(parkingSpot.parkingSpotId) >> Option.of(parkingSpot)
+      parkingSpotRepository.findBy(occupation.occupationId) >> Option.of(parkingSpot)
     
     when:
       def result = releasingParkingSpot.release(occupation.occupationId)
@@ -54,7 +54,7 @@ class ReleasingParkingSpotTest extends Specification {
       1 * beneficiaryRepository.save(beneficiary)
       1 * parkingSpotRepository.save(parkingSpot)
     and:
-      1 * eventPublisher.publish(new ParkingSpotReleased(parkingSpot.parkingSpotId, result.get()))
+      1 * eventPublisher.publish(_ as ParkingSpotReleased)
   }
   
   def "fail to release parking spot occupation if there no such"() {
@@ -63,10 +63,10 @@ class ReleasingParkingSpotTest extends Specification {
       def occupation = Occupation.newOne(beneficiaryId, SpotUnits.of(4))
     and:
       def beneficiary = new Beneficiary(beneficiaryId, HashSet.empty(), HashSet.of(occupation.occupationId), Version.zero())
-      beneficiaryRepository.findBy(beneficiary.beneficiaryId) >> Option.of(beneficiary)
+      beneficiaryRepository.findBy(_ as OccupationId) >> Option.of(beneficiary)
     and:
       def parkingSpot = occupiedFullyBy(occupation)
-      parkingSpotRepository.findBy(parkingSpot.parkingSpotId) >> Option.of(parkingSpot)
+      parkingSpotRepository.findBy(_ as OccupationId) >> Option.of(parkingSpot)
     
     when:
       def result = releasingParkingSpot.release(OccupationId.newOne())

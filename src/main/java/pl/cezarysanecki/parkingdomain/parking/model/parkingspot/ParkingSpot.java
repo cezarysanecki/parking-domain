@@ -29,9 +29,9 @@ public class ParkingSpot {
     @NonNull
     private final Version version;
 
-    public static ParkingSpot newOne(ParkingSpotCapacity capacity) {
+    public static ParkingSpot newOne(ParkingSpotId parkingSpotId, ParkingSpotCapacity capacity) {
         return new ParkingSpot(
-                ParkingSpotId.newOne(),
+                parkingSpotId,
                 capacity,
                 HashMap.empty(),
                 HashMap.empty(),
@@ -51,7 +51,7 @@ public class ParkingSpot {
 
     public Try<Occupation> occupyUsing(ReservationId reservationId) {
         Option<Reservation> potentialReservation = reservations.get(reservationId);
-        if (reservations.containsKey(reservationId)) {
+        if (potentialReservation.isEmpty()) {
             return Try.failure(new IllegalArgumentException("no such reservation"));
         }
         Reservation reservation = potentialReservation.get();
@@ -111,11 +111,13 @@ public class ParkingSpot {
         Integer occupationUnits = occupations.values()
                 .map(Occupation::getSpotUnits)
                 .map(SpotUnits::getValue)
-                .reduce(Integer::sum);
+                .reduceOption(Integer::sum)
+                .getOrElse(0);
         Integer reservationUnits = reservations.values()
                 .map(Reservation::getSpotUnits)
                 .map(SpotUnits::getValue)
-                .reduce(Integer::sum);
+                .reduceOption(Integer::sum)
+                .getOrElse(0);
         return occupationUnits + reservationUnits;
     }
 

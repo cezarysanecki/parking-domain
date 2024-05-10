@@ -28,9 +28,9 @@ class NotAllowingToParkVehicleAcceptanceTest extends AbstractParkingAcceptanceTe
     given:
       def parkingSpotId = addParkingSpot(4, ParkingSpotCategory.Gold)
     and:
-      def firstBeneficiaryId = BeneficiaryId.of(registerClient("123123123").value)
+      def firstBeneficiaryId = BeneficiaryId.of(registerBeneficiary("123123123").value)
     and:
-      def secondBeneficiaryId = BeneficiaryId.of(registerClient("321321321").value)
+      def secondBeneficiaryId = BeneficiaryId.of(registerBeneficiary("321321321").value)
     
     when:
       occupyingParkingSpot.occupy(BeneficiaryId.of(firstBeneficiaryId.value), parkingSpotId, SpotUnits.of(4))

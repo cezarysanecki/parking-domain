@@ -11,7 +11,7 @@ import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.Rese
 
 @Slf4j
 @RequiredArgsConstructor
-public class StoringRequesterEventHandler {
+public class CreatingReservationRequesterEventHandler {
 
     private final ReservationRequesterRepository reservationRequesterRepository;
 

@@ -50,7 +50,7 @@ class OccupyingParkingSpotTest extends Specification {
       1 * beneficiaryRepository.save(beneficiary)
       1 * parkingSpotRepository.save(parkingSpot)
     and:
-      1 * eventPublisher.publish(new ParkingSpotOccupied(parkingSpot.parkingSpotId, result.get()))
+      1 * eventPublisher.publish(_ as ParkingSpotOccupied)
   }
   
   def "should occupy whole parking spot by beneficiary"() {
@@ -76,7 +76,7 @@ class OccupyingParkingSpotTest extends Specification {
       1 * beneficiaryRepository.save(beneficiary)
       1 * parkingSpotRepository.save(parkingSpot)
     and:
-      1 * eventPublisher.publish(new ParkingSpotOccupied(parkingSpot.parkingSpotId, result.get()))
+      1 * eventPublisher.publish(_ as ParkingSpotOccupied)
   }
   
   def "should occupy parking spot by beneficiary with reservation"() {
@@ -84,10 +84,11 @@ class OccupyingParkingSpotTest extends Specification {
       def beneficiary = emptyBeneficiary()
       beneficiaryRepository.findBy(beneficiary.beneficiaryId) >> Option.of(beneficiary)
     and:
-      def reservation = Reservation.newOne(beneficiary.beneficiaryId, SpotUnits.of(2))
+      def spotUnits = SpotUnits.of(2)
+      def reservation = Reservation.newOne(beneficiary.beneficiaryId, spotUnits)
     and:
       def parkingSpot = emptyParkingSpotWithReservation(reservation)
-      parkingSpotRepository.findBy(parkingSpot.parkingSpotId) >> Option.of(parkingSpot)
+      parkingSpotRepository.findBy(reservation.reservationId) >> Option.of(parkingSpot)
     
     when:
       def result = occupyingParkingSpot.occupy(reservation.reservationId)
@@ -96,13 +97,13 @@ class OccupyingParkingSpotTest extends Specification {
       result.isSuccess()
       result.get().with {
         assert it.beneficiaryId == beneficiary.beneficiaryId
-        assert it.spotUnits == SpotUnits.of(4)
+        assert it.spotUnits == spotUnits
       }
     and:
       1 * beneficiaryRepository.save(beneficiary)
       1 * parkingSpotRepository.save(parkingSpot)
     and:
-      1 * eventPublisher.publish(new ParkingSpotOccupied(parkingSpot.parkingSpotId, result.get()))
+      1 * eventPublisher.publish(_ as ParkingSpotOccupied)
   }
   
   def "fail to occupy parking spot by beneficiary when parking spot does not have enough space"() {

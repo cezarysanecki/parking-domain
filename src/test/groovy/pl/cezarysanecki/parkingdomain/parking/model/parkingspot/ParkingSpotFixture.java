@@ -13,7 +13,7 @@ import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
 public class ParkingSpotFixture {
 
     public static ParkingSpot emptyParkingSpotWithCapacity(int capacity) {
-        return ParkingSpot.newOne(ParkingSpotCapacity.of(capacity));
+        return ParkingSpot.newOne(ParkingSpotId.newOne(), ParkingSpotCapacity.of(capacity));
     }
 
     public static ParkingSpot emptyParkingSpotWithReservation(Reservation reservation) {
@@ -34,14 +34,6 @@ public class ParkingSpotFixture {
                 HashMap.of(occupation.getOccupationId(), occupation),
                 HashMap.empty(),
                 Version.zero());
-    }
-
-    public static ParkingSpot fullyOccupiedBy(BeneficiaryId beneficiary) {
-        ParkingSpot parkingSpot = ParkingSpot.newOne(ParkingSpotCapacity.of(4));
-
-        parkingSpot.occupyWhole(beneficiary);
-
-        return parkingSpot;
     }
 
     public static ParkingSpot occupiedFullyBy(Occupation occupation) {

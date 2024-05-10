@@ -10,7 +10,7 @@ import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryRepos
 
 @Slf4j
 @RequiredArgsConstructor
-public class StoringBeneficiaryEventHandler {
+public class CreatingBeneficiaryEventHandler {
 
     private final BeneficiaryRepository beneficiaryRepository;
 
