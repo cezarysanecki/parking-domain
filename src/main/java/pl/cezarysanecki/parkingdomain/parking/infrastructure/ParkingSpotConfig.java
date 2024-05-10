@@ -57,9 +57,12 @@ public class ParkingSpotConfig {
 
     @Bean
     ReservingParkingSpotEventHandler reservingParkingSpotEventHandler(
+            BeneficiaryRepository beneficiaryRepository,
             ParkingSpotRepository parkingSpotRepository
     ) {
-        return new ReservingParkingSpotEventHandler(parkingSpotRepository);
+        return new ReservingParkingSpotEventHandler(
+                beneficiaryRepository,
+                parkingSpotRepository);
     }
 
     @Bean

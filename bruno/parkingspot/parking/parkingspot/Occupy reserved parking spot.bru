@@ -1,0 +1,17 @@
+meta {
+  name: Occupy reserved parking spot
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/parking-spot/occupy-reserved
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "reservationId": "717bbc36-cb18-4629-8e0a-721212fb7608"
+  }
+}
