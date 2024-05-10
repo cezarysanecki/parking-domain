@@ -1,0 +1,19 @@
+meta {
+  name: Store parking spot reservation request
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/requests/parking-spot/store
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "requesterId": "717bbc36-cb18-4629-8e0a-721212fb7608",
+    "parkingSpotId": "87fdf272-9d9d-4147-be04-5ba58f3fcfe0",
+    "units": 2
+  }
+}

@@ -1,0 +1,17 @@
+meta {
+  name: Cancel parking spot reservation request
+  type: http
+  seq: 4
+}
+
+delete {
+  url: {{baseUrl}}/requests/parking-spot/cancel
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "reservationRequestId": ""
+  }
+}
