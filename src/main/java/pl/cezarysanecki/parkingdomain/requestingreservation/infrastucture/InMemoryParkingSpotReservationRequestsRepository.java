@@ -1,5 +1,6 @@
 package pl.cezarysanecki.parkingdomain.requestingreservation.infrastucture;
 
+import io.vavr.collection.List;
 import io.vavr.control.Option;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,9 +10,10 @@ import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.Pa
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ReservationRequestId;
 import pl.cezarysanecki.parkingdomain.requestingreservation.web.ParkingSpotReservationRequestsViewRepository;
 
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static java.util.function.Predicate.not;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -41,15 +43,23 @@ class InMemoryParkingSpotReservationRequestsRepository implements
     }
 
     @Override
+    public List<ParkingSpotReservationRequests> findAllWithRequests() {
+        return List.ofAll(
+                DATABASE.values()
+                        .stream()
+                        .filter(not(ParkingSpotReservationRequests::isFree)));
+    }
+
+    @Override
     public List<CapacityView> queryForAllAvailableParkingSpots() {
-        return DATABASE.values()
-                .stream()
-                .map(reservationRequests -> new ParkingSpotReservationRequestsViewRepository.CapacityView(
-                        reservationRequests.getParkingSpotId().getValue(),
-                        reservationRequests.getCapacity().getValue(),
-                        reservationRequests.spaceLeft()
-                ))
-                .toList();
+        return List.ofAll(
+                DATABASE.values()
+                        .stream()
+                        .map(reservationRequests -> new ParkingSpotReservationRequestsViewRepository.CapacityView(
+                                reservationRequests.getParkingSpotId().getValue(),
+                                reservationRequests.getCapacity().getValue(),
+                                reservationRequests.spaceLeft()
+                        )));
     }
 
 }

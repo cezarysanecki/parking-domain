@@ -22,7 +22,7 @@ public class ReservingParkingSpotEventHandler {
         ParkingSpot parkingSpot = findParkingSpotBy(event.parkingSpotId());
         log.debug("reserving parking spot with id: {}", parkingSpot.getParkingSpotId());
 
-        Try<Reservation> result = parkingSpot.reserveUsing(event.reservationRequest());
+        Try<Reservation> result = parkingSpot.reserveUsing(event.validReservationRequest());
 
         result
                 .onFailure(exception -> log.error("cannot reserve parking spot, reason: {}", exception.getMessage()))

@@ -1,6 +1,7 @@
 package pl.cezarysanecki.parkingdomain.requestingreservation.web;
 
-import java.util.List;
+import io.vavr.collection.List;
+
 import java.util.UUID;
 
 public interface ParkingSpotReservationRequestsViewRepository {
