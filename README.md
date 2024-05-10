@@ -70,17 +70,17 @@ with existing legacy code and explore tools from the JVM ecosystem (but not excl
 - [X] 3-layer app with anemic model (without tests)
     - [X] Occupation logic
     - [X] Requests logic
-    - [ ] Reservations logic
-    - [ ] ~~Fee logic~~ (will see)
+    - [X] Reservations logic
 - [X] Refactoring to add unit tests
 - [X] Looking for deep model (modules)
     - [X] Do simple Event Storming session
 - [ ] Add other types of requirements
+    - [ ] Fee logic
     - [ ] Cleaning
     - [ ] Maintenance
     - [ ] Loyalty points
     - [ ] Customer recovery
-- [X] Add CQRS
+- [ ] Add CQRS
 - [ ] ...
 
 ## Business context
@@ -108,22 +108,16 @@ vehicles to occupy a single parking spot. Further requirements are outlined belo
 
 ### Requesting parking spot
 
-- Request can only be made until they are valid (become reservations)
-- Client can have only one valid request
-- Client can request
-    - any parking spot
-        - from class (BRONZE, SILVER, GOLD)
-        - for specified vehicle type
-        - last until:
-            - vehicle drives away
-            - reservation time has expired
-    - chosen parking spot
-        - whole spot (can park even 4 scooters)
-        - last until:
-            - all vehicles drive away
-            - reservation time has expired
+- There is limit for requests according to client type:
+    - individual - only one
+    - business - at most five
+- Client can request any parking spot
+    - from class (BRONZE, SILVER, GOLD)
+    - for specified size (1, 2, 4 units)
 - Requesting chosen parking spot is available for additional fee
-- Requests can be made and cancelled at any time, except until 3am next day.
+- Request is not valid reservation
+- Request can be made, edited, cancelled until they become valid (become reservations)
+    - this is until 10pm
 - Requests can be made for
     - morning (7:00-17:00)
     - evening (18:00-24:00)
@@ -132,17 +126,16 @@ vehicles to occupy a single parking spot. Further requirements are outlined belo
 ### Reservations
 
 - Reservation can be extended to whole day
-    - if was morning reservation
+    - if it was morning reservation
     - if current spot has no reservation for evening
-- Users have the option to extend their reservation by selecting any available parking spot from the same class if
-  their current spot is already reserved.
+    - if current reserved parking spot is not available then there will be proposed another one from the same class
 
 ### Reservation fulfillment
 
 - If a client fails to fulfill a reservation:
     - he will be charged for the reservation
     - his loyalty points will be reduced
-- If a client fully completes a reservation, they will earn loyalty points.
+- If a client fully completes a reservation then he will earn loyalty points.
 
 ### Encourage to free reserved parking spot
 
