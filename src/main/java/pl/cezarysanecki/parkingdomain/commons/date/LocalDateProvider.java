@@ -2,7 +2,7 @@ package pl.cezarysanecki.parkingdomain.commons.date;
 
 import java.time.LocalDateTime;
 
-public class LocalDateProvider implements DateProvider {
+class LocalDateProvider implements DateProvider {
 
     private LocalDateTime currentDateTime = LocalDateTime.now();
 
