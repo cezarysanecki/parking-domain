@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Profile("local")
 @RestController
 @RequiredArgsConstructor
-class DateController {
+class LocalDateController {
 
     private final LocalDateProvider localDateProvider;
 
