@@ -170,7 +170,7 @@ vehicles to occupy a single parking spot. Further requirements are outlined belo
 > To be changed!
 
 - Standard usage of parking spot:
-    - 15 minutes - free
+    - 15 minutes - no charge
     - 1 hour - 5PLN
     - 2 hours - 9PLN
     - 4 hours - 17PLN
