@@ -28,7 +28,7 @@ class StoringReservationRequestTest extends Specification {
   
   def "should store reservation request for requester"() {
     given:
-      def requester = requesterWithNoReservationRequests()
+      def requester = requesterWithNoReservationRequests(1)
       reservationRequesterRepository.findBy(requester.requesterId) >> Option.of(requester)
     and:
       def parkingSpotReservationRequests = parkingSpotWithoutReservationRequests()

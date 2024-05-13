@@ -24,7 +24,7 @@ class AllowingToRequestReservationOnParkingSpotAcceptanceTest extends AbstractPa
   ReservationRequesterId requesterId
   
   def setup() {
-    def clientId = registerBeneficiary("123123123")
+    def clientId = registerBeneficiary()
     
     parkingSpotId = addParkingSpot(4, ParkingSpotCategory.Gold)
     requesterId = ReservationRequesterId.of(clientId.value)

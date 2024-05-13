@@ -12,7 +12,7 @@ class AppendingReservationRequestTest extends Specification {
   
   def "allow to append reservation request to requester"() {
     given:
-      def requester = requesterWithNoReservationRequests()
+      def requester = requesterWithNoReservationRequests(1)
       def spotUnits = SpotUnits.of(2)
     and:
       def reservationRequest = ReservationRequest.newOne(requester.requesterId, spotUnits)

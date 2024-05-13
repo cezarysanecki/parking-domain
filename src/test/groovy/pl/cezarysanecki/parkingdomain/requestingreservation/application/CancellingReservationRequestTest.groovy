@@ -38,7 +38,7 @@ class CancellingReservationRequestTest extends Specification {
     and:
       def reservationRequest = new ReservationRequest(requesterId, reservationRequestId, spotUnits)
     and:
-      def requester = new ReservationRequester(requesterId, HashSet.of(reservationRequestId))
+      def requester = new ReservationRequester(requesterId, HashSet.of(reservationRequestId), 1)
       reservationRequesterRepository.findBy(reservationRequestId) >> Option.of(requester)
     and:
       def parkingSpotReservationRequests = parkingSpotWithRequest(reservationRequest)
@@ -65,7 +65,7 @@ class CancellingReservationRequestTest extends Specification {
     given:
       def reservationRequestId = ReservationRequestId.newOne()
     and:
-      def requester = requesterWithNoReservationRequests()
+      def requester = requesterWithNoReservationRequests(1)
       reservationRequesterRepository.findBy(reservationRequestId) >> Option.of(requester)
     and:
       def parkingSpotReservationRequests = parkingSpotWithoutReservationRequests()

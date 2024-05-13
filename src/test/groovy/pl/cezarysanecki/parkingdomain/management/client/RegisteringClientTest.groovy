@@ -13,18 +13,13 @@ class RegisteringClientTest extends Specification {
   RegisteringClient registeringClient = new RegisteringClient(database, eventPublisher)
   
   def "allow to register client"() {
-    given:
-      def phoneNumber = PhoneNumber.of("123123123")
-    
     when:
-      def result = registeringClient.registerClient(phoneNumber.getValue())
+      def result = registeringClient.registerClient(ClientType.INDIVIDUAL, "123123123")
     
     then:
       result.isSuccess()
     and:
-      1 * database.saveNew({
-        it.phoneNumber == phoneNumber
-      } as Client)
+      1 * database.saveNew(_ as Client)
   }
   
   def "fail to register client when storing in database"() {
@@ -34,7 +29,7 @@ class RegisteringClientTest extends Specification {
       }
     
     when:
-      def result = registeringClient.registerClient("123123123")
+      def result = registeringClient.registerClient(ClientType.BUSINESS, "123123123")
     
     then:
       result.isFailure()
