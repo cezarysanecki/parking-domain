@@ -16,9 +16,9 @@ public class RegisteringClient {
     private final CatalogueClientDatabase database;
     private final EventPublisher eventPublisher;
 
-    public Try<Result> registerClient(String phoneNumber) {
+    public Try<Result> registerClient(ClientType clientType, String phoneNumber) {
         return Try.<Result>of(() -> {
-            Client client = new Client(UUID.randomUUID(), phoneNumber);
+            Client client = new Client(UUID.randomUUID(), clientType, phoneNumber);
             log.debug("registering client with id {}", client.getClientId());
 
             database.saveNew(client);
