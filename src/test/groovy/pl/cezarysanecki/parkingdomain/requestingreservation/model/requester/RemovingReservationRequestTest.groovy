@@ -32,7 +32,7 @@ class RemovingReservationRequestTest extends Specification {
   
   def "reject removing reservation request when there is no such"() {
     given:
-      def requester = requesterWithNoReservationRequests()
+      def requester = requesterWithNoReservationRequests(1)
     
     when:
       def result = requester.remove(ReservationRequest.newOne(requester.requesterId, SpotUnits.of(2)))

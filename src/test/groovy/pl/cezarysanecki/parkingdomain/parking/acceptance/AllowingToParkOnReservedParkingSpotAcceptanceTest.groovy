@@ -25,7 +25,7 @@ class AllowingToParkOnReservedParkingSpotAcceptanceTest extends AbstractParkingA
   
   def setup() {
     parkingSpotId = addParkingSpot(4, ParkingSpotCategory.Gold)
-    beneficiaryId = registerBeneficiary("123123123")
+    beneficiaryId = registerBeneficiary()
   }
   
   def "allow to park on reserved parking spot"() {

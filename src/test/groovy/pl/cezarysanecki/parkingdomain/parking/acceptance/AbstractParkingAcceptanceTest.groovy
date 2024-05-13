@@ -6,8 +6,6 @@ import org.springframework.test.context.ActiveProfiles
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisherTestConfig
 import pl.cezarysanecki.parkingdomain.management.client.ClientId
-import pl.cezarysanecki.parkingdomain.management.client.ClientRegistered
-import pl.cezarysanecki.parkingdomain.management.client.PhoneNumber
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotAdded
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId
@@ -22,6 +20,7 @@ import pl.cezarysanecki.parkingdomain.shared.ParkingSpotCapacity
 import pl.cezarysanecki.parkingdomain.shared.SpotUnits
 import spock.lang.Specification
 
+import static pl.cezarysanecki.parkingdomain.management.client.ClientRegistered.IndividualClientRegistered
 import static pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequestsEvents.ReservationRequestConfirmed
 
 @ActiveProfiles("local")
@@ -40,9 +39,9 @@ abstract class AbstractParkingAcceptanceTest extends Specification {
     return parkingSpotId
   }
   
-  BeneficiaryId registerBeneficiary(String phoneNumber) {
+  BeneficiaryId registerBeneficiary() {
     def clientId = ClientId.newOne()
-    eventPublisher.publish(new ClientRegistered(clientId, PhoneNumber.of(phoneNumber)))
+    eventPublisher.publish(new IndividualClientRegistered(clientId))
     return BeneficiaryId.of(clientId.value)
   }
   

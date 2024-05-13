@@ -23,6 +23,7 @@ interface CatalogueClientDatabase {
                     client.getClientId(),
                     new ClientDatabaseRow(
                             client.getClientId().getValue(),
+                            client.getType().name(),
                             client.getPhoneNumber().getValue()));
         }
 
@@ -36,10 +37,11 @@ interface CatalogueClientDatabase {
 class ClientDatabaseRow {
 
     UUID clientId;
+    String type;
     String phoneNumber;
 
     Client toClient() {
-        return new Client(clientId, phoneNumber);
+        return new Client(clientId, ClientType.valueOf(type), phoneNumber);
     }
 
 }

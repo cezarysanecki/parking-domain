@@ -5,6 +5,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import pl.cezarysanecki.parkingdomain.management.client.ClientType;
 import pl.cezarysanecki.parkingdomain.management.client.RegisteringClient;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.AddingParkingSpot;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory;
@@ -21,9 +22,9 @@ class LocalConfig {
             addingParkingSpot.addParkingSpot(4, ParkingSpotCategory.Gold);
             addingParkingSpot.addParkingSpot(4, ParkingSpotCategory.Gold);
 
-            registeringClient.registerClient("123123123");
-            registeringClient.registerClient("321321321");
-            registeringClient.registerClient("789789789");
+            registeringClient.registerClient(ClientType.INDIVIDUAL, "123123123");
+            registeringClient.registerClient(ClientType.INDIVIDUAL, "321321321");
+            registeringClient.registerClient(ClientType.BUSINESS, "789789789");
         };
     }
 

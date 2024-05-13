@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
+import pl.cezarysanecki.parkingdomain.management.client.ClientType;
 import pl.cezarysanecki.parkingdomain.management.client.RegisteringClient;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.AddingParkingSpot;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory;
@@ -32,7 +33,7 @@ class RegistrationController {
 
     @PostMapping("/client")
     ResponseEntity registerClient(@RequestBody RegisterClientRequest request) {
-        Try<Result> result = registeringClient.registerClient(request.phoneNumber);
+        Try<Result> result = registeringClient.registerClient(request.clientType, request.phoneNumber);
         return result
                 .map(success -> ResponseEntity.ok().build())
                 .getOrElse(ResponseEntity.status(INTERNAL_SERVER_ERROR).build());
@@ -44,6 +45,7 @@ class RegistrationController {
     }
 
     record RegisterClientRequest(
+            ClientType clientType,
             String phoneNumber) {
     }
 
