@@ -14,10 +14,12 @@ class Client {
     @NonNull
     ClientId clientId;
     @NonNull
+    ClientType type;
+    @NonNull
     PhoneNumber phoneNumber;
 
-    Client(UUID clientId, String phoneNumber) {
-        this(ClientId.of(clientId), PhoneNumber.of(phoneNumber));
+    Client(UUID clientId, ClientType type, String phoneNumber) {
+        this(ClientId.of(clientId), type, PhoneNumber.of(phoneNumber));
     }
 
 }
