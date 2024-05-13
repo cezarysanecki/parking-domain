@@ -1,13 +1,14 @@
 package pl.cezarysanecki.parkingdomain.requestingreservation.application;
 
-import io.vavr.collection.HashSet;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
-import pl.cezarysanecki.parkingdomain.management.client.ClientRegistered;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequester;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterId;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterRepository;
+
+import static pl.cezarysanecki.parkingdomain.management.client.ClientRegistered.BusinessClientRegistered;
+import static pl.cezarysanecki.parkingdomain.management.client.ClientRegistered.IndividualClientRegistered;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -16,11 +17,23 @@ public class CreatingReservationRequesterEventHandler {
     private final ReservationRequesterRepository reservationRequesterRepository;
 
     @EventListener
-    public void handle(ClientRegistered event) {
-        ReservationRequester requester = new ReservationRequester(
-                ReservationRequesterId.of(event.clientId().getValue()),
-                HashSet.empty());
-        log.debug("storing requester with id: {}", requester.getRequesterId());
+    public void handle(IndividualClientRegistered event) {
+        ReservationRequesterId requesterId = ReservationRequesterId.of(event.clientId().getValue());
+
+        ReservationRequester requester = ReservationRequester.ofLimit(requesterId, 1);
+
+        log.debug("storing requester with lower limit with id: {}", requester.getRequesterId());
+        reservationRequesterRepository.save(requester);
+    }
+
+
+    @EventListener
+    public void handle(BusinessClientRegistered event) {
+        ReservationRequesterId requesterId = ReservationRequesterId.of(event.clientId().getValue());
+
+        ReservationRequester requester = ReservationRequester.ofLimit(requesterId, 20);
+
+        log.debug("storing requester with higher limit with id: {}", requester.getRequesterId());
         reservationRequesterRepository.save(requester);
     }
 

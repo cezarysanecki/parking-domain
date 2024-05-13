@@ -1,5 +1,6 @@
 package pl.cezarysanecki.parkingdomain.requestingreservation.model.requester;
 
+import io.vavr.collection.HashSet;
 import io.vavr.collection.Set;
 import io.vavr.control.Try;
 import lombok.AllArgsConstructor;
@@ -16,6 +17,11 @@ public class ReservationRequester {
     private final ReservationRequesterId requesterId;
     @NonNull
     private Set<ReservationRequestId> reservationRequests;
+    private int limit;
+
+    public static ReservationRequester ofLimit(ReservationRequesterId requesterId, int limit) {
+        return new ReservationRequester(requesterId, HashSet.empty(), limit);
+    }
 
     public Try<ReservationRequest> append(ReservationRequest reservationRequest) {
         if (willBeTooManyRequests(reservationRequest)) {
@@ -42,7 +48,7 @@ public class ReservationRequester {
     }
 
     private boolean willBeTooManyRequests(ReservationRequest reservationRequest) {
-        return reservationRequests.size() + 1 > 1;
+        return reservationRequests.size() + 1 > limit;
     }
 
 }
