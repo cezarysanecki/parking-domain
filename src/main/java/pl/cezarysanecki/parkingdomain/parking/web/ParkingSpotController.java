@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.application.OccupyingParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.application.ReleasingParkingSpot;
@@ -41,6 +42,18 @@ class ParkingSpotController {
         Try<Occupation> result = occupyingParkingSpot.occupy(
                 BeneficiaryId.of(request.beneficiaryId),
                 ParkingSpotId.of(request.parkingSpotId),
+                SpotUnits.of(request.units));
+
+        return result
+                .map(success -> ResponseEntity.ok().build())
+                .getOrElse(ResponseEntity.status(INTERNAL_SERVER_ERROR).build());
+    }
+
+    @PostMapping("/parking-spot/occupy/any")
+    ResponseEntity occupyAny(@RequestBody OccupyAnyParkingSpotRequest request) {
+        Try<Occupation> result = occupyingParkingSpot.occupyAny(
+                BeneficiaryId.of(request.beneficiaryId),
+                request.category,
                 SpotUnits.of(request.units));
 
         return result
@@ -82,6 +95,12 @@ class ParkingSpotController {
     record OccupyParkingSpotRequest(
             UUID beneficiaryId,
             UUID parkingSpotId,
+            int units) {
+    }
+
+    record OccupyAnyParkingSpotRequest(
+            UUID beneficiaryId,
+            ParkingSpotCategory category,
             int units) {
     }
 
