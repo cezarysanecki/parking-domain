@@ -4,6 +4,7 @@ import io.vavr.control.Try;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.Beneficiary;
 import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryId;
@@ -23,24 +24,23 @@ public class OccupyingParkingSpot {
     private final BeneficiaryRepository beneficiaryRepository;
     private final ParkingSpotRepository parkingSpotRepository;
 
+    public Try<Occupation> occupyAny(
+            BeneficiaryId beneficiaryId,
+            ParkingSpotCategory category,
+            SpotUnits spotUnits
+    ) {
+        ParkingSpot parkingSpot = findAvailableParkingSpotBy(category);
+        log.debug("found parking spot with id {} for category {}", parkingSpot.getParkingSpotId(), category);
+        return occupy(beneficiaryId, parkingSpot, spotUnits);
+    }
+
     public Try<Occupation> occupy(
             BeneficiaryId beneficiaryId,
             ParkingSpotId parkingSpotId,
             SpotUnits spotUnits
     ) {
-        log.debug("occupying parking spot with id {} by beneficiary with id {}", parkingSpotId, beneficiaryId);
-        Beneficiary beneficiary = findBeneficiaryBy(beneficiaryId);
         ParkingSpot parkingSpot = findParkingSpotBy(parkingSpotId);
-
-        return parkingSpot.occupy(beneficiaryId, spotUnits)
-                .flatMap(beneficiary::append)
-                .onFailure(exception -> log.error("cannot occupy parking spot, reason: {}", exception.getMessage()))
-                .onSuccess(occupation -> {
-                    beneficiaryRepository.save(beneficiary);
-                    parkingSpotRepository.save(parkingSpot);
-
-                    eventPublisher.publish(new ParkingSpotOccupied(parkingSpotId, occupation));
-                });
+        return occupy(beneficiaryId, parkingSpot, spotUnits);
     }
 
     public Try<Occupation> occupy(ReservationId reservationId) {
@@ -89,6 +89,21 @@ public class OccupyingParkingSpot {
                 });
     }
 
+    private Try<Occupation> occupy(BeneficiaryId beneficiaryId, ParkingSpot parkingSpot, SpotUnits spotUnits) {
+        log.debug("occupying parking spot with id {} by beneficiary with id {}", parkingSpot.getParkingSpotId(), beneficiaryId);
+        Beneficiary beneficiary = findBeneficiaryBy(beneficiaryId);
+
+        return parkingSpot.occupy(beneficiaryId, spotUnits)
+                .flatMap(beneficiary::append)
+                .onFailure(exception -> log.error("cannot occupy parking spot, reason: {}", exception.getMessage()))
+                .onSuccess(occupation -> {
+                    beneficiaryRepository.save(beneficiary);
+                    parkingSpotRepository.save(parkingSpot);
+
+                    eventPublisher.publish(new ParkingSpotOccupied(parkingSpot.getParkingSpotId(), occupation));
+                });
+    }
+
     private Beneficiary findBeneficiaryBy(BeneficiaryId beneficiaryId) {
         return beneficiaryRepository.findBy(beneficiaryId)
                 .getOrElseThrow(() -> new IllegalStateException("cannot find beneficiary with id: " + beneficiaryId));
@@ -102,6 +117,11 @@ public class OccupyingParkingSpot {
     private ParkingSpot findParkingSpotBy(ReservationId reservationId) {
         return parkingSpotRepository.findBy(reservationId)
                 .getOrElseThrow(() -> new IllegalStateException("cannot find parking spot containing reservation with id: " + reservationId));
+    }
+
+    private ParkingSpot findAvailableParkingSpotBy(ParkingSpotCategory parkingSpotCategory) {
+        return parkingSpotRepository.findAvailableBy(parkingSpotCategory)
+                .getOrElseThrow(() -> new IllegalStateException("cannot find available parking spot by category: " + parkingSpotCategory));
     }
 
 }
