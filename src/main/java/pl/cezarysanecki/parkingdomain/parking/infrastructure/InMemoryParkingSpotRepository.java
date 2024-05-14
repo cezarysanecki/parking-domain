@@ -1,6 +1,7 @@
 package pl.cezarysanecki.parkingdomain.parking.infrastructure;
 
 import io.vavr.control.Option;
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.OccupationId;
 import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpot;
@@ -45,6 +46,15 @@ class InMemoryParkingSpotRepository implements
                 DATABASE.values()
                         .stream()
                         .filter(parkingSpot -> parkingSpot.getReservations().containsKey(reservationId))
+                        .findFirst());
+    }
+
+    @Override
+    public Option<ParkingSpot> findAvailableBy(ParkingSpotCategory category) {
+        return Option.ofOptional(
+                DATABASE.values()
+                        .stream()
+                        .filter(parkingSpot -> parkingSpot.getCategory() == category)
                         .findFirst());
     }
 
