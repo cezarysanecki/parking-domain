@@ -4,6 +4,7 @@ import io.vavr.collection.HashMap;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import pl.cezarysanecki.parkingdomain.commons.aggregates.Version;
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryId;
 import pl.cezarysanecki.parkingdomain.shared.ParkingSpotCapacity;
@@ -13,13 +14,14 @@ import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
 public class ParkingSpotFixture {
 
     public static ParkingSpot emptyParkingSpotWithCapacity(int capacity) {
-        return ParkingSpot.newOne(ParkingSpotId.newOne(), ParkingSpotCapacity.of(capacity));
+        return ParkingSpot.newOne(ParkingSpotId.newOne(), ParkingSpotCapacity.of(capacity), ParkingSpotCategory.Silver);
     }
 
     public static ParkingSpot emptyParkingSpotWithReservation(Reservation reservation) {
         return new ParkingSpot(
                 ParkingSpotId.newOne(),
                 ParkingSpotCapacity.of(reservation.getSpotUnits().getValue()),
+                ParkingSpotCategory.Gold,
                 HashMap.empty(),
                 HashMap.of(reservation.getReservationId(), reservation),
                 Version.zero());
@@ -31,6 +33,7 @@ public class ParkingSpotFixture {
         return new ParkingSpot(
                 ParkingSpotId.newOne(),
                 capacity,
+                ParkingSpotCategory.Gold,
                 HashMap.of(occupation.getOccupationId(), occupation),
                 HashMap.empty(),
                 Version.zero());
@@ -41,6 +44,7 @@ public class ParkingSpotFixture {
         return new ParkingSpot(
                 ParkingSpotId.newOne(),
                 capacity,
+                ParkingSpotCategory.Gold,
                 HashMap.of(occupation.getOccupationId(), occupation),
                 HashMap.empty(),
                 Version.zero());
@@ -51,6 +55,7 @@ public class ParkingSpotFixture {
         return new ParkingSpot(
                 ParkingSpotId.newOne(),
                 capacity,
+                ParkingSpotCategory.Gold,
                 HashMap.of(occupation.getOccupationId(), occupation),
                 HashMap.empty(),
                 Version.zero());

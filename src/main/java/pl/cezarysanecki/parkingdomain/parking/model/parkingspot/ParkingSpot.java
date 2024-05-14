@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
 import pl.cezarysanecki.parkingdomain.commons.aggregates.Version;
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryId;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ValidReservationRequest;
@@ -23,16 +24,19 @@ public class ParkingSpot {
     @NonNull
     private final ParkingSpotCapacity capacity;
     @NonNull
+    private final ParkingSpotCategory category;
+    @NonNull
     private Map<OccupationId, Occupation> occupations;
     @NonNull
     private Map<ReservationId, Reservation> reservations;
     @NonNull
     private final Version version;
 
-    public static ParkingSpot newOne(ParkingSpotId parkingSpotId, ParkingSpotCapacity capacity) {
+    public static ParkingSpot newOne(ParkingSpotId parkingSpotId, ParkingSpotCapacity capacity, ParkingSpotCategory category) {
         return new ParkingSpot(
                 parkingSpotId,
                 capacity,
+                category,
                 HashMap.empty(),
                 HashMap.empty(),
                 Version.zero());

@@ -1,6 +1,8 @@
 package pl.cezarysanecki.parkingdomain.parking.model.parkingspot;
 
 import io.vavr.control.Option;
+import io.vavr.control.Try;
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
 
 public interface ParkingSpotRepository {
@@ -13,4 +15,5 @@ public interface ParkingSpotRepository {
 
     Option<ParkingSpot> findBy(ReservationId reservationId);
 
+    Option<ParkingSpot> findAvailableBy(ParkingSpotCategory parkingSpotCategory);
 }

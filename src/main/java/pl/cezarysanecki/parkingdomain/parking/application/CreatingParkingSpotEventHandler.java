@@ -15,7 +15,7 @@ public class CreatingParkingSpotEventHandler {
 
     @EventListener
     public void handle(ParkingSpotAdded event) {
-        ParkingSpot parkingSpot = ParkingSpot.newOne(event.parkingSpotId(), event.capacity());
+        ParkingSpot parkingSpot = ParkingSpot.newOne(event.parkingSpotId(), event.capacity(), event.category());
         log.debug("storing parking spot as placement with id: {}", parkingSpot.getParkingSpotId());
         parkingSpotRepository.save(parkingSpot);
     }
