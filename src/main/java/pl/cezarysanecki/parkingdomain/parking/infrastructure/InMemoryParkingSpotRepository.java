@@ -55,6 +55,7 @@ class InMemoryParkingSpotRepository implements
                 DATABASE.values()
                         .stream()
                         .filter(parkingSpot -> parkingSpot.getCategory() == category)
+                        .filter(not(ParkingSpot::isFull))
                         .findFirst());
     }
 

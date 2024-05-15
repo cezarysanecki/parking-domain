@@ -1,0 +1,19 @@
+meta {
+  name: Occupy any parking spot
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/parking-spot/occupy/any
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "beneficiaryId": "d4f1fe08-203c-4e46-9593-ae45d3df4112",
+    "category": "Gold",
+    "units": 4
+  }
+}
