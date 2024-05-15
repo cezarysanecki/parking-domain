@@ -2,6 +2,7 @@ package pl.cezarysanecki.parkingdomain.parking.application
 
 import io.vavr.control.Option
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory
 import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryRepository
 import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotRepository
 import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.Reservation
@@ -39,6 +40,35 @@ class OccupyingParkingSpotTest extends Specification {
     when:
       def result = occupyingParkingSpot.occupy(
           beneficiary.beneficiaryId, parkingSpot.parkingSpotId, spotUnits)
+    
+    then:
+      result.isSuccess()
+      result.get().with {
+        assert it.beneficiaryId == beneficiary.beneficiaryId
+        assert it.spotUnits == spotUnits
+      }
+    and:
+      1 * beneficiaryRepository.save(beneficiary)
+      1 * parkingSpotRepository.save(parkingSpot)
+    and:
+      1 * eventPublisher.publish(_ as ParkingSpotOccupied)
+  }
+  
+  def "should occupy any parking spot by beneficiary"() {
+    given:
+      def parkingSpotCategory = ParkingSpotCategory.Gold
+    and:
+      def parkingSpot = emptyParkingSpotWithCapacity(4)
+      parkingSpotRepository.findAvailableBy(parkingSpotCategory) >> Option.of(parkingSpot)
+    and:
+      def beneficiary = emptyBeneficiary()
+      beneficiaryRepository.findBy(beneficiary.beneficiaryId) >> Option.of(beneficiary)
+    and:
+      def spotUnits = SpotUnits.of(2)
+    
+    when:
+      def result = occupyingParkingSpot.occupyAny(
+          beneficiary.beneficiaryId, parkingSpotCategory, spotUnits)
     
     then:
       result.isSuccess()
