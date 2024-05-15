@@ -65,6 +65,7 @@ class InMemoryParkingSpotRepository implements
                 .filter(not(ParkingSpot::isFull))
                 .map(parkingSpot -> new CapacityView(
                         parkingSpot.getParkingSpotId().getValue(),
+                        parkingSpot.getCategory(),
                         parkingSpot.getCapacity().getValue(),
                         parkingSpot.spaceLeft()
                 ))
