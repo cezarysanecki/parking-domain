@@ -19,8 +19,8 @@ class LocalConfig {
     CommandLineRunner init(AddingParkingSpot addingParkingSpot, RegisteringClient registeringClient) {
         return args -> {
             addingParkingSpot.addParkingSpot(4, ParkingSpotCategory.Gold);
-            addingParkingSpot.addParkingSpot(4, ParkingSpotCategory.Gold);
-            addingParkingSpot.addParkingSpot(4, ParkingSpotCategory.Gold);
+            addingParkingSpot.addParkingSpot(4, ParkingSpotCategory.Silver);
+            addingParkingSpot.addParkingSpot(4, ParkingSpotCategory.Bronze);
 
             registeringClient.registerClient(ClientType.INDIVIDUAL, "123123123");
             registeringClient.registerClient(ClientType.INDIVIDUAL, "321321321");
