@@ -12,7 +12,7 @@ import pl.cezarysanecki.parkingdomain.cleaning.model.CleaningRepository;
 public class CleaningConfig {
 
     @Bean
-    CountingReleasedOccupationsEventHandler requestingCleaning(
+    CountingReleasedOccupationsEventHandler countingReleasedOccupationsEventHandler(
             CleaningRepository cleaningRepository
     ) {
         return new CountingReleasedOccupationsEventHandler(cleaningRepository);
