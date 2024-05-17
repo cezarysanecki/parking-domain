@@ -8,6 +8,7 @@ import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 import pl.cezarysanecki.parkingdomain.parking.application.CreatingBeneficiaryEventHandler;
 import pl.cezarysanecki.parkingdomain.parking.application.CreatingParkingSpotEventHandler;
 import pl.cezarysanecki.parkingdomain.parking.application.OccupyingParkingSpot;
+import pl.cezarysanecki.parkingdomain.parking.application.ProvidingUsageOfParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.application.ReleasingParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.application.ReservingParkingSpotEventHandler;
 import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryRepository;
@@ -63,6 +64,13 @@ public class ParkingSpotConfig {
         return new ReservingParkingSpotEventHandler(
                 beneficiaryRepository,
                 parkingSpotRepository);
+    }
+
+    @Bean
+    ProvidingUsageOfParkingSpot providingUsageOfParkingSpot(
+            ParkingSpotRepository parkingSpotRepository
+    ) {
+        return new ProvidingUsageOfParkingSpot(parkingSpotRepository);
     }
 
     @Bean

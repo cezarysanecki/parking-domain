@@ -2,9 +2,7 @@ package pl.cezarysanecki.parkingdomain.parking.application;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryRepository;
 import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotRepository;
 
