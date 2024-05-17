@@ -1,0 +1,11 @@
+meta {
+  name: Get cleaning status
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/cleaning-service
+  body: json
+  auth: none
+}

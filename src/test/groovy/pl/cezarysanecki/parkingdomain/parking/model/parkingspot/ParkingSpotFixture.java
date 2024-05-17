@@ -24,6 +24,7 @@ public class ParkingSpotFixture {
                 ParkingSpotCategory.Gold,
                 HashMap.empty(),
                 HashMap.of(reservation.getReservationId(), reservation),
+                false,
                 Version.zero());
     }
 
@@ -36,6 +37,7 @@ public class ParkingSpotFixture {
                 ParkingSpotCategory.Gold,
                 HashMap.of(occupation.getOccupationId(), occupation),
                 HashMap.empty(),
+                false,
                 Version.zero());
     }
 
@@ -47,6 +49,7 @@ public class ParkingSpotFixture {
                 ParkingSpotCategory.Gold,
                 HashMap.of(occupation.getOccupationId(), occupation),
                 HashMap.empty(),
+                false,
                 Version.zero());
     }
 
@@ -58,6 +61,7 @@ public class ParkingSpotFixture {
                 ParkingSpotCategory.Gold,
                 HashMap.of(occupation.getOccupationId(), occupation),
                 HashMap.empty(),
+                false,
                 Version.zero());
     }
 

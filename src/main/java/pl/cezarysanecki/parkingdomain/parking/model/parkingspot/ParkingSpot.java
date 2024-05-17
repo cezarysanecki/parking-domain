@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
 import pl.cezarysanecki.parkingdomain.commons.aggregates.Version;
+import pl.cezarysanecki.parkingdomain.commons.commands.Result;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryId;
@@ -29,6 +30,7 @@ public class ParkingSpot {
     private Map<OccupationId, Occupation> occupations;
     @NonNull
     private Map<ReservationId, Reservation> reservations;
+    private boolean outOfUse;
     @NonNull
     private final Version version;
 
@@ -39,18 +41,12 @@ public class ParkingSpot {
                 category,
                 HashMap.empty(),
                 HashMap.empty(),
+                false,
                 Version.zero());
     }
 
-    public Try<Occupation> occupy(BeneficiaryId beneficiaryId, SpotUnits spotUnits) {
-        if (exceedsAllowedSpace(spotUnits)) {
-            return Try.failure(new IllegalArgumentException("not enough space"));
-        }
-
-        Occupation occupation = Occupation.newOne(beneficiaryId, spotUnits);
-        occupations = occupations.put(occupation.getOccupationId(), occupation);
-
-        return Try.of(() -> occupation);
+    public Try<Occupation> occupyWhole(BeneficiaryId beneficiaryId) {
+        return occupy(beneficiaryId, SpotUnits.of(capacity.getValue()));
     }
 
     public Try<Occupation> occupyUsing(ReservationId reservationId) {
@@ -62,21 +58,31 @@ public class ParkingSpot {
 
         reservations = reservations.remove(reservationId);
 
-        Occupation occupation = Occupation.newOne(
-                reservation.getBeneficiaryId(),
-                reservation.getSpotUnits());
+        return occupy(reservation.getBeneficiaryId(), reservation.getSpotUnits());
+    }
+
+    public Try<Occupation> occupy(BeneficiaryId beneficiaryId, SpotUnits spotUnits) {
+        if (outOfUse) {
+            return Try.failure(new IllegalArgumentException("out of order"));
+        }
+        if (exceedsAllowedSpace(spotUnits)) {
+            return Try.failure(new IllegalArgumentException("not enough space"));
+        }
+
+        Occupation occupation = Occupation.newOne(beneficiaryId, spotUnits);
         occupations = occupations.put(occupation.getOccupationId(), occupation);
 
         return Try.of(() -> occupation);
     }
 
-    public Try<Occupation> occupyWhole(BeneficiaryId beneficiaryId) {
-        if (currentOccupation() != 0) {
-            return Try.failure(new IllegalArgumentException("not fully released"));
+    public Try<Occupation> release(OccupationId occupationId) {
+        Option<Occupation> potentialOccupation = occupations.get(occupationId);
+        if (potentialOccupation.isEmpty()) {
+            return Try.failure(new IllegalArgumentException("no such occupation"));
         }
+        Occupation occupation = potentialOccupation.get();
 
-        Occupation occupation = Occupation.newOne(beneficiaryId, SpotUnits.of(capacity.getValue()));
-        occupations = occupations.put(occupation.getOccupationId(), occupation);
+        occupations = occupations.remove(occupationId);
 
         return Try.of(() -> occupation);
     }
@@ -91,16 +97,20 @@ public class ParkingSpot {
         return Try.of(() -> reservation);
     }
 
-    public Try<Occupation> release(OccupationId occupationId) {
-        Option<Occupation> potentialOccupation = occupations.get(occupationId);
-        if (potentialOccupation.isEmpty()) {
-            return Try.failure(new IllegalArgumentException("no such occupation"));
+    public Try<Result> putIntoService() {
+        if (!outOfUse) {
+            return Try.failure(new IllegalStateException("is already in service"));
         }
-        Occupation occupation = potentialOccupation.get();
+        this.outOfUse = false;
+        return Try.success(Result.Success);
+    }
 
-        occupations = occupations.remove(occupationId);
-
-        return Try.of(() -> occupation);
+    public Try<Result> makeOutOfUse() {
+        if (outOfUse) {
+            return Try.failure(new IllegalStateException("is already out of use"));
+        }
+        this.outOfUse = true;
+        return Try.success(Result.Success);
     }
 
     public boolean isFull() {

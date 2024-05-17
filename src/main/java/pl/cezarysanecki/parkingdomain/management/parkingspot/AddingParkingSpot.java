@@ -4,7 +4,6 @@ import io.vavr.control.Try;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import pl.cezarysanecki.parkingdomain.commons.commands.Result;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 
 import java.util.UUID;
@@ -16,8 +15,8 @@ public class AddingParkingSpot {
     private final CatalogueParkingSpotDatabase database;
     private final EventPublisher eventPublisher;
 
-    public Try<Result> addParkingSpot(int capacity, ParkingSpotCategory category) {
-        return Try.<Result>of(() -> {
+    public Try<ParkingSpotId> addParkingSpot(int capacity, ParkingSpotCategory category) {
+        return Try.of(() -> {
             ParkingSpot parkingSpot = new ParkingSpot(UUID.randomUUID(), capacity, category);
             log.debug("adding parking spot with id {}", parkingSpot.getParkingSpotId());
 
@@ -25,7 +24,7 @@ public class AddingParkingSpot {
 
             eventPublisher.publish(new ParkingSpotAdded(parkingSpot));
 
-            return new Result.Success<>(parkingSpot.getParkingSpotId());
+            return parkingSpot.getParkingSpotId();
         }).onFailure(t -> log.error("failed to add parking spot", t));
     }
 
