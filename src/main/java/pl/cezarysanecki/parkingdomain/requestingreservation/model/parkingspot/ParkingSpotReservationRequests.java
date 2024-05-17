@@ -11,8 +11,8 @@ import lombok.NonNull;
 import pl.cezarysanecki.parkingdomain.commons.aggregates.Version;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterId;
-import pl.cezarysanecki.parkingdomain.shared.ParkingSpotCapacity;
-import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
+import pl.cezarysanecki.parkingdomain.shared.occupation.ParkingSpotCapacity;
+import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits;
 
 @Getter
 @AllArgsConstructor

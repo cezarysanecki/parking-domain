@@ -3,7 +3,7 @@ package pl.cezarysanecki.parkingdomain.parking.model.parkingspot;
 import lombok.NonNull;
 import lombok.Value;
 import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryId;
-import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
+import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits;
 
 @Value
 public class Reservation {

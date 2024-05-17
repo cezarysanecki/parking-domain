@@ -11,7 +11,7 @@ import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.Re
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequester;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterId;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterRepository;
-import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
+import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits;
 
 import static pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequestsEvents.ReservationRequestStored;
 

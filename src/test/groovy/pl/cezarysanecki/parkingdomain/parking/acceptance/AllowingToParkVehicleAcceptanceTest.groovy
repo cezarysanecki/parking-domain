@@ -8,7 +8,7 @@ import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryId
 import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.OccupationId
 import pl.cezarysanecki.parkingdomain.parking.web.BeneficiaryViewRepository
 import pl.cezarysanecki.parkingdomain.parking.web.ParkingSpotViewRepository
-import pl.cezarysanecki.parkingdomain.shared.SpotUnits
+import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits
 
 class AllowingToParkVehicleAcceptanceTest extends AbstractParkingAcceptanceTest {
   

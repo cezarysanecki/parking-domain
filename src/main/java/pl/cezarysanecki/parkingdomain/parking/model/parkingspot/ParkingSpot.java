@@ -13,8 +13,8 @@ import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryId;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ValidReservationRequest;
-import pl.cezarysanecki.parkingdomain.shared.ParkingSpotCapacity;
-import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
+import pl.cezarysanecki.parkingdomain.shared.occupation.ParkingSpotCapacity;
+import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits;
 
 @Getter
 @AllArgsConstructor

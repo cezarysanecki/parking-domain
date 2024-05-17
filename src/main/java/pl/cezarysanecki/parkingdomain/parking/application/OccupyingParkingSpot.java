@@ -14,7 +14,7 @@ import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotEvents.ParkingSpotOccupied;
 import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotRepository;
 import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ReservationId;
-import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
+import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits;
 
 @Slf4j
 @RequiredArgsConstructor

@@ -7,8 +7,8 @@ import pl.cezarysanecki.parkingdomain.commons.aggregates.Version;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryId;
-import pl.cezarysanecki.parkingdomain.shared.ParkingSpotCapacity;
-import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
+import pl.cezarysanecki.parkingdomain.shared.occupation.ParkingSpotCapacity;
+import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ParkingSpotFixture {

@@ -10,7 +10,7 @@ import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryRepos
 import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.Occupation
 import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.OccupationId
 import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotRepository
-import pl.cezarysanecki.parkingdomain.shared.SpotUnits
+import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits
 import spock.lang.Specification
 import spock.lang.Subject
 

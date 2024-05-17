@@ -11,7 +11,7 @@ import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.requestingreservation.infrastucture.RequestingReservationConfig
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterId
-import pl.cezarysanecki.parkingdomain.shared.ParkingSpotCapacity
+import pl.cezarysanecki.parkingdomain.shared.occupation.ParkingSpotCapacity
 import spock.lang.Specification
 
 import static pl.cezarysanecki.parkingdomain.management.client.ClientRegistered.IndividualClientRegistered

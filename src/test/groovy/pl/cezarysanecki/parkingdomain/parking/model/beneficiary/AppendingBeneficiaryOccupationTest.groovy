@@ -1,7 +1,7 @@
 package pl.cezarysanecki.parkingdomain.parking.model.beneficiary
 
 import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.Occupation
-import pl.cezarysanecki.parkingdomain.shared.SpotUnits
+import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits
 import spock.lang.Specification
 
 import static pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryFixture.emptyBeneficiary

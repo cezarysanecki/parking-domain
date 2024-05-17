@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.shared;
+package pl.cezarysanecki.parkingdomain.shared.occupation;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

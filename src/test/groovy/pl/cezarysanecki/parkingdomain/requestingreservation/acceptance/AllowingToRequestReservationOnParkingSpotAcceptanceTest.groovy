@@ -9,7 +9,7 @@ import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.Re
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterId
 import pl.cezarysanecki.parkingdomain.requestingreservation.web.ParkingSpotReservationRequestsViewRepository
 import pl.cezarysanecki.parkingdomain.requestingreservation.web.ReservationRequesterViewRepository
-import pl.cezarysanecki.parkingdomain.shared.SpotUnits
+import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits
 
 class AllowingToRequestReservationOnParkingSpotAcceptanceTest extends AbstractParkingAcceptanceTest {
   

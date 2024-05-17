@@ -16,7 +16,7 @@ import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryId;
 import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.Occupation;
 import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.OccupationId;
 import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ReservationId;
-import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
+import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits;
 
 import java.util.List;
 import java.util.UUID;
