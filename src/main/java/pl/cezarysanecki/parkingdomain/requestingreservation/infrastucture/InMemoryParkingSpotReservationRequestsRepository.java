@@ -57,6 +57,7 @@ class InMemoryParkingSpotReservationRequestsRepository implements
                         .stream()
                         .map(reservationRequests -> new ParkingSpotReservationRequestsViewRepository.CapacityView(
                                 reservationRequests.getParkingSpotId().getValue(),
+                                reservationRequests.getTimeSlot(),
                                 reservationRequests.getCapacity().getValue(),
                                 reservationRequests.spaceLeft()
                         )));
