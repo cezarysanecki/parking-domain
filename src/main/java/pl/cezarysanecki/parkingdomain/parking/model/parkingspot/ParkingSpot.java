@@ -42,15 +42,8 @@ public class ParkingSpot {
                 Version.zero());
     }
 
-    public Try<Occupation> occupy(BeneficiaryId beneficiaryId, SpotUnits spotUnits) {
-        if (exceedsAllowedSpace(spotUnits)) {
-            return Try.failure(new IllegalArgumentException("not enough space"));
-        }
-
-        Occupation occupation = Occupation.newOne(beneficiaryId, spotUnits);
-        occupations = occupations.put(occupation.getOccupationId(), occupation);
-
-        return Try.of(() -> occupation);
+    public Try<Occupation> occupyWhole(BeneficiaryId beneficiaryId) {
+        return occupy(beneficiaryId, SpotUnits.of(capacity.getValue()));
     }
 
     public Try<Occupation> occupyUsing(ReservationId reservationId) {
@@ -62,20 +55,15 @@ public class ParkingSpot {
 
         reservations = reservations.remove(reservationId);
 
-        Occupation occupation = Occupation.newOne(
-                reservation.getBeneficiaryId(),
-                reservation.getSpotUnits());
-        occupations = occupations.put(occupation.getOccupationId(), occupation);
-
-        return Try.of(() -> occupation);
+        return occupy(reservation.getBeneficiaryId(), reservation.getSpotUnits());
     }
 
-    public Try<Occupation> occupyWhole(BeneficiaryId beneficiaryId) {
-        if (currentOccupation() != 0) {
-            return Try.failure(new IllegalArgumentException("not fully released"));
+    public Try<Occupation> occupy(BeneficiaryId beneficiaryId, SpotUnits spotUnits) {
+        if (exceedsAllowedSpace(spotUnits)) {
+            return Try.failure(new IllegalArgumentException("not enough space"));
         }
 
-        Occupation occupation = Occupation.newOne(beneficiaryId, SpotUnits.of(capacity.getValue()));
+        Occupation occupation = Occupation.newOne(beneficiaryId, spotUnits);
         occupations = occupations.put(occupation.getOccupationId(), occupation);
 
         return Try.of(() -> occupation);
