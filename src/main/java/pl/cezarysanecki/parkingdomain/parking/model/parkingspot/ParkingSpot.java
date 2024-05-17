@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
 import pl.cezarysanecki.parkingdomain.commons.aggregates.Version;
+import pl.cezarysanecki.parkingdomain.commons.commands.Result;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryId;
@@ -96,12 +97,20 @@ public class ParkingSpot {
         return Try.of(() -> reservation);
     }
 
-    public void putIntoService() {
+    public Try<Result> putIntoService() {
+        if (!outOfUse) {
+            return Try.failure(new IllegalStateException("is already in service"));
+        }
         this.outOfUse = false;
+        return Try.success(Result.Success);
     }
 
-    public void makeOutOfUse() {
+    public Try<Result> makeOutOfUse() {
+        if (outOfUse) {
+            return Try.failure(new IllegalStateException("is already out of use"));
+        }
         this.outOfUse = true;
+        return Try.success(Result.Success);
     }
 
     public boolean isFull() {
