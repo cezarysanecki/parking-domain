@@ -13,7 +13,7 @@ spring:
 
 job:
   makingRequestsValidJob:
-    cronExpression: "0/2 * * * * ?"
+    cronExpression: "0/30 * * * * ?"
 
 logging:
   level:

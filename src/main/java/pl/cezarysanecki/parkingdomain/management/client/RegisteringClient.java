@@ -4,7 +4,6 @@ import io.vavr.control.Try;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import pl.cezarysanecki.parkingdomain.commons.commands.Result;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 
 import java.util.UUID;
@@ -19,8 +18,8 @@ public class RegisteringClient {
     private final CatalogueClientDatabase database;
     private final EventPublisher eventPublisher;
 
-    public Try<Result> registerClient(ClientType clientType, String phoneNumber) {
-        return Try.<Result>of(() -> {
+    public Try<ClientId> registerClient(ClientType clientType, String phoneNumber) {
+        return Try.of(() -> {
             Client client = new Client(UUID.randomUUID(), clientType, phoneNumber);
             log.debug("registering {} client with id {}", clientType.name().toLowerCase(), client.getClientId());
 
@@ -32,7 +31,7 @@ public class RegisteringClient {
             };
             eventPublisher.publish(clientRegistered);
 
-            return new Result.Success<>(client.getClientId());
+            return client.getClientId();
         }).onFailure(t -> log.error("failed to register client", t));
     }
 

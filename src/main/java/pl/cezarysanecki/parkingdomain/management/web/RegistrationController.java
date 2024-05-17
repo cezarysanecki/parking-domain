@@ -7,11 +7,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pl.cezarysanecki.parkingdomain.commons.commands.Result;
+import pl.cezarysanecki.parkingdomain.management.client.ClientId;
 import pl.cezarysanecki.parkingdomain.management.client.ClientType;
 import pl.cezarysanecki.parkingdomain.management.client.RegisteringClient;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.AddingParkingSpot;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory;
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
 
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
@@ -25,7 +26,7 @@ class RegistrationController {
 
     @PostMapping("/parking-spot")
     ResponseEntity addParkingSpot(@RequestBody AddParkingSpotRequest request) {
-        Try<Result> result = addingParkingSpot.addParkingSpot(request.capacity, request.category);
+        Try<ParkingSpotId> result = addingParkingSpot.addParkingSpot(request.capacity, request.category);
         return result
                 .map(success -> ResponseEntity.ok().build())
                 .getOrElse(ResponseEntity.status(INTERNAL_SERVER_ERROR).build());
@@ -33,7 +34,7 @@ class RegistrationController {
 
     @PostMapping("/client")
     ResponseEntity registerClient(@RequestBody RegisterClientRequest request) {
-        Try<Result> result = registeringClient.registerClient(request.clientType, request.phoneNumber);
+        Try<ClientId> result = registeringClient.registerClient(request.clientType, request.phoneNumber);
         return result
                 .map(success -> ResponseEntity.ok().build())
                 .getOrElse(ResponseEntity.status(INTERNAL_SERVER_ERROR).build());
