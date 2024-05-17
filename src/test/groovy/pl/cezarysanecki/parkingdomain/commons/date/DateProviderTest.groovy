@@ -2,6 +2,7 @@ package pl.cezarysanecki.parkingdomain.commons.date
 
 import spock.lang.Specification
 
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 
@@ -10,6 +11,11 @@ class DateProviderTest extends Specification {
   LocalDateTime localDateTime
   
   DateProvider dateProvider = new DateProvider() {
+    @Override
+    LocalDate today() {
+      return localDateTime.toLocalDate()
+    }
+    
     @Override
     LocalDateTime now() {
       return localDateTime

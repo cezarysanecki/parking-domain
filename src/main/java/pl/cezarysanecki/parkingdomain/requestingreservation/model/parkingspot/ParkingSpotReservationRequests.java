@@ -13,6 +13,7 @@ import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterId;
 import pl.cezarysanecki.parkingdomain.shared.occupation.ParkingSpotCapacity;
 import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits;
+import pl.cezarysanecki.parkingdomain.shared.timeslot.TimeSlot;
 
 @Getter
 @AllArgsConstructor
@@ -25,13 +26,20 @@ public class ParkingSpotReservationRequests {
     @NonNull
     private Map<ReservationRequestId, ReservationRequest> reservationRequests;
     @NonNull
+    private TimeSlot timeSlot;
+    @NonNull
     private final Version version;
 
-    public static ParkingSpotReservationRequests newOne(ParkingSpotId parkingSpotId, ParkingSpotCapacity capacity) {
+    public static ParkingSpotReservationRequests newOne(
+            ParkingSpotId parkingSpotId,
+            ParkingSpotCapacity capacity,
+            TimeSlot timeSlot
+    ) {
         return new ParkingSpotReservationRequests(
                 parkingSpotId,
                 capacity,
                 HashMap.empty(),
+                timeSlot,
                 Version.zero());
     }
 
