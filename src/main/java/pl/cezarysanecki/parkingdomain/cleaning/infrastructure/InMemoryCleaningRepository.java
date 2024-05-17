@@ -29,7 +29,7 @@ class InMemoryCleaningRepository implements CleaningRepository, CleaningViewRepo
     public CleaningView queryForCleaningView() {
         long exceedsOfThreshold = DATABASE.values()
                 .stream()
-                .filter(counter -> counter > 10)
+                .filter(counter -> counter > 2)
                 .count();
         List<CleaningView.ParkingSpot> parkingSpots = DATABASE.entrySet()
                 .stream()
