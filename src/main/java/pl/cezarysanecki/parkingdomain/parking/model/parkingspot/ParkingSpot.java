@@ -29,6 +29,7 @@ public class ParkingSpot {
     private Map<OccupationId, Occupation> occupations;
     @NonNull
     private Map<ReservationId, Reservation> reservations;
+    private boolean outOfUse;
     @NonNull
     private final Version version;
 
@@ -39,6 +40,7 @@ public class ParkingSpot {
                 category,
                 HashMap.empty(),
                 HashMap.empty(),
+                false,
                 Version.zero());
     }
 
@@ -59,12 +61,27 @@ public class ParkingSpot {
     }
 
     public Try<Occupation> occupy(BeneficiaryId beneficiaryId, SpotUnits spotUnits) {
+        if (outOfUse) {
+            return Try.failure(new IllegalArgumentException("out of order"));
+        }
         if (exceedsAllowedSpace(spotUnits)) {
             return Try.failure(new IllegalArgumentException("not enough space"));
         }
 
         Occupation occupation = Occupation.newOne(beneficiaryId, spotUnits);
         occupations = occupations.put(occupation.getOccupationId(), occupation);
+
+        return Try.of(() -> occupation);
+    }
+
+    public Try<Occupation> release(OccupationId occupationId) {
+        Option<Occupation> potentialOccupation = occupations.get(occupationId);
+        if (potentialOccupation.isEmpty()) {
+            return Try.failure(new IllegalArgumentException("no such occupation"));
+        }
+        Occupation occupation = potentialOccupation.get();
+
+        occupations = occupations.remove(occupationId);
 
         return Try.of(() -> occupation);
     }
@@ -79,16 +96,12 @@ public class ParkingSpot {
         return Try.of(() -> reservation);
     }
 
-    public Try<Occupation> release(OccupationId occupationId) {
-        Option<Occupation> potentialOccupation = occupations.get(occupationId);
-        if (potentialOccupation.isEmpty()) {
-            return Try.failure(new IllegalArgumentException("no such occupation"));
-        }
-        Occupation occupation = potentialOccupation.get();
+    public void putIntoService() {
+        this.outOfUse = false;
+    }
 
-        occupations = occupations.remove(occupationId);
-
-        return Try.of(() -> occupation);
+    public void makeOutOfUse() {
+        this.outOfUse = true;
     }
 
     public boolean isFull() {
