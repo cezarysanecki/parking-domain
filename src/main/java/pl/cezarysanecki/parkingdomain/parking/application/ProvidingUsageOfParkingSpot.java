@@ -22,7 +22,7 @@ public class ProvidingUsageOfParkingSpot {
 
         return result
                 .onSuccess(success -> {
-                    log.debug("parking spot with id {} is out of use", parkingSpot.getParkingSpotId())
+                    log.debug("parking spot with id {} is out of use", parkingSpot.getParkingSpotId());
                     parkingSpotRepository.save(parkingSpot);
                 })
                 .onFailure(failure -> log.error("failed to make parking spot with id {} out of use", parkingSpot.getParkingSpotId()));

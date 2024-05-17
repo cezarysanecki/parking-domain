@@ -3,18 +3,25 @@ package pl.cezarysanecki.parkingdomain.cleaning.infrastructure;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import pl.cezarysanecki.parkingdomain.cleaning.application.RequestingCleaning;
-import pl.cezarysanecki.parkingdomain.parking.application.ProvidingUsageOfParkingSpot;
+import org.springframework.context.annotation.Profile;
+import pl.cezarysanecki.parkingdomain.cleaning.application.CountingReleasedOccupationsEventHandler;
+import pl.cezarysanecki.parkingdomain.cleaning.model.CleaningRepository;
 
 @Configuration
 @RequiredArgsConstructor
 public class CleaningConfig {
 
     @Bean
-    RequestingCleaning requestingCleaning(
-            ProvidingUsageOfParkingSpot providingUsageOfParkingSpot
+    CountingReleasedOccupationsEventHandler requestingCleaning(
+            CleaningRepository cleaningRepository
     ) {
-        return new RequestingCleaning(providingUsageOfParkingSpot);
+        return new CountingReleasedOccupationsEventHandler(cleaningRepository);
+    }
+
+    @Bean
+    @Profile("local")
+    InMemoryCleaningRepository cleaningRepository() {
+        return new InMemoryCleaningRepository();
     }
 
 }
