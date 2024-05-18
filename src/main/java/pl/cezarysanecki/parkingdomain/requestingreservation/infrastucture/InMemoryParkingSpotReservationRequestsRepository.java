@@ -61,7 +61,7 @@ class InMemoryParkingSpotReservationRequestsRepository implements
             ParkingSpotId parkingSpotId = value.getParkingSpotId();
             List<CapacityView> currentCapacities = result.getOrDefault(parkingSpotId, new ArrayList<>());
             currentCapacities.add(new CapacityView(
-                    parkingSpotId.getValue(),
+                    key.getValue(),
                     value.getTimeSlot(),
                     value.getCapacity().getValue(),
                     value.spaceLeft()
