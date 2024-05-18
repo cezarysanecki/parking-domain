@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.requestingreservation.application.CancellingReservationRequest;
 import pl.cezarysanecki.parkingdomain.requestingreservation.application.StoringReservationRequest;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotTimeSlotId;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ReservationRequest;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ReservationRequestId;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterId;
@@ -22,7 +22,7 @@ import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.ResponseEntity.ok;
-import static pl.cezarysanecki.parkingdomain.requestingreservation.web.ParkingSpotReservationRequestsViewRepository.CapacityView;
+import static pl.cezarysanecki.parkingdomain.requestingreservation.web.ParkingSpotReservationRequestsViewRepository.ParkingSpotReservationRequestsView;
 
 @RestController
 @RequestMapping("/requests")
@@ -34,15 +34,15 @@ class ParkingSpotReservationRequestsController {
     private final CancellingReservationRequest cancellingReservationRequest;
 
     @GetMapping("/parking-spots/available")
-    ResponseEntity<List<CapacityView>> availableParkingSpots() {
-        return ok(parkingSpotReservationRequestsViewRepository.queryForAllAvailableParkingSpots().asJava());
+    ResponseEntity<List<ParkingSpotReservationRequestsView>> availableParkingSpots() {
+        return ok(parkingSpotReservationRequestsViewRepository.queryForAllAvailableParkingSpots());
     }
 
     @PostMapping("/parking-spot/store")
     ResponseEntity storeRequest(@RequestBody StoreReservationRequestRequest request) {
         Try<ReservationRequest> result = storingReservationRequest.storeRequest(
                 ReservationRequesterId.of(request.requesterId),
-                ParkingSpotId.of(request.parkingSpotId),
+                ParkingSpotTimeSlotId.of(request.parkingSpotTimeSlotId),
                 SpotUnits.of(request.units));
         return result
                 .map(success -> ResponseEntity.ok().build())
@@ -60,7 +60,7 @@ class ParkingSpotReservationRequestsController {
 
     record StoreReservationRequestRequest(
             UUID requesterId,
-            UUID parkingSpotId,
+            UUID parkingSpotTimeSlotId,
             int units) {
     }
 

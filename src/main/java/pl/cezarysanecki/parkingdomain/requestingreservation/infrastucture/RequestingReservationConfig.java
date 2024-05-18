@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import pl.cezarysanecki.parkingdomain.commons.date.DateProvider;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 import pl.cezarysanecki.parkingdomain.requestingreservation.application.CancellingReservationRequest;
 import pl.cezarysanecki.parkingdomain.requestingreservation.application.CreatingParkingSpotReservationRequestsEventHandler;
@@ -24,6 +25,7 @@ import static org.quartz.CronScheduleBuilder.cronSchedule;
 @RequiredArgsConstructor
 public class RequestingReservationConfig {
 
+    private final DateProvider dateProvider;
     private final EventPublisher eventPublisher;
 
     @Bean
@@ -52,7 +54,7 @@ public class RequestingReservationConfig {
     CreatingParkingSpotReservationRequestsEventHandler creatingParkingSpotReservationRequestsEventHandler(
             ParkingSpotReservationRequestsRepository parkingSpotReservationRequestsRepository
     ) {
-        return new CreatingParkingSpotReservationRequestsEventHandler(parkingSpotReservationRequestsRepository);
+        return new CreatingParkingSpotReservationRequestsEventHandler(dateProvider, parkingSpotReservationRequestsRepository);
     }
 
     @Bean

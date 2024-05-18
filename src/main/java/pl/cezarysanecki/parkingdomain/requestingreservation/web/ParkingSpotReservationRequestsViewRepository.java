@@ -1,20 +1,26 @@
 package pl.cezarysanecki.parkingdomain.requestingreservation.web;
 
-import io.vavr.collection.List;
 import pl.cezarysanecki.parkingdomain.shared.timeslot.TimeSlot;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface ParkingSpotReservationRequestsViewRepository {
 
-    List<CapacityView> queryForAllAvailableParkingSpots();
+    List<ParkingSpotReservationRequestsView> queryForAllAvailableParkingSpots();
 
-    record CapacityView(
+    record ParkingSpotReservationRequestsView(
             UUID parkingSpotId,
-            TimeSlot timeSlot,
-            int capacity,
-            int spaceLeft
+            List<CapacityView> capacitiesView
     ) {
+
+        public record CapacityView(
+                UUID parkingSpotTimeSlotId,
+                TimeSlot timeSlot,
+                int capacity,
+                int spaceLeft
+        ) {
+        }
     }
 
 }

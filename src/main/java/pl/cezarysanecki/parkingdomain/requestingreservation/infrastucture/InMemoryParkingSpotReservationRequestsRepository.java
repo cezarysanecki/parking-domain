@@ -1,19 +1,23 @@
 package pl.cezarysanecki.parkingdomain.requestingreservation.infrastucture;
 
-import io.vavr.collection.List;
 import io.vavr.control.Option;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequests;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequestsRepository;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotTimeSlotId;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ReservationRequestId;
 import pl.cezarysanecki.parkingdomain.requestingreservation.web.ParkingSpotReservationRequestsViewRepository;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static java.util.function.Predicate.not;
+import static pl.cezarysanecki.parkingdomain.requestingreservation.web.ParkingSpotReservationRequestsViewRepository.ParkingSpotReservationRequestsView.CapacityView;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -21,16 +25,16 @@ class InMemoryParkingSpotReservationRequestsRepository implements
         ParkingSpotReservationRequestsRepository,
         ParkingSpotReservationRequestsViewRepository {
 
-    private static final Map<ParkingSpotId, ParkingSpotReservationRequests> DATABASE = new ConcurrentHashMap<>();
+    private static final Map<ParkingSpotTimeSlotId, ParkingSpotReservationRequests> DATABASE = new ConcurrentHashMap<>();
 
     @Override
     public void save(ParkingSpotReservationRequests parkingSpotReservationRequests) {
-        DATABASE.put(parkingSpotReservationRequests.getParkingSpotId(), parkingSpotReservationRequests);
+        DATABASE.put(ParkingSpotTimeSlotId.newOne(), parkingSpotReservationRequests);
     }
 
     @Override
-    public Option<ParkingSpotReservationRequests> findBy(ParkingSpotId parkingSpotId) {
-        return Option.of(DATABASE.get(parkingSpotId));
+    public Option<ParkingSpotReservationRequests> findBy(ParkingSpotTimeSlotId parkingSpotTimeSlotId) {
+        return Option.of(DATABASE.get(parkingSpotTimeSlotId));
     }
 
     @Override
@@ -43,24 +47,34 @@ class InMemoryParkingSpotReservationRequestsRepository implements
     }
 
     @Override
-    public List<ParkingSpotReservationRequests> findAllWithRequests() {
-        return List.ofAll(
+    public io.vavr.collection.List<ParkingSpotReservationRequests> findAllWithRequests() {
+        return io.vavr.collection.List.ofAll(
                 DATABASE.values()
                         .stream()
                         .filter(not(ParkingSpotReservationRequests::isFree)));
     }
 
     @Override
-    public List<CapacityView> queryForAllAvailableParkingSpots() {
-        return List.ofAll(
-                DATABASE.values()
-                        .stream()
-                        .map(reservationRequests -> new ParkingSpotReservationRequestsViewRepository.CapacityView(
-                                reservationRequests.getParkingSpotId().getValue(),
-                                reservationRequests.getTimeSlot(),
-                                reservationRequests.getCapacity().getValue(),
-                                reservationRequests.spaceLeft()
-                        )));
+    public List<ParkingSpotReservationRequestsView> queryForAllAvailableParkingSpots() {
+        Map<ParkingSpotId, List<CapacityView>> result = new HashMap<>();
+        DATABASE.forEach((key, value) -> {
+            ParkingSpotId parkingSpotId = value.getParkingSpotId();
+            List<CapacityView> currentCapacities = result.getOrDefault(parkingSpotId, new ArrayList<>());
+            currentCapacities.add(new CapacityView(
+                    parkingSpotId.getValue(),
+                    value.getTimeSlot(),
+                    value.getCapacity().getValue(),
+                    value.spaceLeft()
+            ));
+            result.put(parkingSpotId, currentCapacities);
+        });
+        return result.entrySet()
+                .stream()
+                .map(entry -> new ParkingSpotReservationRequestsView(
+                        entry.getKey().getValue(),
+                        entry.getValue()
+                ))
+                .toList();
     }
 
 }
