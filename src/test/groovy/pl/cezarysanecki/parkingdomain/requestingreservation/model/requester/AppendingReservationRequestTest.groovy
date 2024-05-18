@@ -2,7 +2,7 @@ package pl.cezarysanecki.parkingdomain.requestingreservation.model.requester
 
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ReservationRequest
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ReservationRequestId
-import pl.cezarysanecki.parkingdomain.shared.SpotUnits
+import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits
 import spock.lang.Specification
 
 import static ReservationRequesterFixture.requesterWith

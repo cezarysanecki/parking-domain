@@ -4,14 +4,14 @@ import io.vavr.control.Try;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
-import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequests;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequestsRepository;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotTimeSlotId;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ReservationRequest;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequester;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterId;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterRepository;
-import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
+import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits;
 
 import static pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequestsEvents.ReservationRequestStored;
 
@@ -25,11 +25,11 @@ public class StoringReservationRequest {
 
     public Try<ReservationRequest> storeRequest(
             ReservationRequesterId requesterId,
-            ParkingSpotId parkingSpotId,
+            ParkingSpotTimeSlotId parkingSpotTimeSlotId,
             SpotUnits spotUnits
     ) {
         ReservationRequester reservationRequester = findReservationRequesterBy(requesterId);
-        ParkingSpotReservationRequests parkingSpotReservationRequests = findParkingSpotReservationRequestsBy(parkingSpotId);
+        ParkingSpotReservationRequests parkingSpotReservationRequests = findParkingSpotReservationRequestsBy(parkingSpotTimeSlotId);
 
         return parkingSpotReservationRequests.storeRequest(requesterId, spotUnits)
                 .flatMap(reservationRequester::append)
@@ -47,9 +47,9 @@ public class StoringReservationRequest {
                 .getOrElseThrow(() -> new IllegalStateException("cannot find reservation requester with id: " + requesterId));
     }
 
-    private ParkingSpotReservationRequests findParkingSpotReservationRequestsBy(ParkingSpotId parkingSpotId) {
-        return parkingSpotReservationRequestsRepository.findBy(parkingSpotId)
-                .getOrElseThrow(() -> new IllegalStateException("cannot find parking spot reservation requests with id: " + parkingSpotId));
+    private ParkingSpotReservationRequests findParkingSpotReservationRequestsBy(ParkingSpotTimeSlotId parkingSpotTimeSlotId) {
+        return parkingSpotReservationRequestsRepository.findBy(parkingSpotTimeSlotId)
+                .getOrElseThrow(() -> new IllegalStateException("cannot find parking spot reservation requests with id: " + parkingSpotTimeSlotId));
     }
 
 }

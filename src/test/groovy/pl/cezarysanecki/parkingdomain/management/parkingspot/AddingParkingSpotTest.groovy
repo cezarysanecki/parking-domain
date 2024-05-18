@@ -1,7 +1,7 @@
 package pl.cezarysanecki.parkingdomain.management.parkingspot
 
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher
-import pl.cezarysanecki.parkingdomain.shared.ParkingSpotCapacity
+import pl.cezarysanecki.parkingdomain.shared.occupation.ParkingSpotCapacity
 import spock.lang.Specification
 import spock.lang.Subject
 
