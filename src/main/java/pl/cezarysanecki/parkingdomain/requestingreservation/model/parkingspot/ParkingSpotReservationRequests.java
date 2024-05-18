@@ -20,6 +20,8 @@ import pl.cezarysanecki.parkingdomain.shared.timeslot.TimeSlot;
 public class ParkingSpotReservationRequests {
 
     @NonNull
+    private ParkingSpotTimeSlotId parkingSpotTimeSlotId;
+    @NonNull
     private final ParkingSpotId parkingSpotId;
     @NonNull
     private final ParkingSpotCapacity capacity;
@@ -36,6 +38,7 @@ public class ParkingSpotReservationRequests {
             TimeSlot timeSlot
     ) {
         return new ParkingSpotReservationRequests(
+                ParkingSpotTimeSlotId.newOne(),
                 parkingSpotId,
                 capacity,
                 HashMap.empty(),

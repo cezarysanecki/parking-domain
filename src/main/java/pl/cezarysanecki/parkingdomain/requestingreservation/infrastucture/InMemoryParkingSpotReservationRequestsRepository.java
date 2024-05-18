@@ -29,7 +29,7 @@ class InMemoryParkingSpotReservationRequestsRepository implements
 
     @Override
     public void save(ParkingSpotReservationRequests parkingSpotReservationRequests) {
-        DATABASE.put(ParkingSpotTimeSlotId.newOne(), parkingSpotReservationRequests);
+        DATABASE.put(parkingSpotReservationRequests.getParkingSpotTimeSlotId(), parkingSpotReservationRequests);
     }
 
     @Override
@@ -60,12 +60,14 @@ class InMemoryParkingSpotReservationRequestsRepository implements
         DATABASE.forEach((key, value) -> {
             ParkingSpotId parkingSpotId = value.getParkingSpotId();
             List<CapacityView> currentCapacities = result.getOrDefault(parkingSpotId, new ArrayList<>());
-            currentCapacities.add(new CapacityView(
-                    key.getValue(),
-                    value.getTimeSlot(),
-                    value.getCapacity().getValue(),
-                    value.spaceLeft()
-            ));
+            if (value.spaceLeft() > 0) {
+                currentCapacities.add(new CapacityView(
+                        key.getValue(),
+                        value.getTimeSlot(),
+                        value.getCapacity().getValue(),
+                        value.spaceLeft()
+                ));
+            }
             result.put(parkingSpotId, currentCapacities);
         });
         return result.entrySet()
