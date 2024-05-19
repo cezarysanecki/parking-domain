@@ -26,6 +26,7 @@ class InMemoryParkingSpotReservationRequestsRepository implements
         ParkingSpotReservationRequestsViewRepository {
 
     private static final Map<ParkingSpotTimeSlotId, ParkingSpotReservationRequests> DATABASE = new ConcurrentHashMap<>();
+//    private static final Map<ParkingSpotTimeSlotId, ParkingSpotReservationRequests> DATABASE = new ConcurrentHashMap<>();
 
     @Override
     public void save(ParkingSpotReservationRequests parkingSpotReservationRequests) {
