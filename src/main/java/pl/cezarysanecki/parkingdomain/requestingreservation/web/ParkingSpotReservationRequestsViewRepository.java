@@ -11,16 +11,11 @@ public interface ParkingSpotReservationRequestsViewRepository {
 
     record ParkingSpotReservationRequestsView(
             UUID parkingSpotId,
-            List<CapacityView> capacitiesView
+            UUID parkingSpotTimeSlotId,
+            TimeSlot timeSlot,
+            int capacity,
+            int spaceLeft
     ) {
-
-        public record CapacityView(
-                UUID parkingSpotTimeSlotId,
-                TimeSlot timeSlot,
-                int capacity,
-                int spaceLeft
-        ) {
-        }
     }
 
 }

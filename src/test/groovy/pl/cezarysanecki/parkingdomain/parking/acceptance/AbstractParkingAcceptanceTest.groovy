@@ -3,6 +3,7 @@ package pl.cezarysanecki.parkingdomain.parking.acceptance
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
+import pl.cezarysanecki.parkingdomain.commons.date.DateConfig
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisherTestConfig
 import pl.cezarysanecki.parkingdomain.management.client.ClientId
@@ -27,7 +28,8 @@ import static pl.cezarysanecki.parkingdomain.requestingreservation.model.parking
 @SpringBootTest(classes = [
     ParkingSpotConfig.class,
     RequestingReservationConfig.class,
-    EventPublisherTestConfig.class])
+    EventPublisherTestConfig.class,
+    DateConfig.class])
 abstract class AbstractParkingAcceptanceTest extends Specification {
   
   @Autowired
