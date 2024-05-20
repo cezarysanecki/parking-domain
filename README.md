@@ -44,7 +44,13 @@ Tools:
 1. _Make analysis before coding!_
 1. _Tests are great, but when you are prototyping they are slowing you down_
 
+## Assumptions
+
+1. Duplication of chosen logic is sometimes good f.ex. validation of exceeding parking spot space (stable requirement)
+
 ## FAQ
+
+(Cricket...)
 
 ### Is it production-ready?
 
