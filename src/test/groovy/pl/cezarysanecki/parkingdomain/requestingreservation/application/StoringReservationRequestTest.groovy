@@ -32,12 +32,12 @@ class StoringReservationRequestTest extends Specification {
       reservationRequesterRepository.findBy(requester.requesterId) >> Option.of(requester)
     and:
       def parkingSpotReservationRequests = parkingSpotWithoutReservationRequests()
-      parkingSpotReservationRequestsRepository.findBy(parkingSpotReservationRequests.parkingSpotId) >> Option.of(parkingSpotReservationRequests)
+      parkingSpotReservationRequestsRepository.findBy(parkingSpotReservationRequests.parkingSpotTimeSlotId) >> Option.of(parkingSpotReservationRequests)
     and:
       def spotUnits = SpotUnits.of(2)
     
     when:
-      def result = storingReservationRequest.storeRequest(requester.requesterId, parkingSpotReservationRequests.parkingSpotId, spotUnits)
+      def result = storingReservationRequest.storeRequest(requester.requesterId, parkingSpotReservationRequests.parkingSpotTimeSlotId, spotUnits)
     
     then:
       result.isSuccess()
@@ -58,12 +58,12 @@ class StoringReservationRequestTest extends Specification {
       reservationRequesterRepository.findBy(requester.requesterId) >> Option.of(requester)
     and:
       def parkingSpotReservationRequests = parkingSpotWithoutReservationRequests()
-      parkingSpotReservationRequestsRepository.findBy(parkingSpotReservationRequests.parkingSpotId) >> Option.of(parkingSpotReservationRequests)
+      parkingSpotReservationRequestsRepository.findBy(parkingSpotReservationRequests.parkingSpotTimeSlotId) >> Option.of(parkingSpotReservationRequests)
     and:
       def spotUnits = SpotUnits.of(2)
     
     when:
-      def result = storingReservationRequest.storeRequest(requester.requesterId, parkingSpotReservationRequests.parkingSpotId, spotUnits)
+      def result = storingReservationRequest.storeRequest(requester.requesterId, parkingSpotReservationRequests.parkingSpotTimeSlotId, spotUnits)
     
     then:
       result.isFailure()

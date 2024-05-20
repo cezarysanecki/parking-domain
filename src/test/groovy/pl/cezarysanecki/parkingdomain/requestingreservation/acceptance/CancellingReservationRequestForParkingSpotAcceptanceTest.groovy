@@ -5,6 +5,7 @@ import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.requestingreservation.application.CancellingReservationRequest
 import pl.cezarysanecki.parkingdomain.requestingreservation.application.StoringReservationRequest
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotTimeSlotId
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterId
 import pl.cezarysanecki.parkingdomain.requestingreservation.web.ParkingSpotReservationRequestsViewRepository
 import pl.cezarysanecki.parkingdomain.requestingreservation.web.ReservationRequesterViewRepository
@@ -31,8 +32,10 @@ class CancellingReservationRequestForParkingSpotAcceptanceTest extends AbstractR
   
   def "cancel parking spot reservation request"() {
     given:
+      def parkingSpotTimeSlotId = findAnyFullyFreeParkingSpotTimeSlot(parkingSpotId)
+    and:
       def reservationRequest = storingReservationRequest.storeRequest(
-          requesterId, parkingSpotId, SpotUnits.of(2))
+          requesterId, parkingSpotTimeSlotId, SpotUnits.of(2))
     
     when:
       cancellingReservationRequest.cancelRequest(reservationRequest.get().getReservationRequestId())
@@ -41,6 +44,13 @@ class CancellingReservationRequestForParkingSpotAcceptanceTest extends AbstractR
       parkingSpotIsEmpty(parkingSpotId)
     and:
       requesterDoesNotContainAnyReservationRequest(requesterId)
+  }
+  
+  private ParkingSpotTimeSlotId findAnyFullyFreeParkingSpotTimeSlot(ParkingSpotId parkingSpotId) {
+    return ParkingSpotTimeSlotId.of(
+        parkingSpotReservationRequestsViewRepository.queryForAllAvailableParkingSpots()
+            .find { it.parkingSpotId() == parkingSpotId.value && it.spaceLeft() == it.capacity() }
+            .parkingSpotTimeSlotId())
   }
   
   private void parkingSpotIsEmpty(ParkingSpotId parkingSpotId) {
