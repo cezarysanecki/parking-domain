@@ -5,13 +5,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import pl.cezarysanecki.parkingdomain.commons.date.DateProvider;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotAdded;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequests;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequestsRepository;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotTimeSlotId;
 import pl.cezarysanecki.parkingdomain.shared.timeslot.TimeSlot;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Stream;
+
+import static pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequestsRepository.NewParkingSpotReservationRequests;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -24,17 +26,20 @@ public class CreatingParkingSpotReservationRequestsEventHandler {
     public void handle(ParkingSpotAdded event) {
         LocalDate tomorrow = dateProvider.tomorrow();
 
-        List<ParkingSpotReservationRequests> parkingSpotReservationRequestsList = Stream.of(
+        List<NewParkingSpotReservationRequests> newOnes = Stream.of(
                         TimeSlot.createTimeSlotAtUTC(tomorrow, 7, 17),
                         TimeSlot.createTimeSlotAtUTC(tomorrow, 18, 23))
-                .map(timeSlot -> ParkingSpotReservationRequests.newOne(
-                        event.parkingSpotId(), event.capacity(), timeSlot))
+                .map(timeSlot -> new NewParkingSpotReservationRequests(
+                        event.parkingSpotId(),
+                        ParkingSpotTimeSlotId.newOne(),
+                        event.capacity(),
+                        timeSlot))
                 .toList();
 
-        parkingSpotReservationRequestsList.forEach(
-                parkingSpotReservationRequests -> {
-                    log.debug("storing parking spot as reservation requests with id: {}", parkingSpotReservationRequests.getParkingSpotId());
-                    parkingSpotReservationRequestsRepository.save(parkingSpotReservationRequests);
+        newOnes.forEach(
+                newOne -> {
+                    log.debug("storing parking spot as reservation requests with id: {}", newOne.parkingSpotId());
+                    parkingSpotReservationRequestsRepository.store(newOne);
                 }
         );
     }
