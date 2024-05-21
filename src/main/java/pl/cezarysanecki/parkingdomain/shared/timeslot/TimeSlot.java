@@ -18,4 +18,8 @@ public record TimeSlot(Instant from, Instant to) {
         return new TimeSlot(from, to);
     }
 
+    public boolean within(TimeSlot other) {
+        return !this.from.isBefore(other.from) && !this.to.isAfter(other.to);
+    }
+
 }

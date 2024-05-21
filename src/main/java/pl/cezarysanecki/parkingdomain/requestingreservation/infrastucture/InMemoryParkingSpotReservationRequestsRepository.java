@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.commons.aggregates.Version;
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequests;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequestsRepository;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotTimeSlotId;
@@ -38,6 +39,7 @@ class InMemoryParkingSpotReservationRequestsRepository implements
         ReservationRequestsEntity entity = new ReservationRequestsEntity(
                 newOne.parkingSpotId().getValue(),
                 parkingSpotTimeSlotId.getValue(),
+                newOne.parkingSpotCategory(),
                 newOne.capacity().getValue(),
                 new ArrayList<>(),
                 newOne.timeSlot().from(),
@@ -73,6 +75,17 @@ class InMemoryParkingSpotReservationRequestsRepository implements
     }
 
     @Override
+    public Option<ParkingSpotReservationRequests> findBy(ParkingSpotCategory parkingSpotCategory, TimeSlot timeSlot) {
+        return Option.ofOptional(
+                        DATABASE.values()
+                                .stream()
+                                .filter(entity -> entity.category == parkingSpotCategory
+                                        && timeSlot.within(new TimeSlot(entity.from, entity.to)))
+                                .findFirst())
+                .map(DomainMapper::map);
+    }
+
+    @Override
     public Option<ParkingSpotReservationRequests> findBy(ReservationRequestId reservationRequestId) {
         return Option.ofOptional(
                         DATABASE.values()
@@ -100,6 +113,7 @@ class InMemoryParkingSpotReservationRequestsRepository implements
                 .map(entity -> new ParkingSpotReservationRequestsView(
                         entity.parkingSpotId,
                         entity.parkingSpotTimeSlotId,
+                        entity.category,
                         new TimeSlot(entity.from, entity.to),
                         entity.capacity,
                         entity.spaceLeft()
@@ -112,6 +126,7 @@ class InMemoryParkingSpotReservationRequestsRepository implements
 
         UUID parkingSpotId;
         UUID parkingSpotTimeSlotId;
+        ParkingSpotCategory category;
         int capacity;
         List<CurrentRequestEntity> currentRequests;
         Instant from;

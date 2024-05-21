@@ -32,6 +32,7 @@ public class CreatingParkingSpotReservationRequestsEventHandler {
                 .map(timeSlot -> new NewParkingSpotReservationRequests(
                         event.parkingSpotId(),
                         ParkingSpotTimeSlotId.newOne(),
+                        event.category(),
                         event.capacity(),
                         timeSlot))
                 .toList();
