@@ -73,10 +73,6 @@ public class ParkingSpotReservationRequests {
         return validReservationRequests;
     }
 
-    public boolean isFree() {
-        return reservationRequests.isEmpty();
-    }
-
     private int currentOccupation() {
         return reservationRequests.values()
                 .map(ReservationRequest::getSpotUnits)
