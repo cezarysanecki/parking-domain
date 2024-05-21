@@ -13,7 +13,7 @@ public interface ExternalCleaningService {
 
         @Override
         public void call() {
-            log.debug("Imitating to call external cleaning service");
+            log.debug("Imitating to call external cleaning service (could be outbox pattern)");
         }
 
     }
