@@ -37,12 +37,6 @@ class ReservationRequestsEntity {
                                 cancelled.reservationRequest().getReservationRequestId().getValue()));
                 yield this;
             }
-            case ParkingSpotReservationRequestsEvents.ReservationRequestConfirmed confirmed -> {
-                this.currentRequests
-                        .removeIf(currentRequest -> currentRequest.reservationRequestId.equals(
-                                confirmed.validReservationRequest().getReservationRequestId().getValue()));
-                yield this;
-            }
             default -> this;
         };
     }

@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static java.util.function.Predicate.not;
+import static pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequestsEvents.ReservationRequestConfirmed;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -53,13 +54,17 @@ class InMemoryParkingSpotReservationRequestsRepository implements
 
     @Override
     public void publish(ParkingSpotReservationRequestsEvents event) {
-        ReservationRequestsEntity entity = DATABASE.get(event.parkingSpotTimeSlotId());
-        if (entity == null) {
-            throw new EntityNotFoundException("there is no entity for parking spot reservation request for time slot with id " + event.parkingSpotTimeSlotId());
-        }
+        if (event instanceof ReservationRequestConfirmed) {
+            DATABASE.remove(event.parkingSpotTimeSlotId());
+        } else {
+            ReservationRequestsEntity entity = DATABASE.get(event.parkingSpotTimeSlotId());
+            if (entity == null) {
+                throw new EntityNotFoundException("there is no entity for parking spot reservation request for time slot with id " + event.parkingSpotTimeSlotId());
+            }
 
-        entity = entity.handle(event);
-        DATABASE.put(event.parkingSpotTimeSlotId(), entity);
+            entity = entity.handle(event);
+            DATABASE.put(event.parkingSpotTimeSlotId(), entity);
+        }
 
         if (event instanceof DomainEvent domainEvent) {
             eventPublisher.publish(domainEvent);
