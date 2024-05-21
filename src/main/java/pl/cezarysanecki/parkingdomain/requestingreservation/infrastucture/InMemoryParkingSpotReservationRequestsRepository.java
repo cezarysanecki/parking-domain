@@ -96,6 +96,7 @@ class InMemoryParkingSpotReservationRequestsRepository implements
     public List<ParkingSpotReservationRequestsView> queryForAllAvailableParkingSpots() {
         return DATABASE.values()
                 .stream()
+                .filter(entity -> entity.spaceLeft() > 0)
                 .map(entity -> new ParkingSpotReservationRequestsView(
                         entity.parkingSpotId,
                         entity.parkingSpotTimeSlotId,
