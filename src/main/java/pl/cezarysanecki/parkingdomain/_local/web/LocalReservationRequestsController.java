@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import pl.cezarysanecki.parkingdomain.requestingreservation.application.CreatingReservationRequestTimeSlots;
 import pl.cezarysanecki.parkingdomain.requestingreservation.application.MakingReservationRequestsValid;
 
 import java.util.List;
@@ -14,9 +15,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/requests")
 @RequiredArgsConstructor
-class LocalParkingSpotReservationRequestsController {
+class LocalReservationRequestsController {
 
     private final MakingReservationRequestsValid makingReservationRequestsValid;
+    private final CreatingReservationRequestTimeSlots creatingReservationRequestTimeSlots;
 
     @PostMapping("/make-valid")
     ResponseEntity<List<String>> makeReservationRequestValid() {
@@ -26,6 +28,12 @@ class LocalParkingSpotReservationRequestsController {
         }
         return ResponseEntity.internalServerError()
                 .body(result.map(MakingReservationRequestsValid.Problem::reason).asJava());
+    }
+
+    @PostMapping("/create-time-slots")
+    ResponseEntity createTimeSlots() {
+        creatingReservationRequestTimeSlots.prepareNewTimeSlots();
+        return ResponseEntity.ok().build();
     }
 
 }
