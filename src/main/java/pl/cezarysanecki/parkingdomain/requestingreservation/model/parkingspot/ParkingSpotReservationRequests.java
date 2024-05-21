@@ -67,14 +67,15 @@ public class ParkingSpotReservationRequests {
                 potentialReservationRequests.get()));
     }
 
-    public Try<ReservationRequestConfirmed> makeValid() {
+    public Try<List<ReservationRequestConfirmed>> makeValid() {
         List<ValidReservationRequest> validReservationRequests = reservationRequests.values()
                 .map(ValidReservationRequest::from)
                 .toList();
-        return Try.of(() -> new ReservationRequestConfirmed(
-                parkingSpotId,
-                parkingSpotTimeSlotId,
-                validReservationRequests));
+        return Try.of(() -> validReservationRequests
+                .map(validReservationRequest -> new ReservationRequestConfirmed(
+                        parkingSpotId,
+                        parkingSpotTimeSlotId,
+                        validReservationRequest)));
     }
 
     private int currentOccupation() {

@@ -39,7 +39,7 @@ public class MakingReservationRequestsValid {
 
         List<ParkingSpotReservationRequestsEvents> events = results
                 .filter(Try::isSuccess)
-                .map(Try::get);
+                .flatMap(Try::get);
         log.debug("Found {} requests to successfully make them valid", events.size());
 
         events.forEach(parkingSpotReservationRequestsRepository::publish);
