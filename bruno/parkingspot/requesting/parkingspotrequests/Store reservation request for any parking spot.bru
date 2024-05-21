@@ -1,0 +1,21 @@
+meta {
+  name: Store reservation request for any parking spot
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/requests/parking-spot/store/any
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "requesterId": "84214aab-0646-4405-8863-ade6c6722926",
+    "parkingSpotCategory": "Gold",
+    "from": "2024-05-22T18:00:00Z",
+    "to": "2024-05-22T23:00:00Z",
+    "units": 4
+  }
+}

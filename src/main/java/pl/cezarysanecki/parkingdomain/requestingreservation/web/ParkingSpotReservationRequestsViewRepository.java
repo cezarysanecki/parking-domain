@@ -1,5 +1,6 @@
 package pl.cezarysanecki.parkingdomain.requestingreservation.web;
 
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory;
 import pl.cezarysanecki.parkingdomain.shared.timeslot.TimeSlot;
 
 import java.util.List;
@@ -12,6 +13,7 @@ public interface ParkingSpotReservationRequestsViewRepository {
     record ParkingSpotReservationRequestsView(
             UUID parkingSpotId,
             UUID parkingSpotTimeSlotId,
+            ParkingSpotCategory parkingSpotCategory,
             TimeSlot timeSlot,
             int capacity,
             int spaceLeft

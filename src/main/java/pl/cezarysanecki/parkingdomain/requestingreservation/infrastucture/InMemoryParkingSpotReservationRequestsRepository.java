@@ -113,6 +113,7 @@ class InMemoryParkingSpotReservationRequestsRepository implements
                 .map(entity -> new ParkingSpotReservationRequestsView(
                         entity.parkingSpotId,
                         entity.parkingSpotTimeSlotId,
+                        entity.category,
                         new TimeSlot(entity.from, entity.to),
                         entity.capacity,
                         entity.spaceLeft()
