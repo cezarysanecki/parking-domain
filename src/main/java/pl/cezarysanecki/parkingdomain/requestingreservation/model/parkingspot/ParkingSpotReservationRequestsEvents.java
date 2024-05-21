@@ -1,29 +1,35 @@
 package pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot;
 
+import io.vavr.collection.List;
 import lombok.NonNull;
 import pl.cezarysanecki.parkingdomain.commons.events.DomainEvent;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
 
-public interface ParkingSpotReservationRequestsEvents extends DomainEvent {
+public interface ParkingSpotReservationRequestsEvents {
 
     ParkingSpotId parkingSpotId();
 
+    ParkingSpotTimeSlotId parkingSpotTimeSlotId();
+
     record ReservationRequestStored(
             @NonNull ParkingSpotId parkingSpotId,
+            @NonNull ParkingSpotTimeSlotId parkingSpotTimeSlotId,
+            @NonNull ReservationRequest reservationRequest
+    ) implements ParkingSpotReservationRequestsEvents {
+    }
+
+    record ReservationRequestCancelled(
+            @NonNull ParkingSpotId parkingSpotId,
+            @NonNull ParkingSpotTimeSlotId parkingSpotTimeSlotId,
             @NonNull ReservationRequest reservationRequest
     ) implements ParkingSpotReservationRequestsEvents {
     }
 
     record ReservationRequestConfirmed(
             @NonNull ParkingSpotId parkingSpotId,
-            @NonNull ValidReservationRequest validReservationRequest
-    ) implements ParkingSpotReservationRequestsEvents {
-    }
-
-    record ReservationRequestCancelled(
-            @NonNull ParkingSpotId parkingSpotId,
-            @NonNull ReservationRequest reservationRequest
-    ) implements ParkingSpotReservationRequestsEvents {
+            @NonNull ParkingSpotTimeSlotId parkingSpotTimeSlotId,
+            @NonNull List<ValidReservationRequest> validReservationRequests
+    ) implements ParkingSpotReservationRequestsEvents, DomainEvent {
     }
 
 }

@@ -13,7 +13,7 @@ public interface ParkingSpotReservationRequestsRepository {
 
     void store(NewParkingSpotReservationRequests newOne);
 
-    void save(ParkingSpotReservationRequests parkingSpotReservationRequests);
+    void publish(ParkingSpotReservationRequestsEvents event);
 
     Option<ParkingSpotReservationRequests> findBy(ParkingSpotTimeSlotId parkingSpotTimeSlotId);
 

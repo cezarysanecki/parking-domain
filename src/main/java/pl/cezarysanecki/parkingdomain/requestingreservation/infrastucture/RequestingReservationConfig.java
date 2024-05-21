@@ -34,7 +34,6 @@ public class RequestingReservationConfig {
             ParkingSpotReservationRequestsRepository parkingSpotReservationRequestsRepository
     ) {
         return new StoringReservationRequest(
-                eventPublisher,
                 reservationRequesterRepository,
                 parkingSpotReservationRequestsRepository);
     }
@@ -45,7 +44,6 @@ public class RequestingReservationConfig {
             ParkingSpotReservationRequestsRepository parkingSpotReservationRequestsRepository
     ) {
         return new CancellingReservationRequest(
-                eventPublisher,
                 reservationRequesterRepository,
                 parkingSpotReservationRequestsRepository);
     }
@@ -70,7 +68,6 @@ public class RequestingReservationConfig {
             @Value("${business.reservationRequests.hoursToMakeValid}") int hoursToMakeReservationRequestValid
     ) {
         return new MakingReservationRequestsValid(
-                eventPublisher,
                 dateProvider,
                 parkingSpotReservationRequestsRepository,
                 hoursToMakeReservationRequestValid);
@@ -109,7 +106,7 @@ public class RequestingReservationConfig {
     @Bean
     @Profile("local")
     InMemoryParkingSpotReservationRequestsRepository parkingSpotReservationRequestsRepository() {
-        return new InMemoryParkingSpotReservationRequestsRepository();
+        return new InMemoryParkingSpotReservationRequestsRepository(eventPublisher);
     }
 
 }

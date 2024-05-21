@@ -17,8 +17,7 @@ import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits;
 
 import java.util.List;
 
-import static pl.cezarysanecki.parkingdomain.requestingreservation.infrastucture.InMemoryParkingSpotReservationRequestsRepository.ReservationRequestsEntity;
-import static pl.cezarysanecki.parkingdomain.requestingreservation.infrastucture.InMemoryParkingSpotReservationRequestsRepository.ReservationRequestsEntity.CurrentRequestEntity;
+import static pl.cezarysanecki.parkingdomain.requestingreservation.infrastucture.ReservationRequestsEntity.CurrentRequestEntity;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 class DomainMapper {

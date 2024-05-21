@@ -3,7 +3,6 @@ package pl.cezarysanecki.parkingdomain.requestingreservation.application;
 import io.vavr.control.Try;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequests;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequestsRepository;
@@ -21,7 +20,6 @@ import static pl.cezarysanecki.parkingdomain.requestingreservation.model.parking
 @RequiredArgsConstructor
 public class StoringReservationRequest {
 
-    private final EventPublisher eventPublisher;
     private final ReservationRequesterRepository reservationRequesterRepository;
     private final ParkingSpotReservationRequestsRepository parkingSpotReservationRequestsRepository;
 
@@ -33,7 +31,7 @@ public class StoringReservationRequest {
     ) {
         ParkingSpotReservationRequests parkingSpotReservationRequests = findParkingSpotReservationRequestsBy(parkingSpotCategory, timeSlot);
 
-        return handleRequest(requesterId, spotUnits, parkingSpotReservationRequests);
+        return handleRequest(parkingSpotReservationRequests, requesterId, spotUnits);
     }
 
     public Try<ReservationRequest> storeRequest(
@@ -43,20 +41,28 @@ public class StoringReservationRequest {
     ) {
         ParkingSpotReservationRequests parkingSpotReservationRequests = findParkingSpotReservationRequestsBy(parkingSpotTimeSlotId);
 
-        return handleRequest(requesterId, spotUnits, parkingSpotReservationRequests);
+        return handleRequest(parkingSpotReservationRequests, requesterId, spotUnits);
     }
 
-    private Try<ReservationRequest> handleRequest(ReservationRequesterId requesterId, SpotUnits spotUnits, ParkingSpotReservationRequests parkingSpotReservationRequests) {
+    private Try<ReservationRequest> handleRequest(
+            ParkingSpotReservationRequests parkingSpotReservationRequests,
+            ReservationRequesterId requesterId,
+            SpotUnits spotUnits
+    ) {
         ReservationRequester reservationRequester = findReservationRequesterBy(requesterId);
 
-        return parkingSpotReservationRequests.storeRequest(requesterId, spotUnits)
-                .flatMap(reservationRequester::append)
+        Try<ReservationRequestStored> storageResult = parkingSpotReservationRequests.storeRequest(requesterId, spotUnits);
+        if (storageResult.isFailure()) {
+            log.error("cannot store reservation request, reason: {}", storageResult.getCause().getMessage());
+            return storageResult.map(ReservationRequestStored::reservationRequest);
+        }
+        ReservationRequestStored event = storageResult.get();
+
+        return reservationRequester.append(event.reservationRequest())
                 .onFailure(exception -> log.error("cannot store reservation request, reason: {}", exception.getMessage()))
                 .onSuccess(reservationRequest -> {
                     reservationRequesterRepository.save(reservationRequester);
-                    parkingSpotReservationRequestsRepository.save(parkingSpotReservationRequests);
-
-                    eventPublisher.publish(new ReservationRequestStored(parkingSpotReservationRequests.getParkingSpotId(), reservationRequest));
+                    parkingSpotReservationRequestsRepository.publish(event);
                 });
     }
 
