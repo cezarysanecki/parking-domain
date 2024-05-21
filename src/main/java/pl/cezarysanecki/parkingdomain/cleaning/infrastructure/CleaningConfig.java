@@ -67,8 +67,10 @@ public class CleaningConfig {
 
     @Bean
     @Profile("local")
-    InMemoryCleaningRepository cleaningRepository() {
-        return new InMemoryCleaningRepository();
+    InMemoryCleaningRepository cleaningRepository(
+            @Value("${business.cleaning.numberOfDrivesAwayToConsiderParkingSpotDirty}") int numberOfDrivesAwayToConsiderParkingSpotDirty
+    ) {
+        return new InMemoryCleaningRepository(numberOfDrivesAwayToConsiderParkingSpotDirty);
     }
 
 }

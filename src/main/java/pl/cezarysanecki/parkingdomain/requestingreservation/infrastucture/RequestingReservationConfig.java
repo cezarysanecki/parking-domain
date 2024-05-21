@@ -12,11 +12,12 @@ import org.springframework.context.annotation.Profile;
 import pl.cezarysanecki.parkingdomain.commons.date.DateProvider;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 import pl.cezarysanecki.parkingdomain.requestingreservation.application.CancellingReservationRequest;
-import pl.cezarysanecki.parkingdomain.requestingreservation.application.CreatingParkingSpotReservationRequestsEventHandler;
 import pl.cezarysanecki.parkingdomain.requestingreservation.application.CreatingReservationRequesterEventHandler;
+import pl.cezarysanecki.parkingdomain.requestingreservation.application.CreatingReservationRequestsTemplatesEventHandler;
 import pl.cezarysanecki.parkingdomain.requestingreservation.application.MakingReservationRequestsValid;
 import pl.cezarysanecki.parkingdomain.requestingreservation.application.StoringReservationRequest;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequestsRepository;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequestsTemplateRepository;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterRepository;
 
 import static org.quartz.CronScheduleBuilder.cronSchedule;
@@ -49,10 +50,10 @@ public class RequestingReservationConfig {
     }
 
     @Bean
-    CreatingParkingSpotReservationRequestsEventHandler creatingParkingSpotReservationRequestsEventHandler(
-            ParkingSpotReservationRequestsRepository parkingSpotReservationRequestsRepository
+    CreatingReservationRequestsTemplatesEventHandler creatingParkingSpotReservationRequestsEventHandler(
+            ParkingSpotReservationRequestsTemplateRepository parkingSpotReservationRequestsTemplateRepository
     ) {
-        return new CreatingParkingSpotReservationRequestsEventHandler(dateProvider, parkingSpotReservationRequestsRepository);
+        return new CreatingReservationRequestsTemplatesEventHandler(dateProvider, parkingSpotReservationRequestsTemplateRepository);
     }
 
     @Bean
@@ -107,6 +108,12 @@ public class RequestingReservationConfig {
     @Profile("local")
     InMemoryParkingSpotReservationRequestsRepository parkingSpotReservationRequestsRepository() {
         return new InMemoryParkingSpotReservationRequestsRepository(eventPublisher);
+    }
+
+    @Bean
+    @Profile("local")
+    InMemoryParkingSpotReservationRequestsTemplateRepository parkingSpotReservationRequestsTemplateRepository() {
+        return new InMemoryParkingSpotReservationRequestsTemplateRepository();
     }
 
 }

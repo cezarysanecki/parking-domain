@@ -4,7 +4,6 @@ import io.vavr.control.Option;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import pl.cezarysanecki.parkingdomain.commons.aggregates.Version;
 import pl.cezarysanecki.parkingdomain.commons.events.DomainEvent;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory;
@@ -17,7 +16,6 @@ import pl.cezarysanecki.parkingdomain.requestingreservation.web.ParkingSpotReser
 import pl.cezarysanecki.parkingdomain.shared.timeslot.TimeSlot;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -34,23 +32,6 @@ class InMemoryParkingSpotReservationRequestsRepository implements
     private static final Map<ParkingSpotTimeSlotId, ReservationRequestsEntity> DATABASE = new ConcurrentHashMap<>();
 
     private final EventPublisher eventPublisher;
-
-    @Override
-    public void store(NewParkingSpotReservationRequests newOne) {
-        ParkingSpotTimeSlotId parkingSpotTimeSlotId = ParkingSpotTimeSlotId.newOne();
-
-        ReservationRequestsEntity entity = new ReservationRequestsEntity(
-                newOne.parkingSpotId().getValue(),
-                parkingSpotTimeSlotId.getValue(),
-                newOne.parkingSpotCategory(),
-                newOne.capacity().getValue(),
-                new ArrayList<>(),
-                newOne.timeSlot().from(),
-                newOne.timeSlot().to(),
-                Version.zero().getVersion());
-
-        DATABASE.put(parkingSpotTimeSlotId, entity);
-    }
 
     @Override
     public void publish(ParkingSpotReservationRequestsEvents event) {

@@ -1,5 +1,6 @@
 package pl.cezarysanecki.parkingdomain.cleaning.infrastructure;
 
+import lombok.RequiredArgsConstructor;
 import pl.cezarysanecki.parkingdomain.cleaning.model.CleaningRepository;
 import pl.cezarysanecki.parkingdomain.cleaning.web.CleaningViewRepository;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
@@ -8,9 +9,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+@RequiredArgsConstructor
 class InMemoryCleaningRepository implements CleaningRepository, CleaningViewRepository {
 
     private final Map<ParkingSpotId, Integer> DATABASE = new ConcurrentHashMap<>();
+
+    private final int numberOfDrivesAwayToConsiderParkingSpotDirty;
 
     @Override
     public void increaseCounterFor(ParkingSpotId parkingSpotId) {
@@ -38,7 +42,7 @@ class InMemoryCleaningRepository implements CleaningRepository, CleaningViewRepo
     public CleaningView queryForCleaningView() {
         long exceedsOfThreshold = DATABASE.values()
                 .stream()
-                .filter(counter -> counter > 2)
+                .filter(counter -> counter >= numberOfDrivesAwayToConsiderParkingSpotDirty)
                 .count();
         List<CleaningView.ParkingSpot> parkingSpots = DATABASE.entrySet()
                 .stream()

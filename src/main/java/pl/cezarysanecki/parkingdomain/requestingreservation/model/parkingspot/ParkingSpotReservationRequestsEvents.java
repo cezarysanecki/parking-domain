@@ -10,6 +10,13 @@ public interface ParkingSpotReservationRequestsEvents {
 
     ParkingSpotTimeSlotId parkingSpotTimeSlotId();
 
+    record ReservationRequestsCreated(
+            @NonNull ParkingSpotId parkingSpotId,
+            @NonNull ParkingSpotTimeSlotId parkingSpotTimeSlotId,
+            @NonNull ReservationRequest reservationRequest
+    ) implements ParkingSpotReservationRequestsEvents {
+    }
+
     record ReservationRequestStored(
             @NonNull ParkingSpotId parkingSpotId,
             @NonNull ParkingSpotTimeSlotId parkingSpotTimeSlotId,
