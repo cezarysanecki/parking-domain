@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static java.util.function.Predicate.not;
-import static pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequestsEvents.ReservationRequestConfirmed;
 import static pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequestsEvents.ReservationRequestsCreated;
 
 @Slf4j
@@ -51,7 +50,6 @@ class InMemoryParkingSpotReservationRequestsRepository implements
                         created.timeSlot().to(),
                         Version.zero().getVersion()));
             }
-            case ReservationRequestConfirmed confirmed -> DATABASE.remove(event.parkingSpotTimeSlotId());
             default -> {
                 ReservationRequestsEntity entity = DATABASE.get(event.parkingSpotTimeSlotId());
                 if (entity == null) {
@@ -97,7 +95,7 @@ class InMemoryParkingSpotReservationRequestsRepository implements
     }
 
     @Override
-    public io.vavr.collection.List<ParkingSpotReservationRequests> findAllRequestsValidFrom(Instant sinceDate) {
+    public io.vavr.collection.List<ParkingSpotReservationRequests> findAllRequestsBecomingValid(Instant sinceDate) {
         return io.vavr.collection.List.ofAll(
                         DATABASE.values()
                                 .stream()
@@ -109,6 +107,13 @@ class InMemoryParkingSpotReservationRequestsRepository implements
     @Override
     public void removeAll() {
         DATABASE.clear();
+    }
+
+    @Override
+    public void removeAll(io.vavr.collection.List<ParkingSpotTimeSlotId> parkingSpotTimeSlotIds) {
+        DATABASE.values().removeIf(
+                entity -> parkingSpotTimeSlotIds.contains(ParkingSpotTimeSlotId.of(entity.parkingSpotTimeSlotId))
+        );
     }
 
     @Override

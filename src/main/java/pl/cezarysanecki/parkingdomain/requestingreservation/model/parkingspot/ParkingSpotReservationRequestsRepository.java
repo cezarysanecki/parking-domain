@@ -17,8 +17,10 @@ public interface ParkingSpotReservationRequestsRepository {
 
     Option<ParkingSpotReservationRequests> findBy(ReservationRequestId reservationRequestId);
 
-    List<ParkingSpotReservationRequests> findAllRequestsValidFrom(Instant sinceDate);
+    List<ParkingSpotReservationRequests> findAllRequestsBecomingValid(Instant sinceDate);
 
     void removeAll();
+
+    void removeAll(List<ParkingSpotTimeSlotId> parkingSpotTimeSlotIds);
 
 }

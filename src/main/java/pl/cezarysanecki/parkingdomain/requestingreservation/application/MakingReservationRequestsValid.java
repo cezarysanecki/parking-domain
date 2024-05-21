@@ -8,6 +8,7 @@ import pl.cezarysanecki.parkingdomain.commons.date.DateProvider;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequests;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequestsEvents;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequestsRepository;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotTimeSlotId;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -25,10 +26,10 @@ public class MakingReservationRequestsValid {
         LocalDateTime sinceDate = dateProvider.now().plusHours(hoursToMakeReservationRequestValid);
         Instant sinceDateInstant = sinceDate.toInstant(ZoneOffset.UTC);
 
-        var results = parkingSpotReservationRequestsRepository.findAllRequestsValidFrom(sinceDateInstant)
-                .map(ParkingSpotReservationRequests::makeValid)
-                .toList();
-        log.debug("Found {} requests to make them valid", results.size());
+        List<ParkingSpotReservationRequests> reservationRequestsList = parkingSpotReservationRequestsRepository.findAllRequestsBecomingValid(sinceDateInstant);
+        log.debug("Found {} reservation requests to make them valid", reservationRequestsList.size());
+
+        var results = reservationRequestsList.map(ParkingSpotReservationRequests::makeValid).toList();
 
         List<Problem> problems = results
                 .filter(Try::isFailure)
@@ -41,6 +42,12 @@ public class MakingReservationRequestsValid {
                 .filter(Try::isSuccess)
                 .flatMap(Try::get);
         log.debug("Found {} requests to successfully make them valid", events.size());
+
+        List<ParkingSpotTimeSlotId> parkingSpotTimeSlotIds = reservationRequestsList
+                .map(ParkingSpotReservationRequests::getParkingSpotTimeSlotId)
+                .toList();
+        parkingSpotReservationRequestsRepository.removeAll(parkingSpotTimeSlotIds);
+        log.debug("Removed {} handled and invalid request reservations", parkingSpotTimeSlotIds.size());
 
         events.forEach(parkingSpotReservationRequestsRepository::publish);
 
