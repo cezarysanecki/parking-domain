@@ -4,13 +4,14 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneOffset;
 
 public interface DateProvider {
 
     LocalDateTime now();
 
-    default Instant nowInstant() {
-        return Instant.from(now());
+    default Instant nowInstantUTC() {
+        return now().toInstant(ZoneOffset.UTC);
     }
 
     default LocalDate today() {

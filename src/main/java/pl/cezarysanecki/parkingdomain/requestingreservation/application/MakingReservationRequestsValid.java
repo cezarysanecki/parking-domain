@@ -11,6 +11,8 @@ import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.Pa
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ValidReservationRequest;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -22,9 +24,10 @@ public class MakingReservationRequestsValid {
     private final int hoursToMakeReservationRequestValid;
 
     public List<Problem> makeValid() {
-        Instant sinceDate = Instant.from(dateProvider.now().plusHours(hoursToMakeReservationRequestValid));
+        LocalDateTime sinceDate = dateProvider.now().plusHours(hoursToMakeReservationRequestValid);
+        Instant sinceDateInstant = sinceDate.toInstant(ZoneOffset.UTC);
 
-        List<ReservationRequestConfirmed> events = parkingSpotReservationRequestsRepository.findAllRequestsValidFrom(sinceDate)
+        List<ReservationRequestConfirmed> events = parkingSpotReservationRequestsRepository.findAllRequestsValidFrom(sinceDateInstant)
                 .flatMap(parkingSpotReservationRequests -> {
                     List<ValidReservationRequest> validReservationRequests = parkingSpotReservationRequests.makeValid();
                     return validReservationRequests
