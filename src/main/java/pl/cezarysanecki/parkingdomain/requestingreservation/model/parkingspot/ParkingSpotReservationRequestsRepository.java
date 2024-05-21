@@ -19,4 +19,6 @@ public interface ParkingSpotReservationRequestsRepository {
 
     List<ParkingSpotReservationRequests> findAllRequestsValidFrom(Instant sinceDate);
 
+    void removeAll();
+
 }

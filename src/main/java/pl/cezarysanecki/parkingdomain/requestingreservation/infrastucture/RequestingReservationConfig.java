@@ -17,8 +17,8 @@ import pl.cezarysanecki.parkingdomain.requestingreservation.application.Creating
 import pl.cezarysanecki.parkingdomain.requestingreservation.application.MakingReservationRequestsValid;
 import pl.cezarysanecki.parkingdomain.requestingreservation.application.StoringReservationRequest;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequestsRepository;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequestsTemplateRepository;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterRepository;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.template.ParkingSpotReservationRequestsTemplateRepository;
 
 import static org.quartz.CronScheduleBuilder.cronSchedule;
 
@@ -53,7 +53,7 @@ public class RequestingReservationConfig {
     CreatingReservationRequestsTemplatesEventHandler creatingParkingSpotReservationRequestsEventHandler(
             ParkingSpotReservationRequestsTemplateRepository parkingSpotReservationRequestsTemplateRepository
     ) {
-        return new CreatingReservationRequestsTemplatesEventHandler(dateProvider, parkingSpotReservationRequestsTemplateRepository);
+        return new CreatingReservationRequestsTemplatesEventHandler(parkingSpotReservationRequestsTemplateRepository);
     }
 
     @Bean

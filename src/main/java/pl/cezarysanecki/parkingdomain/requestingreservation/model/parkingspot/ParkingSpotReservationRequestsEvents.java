@@ -3,6 +3,8 @@ package pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot;
 import lombok.NonNull;
 import pl.cezarysanecki.parkingdomain.commons.events.DomainEvent;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.template.ParkingSpotReservationRequestsTemplateId;
+import pl.cezarysanecki.parkingdomain.shared.timeslot.TimeSlot;
 
 public interface ParkingSpotReservationRequestsEvents {
 
@@ -12,8 +14,9 @@ public interface ParkingSpotReservationRequestsEvents {
 
     record ReservationRequestsCreated(
             @NonNull ParkingSpotId parkingSpotId,
+            @NonNull ParkingSpotReservationRequestsTemplateId templateId,
             @NonNull ParkingSpotTimeSlotId parkingSpotTimeSlotId,
-            @NonNull ReservationRequest reservationRequest
+            @NonNull TimeSlot timeSlot
     ) implements ParkingSpotReservationRequestsEvents {
     }
 

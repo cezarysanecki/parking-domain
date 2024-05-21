@@ -4,6 +4,7 @@ import io.vavr.control.Option;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import pl.cezarysanecki.parkingdomain.commons.aggregates.Version;
 import pl.cezarysanecki.parkingdomain.commons.events.DomainEvent;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory;
@@ -12,6 +13,7 @@ import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.Pa
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequestsRepository;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotTimeSlotId;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ReservationRequestId;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.template.ParkingSpotReservationRequestsTemplate;
 import pl.cezarysanecki.parkingdomain.requestingreservation.web.ParkingSpotReservationRequestsViewRepository;
 import pl.cezarysanecki.parkingdomain.shared.timeslot.TimeSlot;
 
@@ -22,6 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static java.util.function.Predicate.not;
 import static pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequestsEvents.ReservationRequestConfirmed;
+import static pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequestsEvents.ReservationRequestsCreated;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -29,22 +32,35 @@ class InMemoryParkingSpotReservationRequestsRepository implements
         ParkingSpotReservationRequestsRepository,
         ParkingSpotReservationRequestsViewRepository {
 
-    private static final Map<ParkingSpotTimeSlotId, ReservationRequestsEntity> DATABASE = new ConcurrentHashMap<>();
+    static final Map<ParkingSpotTimeSlotId, ReservationRequestsEntity> DATABASE = new ConcurrentHashMap<>();
 
     private final EventPublisher eventPublisher;
 
     @Override
     public void publish(ParkingSpotReservationRequestsEvents event) {
-        if (event instanceof ReservationRequestConfirmed) {
-            DATABASE.remove(event.parkingSpotTimeSlotId());
-        } else {
-            ReservationRequestsEntity entity = DATABASE.get(event.parkingSpotTimeSlotId());
-            if (entity == null) {
-                throw new EntityNotFoundException("there is no entity for parking spot reservation request for time slot with id " + event.parkingSpotTimeSlotId());
+        switch (event) {
+            case ReservationRequestsCreated created -> {
+                ParkingSpotReservationRequestsTemplate template = InMemoryParkingSpotReservationRequestsTemplateRepository.findBy(created.parkingSpotId());
+                DATABASE.put(created.parkingSpotTimeSlotId(), new ReservationRequestsEntity(
+                        created.parkingSpotId().getValue(),
+                        created.parkingSpotTimeSlotId().getValue(),
+                        template.parkingSpotCategory(),
+                        template.capacity().getValue(),
+                        List.of(),
+                        created.timeSlot().from(),
+                        created.timeSlot().to(),
+                        Version.zero().getVersion()));
             }
+            case ReservationRequestConfirmed confirmed -> DATABASE.remove(event.parkingSpotTimeSlotId());
+            default -> {
+                ReservationRequestsEntity entity = DATABASE.get(event.parkingSpotTimeSlotId());
+                if (entity == null) {
+                    throw new EntityNotFoundException("there is no entity for parking spot reservation request for time slot with id " + event.parkingSpotTimeSlotId());
+                }
 
-            entity = entity.handle(event);
-            DATABASE.put(event.parkingSpotTimeSlotId(), entity);
+                entity = entity.handle(event);
+                DATABASE.put(event.parkingSpotTimeSlotId(), entity);
+            }
         }
 
         if (event instanceof DomainEvent domainEvent) {
@@ -88,6 +104,11 @@ class InMemoryParkingSpotReservationRequestsRepository implements
                                 .filter(not(entity -> entity.currentRequests.isEmpty()))
                                 .filter(not(entity -> entity.from.isAfter(sinceDate))))
                 .map(DomainMapper::map);
+    }
+
+    @Override
+    public void removeAll() {
+        DATABASE.clear();
     }
 
     @Override
