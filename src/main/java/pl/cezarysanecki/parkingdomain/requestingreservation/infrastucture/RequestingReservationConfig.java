@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Profile;
 import pl.cezarysanecki.parkingdomain.commons.date.DateProvider;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 import pl.cezarysanecki.parkingdomain.requestingreservation.application.CancellingReservationRequest;
+import pl.cezarysanecki.parkingdomain.requestingreservation.application.CreatingReservationRequestTimeSlots;
 import pl.cezarysanecki.parkingdomain.requestingreservation.application.CreatingReservationRequesterEventHandler;
 import pl.cezarysanecki.parkingdomain.requestingreservation.application.CreatingReservationRequestsTemplatesEventHandler;
 import pl.cezarysanecki.parkingdomain.requestingreservation.application.MakingReservationRequestsValid;
@@ -93,6 +94,41 @@ public class RequestingReservationConfig {
         return TriggerBuilder.newTrigger()
                 .withIdentity("making-requests-valid-job-trigger")
                 .forJob(makingRequestsValidJobDetail)
+                .withSchedule(cronSchedule(cronExpression))
+                .startNow()
+                .build();
+    }
+
+    @Bean
+    CreatingReservationRequestTimeSlots creatingReservationRequestTimeSlots(
+            ParkingSpotReservationRequestsRepository parkingSpotReservationRequestsRepository,
+            ParkingSpotReservationRequestsTemplateRepository parkingSpotReservationRequestsTemplateRepository
+    ) {
+        return new CreatingReservationRequestTimeSlots(
+                dateProvider,
+                parkingSpotReservationRequestsRepository,
+                parkingSpotReservationRequestsTemplateRepository);
+    }
+
+    @Bean
+    @Profile("!local")
+    JobDetail creatingReservationRequestTimeSlotsJob() {
+        return JobBuilder.newJob()
+                .storeDurably()
+                .ofType(CreatingreservationRequestsTimeSlotsJob.class)
+                .withIdentity("creating-reservation-request-time-slots-job")
+                .build();
+    }
+
+    @Bean
+    @Profile("!local")
+    Trigger creatingReservationRequestTimeSlotsJobTrigger(
+            JobDetail creatingReservationRequestTimeSlotsJob,
+            @Value("${job.callingExternalCleaningServicePolicyJob.cronExpression}") String cronExpression
+    ) {
+        return TriggerBuilder.newTrigger()
+                .withIdentity("creating-reservation-request-time-slots-job-trigger")
+                .forJob(creatingReservationRequestTimeSlotsJob)
                 .withSchedule(cronSchedule(cronExpression))
                 .startNow()
                 .build();

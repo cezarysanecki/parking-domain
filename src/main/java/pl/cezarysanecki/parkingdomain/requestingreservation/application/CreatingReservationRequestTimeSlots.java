@@ -9,8 +9,6 @@ import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.Pa
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.template.ParkingSpotReservationRequestsTemplateRepository;
 import pl.cezarysanecki.parkingdomain.shared.timeslot.TimeSlot;
 
-import java.time.LocalDate;
-
 import static pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequestsEvents.ReservationRequestsCreated;
 
 @Slf4j
@@ -24,8 +22,8 @@ public class CreatingReservationRequestTimeSlots {
     public void prepareNewTimeSlots() {
         parkingSpotReservationRequestsRepository.removeAll();
 
-        LocalDate tomorrow = dateProvider.tomorrow();
-        io.vavr.collection.List<ReservationRequestsCreated> events = parkingSpotReservationRequestsTemplateRepository.findAll()
+        var tomorrow = dateProvider.tomorrow();
+        var events = parkingSpotReservationRequestsTemplateRepository.findAll()
                 .flatMap(template -> Stream.of(
                                 TimeSlot.createTimeSlotAtUTC(tomorrow, 7, 17),
                                 TimeSlot.createTimeSlotAtUTC(tomorrow, 18, 23))

@@ -16,6 +16,8 @@ job:
     cronExpression: "* * 1 * * ?"
   makingRequestsValidJob:
     cronExpression: "* 0/30 * * * ?"
+  creatingTimeSlots:
+    cronExpression: "0 0 18 * * ?"
 
 business:
   cleaning:
