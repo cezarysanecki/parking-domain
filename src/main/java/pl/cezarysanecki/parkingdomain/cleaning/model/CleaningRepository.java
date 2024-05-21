@@ -2,10 +2,14 @@ package pl.cezarysanecki.parkingdomain.cleaning.model;
 
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
 
+import java.util.List;
+
 public interface CleaningRepository {
 
-    CurrentCounterValue increaseCounterFor(ParkingSpotId parkingSpotId);
+    void increaseCounterFor(ParkingSpotId parkingSpotId);
 
-    void resetCounter(ParkingSpotId parkingSpotId);
+    void resetCountersFor(List<ParkingSpotId> parkingSpotIds);
+
+    List<ParkingSpotId> getAllRecordsWithCounterAbove(int limit);
 
 }
