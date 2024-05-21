@@ -12,8 +12,10 @@ spring:
 # to configure jdbc read: https://medium.com/turkcell/spring-boot-quartz-scheduler-1-c61bbbafdbbb
 
 job:
+  callingExternalCleaningServicePolicyJob:
+    cronExpression: "* * 1 * * ?"
   makingRequestsValidJob:
-    cronExpression: "0/30 0/30 * * * ?"
+    cronExpression: "* 0/30 * * * ?"
 
 logging:
   level:
