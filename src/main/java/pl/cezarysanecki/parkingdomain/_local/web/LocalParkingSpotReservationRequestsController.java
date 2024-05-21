@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.requestingreservation.web;
+package pl.cezarysanecki.parkingdomain._local.web;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;

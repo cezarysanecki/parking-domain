@@ -7,16 +7,10 @@ import org.springframework.context.annotation.Profile;
 @Configuration
 public class DateConfig {
 
-    @Profile("!local")
     @Bean
+    @Profile("!local")
     ProductionDateProvider productionDateProvider() {
         return new ProductionDateProvider();
-    }
-
-    @Profile("local")
-    @Bean
-    LocalDateProvider localDateProvider() {
-        return new LocalDateProvider();
     }
 
 }

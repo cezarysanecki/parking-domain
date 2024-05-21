@@ -1,10 +1,11 @@
-package pl.cezarysanecki.parkingdomain;
+package pl.cezarysanecki.parkingdomain._local.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import pl.cezarysanecki.parkingdomain.commons.date.DateProvider;
 import pl.cezarysanecki.parkingdomain.management.client.ClientType;
 import pl.cezarysanecki.parkingdomain.management.client.RegisteringClient;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.AddingParkingSpot;
@@ -12,9 +13,14 @@ import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory
 
 @Slf4j
 @Configuration
-class LocalConfig {
+@Profile("local")
+public class LocalConfig {
 
-    @Profile("local")
+    @Bean
+    DateProvider dateProvider() {
+        return new LocalDateProvider();
+    }
+
     @Bean
     CommandLineRunner init(AddingParkingSpot addingParkingSpot, RegisteringClient registeringClient) {
         return args -> {
