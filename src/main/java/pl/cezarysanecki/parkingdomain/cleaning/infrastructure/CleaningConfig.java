@@ -42,6 +42,7 @@ public class CleaningConfig {
     }
 
     @Bean
+    @Profile("!local")
     JobDetail callingExternalCleaningServicePolicyJob() {
         return JobBuilder.newJob()
                 .storeDurably()
@@ -51,6 +52,7 @@ public class CleaningConfig {
     }
 
     @Bean
+    @Profile("!local")
     Trigger callingExternalCleaningServicePolicyJobTrigger(
             JobDetail callingExternalCleaningServicePolicyJob,
             @Value("${job.callingExternalCleaningServicePolicyJob.cronExpression}") String cronExpression

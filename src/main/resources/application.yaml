@@ -20,7 +20,7 @@ job:
 business:
   cleaning:
     numberOfDirtyParkingSpotsToCallExternalService: 2
-    numberOfDrivesAwayToConsiderParkingSpotDirty: 5ó
+    numberOfDrivesAwayToConsiderParkingSpotDirty: 5
   reservationRequests:
     hoursToMakeValid: 2
 

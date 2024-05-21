@@ -77,6 +77,7 @@ public class RequestingReservationConfig {
     }
 
     @Bean
+    @Profile("!local")
     JobDetail makingRequestsValidJobDetail() {
         return JobBuilder.newJob()
                 .storeDurably()
@@ -86,6 +87,7 @@ public class RequestingReservationConfig {
     }
 
     @Bean
+    @Profile("!local")
     Trigger makingRequestsValidJobTrigger(
             JobDetail makingRequestsValidJobDetail,
             @Value("${job.makingRequestsValidJob.cronExpression}") String cronExpression
