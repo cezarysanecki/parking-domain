@@ -18,8 +18,11 @@ job:
     cronExpression: "* 0/30 * * * ?"
 
 business:
-  numbersOfDirtyParkingSpotsToCallExternalCleaningService: 2
-  hoursToMakeReservationRequestValid: 2
+  cleaning:
+    numberOfDirtyParkingSpotsToCallExternalService: 2
+    numberOfDrivesAwayToConsiderParkingSpotDirty: 5ó
+  reservationRequests:
+    hoursToMakeValid: 2
 
 logging:
   level:

@@ -29,7 +29,7 @@ class InMemoryCleaningRepository implements CleaningRepository, CleaningViewRepo
     public List<ParkingSpotId> getAllRecordsWithCounterAbove(int limit) {
         return DATABASE.entrySet()
                 .stream()
-                .filter(entry -> entry.getValue() > limit)
+                .filter(entry -> entry.getValue() >= limit)
                 .map(Map.Entry::getKey)
                 .toList();
     }

@@ -30,11 +30,15 @@ public class CleaningConfig {
     @Bean
     CallingExternalCleaningServicePolicy callingExternalCleaningServicePolicy(
             CleaningRepository cleaningRepository,
-            ExternalCleaningService externalCleaningService
+            ExternalCleaningService externalCleaningService,
+            @Value("${business.cleaning.numberOfDrivesAwayToConsiderParkingSpotDirty}") int numberOfDrivesAwayToConsiderParkingSpotDirty,
+            @Value("${business.cleaning.numberOfDirtyParkingSpotsToCallExternalService}") int numberOfDirtyParkingSpotsToCallExternalService
     ) {
         return new CallingExternalCleaningServicePolicy(
                 cleaningRepository,
-                externalCleaningService);
+                externalCleaningService,
+                numberOfDrivesAwayToConsiderParkingSpotDirty,
+                numberOfDirtyParkingSpotsToCallExternalService);
     }
 
     @Bean
