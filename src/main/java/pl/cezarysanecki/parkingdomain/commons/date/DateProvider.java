@@ -1,14 +1,21 @@
 package pl.cezarysanecki.parkingdomain.commons.date;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public interface DateProvider {
 
-    LocalDate today();
-
     LocalDateTime now();
+
+    default Instant nowInstant() {
+        return Instant.from(now());
+    }
+
+    default LocalDate today() {
+        return now().toLocalDate();
+    }
 
     default LocalDate tomorrow() {
         return today().plusDays(1);

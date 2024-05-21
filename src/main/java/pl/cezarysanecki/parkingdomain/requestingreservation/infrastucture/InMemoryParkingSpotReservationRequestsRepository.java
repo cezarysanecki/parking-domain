@@ -97,11 +97,12 @@ class InMemoryParkingSpotReservationRequestsRepository implements
     }
 
     @Override
-    public io.vavr.collection.List<ParkingSpotReservationRequests> findAllWithRequests() {
+    public io.vavr.collection.List<ParkingSpotReservationRequests> findAllRequestsValidFrom(Instant sinceDate) {
         return io.vavr.collection.List.ofAll(
                         DATABASE.values()
                                 .stream()
-                                .filter(not(entity -> entity.currentRequests.isEmpty())))
+                                .filter(not(entity -> entity.currentRequests.isEmpty()))
+                                .filter(not(entity -> entity.from.isAfter(sinceDate))))
                 .map(DomainMapper::map);
     }
 

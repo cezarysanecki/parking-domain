@@ -17,6 +17,10 @@ job:
   makingRequestsValidJob:
     cronExpression: "* 0/30 * * * ?"
 
+business:
+  numbersOfDirtyParkingSpotsToCallExternalCleaningService: 2
+  hoursToMakeReservationRequestValid: 2
+
 logging:
   level:
     pl.cezarysanecki.parkingdomain: DEBUG
