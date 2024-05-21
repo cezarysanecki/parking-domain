@@ -22,7 +22,7 @@ business:
     numberOfDirtyParkingSpotsToCallExternalService: 2
     numberOfDrivesAwayToConsiderParkingSpotDirty: 5
   reservationRequests:
-    hoursToMakeValid: 2
+    hoursToMakeValid: 1
 
 logging:
   level:
