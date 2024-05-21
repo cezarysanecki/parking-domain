@@ -14,11 +14,13 @@ public class CallingExternalCleaningServicePolicy {
 
     private final CleaningRepository cleaningRepository;
     private final ExternalCleaningService externalCleaningService;
+    private final int numberOfDrivesAwayToConsiderParkingSpotDirty;
+    private final int numberOfDirtyParkingSpotsToCallExternalService;
 
     public Result handleCleaningPolicy() {
-        List<ParkingSpotId> parkingSpotIds = cleaningRepository.getAllRecordsWithCounterAbove(20);
+        List<ParkingSpotId> parkingSpotIds = cleaningRepository.getAllRecordsWithCounterAbove(numberOfDrivesAwayToConsiderParkingSpotDirty);
 
-        if (parkingSpotIds.size() > 2) {
+        if (parkingSpotIds.size() >= numberOfDirtyParkingSpotsToCallExternalService) {
             log.debug("At least {} parking spots need to be cleaned, calling external service", parkingSpotIds.size());
             externalCleaningService.call();
             cleaningRepository.resetCountersFor(parkingSpotIds);

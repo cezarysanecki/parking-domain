@@ -1,16 +1,10 @@
 package pl.cezarysanecki.parkingdomain.commons.date;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 class LocalDateProvider implements DateProvider {
 
     private LocalDateTime currentDateTime = LocalDateTime.now();
-
-    @Override
-    public LocalDate today() {
-        return currentDateTime.toLocalDate();
-    }
 
     @Override
     public LocalDateTime now() {

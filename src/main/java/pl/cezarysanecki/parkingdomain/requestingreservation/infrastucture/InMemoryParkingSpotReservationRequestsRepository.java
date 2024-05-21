@@ -2,12 +2,14 @@ package pl.cezarysanecki.parkingdomain.requestingreservation.infrastucture;
 
 import io.vavr.control.Option;
 import jakarta.persistence.EntityNotFoundException;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.commons.aggregates.Version;
+import pl.cezarysanecki.parkingdomain.commons.events.DomainEvent;
+import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequests;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequestsEvents;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequestsRepository;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotTimeSlotId;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ReservationRequestId;
@@ -18,11 +20,9 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static java.util.function.Predicate.not;
-import static pl.cezarysanecki.parkingdomain.requestingreservation.infrastucture.InMemoryParkingSpotReservationRequestsRepository.ReservationRequestsEntity.CurrentRequestEntity;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -31,6 +31,8 @@ class InMemoryParkingSpotReservationRequestsRepository implements
         ParkingSpotReservationRequestsViewRepository {
 
     private static final Map<ParkingSpotTimeSlotId, ReservationRequestsEntity> DATABASE = new ConcurrentHashMap<>();
+
+    private final EventPublisher eventPublisher;
 
     @Override
     public void store(NewParkingSpotReservationRequests newOne) {
@@ -50,22 +52,18 @@ class InMemoryParkingSpotReservationRequestsRepository implements
     }
 
     @Override
-    public void save(ParkingSpotReservationRequests reservationRequests) {
-        ReservationRequestsEntity entity = DATABASE.get(reservationRequests.getParkingSpotTimeSlotId());
+    public void publish(ParkingSpotReservationRequestsEvents event) {
+        ReservationRequestsEntity entity = DATABASE.get(event.parkingSpotTimeSlotId());
         if (entity == null) {
-            throw new EntityNotFoundException("there is no entity for parking spot reservation request for time slot id " + reservationRequests.getParkingSpotTimeSlotId());
+            throw new EntityNotFoundException("there is no entity for parking spot reservation request for time slot with id " + event.parkingSpotTimeSlotId());
         }
 
-        entity.currentRequests = reservationRequests.getReservationRequests()
-                .values()
-                .map(reservationRequest -> new CurrentRequestEntity(
-                        reservationRequest.getReservationRequestId().getValue(),
-                        reservationRequest.getReservationRequesterId().getValue(),
-                        reservationRequest.getSpotUnits().getValue()
-                ))
-                .toJavaList();
+        entity = entity.handle(event);
+        DATABASE.put(event.parkingSpotTimeSlotId(), entity);
 
-        DATABASE.put(reservationRequests.getParkingSpotTimeSlotId(), entity);
+        if (event instanceof DomainEvent domainEvent) {
+            eventPublisher.publish(domainEvent);
+        }
     }
 
     @Override
@@ -97,11 +95,12 @@ class InMemoryParkingSpotReservationRequestsRepository implements
     }
 
     @Override
-    public io.vavr.collection.List<ParkingSpotReservationRequests> findAllWithRequests() {
+    public io.vavr.collection.List<ParkingSpotReservationRequests> findAllRequestsValidFrom(Instant sinceDate) {
         return io.vavr.collection.List.ofAll(
                         DATABASE.values()
                                 .stream()
-                                .filter(not(entity -> entity.currentRequests.isEmpty())))
+                                .filter(not(entity -> entity.currentRequests.isEmpty()))
+                                .filter(not(entity -> entity.from.isAfter(sinceDate))))
                 .map(DomainMapper::map);
     }
 
@@ -119,33 +118,6 @@ class InMemoryParkingSpotReservationRequestsRepository implements
                         entity.spaceLeft()
                 ))
                 .toList();
-    }
-
-    @AllArgsConstructor
-    static class ReservationRequestsEntity {
-
-        UUID parkingSpotId;
-        UUID parkingSpotTimeSlotId;
-        ParkingSpotCategory category;
-        int capacity;
-        List<CurrentRequestEntity> currentRequests;
-        Instant from;
-        Instant to;
-        int version;
-
-        int spaceLeft() {
-            return capacity - currentRequests.stream().map(currentRequest -> currentRequest.units).reduce(0, Integer::sum);
-        }
-
-        @AllArgsConstructor
-        static class CurrentRequestEntity {
-
-            UUID reservationRequestId;
-            UUID requesterId;
-            int units;
-
-        }
-
     }
 
 }

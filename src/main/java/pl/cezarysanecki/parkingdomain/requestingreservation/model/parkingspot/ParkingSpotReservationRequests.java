@@ -10,9 +10,13 @@ import lombok.Getter;
 import lombok.NonNull;
 import pl.cezarysanecki.parkingdomain.commons.aggregates.Version;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequestsEvents.ReservationRequestConfirmed;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterId;
 import pl.cezarysanecki.parkingdomain.shared.occupation.ParkingSpotCapacity;
 import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits;
+
+import static pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequestsEvents.ReservationRequestCancelled;
+import static pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequestsEvents.ReservationRequestStored;
 
 @Getter
 @AllArgsConstructor
@@ -25,7 +29,7 @@ public class ParkingSpotReservationRequests {
     @NonNull
     private final ParkingSpotCapacity capacity;
     @NonNull
-    private Map<ReservationRequestId, ReservationRequest> reservationRequests;
+    private final Map<ReservationRequestId, ReservationRequest> reservationRequests;
     @NonNull
     private final Version version;
 
@@ -42,39 +46,36 @@ public class ParkingSpotReservationRequests {
                 Version.zero());
     }
 
-    public Try<ReservationRequest> storeRequest(ReservationRequesterId requesterId, SpotUnits spotUnits) {
+    public Try<ReservationRequestStored> storeRequest(ReservationRequesterId requesterId, SpotUnits spotUnits) {
         if (exceedsAllowedSpace(spotUnits)) {
             return Try.failure(new IllegalStateException("not enough space"));
         }
-
-        ReservationRequest reservationRequest = ReservationRequest.newOne(requesterId, spotUnits);
-        reservationRequests = reservationRequests.put(reservationRequest.getReservationRequestId(), reservationRequest);
-
-        return Try.of(() -> reservationRequest);
+        return Try.of(() -> new ReservationRequestStored(
+                parkingSpotId,
+                parkingSpotTimeSlotId,
+                ReservationRequest.newOne(requesterId, spotUnits)));
     }
 
-    public Try<ReservationRequest> cancel(ReservationRequestId reservationRequestId) {
+    public Try<ReservationRequestCancelled> cancel(ReservationRequestId reservationRequestId) {
         Option<ReservationRequest> potentialReservationRequests = reservationRequests.get(reservationRequestId);
         if (potentialReservationRequests.isEmpty()) {
             return Try.failure(new IllegalArgumentException("no such reservation request"));
         }
-        ReservationRequest reservationRequest = potentialReservationRequests.get();
-
-        reservationRequests = reservationRequests.remove(reservationRequestId);
-
-        return Try.of(() -> reservationRequest);
+        return Try.of(() -> new ReservationRequestCancelled(
+                parkingSpotId,
+                parkingSpotTimeSlotId,
+                potentialReservationRequests.get()));
     }
 
-    public List<ValidReservationRequest> makeValid() {
+    public Try<List<ReservationRequestConfirmed>> makeValid() {
         List<ValidReservationRequest> validReservationRequests = reservationRequests.values()
                 .map(ValidReservationRequest::from)
                 .toList();
-        reservationRequests = HashMap.empty();
-        return validReservationRequests;
-    }
-
-    public boolean isFree() {
-        return reservationRequests.isEmpty();
+        return Try.of(() -> validReservationRequests
+                .map(validReservationRequest -> new ReservationRequestConfirmed(
+                        parkingSpotId,
+                        parkingSpotTimeSlotId,
+                        validReservationRequest)));
     }
 
     private int currentOccupation() {

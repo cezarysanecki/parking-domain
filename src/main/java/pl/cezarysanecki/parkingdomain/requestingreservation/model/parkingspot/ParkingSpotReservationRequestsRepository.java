@@ -7,11 +7,13 @@ import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.shared.occupation.ParkingSpotCapacity;
 import pl.cezarysanecki.parkingdomain.shared.timeslot.TimeSlot;
 
+import java.time.Instant;
+
 public interface ParkingSpotReservationRequestsRepository {
 
     void store(NewParkingSpotReservationRequests newOne);
 
-    void save(ParkingSpotReservationRequests parkingSpotReservationRequests);
+    void publish(ParkingSpotReservationRequestsEvents event);
 
     Option<ParkingSpotReservationRequests> findBy(ParkingSpotTimeSlotId parkingSpotTimeSlotId);
 
@@ -19,7 +21,7 @@ public interface ParkingSpotReservationRequestsRepository {
 
     Option<ParkingSpotReservationRequests> findBy(ReservationRequestId reservationRequestId);
 
-    List<ParkingSpotReservationRequests> findAllWithRequests();
+    List<ParkingSpotReservationRequests> findAllRequestsValidFrom(Instant sinceDate);
 
     record NewParkingSpotReservationRequests(
             ParkingSpotId parkingSpotId,

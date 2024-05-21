@@ -30,14 +30,19 @@ public class CleaningConfig {
     @Bean
     CallingExternalCleaningServicePolicy callingExternalCleaningServicePolicy(
             CleaningRepository cleaningRepository,
-            ExternalCleaningService externalCleaningService
+            ExternalCleaningService externalCleaningService,
+            @Value("${business.cleaning.numberOfDrivesAwayToConsiderParkingSpotDirty}") int numberOfDrivesAwayToConsiderParkingSpotDirty,
+            @Value("${business.cleaning.numberOfDirtyParkingSpotsToCallExternalService}") int numberOfDirtyParkingSpotsToCallExternalService
     ) {
         return new CallingExternalCleaningServicePolicy(
                 cleaningRepository,
-                externalCleaningService);
+                externalCleaningService,
+                numberOfDrivesAwayToConsiderParkingSpotDirty,
+                numberOfDirtyParkingSpotsToCallExternalService);
     }
 
     @Bean
+    @Profile("!local")
     JobDetail callingExternalCleaningServicePolicyJob() {
         return JobBuilder.newJob()
                 .storeDurably()
@@ -47,6 +52,7 @@ public class CleaningConfig {
     }
 
     @Bean
+    @Profile("!local")
     Trigger callingExternalCleaningServicePolicyJobTrigger(
             JobDetail callingExternalCleaningServicePolicyJob,
             @Value("${job.callingExternalCleaningServicePolicyJob.cronExpression}") String cronExpression

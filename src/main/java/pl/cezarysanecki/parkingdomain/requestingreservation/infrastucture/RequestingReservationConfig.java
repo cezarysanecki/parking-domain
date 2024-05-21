@@ -34,7 +34,6 @@ public class RequestingReservationConfig {
             ParkingSpotReservationRequestsRepository parkingSpotReservationRequestsRepository
     ) {
         return new StoringReservationRequest(
-                eventPublisher,
                 reservationRequesterRepository,
                 parkingSpotReservationRequestsRepository);
     }
@@ -45,7 +44,6 @@ public class RequestingReservationConfig {
             ParkingSpotReservationRequestsRepository parkingSpotReservationRequestsRepository
     ) {
         return new CancellingReservationRequest(
-                eventPublisher,
                 reservationRequesterRepository,
                 parkingSpotReservationRequestsRepository);
     }
@@ -66,14 +64,17 @@ public class RequestingReservationConfig {
 
     @Bean
     MakingReservationRequestsValid makingReservationRequestsValid(
-            ParkingSpotReservationRequestsRepository parkingSpotReservationRequestsRepository
+            ParkingSpotReservationRequestsRepository parkingSpotReservationRequestsRepository,
+            @Value("${business.reservationRequests.hoursToMakeValid}") int hoursToMakeReservationRequestValid
     ) {
         return new MakingReservationRequestsValid(
-                eventPublisher,
-                parkingSpotReservationRequestsRepository);
+                dateProvider,
+                parkingSpotReservationRequestsRepository,
+                hoursToMakeReservationRequestValid);
     }
 
     @Bean
+    @Profile("!local")
     JobDetail makingRequestsValidJobDetail() {
         return JobBuilder.newJob()
                 .storeDurably()
@@ -83,6 +84,7 @@ public class RequestingReservationConfig {
     }
 
     @Bean
+    @Profile("!local")
     Trigger makingRequestsValidJobTrigger(
             JobDetail makingRequestsValidJobDetail,
             @Value("${job.makingRequestsValidJob.cronExpression}") String cronExpression
@@ -104,7 +106,7 @@ public class RequestingReservationConfig {
     @Bean
     @Profile("local")
     InMemoryParkingSpotReservationRequestsRepository parkingSpotReservationRequestsRepository() {
-        return new InMemoryParkingSpotReservationRequestsRepository();
+        return new InMemoryParkingSpotReservationRequestsRepository(eventPublisher);
     }
 
 }

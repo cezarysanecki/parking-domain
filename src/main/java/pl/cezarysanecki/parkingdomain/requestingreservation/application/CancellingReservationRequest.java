@@ -3,10 +3,9 @@ package pl.cezarysanecki.parkingdomain.requestingreservation.application;
 import io.vavr.control.Try;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequests;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequestsRepository;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequestsEvents.ReservationRequestCancelled;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequestsRepository;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ReservationRequest;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ReservationRequestId;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequester;
@@ -16,7 +15,6 @@ import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.Rese
 @RequiredArgsConstructor
 public class CancellingReservationRequest {
 
-    private final EventPublisher eventPublisher;
     private final ReservationRequesterRepository reservationRequesterRepository;
     private final ParkingSpotReservationRequestsRepository parkingSpotReservationRequestsRepository;
 
@@ -24,14 +22,18 @@ public class CancellingReservationRequest {
         ReservationRequester reservationRequester = findReservationRequesterBy(reservationRequestId);
         ParkingSpotReservationRequests parkingSpotReservationRequests = findParkingSpotReservationRequestsBy(reservationRequestId);
 
-        return parkingSpotReservationRequests.cancel(reservationRequestId)
-                .flatMap(reservationRequester::remove)
+        Try<ReservationRequestCancelled> cancellationResult = parkingSpotReservationRequests.cancel(reservationRequestId);
+        if (cancellationResult.isFailure()) {
+            log.error("cannot cancel reservation request, reason: {}", cancellationResult.getCause().getMessage());
+            return cancellationResult.map(ReservationRequestCancelled::reservationRequest);
+        }
+        ReservationRequestCancelled event = cancellationResult.get();
+
+        return reservationRequester.remove(event.reservationRequest())
                 .onFailure(exception -> log.error("cannot cancel reservation request, reason: {}", exception.getMessage()))
                 .onSuccess(reservationRequest -> {
                     reservationRequesterRepository.save(reservationRequester);
-                    parkingSpotReservationRequestsRepository.save(parkingSpotReservationRequests);
-
-                    eventPublisher.publish(new ReservationRequestCancelled(parkingSpotReservationRequests.getParkingSpotId(), reservationRequest));
+                    parkingSpotReservationRequestsRepository.publish(event);
                 });
     }
 
