@@ -6,8 +6,7 @@ import io.vavr.control.Try;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ReservationRequest;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ReservationRequestId;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestId;
 
 @Getter
 @AllArgsConstructor
@@ -23,14 +22,14 @@ public class ReservationRequester {
         return new ReservationRequester(requesterId, HashSet.empty(), limit);
     }
 
-    public Try<ReservationRequest> append(ReservationRequest reservationRequest) {
-        if (willBeTooManyRequests(reservationRequest)) {
+    public Try<ReservationRequestId> append(ReservationRequestId reservationRequestId) {
+        if (willBeTooManyRequests(reservationRequestId)) {
             return Try.failure(new IllegalStateException("too many reservation requests"));
         }
 
-        reservationRequests = reservationRequests.add(reservationRequest.getReservationRequestId());
+        reservationRequests = reservationRequests.add(reservationRequestId);
 
-        return Try.of(() -> reservationRequest);
+        return Try.of(() -> reservationRequestId);
     }
 
     public Try<ReservationRequestId> remove(ReservationRequestId reservationRequestId) {
@@ -47,7 +46,7 @@ public class ReservationRequester {
         return reservationRequests.isEmpty();
     }
 
-    private boolean willBeTooManyRequests(ReservationRequest reservationRequest) {
+    private boolean willBeTooManyRequests(ReservationRequestId reservationRequestId) {
         return reservationRequests.size() + 1 > limit;
     }
 

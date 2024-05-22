@@ -5,19 +5,19 @@ import lombok.extern.slf4j.Slf4j;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
-import pl.cezarysanecki.parkingdomain.requestingreservation.application.CreatingReservationRequestTimeSlots;
+import pl.cezarysanecki.parkingdomain.requestingreservation.application.ExchangingReservationRequestsTimeSlots;
 
 @Slf4j
 @DisallowConcurrentExecution
 @RequiredArgsConstructor
-class CreatingreservationRequestsTimeSlotsJob implements Job {
+class ExchangingReservationRequestsTimeSlotsJob implements Job {
 
-    private final CreatingReservationRequestTimeSlots creatingReservationRequestTimeSlots;
+    private final ExchangingReservationRequestsTimeSlots exchangingReservationRequestsTimeSlots;
 
     @Override
     public void execute(JobExecutionContext jobExecutionContext) {
         log.debug("=== JOB {} STARTED ===", getClass().getSimpleName());
-        creatingReservationRequestTimeSlots.prepareNewTimeSlots();
+        exchangingReservationRequestsTimeSlots.exchangeTimeSlots();
         log.debug("=== JOB {} ENDED ===", getClass().getSimpleName());
     }
 

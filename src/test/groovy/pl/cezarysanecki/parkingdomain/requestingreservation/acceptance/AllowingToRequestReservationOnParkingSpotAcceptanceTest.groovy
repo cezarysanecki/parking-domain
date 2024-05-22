@@ -5,8 +5,8 @@ import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.parking.acceptance.AbstractParkingAcceptanceTest
 import pl.cezarysanecki.parkingdomain.requestingreservation.application.StoringReservationRequest
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotTimeSlotId
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ReservationRequestId
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlotId
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestId
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterId
 import pl.cezarysanecki.parkingdomain.requestingreservation.web.ParkingSpotReservationRequestsViewRepository
 import pl.cezarysanecki.parkingdomain.requestingreservation.web.ReservationRequesterViewRepository
@@ -61,8 +61,8 @@ class AllowingToRequestReservationOnParkingSpotAcceptanceTest extends AbstractPa
       requesterContainsReservationRequest(requesterId, reservationRequest.get().reservationRequestId)
   }
   
-  private ParkingSpotTimeSlotId findAnyFullyFreeParkingSpotTimeSlot(ParkingSpotId parkingSpotId) {
-    return ParkingSpotTimeSlotId.of(
+  private ReservationRequestsTimeSlotId findAnyFullyFreeParkingSpotTimeSlot(ParkingSpotId parkingSpotId) {
+    return ReservationRequestsTimeSlotId.of(
         parkingSpotReservationRequestsViewRepository.queryForAllAvailableParkingSpots()
             .find { it.parkingSpotId() == parkingSpotId.value && it.spaceLeft() == it.capacity() }
             .parkingSpotTimeSlotId())
@@ -76,7 +76,7 @@ class AllowingToRequestReservationOnParkingSpotAcceptanceTest extends AbstractPa
         }
   }
   
-  private void parkingSpotTimeSlotHasSpaceLeft(ParkingSpotTimeSlotId parkingSpotTimeSlotId, Integer spaceLeft) {
+  private void parkingSpotTimeSlotHasSpaceLeft(ReservationRequestsTimeSlotId parkingSpotTimeSlotId, Integer spaceLeft) {
     parkingSpotReservationRequestsViewRepository.queryForAllAvailableParkingSpots()
         .find { it -> it.parkingSpotTimeSlotId() == parkingSpotTimeSlotId.value }
         .with {
@@ -84,7 +84,7 @@ class AllowingToRequestReservationOnParkingSpotAcceptanceTest extends AbstractPa
         }
   }
   
-  private void parkingSpotTimeSlotHasNoSpaceLeft(ParkingSpotTimeSlotId parkingSpotTimeSlotId) {
+  private void parkingSpotTimeSlotHasNoSpaceLeft(ReservationRequestsTimeSlotId parkingSpotTimeSlotId) {
     parkingSpotReservationRequestsViewRepository.queryForAllAvailableParkingSpots()
         .each { it -> it.parkingSpotTimeSlotId() != parkingSpotTimeSlotId.value }
   }

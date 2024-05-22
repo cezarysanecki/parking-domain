@@ -1,11 +1,11 @@
-package pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot
+package pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot
 
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterId
 import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits
 import spock.lang.Specification
 
 import static ParkingSpotReservationRequestsFixture.parkingSpotWithoutReservationRequests
-import static pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequestsFixture.parkingSpotFullyRequested
+import static pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ParkingSpotReservationRequestsFixture.parkingSpotFullyRequested
 
 class StoringRequestForParkingSpotTest extends Specification {
   
@@ -18,7 +18,7 @@ class StoringRequestForParkingSpotTest extends Specification {
       def spotUnits = SpotUnits.of(2)
     
     when:
-      def result = parkingSpotReservationRequests.storeRequest(requesterId, spotUnits)
+      def result = parkingSpotReservationRequests.append(requesterId, spotUnits)
     
     then:
       result.isSuccess()
@@ -36,7 +36,7 @@ class StoringRequestForParkingSpotTest extends Specification {
       def requesterId = ReservationRequesterId.newOne()
     
     when:
-      def result = parkingSpotRequests.storeRequest(requesterId, SpotUnits.of(1))
+      def result = parkingSpotRequests.append(requesterId, SpotUnits.of(1))
     
     then:
       result.isFailure()

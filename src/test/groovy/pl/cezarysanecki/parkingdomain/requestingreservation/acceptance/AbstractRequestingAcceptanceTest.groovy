@@ -10,8 +10,8 @@ import pl.cezarysanecki.parkingdomain.management.client.ClientId
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotAdded
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId
-import pl.cezarysanecki.parkingdomain.requestingreservation.application.CreatingReservationRequestTimeSlots
-import pl.cezarysanecki.parkingdomain.requestingreservation.infrastucture.RequestingReservationConfig
+import pl.cezarysanecki.parkingdomain.requestingreservation.application.ExchangingReservationRequestsTimeSlots
+import pl.cezarysanecki.parkingdomain.requestingreservation.infrastucture.RequestingReservationTimeSlotConfig
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterId
 import pl.cezarysanecki.parkingdomain.shared.occupation.ParkingSpotCapacity
 import spock.lang.Specification
@@ -20,7 +20,7 @@ import static pl.cezarysanecki.parkingdomain.management.client.ClientRegistered.
 
 @ActiveProfiles("local")
 @SpringBootTest(classes = [
-    RequestingReservationConfig.class,
+    RequestingReservationTimeSlotConfig.class,
     EventPublisherTestConfig.class,
     LocalConfig.class])
 abstract class AbstractRequestingAcceptanceTest extends Specification {
@@ -28,7 +28,7 @@ abstract class AbstractRequestingAcceptanceTest extends Specification {
   @Autowired
   EventPublisher eventPublisher
   @Autowired
-  CreatingReservationRequestTimeSlots creatingReservationRequestTimeSlots
+  ExchangingReservationRequestsTimeSlots creatingReservationRequestTimeSlots
   
   ParkingSpotId addParkingSpot(int capacity, ParkingSpotCategory category) {
     def parkingSpotId = ParkingSpotId.newOne()
@@ -37,7 +37,7 @@ abstract class AbstractRequestingAcceptanceTest extends Specification {
   }
   
   void createTimeSlots() {
-    creatingReservationRequestTimeSlots.prepareNewTimeSlots()
+    creatingReservationRequestTimeSlots.exchangeTimeSlots()
   }
   
   ReservationRequesterId registerLowLimitRequester() {

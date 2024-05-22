@@ -1,18 +1,17 @@
 package pl.cezarysanecki.parkingdomain.parking.application;
 
-import io.vavr.control.Try;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
+import pl.cezarysanecki.parkingdomain.parking.model.AppendingReservation;
 import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.Beneficiary;
 import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryId;
 import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryRepository;
 import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotRepository;
-import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.Reservation;
 
-import static pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequestsEvents.ReservationRequestConfirmed;
+import static pl.cezarysanecki.parkingdomain.requestingreservation.model.ReservationRequestEvent.ReservationRequestsConfirmed;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -22,20 +21,22 @@ public class ReservingParkingSpotEventHandler {
     private final ParkingSpotRepository parkingSpotRepository;
 
     @EventListener
-    public void handle(ReservationRequestConfirmed event) {
-        BeneficiaryId beneficiaryId = BeneficiaryId.of(event.validReservationRequest().getReservationRequesterId().getValue());
-
-        Beneficiary beneficiary = findBeneficiaryBy(beneficiaryId);
+    public void handle(ReservationRequestsConfirmed event) {
         ParkingSpot parkingSpot = findParkingSpotBy(event.parkingSpotId());
 
-        log.debug("reserving parking spot with id: {}", parkingSpot.getParkingSpotId());
+        event.reservationRequests()
+                .forEach(reservationRequest -> {
+                    Beneficiary beneficiary = findBeneficiaryBy(BeneficiaryId.of(reservationRequest.getReservationRequesterId().getValue()));
 
-        Try<Reservation> result = parkingSpot.reserveUsing(event.validReservationRequest())
-                .flatMap(beneficiary::append);
+                    AppendingReservation.append(
+                                    parkingSpot,
+                                    beneficiary,
+                                    reservationRequest)
+                            .onFailure(t -> log.error("cannot create reservation from request with id {}, reason {}", reservationRequest.getReservationRequestId(), t.getMessage()))
+                            .onSuccess(reservation -> log.error("created reservation with id {} from request with id {}", reservation.getReservationId(), reservationRequest.getReservationRequestId()));
+                });
 
-        result
-                .onFailure(exception -> log.error("cannot reserve parking spot, reason: {}", exception.getMessage()))
-                .onSuccess(occupation -> parkingSpotRepository.save(parkingSpot));
+        parkingSpotRepository.save(parkingSpot);
     }
 
     private ParkingSpot findParkingSpotBy(ParkingSpotId parkingSpotId) {

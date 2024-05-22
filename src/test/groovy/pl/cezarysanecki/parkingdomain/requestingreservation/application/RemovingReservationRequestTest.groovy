@@ -2,9 +2,9 @@ package pl.cezarysanecki.parkingdomain.requestingreservation.application
 
 import io.vavr.collection.HashSet
 import io.vavr.control.Option
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequestsRepository
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ReservationRequest
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ReservationRequestId
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlotsRepository
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequest
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestId
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequester
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterId
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterRepository
@@ -12,15 +12,15 @@ import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits
 import spock.lang.Specification
 import spock.lang.Subject
 
-import static pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequestsEvents.ReservationRequestCancelled
-import static pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequestsFixture.parkingSpotWithRequest
-import static pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequestsFixture.parkingSpotWithoutReservationRequests
+import static pl.cezarysanecki.parkingdomain.requestingreservation.model.ReservationRequestsEvents.ReservationRequestRemoved
+import static pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ParkingSpotReservationRequestsFixture.parkingSpotWithRequest
+import static pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ParkingSpotReservationRequestsFixture.parkingSpotWithoutReservationRequests
 import static pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterFixture.requesterWithNoReservationRequests
 
-class CancellingReservationRequestTest extends Specification {
+class RemovingReservationRequestTest extends Specification {
   
   ReservationRequesterRepository reservationRequesterRepository = Mock()
-  ParkingSpotReservationRequestsRepository parkingSpotReservationRequestsRepository = Mock()
+  ReservationRequestsTimeSlotsRepository parkingSpotReservationRequestsRepository = Mock()
   
   @Subject
   CancellingReservationRequest cancellingReservationRequest = new CancellingReservationRequest(
@@ -53,7 +53,7 @@ class CancellingReservationRequestTest extends Specification {
       }
     and:
       1 * reservationRequesterRepository.save(requester)
-      1 * parkingSpotReservationRequestsRepository.publish(_ as ReservationRequestCancelled)
+      1 * parkingSpotReservationRequestsRepository.publish(_ as ReservationRequestRemoved)
   }
   
   def "fail to store reservation request when requester does not have enough limit"() {

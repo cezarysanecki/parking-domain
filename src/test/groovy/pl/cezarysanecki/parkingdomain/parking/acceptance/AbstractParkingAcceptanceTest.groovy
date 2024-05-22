@@ -13,23 +13,23 @@ import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.parking.infrastructure.ParkingSpotConfig
 import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryId
 import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ReservationId
-import pl.cezarysanecki.parkingdomain.requestingreservation.application.CreatingReservationRequestTimeSlots
-import pl.cezarysanecki.parkingdomain.requestingreservation.infrastucture.RequestingReservationConfig
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotTimeSlotId
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ReservationRequest
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ValidReservationRequest
+import pl.cezarysanecki.parkingdomain.requestingreservation.application.ExchangingReservationRequestsTimeSlots
+import pl.cezarysanecki.parkingdomain.requestingreservation.infrastucture.RequestingReservationTimeSlotConfig
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequest
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlotId
+
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterId
 import pl.cezarysanecki.parkingdomain.shared.occupation.ParkingSpotCapacity
 import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits
 import spock.lang.Specification
 
 import static pl.cezarysanecki.parkingdomain.management.client.ClientRegistered.IndividualClientRegistered
-import static pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequestsEvents.ReservationRequestConfirmed
+import static pl.cezarysanecki.parkingdomain.requestingreservation.model.ReservationRequestsEvents.ReservationRequestConfirmed
 
 @ActiveProfiles("local")
 @SpringBootTest(classes = [
     ParkingSpotConfig.class,
-    RequestingReservationConfig.class,
+    RequestingReservationTimeSlotConfig.class,
     EventPublisherTestConfig.class,
     LocalConfig.class])
 abstract class AbstractParkingAcceptanceTest extends Specification {
@@ -37,10 +37,10 @@ abstract class AbstractParkingAcceptanceTest extends Specification {
   @Autowired
   EventPublisher eventPublisher
   @Autowired
-  CreatingReservationRequestTimeSlots creatingReservationRequestTimeSlots
+  ExchangingReservationRequestsTimeSlots creatingReservationRequestTimeSlots
   
   void createTimeSlots() {
-    creatingReservationRequestTimeSlots.prepareNewTimeSlots()
+    creatingReservationRequestTimeSlots.exchangeTimeSlots()
   }
   
   ParkingSpotId addParkingSpot(int capacity, ParkingSpotCategory category) {
@@ -58,7 +58,7 @@ abstract class AbstractParkingAcceptanceTest extends Specification {
   ReservationId reserveParkingSpot(ParkingSpotId parkingSpotId, ReservationRequesterId requesterId, SpotUnits spotUnits) {
     def validReservationRequest = ValidReservationRequest.from(
         ReservationRequest.newOne(requesterId, spotUnits))
-    eventPublisher.publish(new ReservationRequestConfirmed(parkingSpotId, ParkingSpotTimeSlotId.newOne(), validReservationRequest))
+    eventPublisher.publish(new ReservationRequestConfirmed(parkingSpotId, ReservationRequestsTimeSlotId.newOne(), validReservationRequest))
     return ReservationId.of(validReservationRequest.reservationRequestId.value)
   }
   

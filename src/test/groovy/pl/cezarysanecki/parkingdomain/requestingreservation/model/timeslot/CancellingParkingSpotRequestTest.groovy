@@ -1,10 +1,10 @@
-package pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot
+package pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot
 
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterId
 import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits
 import spock.lang.Specification
 
-import static pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequestsFixture.parkingSpotWithRequest
+import static pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ParkingSpotReservationRequestsFixture.parkingSpotWithRequest
 
 class CancellingParkingSpotRequestTest extends Specification {
   
@@ -18,7 +18,7 @@ class CancellingParkingSpotRequestTest extends Specification {
       def parkingSpotReservationRequests = parkingSpotWithRequest(reservationRequest)
     
     when:
-      def result = parkingSpotReservationRequests.cancel(reservationRequest.reservationRequestId)
+      def result = parkingSpotReservationRequests.remove(reservationRequest.reservationRequestId)
     
     then:
       result.isSuccess()
@@ -39,7 +39,7 @@ class CancellingParkingSpotRequestTest extends Specification {
       def parkingSpotReservationRequests = parkingSpotWithRequest(reservationRequest)
     
     when:
-      def result = parkingSpotReservationRequests.cancel(ReservationRequestId.newOne())
+      def result = parkingSpotReservationRequests.remove(ReservationRequestId.newOne())
     
     then:
       result.isFailure()

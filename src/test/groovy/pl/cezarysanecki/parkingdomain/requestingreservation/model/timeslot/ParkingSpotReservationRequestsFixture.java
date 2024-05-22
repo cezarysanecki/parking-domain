@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot;
+package pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot;
 
 import io.vavr.collection.HashMap;
 import lombok.AccessLevel;
@@ -12,30 +12,30 @@ import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ParkingSpotReservationRequestsFixture {
 
-    public static ParkingSpotReservationRequests parkingSpotWithoutReservationRequests() {
-        return ParkingSpotReservationRequests.newOne(
+    public static ReservationRequestsTimeSlot parkingSpotWithoutReservationRequests() {
+        return ReservationRequestsTimeSlot.newOne(
                 ParkingSpotId.newOne(),
-                ParkingSpotTimeSlotId.newOne(),
+                ReservationRequestsTimeSlotId.newOne(),
                 ParkingSpotCapacity.of(4));
     }
 
-    public static ParkingSpotReservationRequests parkingSpotFullyRequested() {
+    public static ReservationRequestsTimeSlot parkingSpotFullyRequested() {
         ParkingSpotCapacity capacity = ParkingSpotCapacity.of(4);
         ReservationRequest reservationRequest = ReservationRequest.newOne(
                 ReservationRequesterId.newOne(), SpotUnits.of(capacity.getValue()));
 
-        return new ParkingSpotReservationRequests(
+        return new ReservationRequestsTimeSlot(
                 ParkingSpotId.newOne(),
-                ParkingSpotTimeSlotId.newOne(),
+                ReservationRequestsTimeSlotId.newOne(),
                 capacity,
                 HashMap.of(reservationRequest.getReservationRequestId(), reservationRequest),
                 Version.zero());
     }
 
-    public static ParkingSpotReservationRequests parkingSpotWithRequest(ReservationRequest reservationRequest) {
-        return new ParkingSpotReservationRequests(
+    public static ReservationRequestsTimeSlot parkingSpotWithRequest(ReservationRequest reservationRequest) {
+        return new ReservationRequestsTimeSlot(
                 ParkingSpotId.newOne(),
-                ParkingSpotTimeSlotId.newOne(),
+                ReservationRequestsTimeSlotId.newOne(),
                 ParkingSpotCapacity.of(4),
                 HashMap.of(reservationRequest.getReservationRequestId(), reservationRequest),
                 Version.zero());

@@ -5,12 +5,12 @@ import lombok.Value;
 import java.util.UUID;
 
 @Value(staticConstructor = "of")
-public class ParkingSpotReservationRequestsTemplateId {
+public class ReservationRequestsTemplateId {
 
     UUID value;
 
-    public static ParkingSpotReservationRequestsTemplateId newOne() {
-        return new ParkingSpotReservationRequestsTemplateId(UUID.randomUUID());
+    public static ReservationRequestsTemplateId newOne() {
+        return new ReservationRequestsTemplateId(UUID.randomUUID());
     }
 
     @Override

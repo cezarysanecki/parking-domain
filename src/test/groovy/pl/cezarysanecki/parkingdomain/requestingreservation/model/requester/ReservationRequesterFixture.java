@@ -3,7 +3,7 @@ package pl.cezarysanecki.parkingdomain.requestingreservation.model.requester;
 import io.vavr.collection.HashSet;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ReservationRequestId;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestId;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ReservationRequesterFixture {
