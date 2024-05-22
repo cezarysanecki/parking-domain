@@ -39,6 +39,16 @@ class InMemoryReservationRequesterRepository implements
     }
 
     @Override
+    public void removeRequestsFromRequesters(io.vavr.collection.List<ReservationRequestId> reservationRequestIds) {
+        reservationRequestIds.forEach(
+                reservationRequestId -> {
+                    findBy(reservationRequestId)
+                            .map(entity -> entity.remove(reservationRequestId));
+                }
+        );
+    }
+
+    @Override
     public List<ReservationRequesterView> queryForAllReservationRequesters() {
         return DATABASE.values()
                 .stream()

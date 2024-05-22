@@ -67,11 +67,13 @@ public class RequestingReservationConfig {
     @Bean
     MakingReservationRequestsValid makingReservationRequestsValid(
             ParkingSpotReservationRequestsRepository parkingSpotReservationRequestsRepository,
+            ReservationRequesterRepository reservationRequesterRepository,
             @Value("${business.reservationRequests.hoursToMakeValid}") int hoursToMakeReservationRequestValid
     ) {
         return new MakingReservationRequestsValid(
                 dateProvider,
                 parkingSpotReservationRequestsRepository,
+                reservationRequesterRepository,
                 hoursToMakeReservationRequestValid);
     }
 

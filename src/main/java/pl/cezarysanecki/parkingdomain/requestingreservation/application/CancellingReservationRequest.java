@@ -29,12 +29,13 @@ public class CancellingReservationRequest {
         }
         ReservationRequestCancelled event = cancellationResult.get();
 
-        return reservationRequester.remove(event.reservationRequest())
+        return reservationRequester.remove(event.reservationRequest().getReservationRequestId())
                 .onFailure(exception -> log.error("cannot cancel reservation request, reason: {}", exception.getMessage()))
-                .onSuccess(reservationRequest -> {
+                .onSuccess(removedReservationRequestId -> {
                     reservationRequesterRepository.save(reservationRequester);
                     parkingSpotReservationRequestsRepository.publish(event);
-                });
+                })
+                .map(removedReservationRequestId -> event.reservationRequest());
     }
 
     private ReservationRequester findReservationRequesterBy(ReservationRequestId reservationRequesterId) {

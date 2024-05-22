@@ -33,14 +33,14 @@ public class ReservationRequester {
         return Try.of(() -> reservationRequest);
     }
 
-    public Try<ReservationRequest> remove(ReservationRequest reservationRequest) {
-        if (!reservationRequests.contains(reservationRequest.getReservationRequestId())) {
+    public Try<ReservationRequestId> remove(ReservationRequestId reservationRequestId) {
+        if (!reservationRequests.contains(reservationRequestId)) {
             return Try.failure(new IllegalStateException("reservation request not found"));
         }
 
-        reservationRequests = reservationRequests.remove(reservationRequest.getReservationRequestId());
+        reservationRequests = reservationRequests.remove(reservationRequestId);
 
-        return Try.of(() -> reservationRequest);
+        return Try.of(() -> reservationRequestId);
     }
 
     public boolean isEmpty() {
