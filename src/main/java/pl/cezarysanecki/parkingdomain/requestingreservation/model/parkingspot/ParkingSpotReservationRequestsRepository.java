@@ -17,10 +17,10 @@ public interface ParkingSpotReservationRequestsRepository {
 
     Option<ParkingSpotReservationRequests> findBy(ReservationRequestId reservationRequestId);
 
-    List<ParkingSpotReservationRequests> findAllRequestsBecomingValid(Instant sinceDate);
+    List<ParkingSpotReservationRequests> findAllWithRequestsAndValidSince(Instant sinceDate);
 
     void removeAll();
 
-    void removeAll(List<ParkingSpotTimeSlotId> parkingSpotTimeSlotIds);
+    void removeAllWithoutRequestsAndValidSince(Instant sinceDateInstant);
 
 }

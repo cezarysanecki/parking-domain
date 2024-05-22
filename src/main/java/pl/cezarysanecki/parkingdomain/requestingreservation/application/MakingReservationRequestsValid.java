@@ -8,7 +8,6 @@ import pl.cezarysanecki.parkingdomain.commons.date.DateProvider;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequests;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequestsEvents;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequestsRepository;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotTimeSlotId;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -26,8 +25,8 @@ public class MakingReservationRequestsValid {
         LocalDateTime sinceDate = dateProvider.now().plusHours(hoursToMakeReservationRequestValid);
         Instant sinceDateInstant = sinceDate.toInstant(ZoneOffset.UTC);
 
-        List<ParkingSpotReservationRequests> reservationRequestsList = parkingSpotReservationRequestsRepository.findAllRequestsBecomingValid(sinceDateInstant);
-        log.debug("Found {} reservation requests to make them valid", reservationRequestsList.size());
+        List<ParkingSpotReservationRequests> reservationRequestsList = parkingSpotReservationRequestsRepository.findAllWithRequestsAndValidSince(sinceDateInstant);
+        log.debug("found {} reservation requests to make them valid", reservationRequestsList.size());
 
         var results = reservationRequestsList.map(ParkingSpotReservationRequests::makeValid).toList();
 
@@ -36,20 +35,17 @@ public class MakingReservationRequestsValid {
                 .map(result -> result.getCause().getMessage())
                 .map(Problem::new)
                 .toList();
-        log.debug("Found {} problems with requests to make them valid", problems.size());
+        log.debug("found {} problems with requests to make them valid", problems.size());
 
         List<ParkingSpotReservationRequestsEvents> events = results
                 .filter(Try::isSuccess)
                 .flatMap(Try::get);
-        log.debug("Found {} requests to successfully make them valid", events.size());
-
-        List<ParkingSpotTimeSlotId> parkingSpotTimeSlotIds = reservationRequestsList
-                .map(ParkingSpotReservationRequests::getParkingSpotTimeSlotId)
-                .toList();
-        parkingSpotReservationRequestsRepository.removeAll(parkingSpotTimeSlotIds);
-        log.debug("Removed {} handled and invalid request reservations", parkingSpotTimeSlotIds.size());
+        log.debug("found {} requests to successfully make them valid", events.size());
 
         events.forEach(parkingSpotReservationRequestsRepository::publish);
+
+        parkingSpotReservationRequestsRepository.removeAllWithoutRequestsAndValidSince(sinceDateInstant);
+        log.debug("removed all lasting reservation requests that are not used");
 
         return problems;
     }
