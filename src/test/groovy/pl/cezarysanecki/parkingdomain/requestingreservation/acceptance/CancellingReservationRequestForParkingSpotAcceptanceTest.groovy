@@ -28,6 +28,8 @@ class CancellingReservationRequestForParkingSpotAcceptanceTest extends AbstractR
   def setup() {
     parkingSpotId = addParkingSpot(4, ParkingSpotCategory.Gold)
     requesterId = registerLowLimitRequester()
+    
+    createTimeSlots()
   }
   
   def "cancel parking spot reservation request"() {

@@ -3,7 +3,7 @@ package pl.cezarysanecki.parkingdomain.parking.acceptance
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
-import pl.cezarysanecki.parkingdomain.commons.date.DateConfig
+import pl.cezarysanecki.parkingdomain._local.config.LocalConfig
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisherTestConfig
 import pl.cezarysanecki.parkingdomain.management.client.ClientId
@@ -13,7 +13,9 @@ import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.parking.infrastructure.ParkingSpotConfig
 import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryId
 import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ReservationId
+import pl.cezarysanecki.parkingdomain.requestingreservation.application.CreatingReservationRequestTimeSlots
 import pl.cezarysanecki.parkingdomain.requestingreservation.infrastucture.RequestingReservationConfig
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotTimeSlotId
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ReservationRequest
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ValidReservationRequest
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterId
@@ -29,11 +31,17 @@ import static pl.cezarysanecki.parkingdomain.requestingreservation.model.parking
     ParkingSpotConfig.class,
     RequestingReservationConfig.class,
     EventPublisherTestConfig.class,
-    DateConfig.class])
+    LocalConfig.class])
 abstract class AbstractParkingAcceptanceTest extends Specification {
   
   @Autowired
   EventPublisher eventPublisher
+  @Autowired
+  CreatingReservationRequestTimeSlots creatingReservationRequestTimeSlots
+  
+  void createTimeSlots() {
+    creatingReservationRequestTimeSlots.prepareNewTimeSlots()
+  }
   
   ParkingSpotId addParkingSpot(int capacity, ParkingSpotCategory category) {
     def parkingSpotId = ParkingSpotId.newOne()
@@ -50,7 +58,7 @@ abstract class AbstractParkingAcceptanceTest extends Specification {
   ReservationId reserveParkingSpot(ParkingSpotId parkingSpotId, ReservationRequesterId requesterId, SpotUnits spotUnits) {
     def validReservationRequest = ValidReservationRequest.from(
         ReservationRequest.newOne(requesterId, spotUnits))
-    eventPublisher.publish(new ReservationRequestConfirmed(parkingSpotId, validReservationRequest))
+    eventPublisher.publish(new ReservationRequestConfirmed(parkingSpotId, ParkingSpotTimeSlotId.newOne(), validReservationRequest))
     return ReservationId.of(validReservationRequest.reservationRequestId.value)
   }
   

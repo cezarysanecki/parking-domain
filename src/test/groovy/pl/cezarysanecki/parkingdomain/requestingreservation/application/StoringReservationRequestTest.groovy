@@ -1,7 +1,6 @@
 package pl.cezarysanecki.parkingdomain.requestingreservation.application
 
 import io.vavr.control.Option
-import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ParkingSpotReservationRequestsRepository
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ReservationRequestId
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterRepository
@@ -16,13 +15,11 @@ import static pl.cezarysanecki.parkingdomain.requestingreservation.model.request
 
 class StoringReservationRequestTest extends Specification {
   
-  EventPublisher eventPublisher = Mock()
   ReservationRequesterRepository reservationRequesterRepository = Mock()
   ParkingSpotReservationRequestsRepository parkingSpotReservationRequestsRepository = Mock()
   
   @Subject
   StoringReservationRequest storingReservationRequest = new StoringReservationRequest(
-      eventPublisher,
       reservationRequesterRepository,
       parkingSpotReservationRequestsRepository)
   
@@ -47,9 +44,7 @@ class StoringReservationRequestTest extends Specification {
       }
     and:
       1 * reservationRequesterRepository.save(requester)
-      1 * parkingSpotReservationRequestsRepository.save(parkingSpotReservationRequests)
-    and:
-      1 * eventPublisher.publish(_ as ReservationRequestStored)
+      1 * parkingSpotReservationRequestsRepository.publish(_ as ReservationRequestStored)
   }
   
   def "fail to store reservation request when requester does not have enough limit"() {

@@ -18,6 +18,7 @@ import pl.cezarysanecki.parkingdomain.requestingreservation.web.ParkingSpotReser
 import pl.cezarysanecki.parkingdomain.shared.timeslot.TimeSlot;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -46,12 +47,12 @@ class InMemoryParkingSpotReservationRequestsRepository implements
                         created.parkingSpotTimeSlotId().getValue(),
                         template.parkingSpotCategory(),
                         template.capacity().getValue(),
-                        List.of(),
+                        new ArrayList<>(),
                         created.timeSlot().from(),
                         created.timeSlot().to(),
                         Version.zero().getVersion()));
             }
-            case ReservationRequestConfirmed confirmed -> DATABASE.remove(event.parkingSpotTimeSlotId());
+            case ReservationRequestConfirmed confirmed -> DATABASE.remove(confirmed.parkingSpotTimeSlotId());
             default -> {
                 ReservationRequestsEntity entity = DATABASE.get(event.parkingSpotTimeSlotId());
                 if (entity == null) {
@@ -97,7 +98,7 @@ class InMemoryParkingSpotReservationRequestsRepository implements
     }
 
     @Override
-    public io.vavr.collection.List<ParkingSpotReservationRequests> findAllRequestsValidFrom(Instant sinceDate) {
+    public io.vavr.collection.List<ParkingSpotReservationRequests> findAllWithRequestsAndValidSince(Instant sinceDate) {
         return io.vavr.collection.List.ofAll(
                         DATABASE.values()
                                 .stream()
@@ -109,6 +110,16 @@ class InMemoryParkingSpotReservationRequestsRepository implements
     @Override
     public void removeAll() {
         DATABASE.clear();
+    }
+
+    @Override
+    public void removeAllWithoutRequestsAndValidSince(Instant sinceDate) {
+        DATABASE.values()
+                .stream()
+                .filter(entity -> entity.currentRequests.isEmpty())
+                .filter(not(entity -> entity.from.isAfter(sinceDate)))
+                .map(entity -> ParkingSpotTimeSlotId.of(entity.parkingSpotTimeSlotId))
+                .forEach(DATABASE::remove);
     }
 
     @Override
