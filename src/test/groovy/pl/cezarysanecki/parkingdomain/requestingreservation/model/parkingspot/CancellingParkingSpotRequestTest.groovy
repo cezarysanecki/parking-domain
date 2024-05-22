@@ -23,9 +23,9 @@ class CancellingParkingSpotRequestTest extends Specification {
     then:
       result.isSuccess()
       result.get().with {
-        assert it.reservationRequesterId == requesterId
-        assert it.reservationRequestId == reservationRequest.reservationRequestId
-        assert it.spotUnits == spotUnits
+        assert it.reservationRequest().reservationRequesterId == requesterId
+        assert it.reservationRequest().reservationRequestId == reservationRequest.reservationRequestId
+        assert it.reservationRequest().spotUnits == spotUnits
       }
   }
   

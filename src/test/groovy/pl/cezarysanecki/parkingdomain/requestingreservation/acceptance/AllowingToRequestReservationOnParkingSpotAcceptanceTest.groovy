@@ -29,6 +29,8 @@ class AllowingToRequestReservationOnParkingSpotAcceptanceTest extends AbstractPa
     
     parkingSpotId = addParkingSpot(4, ParkingSpotCategory.Gold)
     requesterId = ReservationRequesterId.of(clientId.value)
+    
+    createTimeSlots()
   }
   
   def "request reservation for parking spot"() {
