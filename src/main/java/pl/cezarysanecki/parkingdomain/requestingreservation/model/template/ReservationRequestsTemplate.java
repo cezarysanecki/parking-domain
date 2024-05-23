@@ -7,6 +7,6 @@ import pl.cezarysanecki.parkingdomain.shared.occupation.ParkingSpotCapacity;
 public record ReservationRequestsTemplate(
         ReservationRequestsTemplateId templateId,
         ParkingSpotId parkingSpotId,
-        ParkingSpotCategory parkingSpotCategory,
+        ParkingSpotCategory category,
         ParkingSpotCapacity capacity) {
 }

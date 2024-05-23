@@ -2,6 +2,7 @@ package pl.cezarysanecki.parkingdomain.requestingreservation.infrastucture;
 
 import io.vavr.collection.List;
 import io.vavr.control.Option;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,20 +10,20 @@ import org.springframework.context.annotation.Profile;
 import pl.cezarysanecki.parkingdomain.commons.events.DomainEvent;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.ReservationRequestEvent;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.ReservationRequestEventPublisher;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequester;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterId;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterRepository;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.template.ReservationRequestsTemplate;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.template.ReservationRequestsTemplateId;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.template.ReservationRequestsTemplateRepository;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestId;
+import pl.cezarysanecki.parkingdomain.shared.reservationrequest.ReservationRequest;
+import pl.cezarysanecki.parkingdomain.shared.reservationrequest.ReservationRequestId;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlot;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlotId;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlotsRepository;
 import pl.cezarysanecki.parkingdomain.requestingreservation.web.ParkingSpotReservationRequestsViewRepository;
 import pl.cezarysanecki.parkingdomain.requestingreservation.web.ReservationRequesterViewRepository;
+import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits;
 import pl.cezarysanecki.parkingdomain.shared.timeslot.TimeSlot;
 
 import java.time.Instant;
@@ -138,7 +139,7 @@ class LocalReservationRequestsConfig {
             ReservationRequestsTimeSlotId reservationRequestsTimeSlotId = ReservationRequestsTimeSlotId.newOne();
             DATABASE.put(reservationRequestsTimeSlotId, new ReservationRequestsTimeSlotEntity(
                     template.parkingSpotId().getValue(),
-                    reservationRequestsTemplateId.getValue(),
+                    reservationRequestsTimeSlotId.getValue(),
                     timeSlot.from(),
                     template.capacity().getValue(),
                     new ArrayList<>(),
@@ -152,6 +153,11 @@ class LocalReservationRequestsConfig {
             DATABASE.put(
                     reservationRequestsTimeSlot.getReservationRequestsTimeSlotId(),
                     ReservationRequestsTimeSlotEntity.from(reservationRequestsTimeSlot));
+
+            Integer occupied = reservationRequestsTimeSlot.getReservationRequests().values().map(ReservationRequest::getSpotUnits).map(SpotUnits::getValue).reduce(Integer::sum);
+            viewRepository.updateSpaceLeft(
+                    reservationRequestsTimeSlot.getReservationRequestsTimeSlotId(),
+                    reservationRequestsTimeSlot.getCapacity().getValue() - occupied);
         }
 
         @Override
@@ -193,7 +199,7 @@ class LocalReservationRequestsConfig {
 
         static final Map<ReservationRequestsTimeSlotId, ViewEntity> DATABASE = new ConcurrentHashMap<>();
 
-        public void saveNewUsing(
+        void saveNewUsing(
                 ReservationRequestsTimeSlotId reservationRequestsTimeSlotId,
                 ReservationRequestsTemplateId reservationRequestsTemplateId,
                 TimeSlot timeSlot) {
@@ -202,10 +208,17 @@ class LocalReservationRequestsConfig {
             DATABASE.put(reservationRequestsTimeSlotId, new ViewEntity(
                     template.parkingSpotId().getValue(),
                     reservationRequestsTimeSlotId.getValue(),
-                    template.parkingSpotCategory(),
+                    template.category(),
                     timeSlot,
                     template.capacity().getValue(),
                     template.capacity().getValue()));
+        }
+
+        void updateSpaceLeft(ReservationRequestsTimeSlotId reservationRequestsTimeSlotId, int spaceLeft) {
+            ViewEntity entity = DATABASE.get(reservationRequestsTimeSlotId);
+            if (entity != null) {
+                entity.spaceLeft = spaceLeft;
+            }
         }
 
         @Override
@@ -223,14 +236,16 @@ class LocalReservationRequestsConfig {
                     .toList();
         }
 
-        record ViewEntity(
-                UUID parkingSpotId,
-                UUID parkingSpotTimeSlotId,
-                ParkingSpotCategory parkingSpotCategory,
-                TimeSlot timeSlot,
-                int capacity,
-                int spaceLeft
-        ) {
+        @AllArgsConstructor
+        class ViewEntity {
+
+            UUID parkingSpotId;
+            UUID parkingSpotTimeSlotId;
+            ParkingSpotCategory parkingSpotCategory;
+            TimeSlot timeSlot;
+            int capacity;
+            int spaceLeft;
+
         }
 
     }

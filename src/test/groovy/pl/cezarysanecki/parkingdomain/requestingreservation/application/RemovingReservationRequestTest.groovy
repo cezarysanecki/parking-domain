@@ -3,8 +3,8 @@ package pl.cezarysanecki.parkingdomain.requestingreservation.application
 import io.vavr.collection.HashSet
 import io.vavr.control.Option
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlotsRepository
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequest
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestId
+import pl.cezarysanecki.parkingdomain.shared.reservationrequest.ReservationRequest
+import pl.cezarysanecki.parkingdomain.shared.reservationrequest.ReservationRequestId
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequester
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterId
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterRepository

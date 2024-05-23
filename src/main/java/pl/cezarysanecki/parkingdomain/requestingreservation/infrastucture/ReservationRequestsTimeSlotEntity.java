@@ -4,7 +4,7 @@ import io.vavr.collection.HashMap;
 import lombok.AllArgsConstructor;
 import pl.cezarysanecki.parkingdomain.commons.aggregates.Version;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequest;
+import pl.cezarysanecki.parkingdomain.shared.reservationrequest.ReservationRequest;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlot;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlotId;
 import pl.cezarysanecki.parkingdomain.shared.occupation.ParkingSpotCapacity;

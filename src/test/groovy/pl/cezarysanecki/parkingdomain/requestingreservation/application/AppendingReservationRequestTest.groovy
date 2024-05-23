@@ -2,7 +2,7 @@ package pl.cezarysanecki.parkingdomain.requestingreservation.application
 
 import io.vavr.control.Option
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlotsRepository
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestId
+import pl.cezarysanecki.parkingdomain.shared.reservationrequest.ReservationRequestId
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterRepository
 import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits
 import spock.lang.Specification

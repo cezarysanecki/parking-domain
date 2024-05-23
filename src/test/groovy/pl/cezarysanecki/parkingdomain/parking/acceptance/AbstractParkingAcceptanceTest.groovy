@@ -15,7 +15,7 @@ import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryId
 import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ReservationId
 import pl.cezarysanecki.parkingdomain.requestingreservation.application.ExchangingReservationRequestsTimeSlots
 import pl.cezarysanecki.parkingdomain.requestingreservation.infrastucture.RequestingReservationTimeSlotConfig
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequest
+import pl.cezarysanecki.parkingdomain.shared.reservationrequest.ReservationRequest
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlotId
 
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterId

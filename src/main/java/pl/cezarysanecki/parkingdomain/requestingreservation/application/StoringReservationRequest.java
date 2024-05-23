@@ -4,25 +4,21 @@ import io.vavr.control.Try;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.AppendingReservationRequest;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.ReservationRequestEventPublisher;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequester;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterId;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterRepository;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequest;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlot;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlotId;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlotsRepository;
 import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits;
-
-import static pl.cezarysanecki.parkingdomain.requestingreservation.model.ReservationRequestEvent.ReservationRequestStored;
+import pl.cezarysanecki.parkingdomain.shared.reservationrequest.ReservationRequest;
 
 @Slf4j
 @RequiredArgsConstructor
 public class StoringReservationRequest {
 
-    private final ReservationRequesterRepository reservationRequesterRepository;
     private final ReservationRequestsTimeSlotsRepository reservationRequestsTimeSlotsRepository;
-    private final ReservationRequestEventPublisher reservationRequestEventPublisher;
+    private final ReservationRequesterRepository reservationRequesterRepository;
 
     public Try<ReservationRequest> storeRequest(
             ReservationRequesterId requesterId,
@@ -32,20 +28,20 @@ public class StoringReservationRequest {
         ReservationRequestsTimeSlot reservationRequestsTimeSlot = findParkingSpotReservationRequestsBy(reservationRequestsTimeSlotId);
         ReservationRequester reservationRequester = findReservationRequesterBy(requesterId);
 
-        Try<ReservationRequest> result = AppendingReservationRequest.append(
+        ReservationRequest reservationRequest = ReservationRequest.newOne(requesterId, reservationRequestsTimeSlotId, spotUnits);
+        Try<AppendingReservationRequest.Result> result = AppendingReservationRequest.append(
                 reservationRequestsTimeSlot,
                 reservationRequester,
-                spotUnits);
+                reservationRequest);
 
         return result
                 .onFailure(exception -> log.error("cannot store reservation request, reason: {}", exception.getMessage()))
-                .onSuccess(reservationRequest -> {
+                .onSuccess(appendingResult -> {
                     log.debug("successfully stored reservation request with id {}", reservationRequest.getReservationRequestId());
-                    reservationRequestEventPublisher.publish(new ReservationRequestStored(
-                            reservationRequestsTimeSlot.getParkingSpotId(),
-                            reservationRequestsTimeSlot.getReservationRequestsTimeSlotId(),
-                            reservationRequest));
-                });
+                    reservationRequestsTimeSlotsRepository.publish(appendingResult.timeSlotEvent());
+                    reservationRequesterRepository.publish(appendingResult.requesterEvent());
+                })
+                .map(appendingResult -> reservationRequest);
     }
 
     private ReservationRequestsTimeSlot findParkingSpotReservationRequestsBy(ReservationRequestsTimeSlotId reservationRequestsTimeSlotId) {

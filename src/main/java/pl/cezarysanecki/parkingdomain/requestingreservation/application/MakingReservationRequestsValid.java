@@ -7,12 +7,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.commons.date.DateProvider;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.RemovingReservationRequest;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.ReservationRequestEvent;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.ReservationRequestEventPublisher;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequester;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterRepository;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequest;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestId;
+import pl.cezarysanecki.parkingdomain.shared.reservationrequest.ReservationRequest;
+import pl.cezarysanecki.parkingdomain.shared.reservationrequest.ReservationRequestId;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlot;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlotsRepository;
 

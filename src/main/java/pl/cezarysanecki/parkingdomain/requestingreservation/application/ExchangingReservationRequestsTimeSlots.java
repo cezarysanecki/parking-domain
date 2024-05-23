@@ -32,6 +32,7 @@ public class ExchangingReservationRequestsTimeSlots {
                                 TimeSlot.createTimeSlotAtUTC(tomorrow, 7, 17),
                                 TimeSlot.createTimeSlotAtUTC(tomorrow, 18, 23))
                         .map(timeSlot -> new TimeSlotToCreate(template, timeSlot)));
+        log.debug("there is {} time slots to create", timeSlotsToCreate.size());
 
         timeSlotsToCreate.forEach(timeSlotToCreate -> reservationRequestsTimeSlotsRepository.saveNewUsing(
                 timeSlotToCreate.template.templateId(), timeSlotToCreate.timeSlot));

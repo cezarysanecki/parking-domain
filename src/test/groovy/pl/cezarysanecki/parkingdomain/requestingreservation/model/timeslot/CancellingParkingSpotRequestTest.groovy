@@ -1,5 +1,7 @@
 package pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot
 
+import pl.cezarysanecki.parkingdomain.shared.reservationrequest.ReservationRequest
+import pl.cezarysanecki.parkingdomain.shared.reservationrequest.ReservationRequestId
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterId
 import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits
 import spock.lang.Specification

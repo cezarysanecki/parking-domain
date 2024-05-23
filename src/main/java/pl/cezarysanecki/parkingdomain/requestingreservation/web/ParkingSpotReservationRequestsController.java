@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.cezarysanecki.parkingdomain.requestingreservation.application.CancellingReservationRequest;
 import pl.cezarysanecki.parkingdomain.requestingreservation.application.StoringReservationRequest;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterId;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequest;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestId;
+import pl.cezarysanecki.parkingdomain.shared.reservationrequest.ReservationRequest;
+import pl.cezarysanecki.parkingdomain.shared.reservationrequest.ReservationRequestId;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlotId;
 import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits;
 
@@ -42,7 +42,7 @@ class ParkingSpotReservationRequestsController {
     ResponseEntity storeRequest(@RequestBody StoreReservationRequestRequest request) {
         Try<ReservationRequest> result = storingReservationRequest.storeRequest(
                 ReservationRequesterId.of(request.requesterId),
-                ReservationRequestsTimeSlotId.of(request.parkingSpotTimeSlotId),
+                ReservationRequestsTimeSlotId.of(request.reservationRequestsTimeSlotId),
                 SpotUnits.of(request.units));
         return result
                 .map(success -> ResponseEntity.ok().build())
@@ -60,7 +60,7 @@ class ParkingSpotReservationRequestsController {
 
     record StoreReservationRequestRequest(
             UUID requesterId,
-            UUID parkingSpotTimeSlotId,
+            UUID reservationRequestsTimeSlotId,
             int units) {
     }
 

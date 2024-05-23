@@ -3,32 +3,39 @@ package pl.cezarysanecki.parkingdomain.requestingreservation.model;
 import io.vavr.control.Try;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlot;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequest;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestId;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequester;
-import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterEvent;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlot;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlotEvent;
+import pl.cezarysanecki.parkingdomain.shared.reservationrequest.ReservationRequest;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AppendingReservationRequest {
 
-    public static Try<ReservationRequest> append(
+    public static Try<Result> append(
             ReservationRequestsTimeSlot reservationRequestsTimeSlot,
             ReservationRequester requester,
-            SpotUnits spotUnits
+            ReservationRequest reservationRequest
     ) {
-        Try<ReservationRequest> reservationRequestAppend = reservationRequestsTimeSlot.append(requester.getRequesterId(), spotUnits);
-        if (reservationRequestAppend.isFailure()) {
-            return Try.failure(reservationRequestAppend.getCause());
+        var timeSlotEventTry = reservationRequestsTimeSlot.append(reservationRequest);
+        if (timeSlotEventTry.isFailure()) {
+            return Try.failure(timeSlotEventTry.getCause());
         }
-        ReservationRequest reservationRequest = reservationRequestAppend.get();
+        var timeSlotEvent = timeSlotEventTry.get();
 
-        Try<ReservationRequestId> requesterAppend = requester.append(reservationRequest.getReservationRequestId());
-        if (requesterAppend.isFailure()) {
-            return Try.failure(requesterAppend.getCause());
+        var requesterEventTry = requester.append(reservationRequest.getReservationRequestId());
+        if (requesterEventTry.isFailure()) {
+            return Try.failure(requesterEventTry.getCause());
         }
+        var requesterEvent = requesterEventTry.get();
 
-        return Try.of(() -> reservationRequest);
+        return Try.of(() -> new Result(timeSlotEvent, requesterEvent));
+    }
+
+    public record Result(
+            ReservationRequestsTimeSlotEvent.ReservationRequestAppended timeSlotEvent,
+            ReservationRequesterEvent.ReservationRequestAppended requesterEvent
+    ) {
     }
 
 }

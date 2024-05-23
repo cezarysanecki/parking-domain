@@ -8,23 +8,20 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
 import pl.cezarysanecki.parkingdomain.commons.aggregates.Version;
-import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterId;
+import pl.cezarysanecki.parkingdomain.shared.reservationrequest.ReservationRequest;
+import pl.cezarysanecki.parkingdomain.shared.reservationrequest.ReservationRequestId;
 import pl.cezarysanecki.parkingdomain.shared.occupation.ParkingSpotCapacity;
 import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits;
 
-import java.time.Instant;
+import static pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlotEvent.ReservationRequestAppended;
+import static pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlotEvent.ReservationRequestRemoved;
 
 @Getter
 @AllArgsConstructor
 public class ReservationRequestsTimeSlot {
 
     @NonNull
-    private final ParkingSpotId parkingSpotId;
-    @NonNull
     private final ReservationRequestsTimeSlotId reservationRequestsTimeSlotId;
-    @NonNull
-    private final Instant validSince;
     @NonNull
     private final ParkingSpotCapacity capacity;
     @NonNull
@@ -33,33 +30,29 @@ public class ReservationRequestsTimeSlot {
     private final Version version;
 
     public static ReservationRequestsTimeSlot newOne(
-            ParkingSpotId parkingSpotId,
             ReservationRequestsTimeSlotId reservationRequestsTimeSlotId,
-            Instant validSince,
             ParkingSpotCapacity capacity
     ) {
         return new ReservationRequestsTimeSlot(
-                parkingSpotId,
                 reservationRequestsTimeSlotId,
-                validSince,
                 capacity,
                 HashMap.empty(),
                 Version.zero());
     }
 
-    public Try<ReservationRequest> append(ReservationRequesterId requesterId, SpotUnits spotUnits) {
-        if (exceedsAllowedSpace(spotUnits)) {
+    public Try<ReservationRequestAppended> append(ReservationRequest reservationRequest) {
+        if (exceedsAllowedSpace(reservationRequest.getSpotUnits())) {
             return Try.failure(new IllegalStateException("not enough space"));
         }
-        return Try.of(() -> ReservationRequest.newOne(requesterId, spotUnits));
+        return Try.of(() -> new ReservationRequestAppended(reservationRequestsTimeSlotId, reservationRequest));
     }
 
-    public Try<ReservationRequest> remove(ReservationRequestId reservationRequestId) {
+    public Try<ReservationRequestRemoved> remove(ReservationRequestId reservationRequestId) {
         Option<ReservationRequest> potentialReservationRequests = reservationRequests.get(reservationRequestId);
         if (potentialReservationRequests.isEmpty()) {
             return Try.failure(new IllegalArgumentException("no such reservation request"));
         }
-        return Try.of(potentialReservationRequests::get);
+        return Try.of(() -> new ReservationRequestRemoved(reservationRequestsTimeSlotId, potentialReservationRequests.get()));
     }
 
     private boolean exceedsAllowedSpace(SpotUnits spotUnits) {
