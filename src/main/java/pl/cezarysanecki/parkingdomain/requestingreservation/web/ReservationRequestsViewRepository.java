@@ -6,17 +6,18 @@ import pl.cezarysanecki.parkingdomain.shared.timeslot.TimeSlot;
 import java.util.List;
 import java.util.UUID;
 
-public interface ParkingSpotReservationRequestsViewRepository {
+public interface ReservationRequestsViewRepository {
 
     List<ParkingSpotReservationRequestsView> queryForAllAvailableParkingSpots();
 
     record ParkingSpotReservationRequestsView(
             UUID parkingSpotId,
-            UUID parkingSpotTimeSlotId,
+            UUID timeSlotId,
             ParkingSpotCategory parkingSpotCategory,
             TimeSlot timeSlot,
             int capacity,
-            int spaceLeft
+            int spaceLeft,
+            List<UUID> reservationRequests
     ) {
     }
 

@@ -1,47 +1,55 @@
 package pl.cezarysanecki.parkingdomain.requestingreservation.infrastucture;
 
-import io.vavr.collection.HashMap;
+import io.vavr.collection.HashSet;
 import lombok.AllArgsConstructor;
 import pl.cezarysanecki.parkingdomain.commons.aggregates.Version;
-import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.shared.reservationrequest.ReservationRequest;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.ReservationRequest;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlot;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlotEvent;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlotId;
 import pl.cezarysanecki.parkingdomain.shared.occupation.ParkingSpotCapacity;
+import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits;
+import pl.cezarysanecki.parkingdomain.shared.timeslot.TimeSlot;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
 @AllArgsConstructor
 class ReservationRequestsTimeSlotEntity {
 
-    UUID parkingSpotId;
     UUID reservationRequestsTimeSlotId;
-    Instant validSince;
     int capacity;
     List<ReservationRequest> reservationRequests;
     int version;
+    UUID templateId;
+    TimeSlot timeSlot;
 
-    static ReservationRequestsTimeSlotEntity from(ReservationRequestsTimeSlot reservationRequestsTimeSlot) {
-        return new ReservationRequestsTimeSlotEntity(
-                reservationRequestsTimeSlot.getParkingSpotId().getValue(),
-                reservationRequestsTimeSlot.getReservationRequestsTimeSlotId().getValue(),
-                reservationRequestsTimeSlot.getValidSince(),
-                reservationRequestsTimeSlot.getCapacity().getValue(),
-                reservationRequestsTimeSlot.getReservationRequests()
-                        .values()
-                        .toJavaList(),
-                reservationRequestsTimeSlot.getVersion().getVersion());
+    ReservationRequestsTimeSlotEntity handle(ReservationRequestsTimeSlotEvent event) {
+        return switch (event) {
+            case ReservationRequestsTimeSlotEvent.ReservationRequestAppended appended -> {
+                reservationRequests.add(appended.reservationRequest());
+                yield this;
+            }
+            case ReservationRequestsTimeSlotEvent.ReservationRequestRemoved removed -> {
+                reservationRequests.remove(removed.reservationRequest());
+                yield this;
+            }
+            default -> this;
+        };
+    }
+
+    int spaceLeft() {
+        return capacity - reservationRequests.stream()
+                .map(ReservationRequest::spotUnits)
+                .map(SpotUnits::getValue)
+                .reduce(0, Integer::sum);
     }
 
     ReservationRequestsTimeSlot toDomain() {
         return new ReservationRequestsTimeSlot(
-                ParkingSpotId.of(parkingSpotId),
                 ReservationRequestsTimeSlotId.of(reservationRequestsTimeSlotId),
-                validSince,
+                HashSet.ofAll(reservationRequests.stream()),
                 ParkingSpotCapacity.of(capacity),
-                HashMap.ofAll(reservationRequests.stream(), ReservationRequest::getReservationRequestId, reservationRequest -> reservationRequest),
                 new Version(version));
     }
 

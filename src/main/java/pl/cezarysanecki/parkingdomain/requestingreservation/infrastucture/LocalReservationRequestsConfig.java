@@ -2,52 +2,39 @@ package pl.cezarysanecki.parkingdomain.requestingreservation.infrastucture;
 
 import io.vavr.collection.List;
 import io.vavr.control.Option;
-import lombok.AllArgsConstructor;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import pl.cezarysanecki.parkingdomain.commons.events.DomainEvent;
-import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
-import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequester;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterEvent;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterId;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterRepository;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.ReservationRequest;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.ReservationRequestId;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.ReservationRequests;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.ReservationRequestsEvent;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.ReservationRequestsRepository;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.template.ReservationRequestsTemplate;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.template.ReservationRequestsTemplateId;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.template.ReservationRequestsTemplateRepository;
-import pl.cezarysanecki.parkingdomain.shared.reservationrequest.ReservationRequest;
-import pl.cezarysanecki.parkingdomain.shared.reservationrequest.ReservationRequestId;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlot;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlotEvent;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlotId;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlotsRepository;
-import pl.cezarysanecki.parkingdomain.requestingreservation.web.ParkingSpotReservationRequestsViewRepository;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlotRepository;
 import pl.cezarysanecki.parkingdomain.requestingreservation.web.ReservationRequesterViewRepository;
-import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits;
-import pl.cezarysanecki.parkingdomain.shared.timeslot.TimeSlot;
+import pl.cezarysanecki.parkingdomain.requestingreservation.web.ReservationRequestsViewRepository;
 
-import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-
-import static java.util.function.Predicate.not;
-import static pl.cezarysanecki.parkingdomain.requestingreservation.model.ReservationRequestEvent.ReservationRequestCancelled;
-import static pl.cezarysanecki.parkingdomain.requestingreservation.model.ReservationRequestEvent.ReservationRequestStored;
-import static pl.cezarysanecki.parkingdomain.requestingreservation.model.ReservationRequestEvent.ReservationRequestsConfirmed;
 
 @Profile("local")
 @Configuration
 @RequiredArgsConstructor
 class LocalReservationRequestsConfig {
-
-    private final EventPublisher eventPublisher;
-
-    @Bean
-    InMemoryReservationRequestEventPublisher inMemoryReservationRequestEventPublisher() {
-        return new InMemoryReservationRequestEventPublisher(eventPublisher);
-    }
 
     @Bean
     InMemoryTemplateRepository inMemoryTemplateRepository() {
@@ -55,52 +42,33 @@ class LocalReservationRequestsConfig {
     }
 
     @Bean
-    InMemoryTimeSlotsRepository inMemoryTimeSlotsRepository(
-            InMemoryTimeSlotsViewRepository inMemoryTimeSlotsViewRepository
-    ) {
-        return new InMemoryTimeSlotsRepository(inMemoryTimeSlotsViewRepository);
-    }
-
-    @Bean
-    InMemoryTimeSlotsViewRepository inMemoryTimeSlotsViewRepository() {
-        return new InMemoryTimeSlotsViewRepository();
-    }
-
-    @Bean
     InMemoryRequesterRepository inMemoryRequesterRepository() {
         return new InMemoryRequesterRepository();
     }
 
-    @RequiredArgsConstructor
-    static class InMemoryReservationRequestEventPublisher implements ReservationRequestEventPublisher {
+    @Bean
+    InMemoryTimeSlotRepository inMemoryTimeSlotRepository() {
+        return new InMemoryTimeSlotRepository();
+    }
 
-        private final EventPublisher eventPublisher;
+    @Bean
+    InMemoryReservationRequestsRepository inMemoryReservationRequestsRepository(
+            InMemoryRequesterRepository inMemoryRequesterRepository,
+            InMemoryTimeSlotRepository inMemoryTimeSlotRepository
+    ) {
+        return new InMemoryReservationRequestsRepository(
+                inMemoryRequesterRepository,
+                inMemoryTimeSlotRepository);
+    }
 
-        @Override
-        public void publish(ReservationRequestEvent event) {
-            ReservationRequestEvent processedEvent = switch (event) {
-                case ReservationRequestStored stored -> {
-                    ReservationRequestsTimeSlotEntity entity = InMemoryTimeSlotsRepository.DATABASE.get(stored.reservationRequestsTimeSlotId());
-                    entity.reservationRequests.add(stored.reservationRequest());
-                    yield stored;
-                }
-                case ReservationRequestCancelled cancelled -> {
-                    ReservationRequestsTimeSlotEntity entity = InMemoryTimeSlotsRepository.DATABASE.get(cancelled.reservationRequestsTimeSlotId());
-                    entity.reservationRequests.remove(cancelled.reservationRequest());
-                    yield cancelled;
-                }
-                case ReservationRequestsConfirmed confirmed -> {
-                    InMemoryTimeSlotsRepository.DATABASE.remove(confirmed.reservationRequestsTimeSlotId());
-                    yield confirmed;
-                }
-                default -> event;
-            };
+    @Bean
+    InMemoryReservationRequestsViewRepository inMemoryReservationRequestsViewRepository() {
+        return new InMemoryReservationRequestsViewRepository();
+    }
 
-            if (processedEvent instanceof DomainEvent domainEvent) {
-                eventPublisher.publish(domainEvent);
-            }
-        }
-
+    @Bean
+    InMemoryReservationRequesterViewRepository inMemoryReservationRequesterViewRepository() {
+        return new InMemoryReservationRequesterViewRepository();
     }
 
     @RequiredArgsConstructor
@@ -118,7 +86,7 @@ class LocalReservationRequestsConfig {
             return List.ofAll(DATABASE.values());
         }
 
-        static ReservationRequestsTemplate findBy(ReservationRequestsTemplateId templateId) {
+        static ReservationRequestsTemplate joinBy(ReservationRequestsTemplateId templateId) {
             return Option.of(DATABASE.get(templateId))
                     .getOrElseThrow(() -> new IllegalStateException("cannot find template with id " + templateId));
         }
@@ -126,38 +94,67 @@ class LocalReservationRequestsConfig {
     }
 
     @RequiredArgsConstructor
-    static class InMemoryTimeSlotsRepository implements ReservationRequestsTimeSlotsRepository {
+    static class InMemoryRequesterRepository implements ReservationRequesterRepository {
 
-        static final Map<ReservationRequestsTimeSlotId, ReservationRequestsTimeSlotEntity> DATABASE = new ConcurrentHashMap<>();
-
-        private final InMemoryTimeSlotsViewRepository viewRepository;
+        static final Map<ReservationRequesterId, ReservationRequesterEntity> DATABASE = new ConcurrentHashMap<>();
 
         @Override
-        public void saveNewUsing(ReservationRequestsTemplateId reservationRequestsTemplateId, TimeSlot timeSlot) {
-            ReservationRequestsTemplate template = InMemoryTemplateRepository.findBy(reservationRequestsTemplateId);
+        public void publish(ReservationRequesterEvent event) {
+            if (event instanceof ReservationRequesterEvent.ReservationRequestCreated created) {
+                DATABASE.put(created.requesterId(), new ReservationRequesterEntity(
+                        created.requesterId().getValue(),
+                        new HashSet<>(),
+                        created.limit(),
+                        0));
+                return;
+            }
 
-            ReservationRequestsTimeSlotId reservationRequestsTimeSlotId = ReservationRequestsTimeSlotId.newOne();
-            DATABASE.put(reservationRequestsTimeSlotId, new ReservationRequestsTimeSlotEntity(
-                    template.parkingSpotId().getValue(),
-                    reservationRequestsTimeSlotId.getValue(),
-                    timeSlot.from(),
-                    template.capacity().getValue(),
-                    new ArrayList<>(),
-                    0));
-
-            viewRepository.saveNewUsing(reservationRequestsTimeSlotId, reservationRequestsTemplateId, timeSlot);
+            ReservationRequesterEntity entity = DATABASE.get(event.requesterId());
+            if (entity == null) {
+                throw new EntityNotFoundException("cannot find requester by id " + event.requesterId());
+            }
+            entity.handle(event);
         }
 
         @Override
-        public void save(ReservationRequestsTimeSlot reservationRequestsTimeSlot) {
-            DATABASE.put(
-                    reservationRequestsTimeSlot.getReservationRequestsTimeSlotId(),
-                    ReservationRequestsTimeSlotEntity.from(reservationRequestsTimeSlot));
+        public Option<ReservationRequester> findBy(ReservationRequesterId requesterId) {
+            return Option.of(DATABASE.get(requesterId))
+                    .map(ReservationRequesterEntity::toDomain);
+        }
 
-            Integer occupied = reservationRequestsTimeSlot.getReservationRequests().values().map(ReservationRequest::getSpotUnits).map(SpotUnits::getValue).reduce(Integer::sum);
-            viewRepository.updateSpaceLeft(
-                    reservationRequestsTimeSlot.getReservationRequestsTimeSlotId(),
-                    reservationRequestsTimeSlot.getCapacity().getValue() - occupied);
+        @Override
+        public Option<ReservationRequester> findBy(ReservationRequestId reservationRequestId) {
+            return Option.ofOptional(
+                            DATABASE.values()
+                                    .stream()
+                                    .filter(requester -> requester.currentRequests.contains(reservationRequestId.getValue()))
+                                    .findFirst())
+                    .map(ReservationRequesterEntity::toDomain);
+        }
+
+    }
+
+    @RequiredArgsConstructor
+    static class InMemoryTimeSlotRepository implements ReservationRequestsTimeSlotRepository {
+
+        static final Map<ReservationRequestsTimeSlotId, ReservationRequestsTimeSlotEntity> DATABASE = new ConcurrentHashMap<>();
+
+        @Override
+        public void publish(ReservationRequestsTimeSlotEvent event) {
+            if (event instanceof ReservationRequestsTimeSlotEvent.ReservationRequestCreated created) {
+                ReservationRequestsTemplate template = InMemoryTemplateRepository.joinBy(created.templateId());
+                DATABASE.put(created.timeSlotId(), new ReservationRequestsTimeSlotEntity(
+                        created.timeSlotId().getValue(),
+                        template.capacity().getValue(),
+                        new ArrayList<>(),
+                        0,
+                        created.templateId().getValue(),
+                        created.timeSlot()));
+                return;
+            }
+
+            ReservationRequestsTimeSlotEntity entity = DATABASE.get(event.timeSlotId());
+            entity.handle(event);
         }
 
         @Override
@@ -173,125 +170,117 @@ class LocalReservationRequestsConfig {
                                     .stream()
                                     .filter(entity -> entity.reservationRequests
                                             .stream()
-                                            .anyMatch(currentRequest -> currentRequest.getReservationRequestId().equals(reservationRequestId)))
+                                            .anyMatch(currentRequest -> currentRequest.reservationRequestId().equals(reservationRequestId)))
                                     .findFirst())
                     .map(ReservationRequestsTimeSlotEntity::toDomain);
         }
 
-        @Override
-        public List<ReservationRequestsTimeSlot> findAllValidSince(Instant sinceDate) {
-            return List.ofAll(
-                            DATABASE.values()
-                                    .stream()
-                                    .filter(not(entity -> entity.validSince.isAfter(sinceDate))))
-                    .map(ReservationRequestsTimeSlotEntity::toDomain);
-        }
-
-        @Override
-        public boolean containsAny() {
-            return !DATABASE.isEmpty();
+        static ReservationRequestsTimeSlotEntity joinBy(ReservationRequestId reservationRequestId) {
+            return DATABASE.values()
+                    .stream()
+                    .filter(entity -> entity.reservationRequests.stream()
+                            .anyMatch(reservationRequest -> reservationRequest.reservationRequestId().equals(reservationRequestId)))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalStateException("cannot find time slot for reservation request with id " + reservationRequestId));
         }
 
     }
 
     @RequiredArgsConstructor
-    static class InMemoryTimeSlotsViewRepository implements ParkingSpotReservationRequestsViewRepository {
+    static class InMemoryReservationRequestsRepository implements ReservationRequestsRepository {
 
-        static final Map<ReservationRequestsTimeSlotId, ViewEntity> DATABASE = new ConcurrentHashMap<>();
+        private final InMemoryRequesterRepository requesterRepository;
+        private final InMemoryTimeSlotRepository timeSlotRepository;
 
-        void saveNewUsing(
-                ReservationRequestsTimeSlotId reservationRequestsTimeSlotId,
-                ReservationRequestsTemplateId reservationRequestsTemplateId,
-                TimeSlot timeSlot) {
-            ReservationRequestsTemplate template = InMemoryTemplateRepository.findBy(reservationRequestsTemplateId);
+        @Override
+        public void publish(ReservationRequestsEvent event) {
+            switch (event) {
+                case ReservationRequestsEvent.ReservationRequestMade made -> {
+                    requesterRepository.publish(made.requesterEvent());
+                    timeSlotRepository.publish(made.timeSlotEvent());
+                }
+                case ReservationRequestsEvent.ReservationRequestCancelled cancelled -> {
+                    requesterRepository.publish(cancelled.requesterEvent());
+                    timeSlotRepository.publish(cancelled.timeSlotEvent());
 
-            DATABASE.put(reservationRequestsTimeSlotId, new ViewEntity(
-                    template.parkingSpotId().getValue(),
-                    reservationRequestsTimeSlotId.getValue(),
-                    template.category(),
-                    timeSlot,
-                    template.capacity().getValue(),
-                    template.capacity().getValue()));
-        }
-
-        void updateSpaceLeft(ReservationRequestsTimeSlotId reservationRequestsTimeSlotId, int spaceLeft) {
-            ViewEntity entity = DATABASE.get(reservationRequestsTimeSlotId);
-            if (entity != null) {
-                entity.spaceLeft = spaceLeft;
+                }
+                default -> {
+                }
             }
         }
 
         @Override
-        public java.util.List<ParkingSpotReservationRequestsView> queryForAllAvailableParkingSpots() {
-            return DATABASE.values()
-                    .stream()
-                    .filter(entity -> entity.spaceLeft > 0)
-                    .map(entity -> new ParkingSpotReservationRequestsView(
-                            entity.parkingSpotId,
-                            entity.parkingSpotTimeSlotId,
-                            entity.parkingSpotCategory,
-                            entity.timeSlot,
-                            entity.capacity,
-                            entity.spaceLeft))
-                    .toList();
+        public Option<ReservationRequests> findBy(ReservationRequesterId requesterId, ReservationRequestsTimeSlotId timeSlotId) {
+            Option<ReservationRequester> requester = requesterRepository.findBy(requesterId);
+            Option<ReservationRequestsTimeSlot> timeSlot = timeSlotRepository.findBy(timeSlotId);
+            if (requester.isEmpty() || timeSlot.isEmpty()) {
+                return Option.none();
+            }
+            return Option.of(new ReservationRequests(timeSlot.get(), requester.get()));
         }
 
-        @AllArgsConstructor
-        class ViewEntity {
-
-            UUID parkingSpotId;
-            UUID parkingSpotTimeSlotId;
-            ParkingSpotCategory parkingSpotCategory;
-            TimeSlot timeSlot;
-            int capacity;
-            int spaceLeft;
-
+        @Override
+        public Option<ReservationRequests> findBy(ReservationRequestId reservationRequestId) {
+            Option<ReservationRequester> requester = requesterRepository.findBy(reservationRequestId);
+            Option<ReservationRequestsTimeSlot> timeSlot = timeSlotRepository.findBy(reservationRequestId);
+            if (requester.isEmpty() || timeSlot.isEmpty()) {
+                return Option.none();
+            }
+            return Option.of(new ReservationRequests(timeSlot.get(), requester.get()));
         }
 
     }
 
     @RequiredArgsConstructor
-    static class InMemoryRequesterRepository implements ReservationRequesterRepository, ReservationRequesterViewRepository {
-
-        static final Map<ReservationRequesterId, ReservationRequester> DATABASE = new ConcurrentHashMap<>();
+    static class InMemoryReservationRequestsViewRepository implements ReservationRequestsViewRepository {
 
         @Override
-        public void save(ReservationRequester reservationRequester) {
-            DATABASE.put(reservationRequester.getRequesterId(), reservationRequester);
-        }
-
-        @Override
-        public Option<ReservationRequester> findBy(ReservationRequesterId requesterId) {
-            return Option.of(DATABASE.get(requesterId));
-        }
-
-        @Override
-        public Option<ReservationRequester> findBy(ReservationRequestId reservationRequestId) {
-            return Option.ofOptional(
-                    DATABASE.values()
-                            .stream()
-                            .filter(requester -> requester.getReservationRequests().contains(reservationRequestId))
-                            .findFirst());
-        }
-
-        @Override
-        public void removeRequestsFromRequesters(List<ReservationRequestId> reservationRequestIds) {
-            reservationRequestIds.forEach(reservationRequestId ->
-                    findBy(reservationRequestId)
-                            .map(entity -> entity.remove(reservationRequestId)));
-        }
-
-        @Override
-        public java.util.List<ReservationRequesterView> queryForAllReservationRequesters() {
-            return DATABASE.values()
+        public java.util.List<ParkingSpotReservationRequestsView> queryForAllAvailableParkingSpots() {
+            return InMemoryTimeSlotRepository.DATABASE.values()
                     .stream()
-                    .map(requester -> new ReservationRequesterView(
-                            requester.getRequesterId().getValue(),
-                            requester.getReservationRequests().map(ReservationRequestId::getValue).toJavaList()
-                    ))
+                    .map(timeSlot -> {
+                        ReservationRequestsTemplate template = InMemoryTemplateRepository.joinBy(ReservationRequestsTemplateId.of(timeSlot.templateId));
+
+                        return new ParkingSpotReservationRequestsView(
+                                template.parkingSpotId().getValue(),
+                                timeSlot.reservationRequestsTimeSlotId,
+                                template.category(),
+                                timeSlot.timeSlot,
+                                timeSlot.capacity,
+                                timeSlot.spaceLeft(),
+                                timeSlot.reservationRequests.stream()
+                                        .map(ReservationRequest::reservationRequestId)
+                                        .map(ReservationRequestId::getValue)
+                                        .toList()
+                        );
+                    })
                     .toList();
         }
 
+    }
+
+    @RequiredArgsConstructor
+    static class InMemoryReservationRequesterViewRepository implements ReservationRequesterViewRepository {
+
+        @Override
+        public java.util.List<ReservationRequesterView> queryForAllReservationRequesters() {
+            return InMemoryRequesterRepository.DATABASE.values()
+                    .stream()
+                    .map(requester -> new ReservationRequesterView(
+                            requester.requesterId,
+                            requester.currentRequests.stream()
+                                    .map(request -> {
+                                        ReservationRequestsTimeSlotEntity timeSlotEntity = InMemoryTimeSlotRepository.joinBy(ReservationRequestId.of(request));
+                                        ReservationRequestsTemplate templateEntity = InMemoryTemplateRepository.joinBy(ReservationRequestsTemplateId.of(timeSlotEntity.templateId));
+
+                                        return new ReservationRequesterView.ReservationRequestView(
+                                                request,
+                                                templateEntity.parkingSpotId().getValue(),
+                                                timeSlotEntity.timeSlot);
+                                    })
+                                    .toList()))
+                    .toList();
+        }
     }
 
 }

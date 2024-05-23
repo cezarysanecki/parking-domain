@@ -5,18 +5,14 @@ import io.vavr.control.Option;
 import io.vavr.control.Try;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import pl.cezarysanecki.parkingdomain.commons.date.DateProvider;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.RemovingReservationRequest;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequester;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterRepository;
-import pl.cezarysanecki.parkingdomain.shared.reservationrequest.ReservationRequest;
-import pl.cezarysanecki.parkingdomain.shared.reservationrequest.ReservationRequestId;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlot;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlotsRepository;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlotRepository;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.ReservationRequest;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.ReservationRequestId;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 
 import static pl.cezarysanecki.parkingdomain.requestingreservation.model.ReservationRequestEvent.ReservationRequestsConfirmed;
 
@@ -24,17 +20,12 @@ import static pl.cezarysanecki.parkingdomain.requestingreservation.model.Reserva
 @RequiredArgsConstructor
 public class MakingReservationRequestsValid {
 
-    private final DateProvider dateProvider;
-    private final ReservationRequestsTimeSlotsRepository reservationRequestsTimeSlotsRepository;
+    private final ReservationRequestsTimeSlotRepository reservationRequestsTimeSlotRepository;
     private final ReservationRequesterRepository reservationRequesterRepository;
     private final ReservationRequestEventPublisher reservationRequestEventPublisher;
-    private final int hoursToMakeReservationRequestValid;
 
-    public void makeValid() {
-        LocalDateTime sinceDate = dateProvider.now().plusHours(hoursToMakeReservationRequestValid);
-        Instant sinceDateInstant = sinceDate.toInstant(ZoneOffset.UTC);
-
-        List<ReservationRequestsTimeSlot> reservationRequestsTimeSlots = reservationRequestsTimeSlotsRepository.findAllValidSince(sinceDateInstant);
+    public void makeValidAllSince(Instant date) {
+        List<ReservationRequestsTimeSlot> reservationRequestsTimeSlots = reservationRequestsTimeSlotRepository.findAllValidSince(sinceDateInstant);
         log.debug("found {} reservation requests to make them valid", reservationRequestsTimeSlots.size());
 
         List<ReservationRequestEvent> events = reservationRequestsTimeSlots.map(
@@ -43,11 +34,11 @@ public class MakingReservationRequestsValid {
                             .keySet()
                             .flatMap(reservationRequestId -> removeReservation(reservationRequestsTimeSlot, reservationRequestId)
                                     .onFailure(t -> log.error("cannot remove reservation request with id {}, reason {}", reservationRequestId, t.getMessage()))
-                                    .onSuccess(reservationRequest -> log.debug("removed reservation request with id {}", reservationRequest.getReservationRequestId())))
+                                    .onSuccess(reservationRequest -> log.debug("removed reservation request with id {}", reservationRequest.reservationRequestId())))
                             .toList();
                     return new ReservationRequestsConfirmed(
                             reservationRequestsTimeSlot.getParkingSpotId(),
-                            reservationRequestsTimeSlot.getReservationRequestsTimeSlotId(),
+                            reservationRequestsTimeSlot.getTimeSlotId(),
                             requestsToRemove);
                 });
 

@@ -5,7 +5,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import pl.cezarysanecki.parkingdomain.commons.aggregates.Version;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.shared.reservationrequest.ReservationRequest;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.ReservationRequest;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterId;
 import pl.cezarysanecki.parkingdomain.shared.occupation.ParkingSpotCapacity;
 import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits;
@@ -29,7 +29,7 @@ public class ParkingSpotReservationRequestsFixture {
                 ParkingSpotId.newOne(),
                 ReservationRequestsTimeSlotId.newOne(),
                 capacity,
-                HashMap.of(reservationRequest.getReservationRequestId(), reservationRequest),
+                HashMap.of(reservationRequest.reservationRequestId(), reservationRequest),
                 Version.zero());
     }
 
@@ -38,7 +38,7 @@ public class ParkingSpotReservationRequestsFixture {
                 ParkingSpotId.newOne(),
                 ReservationRequestsTimeSlotId.newOne(),
                 ParkingSpotCapacity.of(4),
-                HashMap.of(reservationRequest.getReservationRequestId(), reservationRequest),
+                HashMap.of(reservationRequest.reservationRequestId(), reservationRequest),
                 Version.zero());
     }
 

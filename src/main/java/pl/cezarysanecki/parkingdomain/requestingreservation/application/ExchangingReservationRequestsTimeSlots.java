@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.commons.date.DateProvider;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.template.ReservationRequestsTemplate;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.template.ReservationRequestsTemplateRepository;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlotsRepository;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlotRepository;
 import pl.cezarysanecki.parkingdomain.shared.timeslot.TimeSlot;
 
 import java.time.LocalDate;
@@ -17,11 +17,11 @@ import java.time.LocalDate;
 public class ExchangingReservationRequestsTimeSlots {
 
     private final DateProvider dateProvider;
-    private final ReservationRequestsTimeSlotsRepository reservationRequestsTimeSlotsRepository;
+    private final ReservationRequestsTimeSlotRepository reservationRequestsTimeSlotRepository;
     private final ReservationRequestsTemplateRepository reservationRequestsTemplateRepository;
 
     public void exchangeTimeSlots() {
-        if (reservationRequestsTimeSlotsRepository.containsAny()) {
+        if (reservationRequestsTimeSlotRepository.containsAny()) {
             log.error("there are still reservation requests time slots, check it");
             return;
         }
@@ -34,7 +34,7 @@ public class ExchangingReservationRequestsTimeSlots {
                         .map(timeSlot -> new TimeSlotToCreate(template, timeSlot)));
         log.debug("there is {} time slots to create", timeSlotsToCreate.size());
 
-        timeSlotsToCreate.forEach(timeSlotToCreate -> reservationRequestsTimeSlotsRepository.saveNewUsing(
+        timeSlotsToCreate.forEach(timeSlotToCreate -> reservationRequestsTimeSlotRepository.saveNewUsing(
                 timeSlotToCreate.template.templateId(), timeSlotToCreate.timeSlot));
     }
 

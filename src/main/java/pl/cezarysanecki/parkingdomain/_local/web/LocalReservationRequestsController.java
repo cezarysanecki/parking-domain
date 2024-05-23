@@ -22,7 +22,7 @@ class LocalReservationRequestsController {
 
     @PostMapping("/make-valid")
     ResponseEntity<List<String>> makeReservationRequestValid() {
-        makingReservationRequestsValid.makeValid();
+        makingReservationRequestsValid.makeValidSince();
         return ResponseEntity.ok().build();
     }
 

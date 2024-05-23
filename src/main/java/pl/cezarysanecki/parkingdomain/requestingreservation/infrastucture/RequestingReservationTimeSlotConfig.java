@@ -15,10 +15,11 @@ import pl.cezarysanecki.parkingdomain.requestingreservation.application.Creating
 import pl.cezarysanecki.parkingdomain.requestingreservation.application.CreatingReservationRequestsTemplatesEventHandler;
 import pl.cezarysanecki.parkingdomain.requestingreservation.application.ExchangingReservationRequestsTimeSlots;
 import pl.cezarysanecki.parkingdomain.requestingreservation.application.MakingReservationRequestsValid;
-import pl.cezarysanecki.parkingdomain.requestingreservation.application.StoringReservationRequest;
+import pl.cezarysanecki.parkingdomain.requestingreservation.application.MakingReservationRequest;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterRepository;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.ReservationRequestsRepository;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.template.ReservationRequestsTemplateRepository;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlotsRepository;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlotRepository;
 
 import static org.quartz.CronScheduleBuilder.cronSchedule;
 
@@ -29,27 +30,13 @@ public class RequestingReservationTimeSlotConfig {
     private final DateProvider dateProvider;
 
     @Bean
-    StoringReservationRequest storingReservationRequest(
-            ReservationRequesterRepository reservationRequesterRepository,
-            ReservationRequestsTimeSlotsRepository reservationRequestsTimeSlotsRepository,
-            ReservationRequestEventPublisher reservationRequestEventPublisher
-    ) {
-        return new StoringReservationRequest(
-                reservationRequesterRepository,
-                reservationRequestsTimeSlotsRepository,
-                reservationRequestEventPublisher);
+    MakingReservationRequest storingReservationRequest(ReservationRequestsRepository reservationRequestsRepository) {
+        return new MakingReservationRequest(reservationRequestsRepository);
     }
 
     @Bean
-    CancellingReservationRequest cancellingReservationRequest(
-            ReservationRequesterRepository reservationRequesterRepository,
-            ReservationRequestsTimeSlotsRepository reservationRequestsTimeSlotsRepository,
-            ReservationRequestEventPublisher reservationRequestEventPublisher
-    ) {
-        return new CancellingReservationRequest(
-                reservationRequesterRepository,
-                reservationRequestsTimeSlotsRepository,
-                reservationRequestEventPublisher);
+    CancellingReservationRequest cancellingReservationRequest(ReservationRequestsRepository reservationRequestsRepository) {
+        return new CancellingReservationRequest(reservationRequestsRepository);
     }
 
     @Bean
@@ -68,14 +55,14 @@ public class RequestingReservationTimeSlotConfig {
 
     @Bean
     MakingReservationRequestsValid makingReservationRequestsValid(
-            ReservationRequestsTimeSlotsRepository reservationRequestsTimeSlotsRepository,
+            ReservationRequestsTimeSlotRepository reservationRequestsTimeSlotRepository,
             ReservationRequesterRepository reservationRequesterRepository,
             ReservationRequestEventPublisher reservationRequestEventPublisher,
             @Value("${business.reservationRequests.hoursToMakeValid}") int hoursToMakeReservationRequestValid
     ) {
         return new MakingReservationRequestsValid(
                 dateProvider,
-                reservationRequestsTimeSlotsRepository,
+                reservationRequestsTimeSlotRepository,
                 reservationRequesterRepository,
                 reservationRequestEventPublisher,
                 hoursToMakeReservationRequestValid);
@@ -83,12 +70,12 @@ public class RequestingReservationTimeSlotConfig {
 
     @Bean
     ExchangingReservationRequestsTimeSlots creatingReservationRequestTimeSlots(
-            ReservationRequestsTimeSlotsRepository reservationRequestsTimeSlotsRepository,
+            ReservationRequestsTimeSlotRepository reservationRequestsTimeSlotRepository,
             ReservationRequestsTemplateRepository reservationRequestsTemplateRepository
     ) {
         return new ExchangingReservationRequestsTimeSlots(
                 dateProvider,
-                reservationRequestsTimeSlotsRepository,
+                reservationRequestsTimeSlotRepository,
                 reservationRequestsTemplateRepository);
     }
 

@@ -17,7 +17,7 @@ class MakingReservationRequestsValidJob implements Job {
     @Override
     public void execute(JobExecutionContext jobExecutionContext) {
         log.debug("=== JOB {} STARTED ===", getClass().getSimpleName());
-        makingReservationRequestsValid.makeValid();
+        makingReservationRequestsValid.makeValidSince();
         log.debug("=== JOB {} ENDED ===", getClass().getSimpleName());
     }
 

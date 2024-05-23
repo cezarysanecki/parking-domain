@@ -1,6 +1,7 @@
 package pl.cezarysanecki.parkingdomain.requestingreservation.model.requester;
 
-import pl.cezarysanecki.parkingdomain.shared.reservationrequest.ReservationRequestId;
+import pl.cezarysanecki.parkingdomain.commons.aggregates.Version;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.ReservationRequestId;
 
 public interface ReservationRequesterEvent {
 
@@ -14,13 +15,15 @@ public interface ReservationRequesterEvent {
 
     record ReservationRequestAppended(
             ReservationRequesterId requesterId,
-            ReservationRequestId reservationRequestId
+            ReservationRequestId reservationRequestId,
+            Version timeSlotVersion
     ) implements ReservationRequesterEvent {
     }
 
     record ReservationRequestRemoved(
             ReservationRequesterId requesterId,
-            ReservationRequestId reservationRequestId
+            ReservationRequestId reservationRequestId,
+            Version timeSlotVersion
     ) implements ReservationRequesterEvent {
     }
 

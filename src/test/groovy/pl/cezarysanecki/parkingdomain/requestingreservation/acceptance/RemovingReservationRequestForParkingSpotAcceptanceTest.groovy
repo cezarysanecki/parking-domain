@@ -4,21 +4,21 @@ import org.springframework.beans.factory.annotation.Autowired
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.requestingreservation.application.CancellingReservationRequest
-import pl.cezarysanecki.parkingdomain.requestingreservation.application.StoringReservationRequest
+import pl.cezarysanecki.parkingdomain.requestingreservation.application.MakingReservationRequest
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlotId
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterId
-import pl.cezarysanecki.parkingdomain.requestingreservation.web.ParkingSpotReservationRequestsViewRepository
+import pl.cezarysanecki.parkingdomain.requestingreservation.web.ReservationRequestsViewRepository
 import pl.cezarysanecki.parkingdomain.requestingreservation.web.ReservationRequesterViewRepository
 import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits
 
 class RemovingReservationRequestForParkingSpotAcceptanceTest extends AbstractRequestingAcceptanceTest {
   
   @Autowired
-  StoringReservationRequest storingReservationRequest
+  MakingReservationRequest storingReservationRequest
   @Autowired
   CancellingReservationRequest cancellingReservationRequest
   @Autowired
-  ParkingSpotReservationRequestsViewRepository parkingSpotReservationRequestsViewRepository
+  ReservationRequestsViewRepository parkingSpotReservationRequestsViewRepository
   @Autowired
   ReservationRequesterViewRepository reservationRequesterViewRepository
   
@@ -36,11 +36,11 @@ class RemovingReservationRequestForParkingSpotAcceptanceTest extends AbstractReq
     given:
       def parkingSpotTimeSlotId = findAnyFullyFreeParkingSpotTimeSlot(parkingSpotId)
     and:
-      def reservationRequest = storingReservationRequest.storeRequest(
+      def reservationRequest = storingReservationRequest.makeRequest(
           requesterId, parkingSpotTimeSlotId, SpotUnits.of(2))
     
     when:
-      cancellingReservationRequest.cancelRequest(reservationRequest.get().getReservationRequestId())
+      cancellingReservationRequest.cancelRequest(reservationRequest.get().reservationRequestId())
     
     then:
       parkingSpotIsEmpty(parkingSpotId)
@@ -52,7 +52,7 @@ class RemovingReservationRequestForParkingSpotAcceptanceTest extends AbstractReq
     return ReservationRequestsTimeSlotId.of(
         parkingSpotReservationRequestsViewRepository.queryForAllAvailableParkingSpots()
             .find { it.parkingSpotId() == parkingSpotId.value && it.spaceLeft() == it.capacity() }
-            .parkingSpotTimeSlotId())
+            .timeSlotId())
   }
   
   private void parkingSpotIsEmpty(ParkingSpotId parkingSpotId) {
@@ -65,7 +65,7 @@ class RemovingReservationRequestForParkingSpotAcceptanceTest extends AbstractReq
   
   private void requesterDoesNotContainAnyReservationRequest(ReservationRequesterId requesterId) {
     reservationRequesterViewRepository.queryForAllReservationRequesters()
-        .find { it -> it.reservationRequesterId() == requesterId.value }
+        .find { it -> it.requesterId() == requesterId.value }
         .with {
           assert it.reservationRequests().empty
         }

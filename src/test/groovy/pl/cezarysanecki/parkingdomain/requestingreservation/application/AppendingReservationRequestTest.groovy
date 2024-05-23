@@ -1,8 +1,8 @@
 package pl.cezarysanecki.parkingdomain.requestingreservation.application
 
 import io.vavr.control.Option
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlotsRepository
-import pl.cezarysanecki.parkingdomain.shared.reservationrequest.ReservationRequestId
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlotRepository
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.ReservationRequestId
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterRepository
 import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits
 import spock.lang.Specification
@@ -16,10 +16,10 @@ import static pl.cezarysanecki.parkingdomain.requestingreservation.model.request
 class AppendingReservationRequestTest extends Specification {
   
   ReservationRequesterRepository reservationRequesterRepository = Mock()
-  ReservationRequestsTimeSlotsRepository parkingSpotReservationRequestsRepository = Mock()
+  ReservationRequestsTimeSlotRepository parkingSpotReservationRequestsRepository = Mock()
   
   @Subject
-  StoringReservationRequest storingReservationRequest = new StoringReservationRequest(
+  MakingReservationRequest storingReservationRequest = new MakingReservationRequest(
       reservationRequesterRepository,
       parkingSpotReservationRequestsRepository)
   
@@ -29,12 +29,12 @@ class AppendingReservationRequestTest extends Specification {
       reservationRequesterRepository.findBy(requester.requesterId) >> Option.of(requester)
     and:
       def parkingSpotReservationRequests = parkingSpotWithoutReservationRequests()
-      parkingSpotReservationRequestsRepository.findBy(parkingSpotReservationRequests.reservationRequestsTimeSlotId) >> Option.of(parkingSpotReservationRequests)
+      parkingSpotReservationRequestsRepository.findBy(parkingSpotReservationRequests.timeSlotId) >> Option.of(parkingSpotReservationRequests)
     and:
       def spotUnits = SpotUnits.of(2)
     
     when:
-      def result = storingReservationRequest.storeRequest(requester.requesterId, parkingSpotReservationRequests.reservationRequestsTimeSlotId, spotUnits)
+      def result = storingReservationRequest.makeRequest(requester.requesterId, parkingSpotReservationRequests.timeSlotId, spotUnits)
     
     then:
       result.isSuccess()
@@ -53,12 +53,12 @@ class AppendingReservationRequestTest extends Specification {
       reservationRequesterRepository.findBy(requester.requesterId) >> Option.of(requester)
     and:
       def parkingSpotReservationRequests = parkingSpotWithoutReservationRequests()
-      parkingSpotReservationRequestsRepository.findBy(parkingSpotReservationRequests.reservationRequestsTimeSlotId) >> Option.of(parkingSpotReservationRequests)
+      parkingSpotReservationRequestsRepository.findBy(parkingSpotReservationRequests.timeSlotId) >> Option.of(parkingSpotReservationRequests)
     and:
       def spotUnits = SpotUnits.of(2)
     
     when:
-      def result = storingReservationRequest.storeRequest(requester.requesterId, parkingSpotReservationRequests.reservationRequestsTimeSlotId, spotUnits)
+      def result = storingReservationRequest.makeRequest(requester.requesterId, parkingSpotReservationRequests.timeSlotId, spotUnits)
     
     then:
       result.isFailure()

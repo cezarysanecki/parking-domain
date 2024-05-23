@@ -1,9 +1,9 @@
 package pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot;
 
 import io.vavr.control.Option;
-import pl.cezarysanecki.parkingdomain.shared.reservationrequest.ReservationRequestId;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.ReservationRequestId;
 
-public interface ReservationRequestsTimeSlotsRepository {
+public interface ReservationRequestsTimeSlotRepository {
 
     void publish(ReservationRequestsTimeSlotEvent event);
 

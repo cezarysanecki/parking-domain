@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.cezarysanecki.parkingdomain.requestingreservation.application.CancellingReservationRequest;
-import pl.cezarysanecki.parkingdomain.requestingreservation.application.StoringReservationRequest;
+import pl.cezarysanecki.parkingdomain.requestingreservation.application.MakingReservationRequest;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterId;
-import pl.cezarysanecki.parkingdomain.shared.reservationrequest.ReservationRequest;
-import pl.cezarysanecki.parkingdomain.shared.reservationrequest.ReservationRequestId;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.ReservationRequest;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.ReservationRequestId;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlotId;
 import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits;
 
@@ -22,25 +22,25 @@ import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.ResponseEntity.ok;
-import static pl.cezarysanecki.parkingdomain.requestingreservation.web.ParkingSpotReservationRequestsViewRepository.ParkingSpotReservationRequestsView;
+import static pl.cezarysanecki.parkingdomain.requestingreservation.web.ReservationRequestsViewRepository.ParkingSpotReservationRequestsView;
 
 @RestController
 @RequestMapping("/requests")
 @RequiredArgsConstructor
-class ParkingSpotReservationRequestsController {
+class ReservationRequestsController {
 
-    private final ParkingSpotReservationRequestsViewRepository parkingSpotReservationRequestsViewRepository;
-    private final StoringReservationRequest storingReservationRequest;
+    private final ReservationRequestsViewRepository reservationRequestsViewRepository;
+    private final MakingReservationRequest makingReservationRequest;
     private final CancellingReservationRequest cancellingReservationRequest;
 
     @GetMapping("/parking-spots/available")
     ResponseEntity<List<ParkingSpotReservationRequestsView>> availableParkingSpots() {
-        return ok(parkingSpotReservationRequestsViewRepository.queryForAllAvailableParkingSpots());
+        return ok(reservationRequestsViewRepository.queryForAllAvailableParkingSpots());
     }
 
     @PostMapping("/parking-spot/store")
     ResponseEntity storeRequest(@RequestBody StoreReservationRequestRequest request) {
-        Try<ReservationRequest> result = storingReservationRequest.storeRequest(
+        Try<ReservationRequest> result = makingReservationRequest.makeRequest(
                 ReservationRequesterId.of(request.requesterId),
                 ReservationRequestsTimeSlotId.of(request.reservationRequestsTimeSlotId),
                 SpotUnits.of(request.units));

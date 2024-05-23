@@ -2,9 +2,9 @@ package pl.cezarysanecki.parkingdomain.requestingreservation.application
 
 import io.vavr.collection.HashSet
 import io.vavr.control.Option
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlotsRepository
-import pl.cezarysanecki.parkingdomain.shared.reservationrequest.ReservationRequest
-import pl.cezarysanecki.parkingdomain.shared.reservationrequest.ReservationRequestId
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlotRepository
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.ReservationRequest
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.ReservationRequestId
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequester
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterId
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterRepository
@@ -20,7 +20,7 @@ import static pl.cezarysanecki.parkingdomain.requestingreservation.model.request
 class RemovingReservationRequestTest extends Specification {
   
   ReservationRequesterRepository reservationRequesterRepository = Mock()
-  ReservationRequestsTimeSlotsRepository parkingSpotReservationRequestsRepository = Mock()
+  ReservationRequestsTimeSlotRepository parkingSpotReservationRequestsRepository = Mock()
   
   @Subject
   CancellingReservationRequest cancellingReservationRequest = new CancellingReservationRequest(
