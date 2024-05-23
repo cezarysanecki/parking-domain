@@ -1,7 +1,7 @@
 package pl.cezarysanecki.parkingdomain.requestingreservation.model.requester
 
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ReservationRequest
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.parkingspot.ReservationRequestId
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.ReservationRequest
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.ReservationRequestId
 import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits
 import spock.lang.Specification
 
@@ -19,14 +19,12 @@ class RemovingReservationRequestTest extends Specification {
       def reservationRequest = new ReservationRequest(requester.requesterId, reservationRequestId, spotUnits)
     
     when:
-      def result = requester.remove(reservationRequest)
+      def result = requester.remove(reservationRequest.reservationRequestId)
     
     then:
       result.isSuccess()
       result.get().with {
-        assert it.reservationRequesterId == requester.requesterId
-        assert it.reservationRequestId == reservationRequest.reservationRequestId
-        assert it.spotUnits == spotUnits
+        assert it == reservationRequest.reservationRequestId
       }
   }
   
@@ -35,7 +33,7 @@ class RemovingReservationRequestTest extends Specification {
       def requester = requesterWithNoReservationRequests(1)
     
     when:
-      def result = requester.remove(ReservationRequest.newOne(requester.requesterId, SpotUnits.of(2)))
+      def result = requester.remove(ReservationRequestId.newOne())
     
     then:
       result.isFailure()

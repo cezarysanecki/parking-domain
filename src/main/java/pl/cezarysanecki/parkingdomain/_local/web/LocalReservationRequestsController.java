@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pl.cezarysanecki.parkingdomain.requestingreservation.application.CreatingReservationRequestTimeSlots;
+import pl.cezarysanecki.parkingdomain.requestingreservation.application.ExchangingReservationRequestsTimeSlots;
 import pl.cezarysanecki.parkingdomain.requestingreservation.application.MakingReservationRequestsValid;
 
 import java.util.List;
@@ -18,21 +18,17 @@ import java.util.List;
 class LocalReservationRequestsController {
 
     private final MakingReservationRequestsValid makingReservationRequestsValid;
-    private final CreatingReservationRequestTimeSlots creatingReservationRequestTimeSlots;
+    private final ExchangingReservationRequestsTimeSlots exchangingReservationRequestsTimeSlots;
 
     @PostMapping("/make-valid")
     ResponseEntity<List<String>> makeReservationRequestValid() {
-        io.vavr.collection.List<MakingReservationRequestsValid.Problem> result = makingReservationRequestsValid.makeValid();
-        if (result.isEmpty()) {
-            return ResponseEntity.ok(List.of());
-        }
-        return ResponseEntity.internalServerError()
-                .body(result.map(MakingReservationRequestsValid.Problem::reason).asJava());
+        makingReservationRequestsValid.makeValidSince();
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/create-time-slots")
     ResponseEntity createTimeSlots() {
-        creatingReservationRequestTimeSlots.prepareNewTimeSlots();
+        exchangingReservationRequestsTimeSlots.exchangeTimeSlots(exchangingReservationRequestsTimeSlots.dateProvider.tomorrow());
         return ResponseEntity.ok().build();
     }
 
