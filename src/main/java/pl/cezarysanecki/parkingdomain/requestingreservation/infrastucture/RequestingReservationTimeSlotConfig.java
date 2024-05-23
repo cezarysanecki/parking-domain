@@ -55,16 +55,12 @@ public class RequestingReservationTimeSlotConfig {
 
     @Bean
     MakingReservationRequestsValid makingReservationRequestsValid(
-            ReservationRequestsTimeSlotRepository reservationRequestsTimeSlotRepository,
-            ReservationRequesterRepository reservationRequesterRepository,
-            ReservationRequestEventPublisher reservationRequestEventPublisher,
+            ReservationRequestsRepository reservationRequestsRepository,
             @Value("${business.reservationRequests.hoursToMakeValid}") int hoursToMakeReservationRequestValid
     ) {
         return new MakingReservationRequestsValid(
+                reservationRequestsRepository,
                 dateProvider,
-                reservationRequestsTimeSlotRepository,
-                reservationRequesterRepository,
-                reservationRequestEventPublisher,
                 hoursToMakeReservationRequestValid);
     }
 

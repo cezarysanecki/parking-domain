@@ -1,5 +1,6 @@
 package pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot;
 
+import io.vavr.collection.List;
 import pl.cezarysanecki.parkingdomain.commons.aggregates.Version;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.ReservationRequest;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.template.ReservationRequestsTemplateId;
@@ -26,6 +27,13 @@ public interface ReservationRequestsTimeSlotEvent {
     record ReservationRequestRemoved(
             ReservationRequestsTimeSlotId timeSlotId,
             ReservationRequest reservationRequest,
+            Version timeSlotVersion
+    ) implements ReservationRequestsTimeSlotEvent {
+    }
+
+    record ReservationRequestMadeValid(
+            ReservationRequestsTimeSlotId timeSlotId,
+            List<ReservationRequest> reservationRequests,
             Version timeSlotVersion
     ) implements ReservationRequestsTimeSlotEvent {
     }

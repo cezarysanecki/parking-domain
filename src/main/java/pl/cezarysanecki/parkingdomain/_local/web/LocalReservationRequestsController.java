@@ -28,7 +28,7 @@ class LocalReservationRequestsController {
 
     @PostMapping("/create-time-slots")
     ResponseEntity createTimeSlots() {
-        exchangingReservationRequestsTimeSlots.exchangeTimeSlots();
+        exchangingReservationRequestsTimeSlots.exchangeTimeSlots(exchangingReservationRequestsTimeSlots.dateProvider.tomorrow());
         return ResponseEntity.ok().build();
     }
 

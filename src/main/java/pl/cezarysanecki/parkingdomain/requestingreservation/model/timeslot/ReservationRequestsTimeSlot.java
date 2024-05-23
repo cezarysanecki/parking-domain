@@ -14,6 +14,7 @@ import pl.cezarysanecki.parkingdomain.shared.occupation.ParkingSpotCapacity;
 import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits;
 
 import static pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlotEvent.ReservationRequestAppended;
+import static pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlotEvent.ReservationRequestMadeValid;
 import static pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlotEvent.ReservationRequestRemoved;
 
 @Getter
@@ -53,6 +54,10 @@ public class ReservationRequestsTimeSlot {
             return Try.failure(new IllegalStateException("not enough space"));
         }
         return Try.of(() -> new ReservationRequestRemoved(timeSlotId, request.get(), version));
+    }
+
+    public Try<ReservationRequestMadeValid> madeValid() {
+        return Try.of(() -> new ReservationRequestMadeValid(timeSlotId, reservationRequests.toList(), version));
     }
 
     private boolean exceedsAllowedSpace(SpotUnits spotUnits) {

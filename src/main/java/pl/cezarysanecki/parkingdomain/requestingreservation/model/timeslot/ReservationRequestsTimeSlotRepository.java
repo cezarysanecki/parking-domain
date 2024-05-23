@@ -11,4 +11,6 @@ public interface ReservationRequestsTimeSlotRepository {
 
     Option<ReservationRequestsTimeSlot> findBy(ReservationRequestId reservationRequestId);
 
+    boolean containsAny();
+
 }

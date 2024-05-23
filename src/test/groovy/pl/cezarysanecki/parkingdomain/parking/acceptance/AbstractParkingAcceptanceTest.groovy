@@ -40,7 +40,7 @@ abstract class AbstractParkingAcceptanceTest extends Specification {
   ExchangingReservationRequestsTimeSlots creatingReservationRequestTimeSlots
   
   void createTimeSlots() {
-    creatingReservationRequestTimeSlots.exchangeTimeSlots()
+    creatingReservationRequestTimeSlots.exchangeTimeSlots(creatingReservationRequestTimeSlots.dateProvider.tomorrow())
   }
   
   ParkingSpotId addParkingSpot(int capacity, ParkingSpotCategory category) {

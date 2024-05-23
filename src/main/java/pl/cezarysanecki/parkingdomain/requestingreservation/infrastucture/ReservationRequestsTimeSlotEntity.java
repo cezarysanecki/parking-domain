@@ -8,18 +8,18 @@ import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.Reser
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlotEvent;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlotId;
 import pl.cezarysanecki.parkingdomain.shared.occupation.ParkingSpotCapacity;
-import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits;
 import pl.cezarysanecki.parkingdomain.shared.timeslot.TimeSlot;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @AllArgsConstructor
 class ReservationRequestsTimeSlotEntity {
 
-    UUID reservationRequestsTimeSlotId;
+    UUID timeSlotId;
     int capacity;
-    List<ReservationRequest> reservationRequests;
+    Set<UUID> reservationRequests;
     int version;
     UUID templateId;
     TimeSlot timeSlot;
@@ -27,27 +27,20 @@ class ReservationRequestsTimeSlotEntity {
     ReservationRequestsTimeSlotEntity handle(ReservationRequestsTimeSlotEvent event) {
         return switch (event) {
             case ReservationRequestsTimeSlotEvent.ReservationRequestAppended appended -> {
-                reservationRequests.add(appended.reservationRequest());
+                reservationRequests.add(appended.reservationRequest().reservationRequestId().getValue());
                 yield this;
             }
             case ReservationRequestsTimeSlotEvent.ReservationRequestRemoved removed -> {
-                reservationRequests.remove(removed.reservationRequest());
+                reservationRequests.remove(removed.reservationRequest().reservationRequestId().getValue());
                 yield this;
             }
             default -> this;
         };
     }
 
-    int spaceLeft() {
-        return capacity - reservationRequests.stream()
-                .map(ReservationRequest::spotUnits)
-                .map(SpotUnits::getValue)
-                .reduce(0, Integer::sum);
-    }
-
-    ReservationRequestsTimeSlot toDomain() {
+    ReservationRequestsTimeSlot toDomain(List<ReservationRequest> reservationRequests) {
         return new ReservationRequestsTimeSlot(
-                ReservationRequestsTimeSlotId.of(reservationRequestsTimeSlotId),
+                ReservationRequestsTimeSlotId.of(timeSlotId),
                 HashSet.ofAll(reservationRequests.stream()),
                 ParkingSpotCapacity.of(capacity),
                 new Version(version));

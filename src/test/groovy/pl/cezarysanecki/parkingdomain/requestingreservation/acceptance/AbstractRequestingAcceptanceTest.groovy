@@ -37,7 +37,7 @@ abstract class AbstractRequestingAcceptanceTest extends Specification {
   }
   
   void createTimeSlots() {
-    creatingReservationRequestTimeSlots.exchangeTimeSlots()
+    creatingReservationRequestTimeSlots.exchangeTimeSlots(creatingReservationRequestTimeSlots.dateProvider.tomorrow())
   }
   
   ReservationRequesterId registerLowLimitRequester() {

@@ -4,44 +4,40 @@ import io.vavr.collection.List;
 import io.vavr.collection.Stream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import pl.cezarysanecki.parkingdomain.commons.date.DateProvider;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.template.ReservationRequestsTemplate;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.template.ReservationRequestsTemplateRepository;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlotId;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlotRepository;
 import pl.cezarysanecki.parkingdomain.shared.timeslot.TimeSlot;
 
 import java.time.LocalDate;
 
+import static pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlotEvent.ReservationRequestCreated;
+
 @Slf4j
 @RequiredArgsConstructor
 public class ExchangingReservationRequestsTimeSlots {
 
-    private final DateProvider dateProvider;
     private final ReservationRequestsTimeSlotRepository reservationRequestsTimeSlotRepository;
     private final ReservationRequestsTemplateRepository reservationRequestsTemplateRepository;
 
-    public void exchangeTimeSlots() {
+    public void exchangeTimeSlots(LocalDate date) {
         if (reservationRequestsTimeSlotRepository.containsAny()) {
             log.error("there are still reservation requests time slots, check it");
             return;
         }
-        LocalDate tomorrow = dateProvider.tomorrow();
 
-        List<TimeSlotToCreate> timeSlotsToCreate = reservationRequestsTemplateRepository.findAll()
+        List<ReservationRequestCreated> events = reservationRequestsTemplateRepository.findAll()
                 .flatMap(template -> Stream.of(
-                                TimeSlot.createTimeSlotAtUTC(tomorrow, 7, 17),
-                                TimeSlot.createTimeSlotAtUTC(tomorrow, 18, 23))
-                        .map(timeSlot -> new TimeSlotToCreate(template, timeSlot)));
-        log.debug("there is {} time slots to create", timeSlotsToCreate.size());
+                                TimeSlot.createTimeSlotAtUTC(date, 7, 17),
+                                TimeSlot.createTimeSlotAtUTC(date, 18, 23))
+                        .map(timeSlot -> new ReservationRequestCreated(
+                                template.templateId(),
+                                ReservationRequestsTimeSlotId.newOne(),
+                                timeSlot
+                        )));
+        log.debug("there is {} time slots to create", events.size());
 
-        timeSlotsToCreate.forEach(timeSlotToCreate -> reservationRequestsTimeSlotRepository.saveNewUsing(
-                timeSlotToCreate.template.templateId(), timeSlotToCreate.timeSlot));
-    }
-
-    record TimeSlotToCreate(
-            ReservationRequestsTemplate template,
-            TimeSlot timeSlot
-    ) {
+        events.forEach(reservationRequestsTimeSlotRepository::publish);
     }
 
 }
