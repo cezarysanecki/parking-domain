@@ -20,7 +20,7 @@ public class ReservationRequests {
 
   public Try<ReservationRequestMade> makeRequest(SpotUnits spotUnits) {
     ReservationRequest reservationRequest = ReservationRequest.newOne(
-        requester.getRequesterId(),
+        requester.requesterId(),
         timeSlot.getTimeSlotId(),
         spotUnits);
 

@@ -7,23 +7,10 @@ public interface ReservationRequesterEvent {
 
   ReservationRequesterId requesterId();
 
-  record ReservationRequestCreated(
-      ReservationRequesterId requesterId,
-      int limit
-  ) implements ReservationRequesterEvent {
-  }
-
   record ReservationRequestAppended(
       ReservationRequesterId requesterId,
       ReservationRequestId reservationRequestId,
-      Version timeSlotVersion
-  ) implements ReservationRequesterEvent {
-  }
-
-  record ReservationRequestRemoved(
-      ReservationRequesterId requesterId,
-      ReservationRequestId reservationRequestId,
-      Version timeSlotVersion
+      Version requesterVersion
   ) implements ReservationRequesterEvent {
   }
 

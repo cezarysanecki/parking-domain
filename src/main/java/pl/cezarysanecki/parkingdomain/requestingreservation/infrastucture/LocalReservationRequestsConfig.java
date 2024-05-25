@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequester;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterEvent;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterId;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterRepository;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.ReservationRequest;

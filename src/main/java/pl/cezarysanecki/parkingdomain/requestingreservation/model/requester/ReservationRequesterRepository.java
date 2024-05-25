@@ -5,10 +5,8 @@ import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.Reser
 
 public interface ReservationRequesterRepository {
 
-  void publish(ReservationRequesterEvent event);
+  void saveNew(ReservationRequesterId requesterId, int limit);
 
   Option<ReservationRequester> findBy(ReservationRequesterId reservationRequesterId);
-
-  Option<ReservationRequester> findBy(ReservationRequestId reservationRequestId);
 
 }
