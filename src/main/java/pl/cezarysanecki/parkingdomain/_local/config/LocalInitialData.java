@@ -16,17 +16,17 @@ import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory
 @RequiredArgsConstructor
 class LocalInitialData implements CommandLineRunner {
 
-    private final AddingParkingSpot addingParkingSpot;
-    private final RegisteringClient registeringClient;
+  private final AddingParkingSpot addingParkingSpot;
+  private final RegisteringClient registeringClient;
 
-    @Override
-    public void run(final String... args) {
-        addingParkingSpot.addParkingSpot(4, ParkingSpotCategory.Gold);
-        addingParkingSpot.addParkingSpot(4, ParkingSpotCategory.Silver);
-        addingParkingSpot.addParkingSpot(4, ParkingSpotCategory.Bronze);
+  @Override
+  public void run(final String... args) {
+    addingParkingSpot.addParkingSpot(4, ParkingSpotCategory.Gold);
+    addingParkingSpot.addParkingSpot(4, ParkingSpotCategory.Silver);
+    addingParkingSpot.addParkingSpot(4, ParkingSpotCategory.Bronze);
 
-        registeringClient.registerClient(ClientType.INDIVIDUAL, "123123123");
-        registeringClient.registerClient(ClientType.INDIVIDUAL, "321321321");
-        registeringClient.registerClient(ClientType.BUSINESS, "789789789");
-    }
+    registeringClient.registerClient(ClientType.INDIVIDUAL, "123123123");
+    registeringClient.registerClient(ClientType.INDIVIDUAL, "321321321");
+    registeringClient.registerClient(ClientType.BUSINESS, "789789789");
+  }
 }

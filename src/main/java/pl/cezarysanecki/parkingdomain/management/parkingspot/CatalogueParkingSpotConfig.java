@@ -10,17 +10,17 @@ import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 @RequiredArgsConstructor
 public class CatalogueParkingSpotConfig {
 
-    private final EventPublisher eventPublisher;
+  private final EventPublisher eventPublisher;
 
-    @Bean
-    AddingParkingSpot addingParkingSpot(CatalogueParkingSpotDatabase catalogueParkingSpotDatabase) {
-        return new AddingParkingSpot(catalogueParkingSpotDatabase, eventPublisher);
-    }
+  @Bean
+  AddingParkingSpot addingParkingSpot(CatalogueParkingSpotDatabase catalogueParkingSpotDatabase) {
+    return new AddingParkingSpot(catalogueParkingSpotDatabase, eventPublisher);
+  }
 
-    @Bean
-    @Profile("local")
-    CatalogueParkingSpotDatabase catalogueParkingSpotDatabase() {
-        return new CatalogueParkingSpotDatabase.InMemoryCatalogueParkingSpotDatabase();
-    }
+  @Bean
+  @Profile("local")
+  CatalogueParkingSpotDatabase catalogueParkingSpotDatabase() {
+    return new CatalogueParkingSpotDatabase.InMemoryCatalogueParkingSpotDatabase();
+  }
 
 }

@@ -2,20 +2,20 @@ package pl.cezarysanecki.parkingdomain.requestingreservation.application
 
 import io.vavr.collection.HashSet
 import io.vavr.control.Option
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlotRepository
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.ReservationRequest
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.ReservationRequestId
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequester
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterId
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterRepository
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.ReservationRequest
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.ReservationRequestId
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlotRepository
 import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits
 import spock.lang.Specification
 import spock.lang.Subject
 
 import static pl.cezarysanecki.parkingdomain.requestingreservation.model.ReservationRequestsEvents.ReservationRequestRemoved
+import static pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterFixture.requesterWithNoReservationRequests
 import static pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ParkingSpotReservationRequestsFixture.parkingSpotWithRequest
 import static pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ParkingSpotReservationRequestsFixture.parkingSpotWithoutReservationRequests
-import static pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterFixture.requesterWithNoReservationRequests
 
 class RemovingReservationRequestTest extends Specification {
   

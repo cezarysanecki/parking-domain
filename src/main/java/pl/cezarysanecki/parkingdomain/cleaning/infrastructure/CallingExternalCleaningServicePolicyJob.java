@@ -13,16 +13,16 @@ import pl.cezarysanecki.parkingdomain.commons.commands.Result;
 @RequiredArgsConstructor
 class CallingExternalCleaningServicePolicyJob implements Job {
 
-    private final CallingExternalCleaningServicePolicy callingExternalCleaningServicePolicy;
+  private final CallingExternalCleaningServicePolicy callingExternalCleaningServicePolicy;
 
-    @Override
-    public void execute(JobExecutionContext jobExecutionContext) {
-        log.debug("=== JOB {} STARTED ===", getClass().getSimpleName());
-        Result result = callingExternalCleaningServicePolicy.handleCleaningPolicy();
-        if (result == Result.Rejection) {
-            log.debug("Need to wait some time to call external service");
-        }
-        log.debug("=== JOB {} ENDED ===", getClass().getSimpleName());
+  @Override
+  public void execute(JobExecutionContext jobExecutionContext) {
+    log.debug("=== JOB {} STARTED ===", getClass().getSimpleName());
+    Result result = callingExternalCleaningServicePolicy.handleCleaningPolicy();
+    if (result == Result.Rejection) {
+      log.debug("Need to wait some time to call external service");
     }
+    log.debug("=== JOB {} ENDED ===", getClass().getSimpleName());
+  }
 
 }

@@ -18,71 +18,71 @@ import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotRepos
 @RequiredArgsConstructor
 public class ParkingSpotConfig {
 
-    private final EventPublisher eventPublisher;
+  private final EventPublisher eventPublisher;
 
-    @Bean
-    OccupyingParkingSpot occupyingParkingSpot(
-            BeneficiaryRepository beneficiaryRepository,
-            ParkingSpotRepository parkingSpotRepository
-    ) {
-        return new OccupyingParkingSpot(
-                eventPublisher,
-                beneficiaryRepository,
-                parkingSpotRepository);
-    }
+  @Bean
+  OccupyingParkingSpot occupyingParkingSpot(
+      BeneficiaryRepository beneficiaryRepository,
+      ParkingSpotRepository parkingSpotRepository
+  ) {
+    return new OccupyingParkingSpot(
+        eventPublisher,
+        beneficiaryRepository,
+        parkingSpotRepository);
+  }
 
-    @Bean
-    ReleasingParkingSpot releasingParkingSpot(
-            BeneficiaryRepository beneficiaryRepository,
-            ParkingSpotRepository parkingSpotRepository
-    ) {
-        return new ReleasingParkingSpot(
-                eventPublisher,
-                beneficiaryRepository,
-                parkingSpotRepository);
-    }
+  @Bean
+  ReleasingParkingSpot releasingParkingSpot(
+      BeneficiaryRepository beneficiaryRepository,
+      ParkingSpotRepository parkingSpotRepository
+  ) {
+    return new ReleasingParkingSpot(
+        eventPublisher,
+        beneficiaryRepository,
+        parkingSpotRepository);
+  }
 
-    @Bean
-    CreatingParkingSpotEventHandler creatingParkingSpotEventHandler(
-            ParkingSpotRepository parkingSpotRepository
-    ) {
-        return new CreatingParkingSpotEventHandler(parkingSpotRepository);
-    }
+  @Bean
+  CreatingParkingSpotEventHandler creatingParkingSpotEventHandler(
+      ParkingSpotRepository parkingSpotRepository
+  ) {
+    return new CreatingParkingSpotEventHandler(parkingSpotRepository);
+  }
 
-    @Bean
-    CreatingBeneficiaryEventHandler creatingBeneficiaryEventHandler(
-            BeneficiaryRepository beneficiaryRepository
-    ) {
-        return new CreatingBeneficiaryEventHandler(beneficiaryRepository);
-    }
+  @Bean
+  CreatingBeneficiaryEventHandler creatingBeneficiaryEventHandler(
+      BeneficiaryRepository beneficiaryRepository
+  ) {
+    return new CreatingBeneficiaryEventHandler(beneficiaryRepository);
+  }
 
-    @Bean
-    ReservingParkingSpotEventHandler reservingParkingSpotEventHandler(
-            BeneficiaryRepository beneficiaryRepository,
-            ParkingSpotRepository parkingSpotRepository
-    ) {
-        return new ReservingParkingSpotEventHandler(
-                beneficiaryRepository,
-                parkingSpotRepository);
-    }
+  @Bean
+  ReservingParkingSpotEventHandler reservingParkingSpotEventHandler(
+      BeneficiaryRepository beneficiaryRepository,
+      ParkingSpotRepository parkingSpotRepository
+  ) {
+    return new ReservingParkingSpotEventHandler(
+        beneficiaryRepository,
+        parkingSpotRepository);
+  }
 
-    @Bean
-    ProvidingUsageOfParkingSpot providingUsageOfParkingSpot(
-            ParkingSpotRepository parkingSpotRepository
-    ) {
-        return new ProvidingUsageOfParkingSpot(parkingSpotRepository);
-    }
+  @Bean
+  ProvidingUsageOfParkingSpot providingUsageOfParkingSpot(
+      ParkingSpotRepository parkingSpotRepository
+  ) {
+    return new ProvidingUsageOfParkingSpot(parkingSpotRepository);
+  }
 
-    @Bean
-    @Profile("local")
-    InMemoryBeneficiaryRepository beneficiaryRepository() {
-        return new InMemoryBeneficiaryRepository();
-    }
+  @Bean
+  @Profile("local")
+  InMemoryBeneficiaryRepository beneficiaryRepository() {
+    return new InMemoryBeneficiaryRepository();
+  }
 
-    @Bean
-    @Profile("local")
-    InMemoryParkingSpotRepository parkingSpotRepository() {
-        return new InMemoryParkingSpotRepository();
-    }
+  @Bean
+  @Profile("local")
+  InMemoryParkingSpotRepository parkingSpotRepository() {
+    return new InMemoryParkingSpotRepository();
+  }
 
 }

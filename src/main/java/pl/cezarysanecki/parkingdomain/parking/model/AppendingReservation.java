@@ -11,23 +11,23 @@ import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.Reser
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AppendingReservation {
 
-    public static Try<Reservation> append(
-            ParkingSpot parkingSpot,
-            Beneficiary beneficiary,
-            ReservationRequest reservationRequest
-    ) {
-        Try<Reservation> parkingSpotReservationAppend = parkingSpot.reserveUsing(reservationRequest);
-        if (parkingSpotReservationAppend.isFailure()) {
-            return Try.failure(parkingSpotReservationAppend.getCause());
-        }
-        Reservation reservation = parkingSpotReservationAppend.get();
-
-        Try<Reservation> beneficiaryReservationAppend = beneficiary.append(reservation);
-        if (beneficiaryReservationAppend.isFailure()) {
-            return Try.failure(beneficiaryReservationAppend.getCause());
-        }
-
-        return Try.of(() -> reservation);
+  public static Try<Reservation> append(
+      ParkingSpot parkingSpot,
+      Beneficiary beneficiary,
+      ReservationRequest reservationRequest
+  ) {
+    Try<Reservation> parkingSpotReservationAppend = parkingSpot.reserveUsing(reservationRequest);
+    if (parkingSpotReservationAppend.isFailure()) {
+      return Try.failure(parkingSpotReservationAppend.getCause());
     }
+    Reservation reservation = parkingSpotReservationAppend.get();
+
+    Try<Reservation> beneficiaryReservationAppend = beneficiary.append(reservation);
+    if (beneficiaryReservationAppend.isFailure()) {
+      return Try.failure(beneficiaryReservationAppend.getCause());
+    }
+
+    return Try.of(() -> reservation);
+  }
 
 }

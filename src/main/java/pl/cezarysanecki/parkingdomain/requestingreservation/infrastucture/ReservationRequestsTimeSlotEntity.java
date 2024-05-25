@@ -17,33 +17,33 @@ import java.util.UUID;
 @AllArgsConstructor
 class ReservationRequestsTimeSlotEntity {
 
-    UUID timeSlotId;
-    int capacity;
-    Set<UUID> reservationRequests;
-    int version;
-    UUID templateId;
-    TimeSlot timeSlot;
+  UUID timeSlotId;
+  int capacity;
+  Set<UUID> reservationRequests;
+  int version;
+  UUID templateId;
+  TimeSlot timeSlot;
 
-    ReservationRequestsTimeSlotEntity handle(ReservationRequestsTimeSlotEvent event) {
-        return switch (event) {
-            case ReservationRequestsTimeSlotEvent.ReservationRequestAppended appended -> {
-                reservationRequests.add(appended.reservationRequest().reservationRequestId().getValue());
-                yield this;
-            }
-            case ReservationRequestsTimeSlotEvent.ReservationRequestRemoved removed -> {
-                reservationRequests.remove(removed.reservationRequest().reservationRequestId().getValue());
-                yield this;
-            }
-            default -> this;
-        };
-    }
+  ReservationRequestsTimeSlotEntity handle(ReservationRequestsTimeSlotEvent event) {
+    return switch (event) {
+      case ReservationRequestsTimeSlotEvent.ReservationRequestAppended appended -> {
+        reservationRequests.add(appended.reservationRequest().reservationRequestId().getValue());
+        yield this;
+      }
+      case ReservationRequestsTimeSlotEvent.ReservationRequestRemoved removed -> {
+        reservationRequests.remove(removed.reservationRequest().reservationRequestId().getValue());
+        yield this;
+      }
+      default -> this;
+    };
+  }
 
-    ReservationRequestsTimeSlot toDomain(List<ReservationRequest> reservationRequests) {
-        return new ReservationRequestsTimeSlot(
-                ReservationRequestsTimeSlotId.of(timeSlotId),
-                HashSet.ofAll(reservationRequests.stream()),
-                ParkingSpotCapacity.of(capacity),
-                new Version(version));
-    }
+  ReservationRequestsTimeSlot toDomain(List<ReservationRequest> reservationRequests) {
+    return new ReservationRequestsTimeSlot(
+        ReservationRequestsTimeSlotId.of(timeSlotId),
+        HashSet.ofAll(reservationRequests.stream()),
+        ParkingSpotCapacity.of(capacity),
+        new Version(version));
+  }
 
 }

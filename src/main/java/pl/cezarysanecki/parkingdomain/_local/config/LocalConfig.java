@@ -11,9 +11,9 @@ import pl.cezarysanecki.parkingdomain.commons.date.DateProvider;
 @Profile("local")
 public class LocalConfig {
 
-    @Bean
-    DateProvider dateProvider() {
-        return new LocalDateProvider();
-    }
+  @Bean
+  DateProvider dateProvider() {
+    return new LocalDateProvider();
+  }
 
 }

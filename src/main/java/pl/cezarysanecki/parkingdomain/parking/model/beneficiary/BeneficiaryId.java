@@ -7,15 +7,15 @@ import java.util.UUID;
 @Value(staticConstructor = "of")
 public class BeneficiaryId {
 
-    UUID value;
+  UUID value;
 
-    public static BeneficiaryId newOne() {
-        return new BeneficiaryId(UUID.randomUUID());
-    }
+  public static BeneficiaryId newOne() {
+    return new BeneficiaryId(UUID.randomUUID());
+  }
 
-    @Override
-    public String toString() {
-        return value.toString();
-    }
+  @Override
+  public String toString() {
+    return value.toString();
+  }
 
 }

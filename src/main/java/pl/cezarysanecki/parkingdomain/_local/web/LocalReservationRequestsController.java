@@ -17,19 +17,19 @@ import java.util.List;
 @RequiredArgsConstructor
 class LocalReservationRequestsController {
 
-    private final MakingReservationRequestsValid makingReservationRequestsValid;
-    private final ExchangingReservationRequestsTimeSlots exchangingReservationRequestsTimeSlots;
+  private final MakingReservationRequestsValid makingReservationRequestsValid;
+  private final ExchangingReservationRequestsTimeSlots exchangingReservationRequestsTimeSlots;
 
-    @PostMapping("/make-valid")
-    ResponseEntity<List<String>> makeReservationRequestValid() {
-        makingReservationRequestsValid.makeValidSince();
-        return ResponseEntity.ok().build();
-    }
+  @PostMapping("/make-valid")
+  ResponseEntity<List<String>> makeReservationRequestValid() {
+    makingReservationRequestsValid.makeValidSince();
+    return ResponseEntity.ok().build();
+  }
 
-    @PostMapping("/create-time-slots")
-    ResponseEntity createTimeSlots() {
-        exchangingReservationRequestsTimeSlots.exchangeTimeSlots(exchangingReservationRequestsTimeSlots.dateProvider.tomorrow());
-        return ResponseEntity.ok().build();
-    }
+  @PostMapping("/create-time-slots")
+  ResponseEntity createTimeSlots() {
+    exchangingReservationRequestsTimeSlots.exchangeTimeSlots(exchangingReservationRequestsTimeSlots.dateProvider.tomorrow());
+    return ResponseEntity.ok().build();
+  }
 
 }

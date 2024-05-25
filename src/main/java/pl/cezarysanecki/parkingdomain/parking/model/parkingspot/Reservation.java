@@ -8,15 +8,15 @@ import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits;
 @Value
 public class Reservation {
 
-    @NonNull
-    BeneficiaryId beneficiaryId;
-    @NonNull
-    ReservationId reservationId;
-    @NonNull
-    SpotUnits spotUnits;
+  @NonNull
+  BeneficiaryId beneficiaryId;
+  @NonNull
+  ReservationId reservationId;
+  @NonNull
+  SpotUnits spotUnits;
 
-    public static Reservation newOne(BeneficiaryId beneficiaryId, SpotUnits spotUnits) {
-        return new Reservation(beneficiaryId, ReservationId.newOne(), spotUnits);
-    }
+  public static Reservation newOne(BeneficiaryId beneficiaryId, SpotUnits spotUnits) {
+    return new Reservation(beneficiaryId, ReservationId.newOne(), spotUnits);
+  }
 
 }

@@ -16,29 +16,29 @@ import static pl.cezarysanecki.parkingdomain.requestingreservation.model.request
 @RequiredArgsConstructor
 public class MakingReservationRequest {
 
-    private final ReservationRequestsRepository reservationRequestsRepository;
+  private final ReservationRequestsRepository reservationRequestsRepository;
 
-    public Try<ReservationRequest> makeRequest(
-            ReservationRequesterId requesterId,
-            ReservationRequestsTimeSlotId timeSlotId,
-            SpotUnits spotUnits
-    ) {
-        ReservationRequests reservationRequests = findBy(requesterId, timeSlotId);
+  public Try<ReservationRequest> makeRequest(
+      ReservationRequesterId requesterId,
+      ReservationRequestsTimeSlotId timeSlotId,
+      SpotUnits spotUnits
+  ) {
+    ReservationRequests reservationRequests = findBy(requesterId, timeSlotId);
 
-        Try<ReservationRequestMade> result = reservationRequests.makeRequest(spotUnits);
+    Try<ReservationRequestMade> result = reservationRequests.makeRequest(spotUnits);
 
-        return result
-                .onFailure(exception -> log.error("cannot make reservation request, reason: {}", exception.getMessage()))
-                .onSuccess(event -> {
-                    log.debug("successfully made reservation request with id {}", event.reservationRequest().reservationRequestId());
-                    reservationRequestsRepository.publish(event);
-                })
-                .map(ReservationRequestMade::reservationRequest);
-    }
+    return result
+        .onFailure(exception -> log.error("cannot make reservation request, reason: {}", exception.getMessage()))
+        .onSuccess(event -> {
+          log.debug("successfully made reservation request with id {}", event.reservationRequest().reservationRequestId());
+          reservationRequestsRepository.publish(event);
+        })
+        .map(ReservationRequestMade::reservationRequest);
+  }
 
-    private ReservationRequests findBy(ReservationRequesterId requesterId, ReservationRequestsTimeSlotId timeSlotId) {
-        return reservationRequestsRepository.findBy(requesterId, timeSlotId)
-                .getOrElseThrow(() -> new IllegalStateException("cannot find reservation requests by requester with id: " + requesterId + " and time slot with id: " + timeSlotId));
-    }
+  private ReservationRequests findBy(ReservationRequesterId requesterId, ReservationRequestsTimeSlotId timeSlotId) {
+    return reservationRequestsRepository.findBy(requesterId, timeSlotId)
+        .getOrElseThrow(() -> new IllegalStateException("cannot find reservation requests by requester with id: " + requesterId + " and time slot with id: " + timeSlotId));
+  }
 
 }

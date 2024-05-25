@@ -11,11 +11,11 @@ import static org.springframework.http.ResponseEntity.ok;
 @RequiredArgsConstructor
 class CleaningController {
 
-    private final CleaningViewRepository cleaningViewRepository;
+  private final CleaningViewRepository cleaningViewRepository;
 
-    @GetMapping("/cleaning-service")
-    ResponseEntity<CleaningViewRepository.CleaningView> cleaningService() {
-        return ok(cleaningViewRepository.queryForCleaningView());
-    }
+  @GetMapping("/cleaning-service")
+  ResponseEntity<CleaningViewRepository.CleaningView> cleaningService() {
+    return ok(cleaningViewRepository.queryForCleaningView());
+  }
 
 }

@@ -17,36 +17,36 @@ import static pl.cezarysanecki.parkingdomain.requestingreservation.model.Reserva
 @RequiredArgsConstructor
 public class ReservingParkingSpotEventHandler {
 
-    private final BeneficiaryRepository beneficiaryRepository;
-    private final ParkingSpotRepository parkingSpotRepository;
+  private final BeneficiaryRepository beneficiaryRepository;
+  private final ParkingSpotRepository parkingSpotRepository;
 
-    @EventListener
-    public void handle(ReservationRequestsConfirmed event) {
-        ParkingSpot parkingSpot = findParkingSpotBy(event.parkingSpotId());
+  @EventListener
+  public void handle(ReservationRequestsConfirmed event) {
+    ParkingSpot parkingSpot = findParkingSpotBy(event.parkingSpotId());
 
-        event.reservationRequests()
-                .forEach(reservationRequest -> {
-                    Beneficiary beneficiary = findBeneficiaryBy(BeneficiaryId.of(reservationRequest.getReservationRequesterId().getValue()));
+    event.reservationRequests()
+        .forEach(reservationRequest -> {
+          Beneficiary beneficiary = findBeneficiaryBy(BeneficiaryId.of(reservationRequest.getReservationRequesterId().getValue()));
 
-                    AppendingReservation.append(
-                                    parkingSpot,
-                                    beneficiary,
-                                    reservationRequest)
-                            .onFailure(t -> log.error("cannot create reservation from request with id {}, reason {}", reservationRequest.getReservationRequestId(), t.getMessage()))
-                            .onSuccess(reservation -> log.error("created reservation with id {} from request with id {}", reservation.getReservationId(), reservationRequest.getReservationRequestId()));
-                });
+          AppendingReservation.append(
+                  parkingSpot,
+                  beneficiary,
+                  reservationRequest)
+              .onFailure(t -> log.error("cannot create reservation from request with id {}, reason {}", reservationRequest.getReservationRequestId(), t.getMessage()))
+              .onSuccess(reservation -> log.error("created reservation with id {} from request with id {}", reservation.getReservationId(), reservationRequest.getReservationRequestId()));
+        });
 
-        parkingSpotRepository.save(parkingSpot);
-    }
+    parkingSpotRepository.save(parkingSpot);
+  }
 
-    private ParkingSpot findParkingSpotBy(ParkingSpotId parkingSpotId) {
-        return parkingSpotRepository.findBy(parkingSpotId)
-                .getOrElseThrow(() -> new IllegalStateException("cannot find parking spot with id: " + parkingSpotId));
-    }
+  private ParkingSpot findParkingSpotBy(ParkingSpotId parkingSpotId) {
+    return parkingSpotRepository.findBy(parkingSpotId)
+        .getOrElseThrow(() -> new IllegalStateException("cannot find parking spot with id: " + parkingSpotId));
+  }
 
-    private Beneficiary findBeneficiaryBy(BeneficiaryId beneficiaryId) {
-        return beneficiaryRepository.findBy(beneficiaryId)
-                .getOrElseThrow(() -> new IllegalStateException("cannot find beneficiary with id: " + beneficiaryId));
-    }
+  private Beneficiary findBeneficiaryBy(BeneficiaryId beneficiaryId) {
+    return beneficiaryRepository.findBy(beneficiaryId)
+        .getOrElseThrow(() -> new IllegalStateException("cannot find beneficiary with id: " + beneficiaryId));
+  }
 
 }

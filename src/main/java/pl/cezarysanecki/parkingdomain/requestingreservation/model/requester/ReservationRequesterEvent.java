@@ -5,26 +5,26 @@ import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.Reser
 
 public interface ReservationRequesterEvent {
 
-    ReservationRequesterId requesterId();
+  ReservationRequesterId requesterId();
 
-    record ReservationRequestCreated(
-            ReservationRequesterId requesterId,
-            int limit
-    ) implements ReservationRequesterEvent {
-    }
+  record ReservationRequestCreated(
+      ReservationRequesterId requesterId,
+      int limit
+  ) implements ReservationRequesterEvent {
+  }
 
-    record ReservationRequestAppended(
-            ReservationRequesterId requesterId,
-            ReservationRequestId reservationRequestId,
-            Version timeSlotVersion
-    ) implements ReservationRequesterEvent {
-    }
+  record ReservationRequestAppended(
+      ReservationRequesterId requesterId,
+      ReservationRequestId reservationRequestId,
+      Version timeSlotVersion
+  ) implements ReservationRequesterEvent {
+  }
 
-    record ReservationRequestRemoved(
-            ReservationRequesterId requesterId,
-            ReservationRequestId reservationRequestId,
-            Version timeSlotVersion
-    ) implements ReservationRequesterEvent {
-    }
+  record ReservationRequestRemoved(
+      ReservationRequesterId requesterId,
+      ReservationRequestId reservationRequestId,
+      Version timeSlotVersion
+  ) implements ReservationRequesterEvent {
+  }
 
 }

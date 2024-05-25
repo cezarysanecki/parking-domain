@@ -13,14 +13,14 @@ import pl.cezarysanecki.parkingdomain.requestingreservation.application.Exchangi
 @RequiredArgsConstructor
 class ExchangingReservationRequestsTimeSlotsJob implements Job {
 
-    private final DateProvider dateProvider;
-    private final ExchangingReservationRequestsTimeSlots exchangingReservationRequestsTimeSlots;
+  private final DateProvider dateProvider;
+  private final ExchangingReservationRequestsTimeSlots exchangingReservationRequestsTimeSlots;
 
-    @Override
-    public void execute(JobExecutionContext jobExecutionContext) {
-        log.debug("=== JOB {} STARTED ===", getClass().getSimpleName());
-        exchangingReservationRequestsTimeSlots.exchangeTimeSlots(dateProvider.tomorrow());
-        log.debug("=== JOB {} ENDED ===", getClass().getSimpleName());
-    }
+  @Override
+  public void execute(JobExecutionContext jobExecutionContext) {
+    log.debug("=== JOB {} STARTED ===", getClass().getSimpleName());
+    exchangingReservationRequestsTimeSlots.exchangeTimeSlots(dateProvider.tomorrow());
+    log.debug("=== JOB {} ENDED ===", getClass().getSimpleName());
+  }
 
 }

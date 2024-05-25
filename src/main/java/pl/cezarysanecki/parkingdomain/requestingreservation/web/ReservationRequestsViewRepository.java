@@ -8,17 +8,17 @@ import java.util.UUID;
 
 public interface ReservationRequestsViewRepository {
 
-    List<ParkingSpotReservationRequestsView> queryForAllAvailableParkingSpots();
+  List<ParkingSpotReservationRequestsView> queryForAllAvailableParkingSpots();
 
-    record ParkingSpotReservationRequestsView(
-            UUID parkingSpotId,
-            UUID timeSlotId,
-            ParkingSpotCategory parkingSpotCategory,
-            TimeSlot timeSlot,
-            int capacity,
-            int spaceLeft,
-            List<UUID> reservationRequests
-    ) {
-    }
+  record ParkingSpotReservationRequestsView(
+      UUID parkingSpotId,
+      UUID timeSlotId,
+      ParkingSpotCategory parkingSpotCategory,
+      TimeSlot timeSlot,
+      int capacity,
+      int spaceLeft,
+      List<UUID> reservationRequests
+  ) {
+  }
 
 }

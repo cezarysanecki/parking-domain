@@ -9,11 +9,11 @@ import org.springframework.context.annotation.Configuration;
 @RequiredArgsConstructor
 public class EventPublisherConfig {
 
-    private final ApplicationEventPublisher applicationEventPublisher;
+  private final ApplicationEventPublisher applicationEventPublisher;
 
-    @Bean
-    EventPublisher eventPublisher() {
-        return new JustForwardDomainEventPublisher(applicationEventPublisher);
-    }
+  @Bean
+  EventPublisher eventPublisher() {
+    return new JustForwardDomainEventPublisher(applicationEventPublisher);
+  }
 
 }

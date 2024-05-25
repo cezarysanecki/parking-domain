@@ -10,17 +10,17 @@ import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 @RequiredArgsConstructor
 public class CatalogueClientConfig {
 
-    private final EventPublisher eventPublisher;
+  private final EventPublisher eventPublisher;
 
-    @Bean
-    RegisteringClient registeringClient(CatalogueClientDatabase catalogueParkingSpotDatabase) {
-        return new RegisteringClient(catalogueParkingSpotDatabase, eventPublisher);
-    }
+  @Bean
+  RegisteringClient registeringClient(CatalogueClientDatabase catalogueParkingSpotDatabase) {
+    return new RegisteringClient(catalogueParkingSpotDatabase, eventPublisher);
+  }
 
-    @Bean
-    @Profile("local")
-    CatalogueClientDatabase catalogueClientDatabase() {
-        return new CatalogueClientDatabase.InMemoryCatalogueClientDatabase();
-    }
+  @Bean
+  @Profile("local")
+  CatalogueClientDatabase catalogueClientDatabase() {
+    return new CatalogueClientDatabase.InMemoryCatalogueClientDatabase();
+  }
 
 }

@@ -28,93 +28,93 @@ import static org.springframework.http.ResponseEntity.ok;
 @RequiredArgsConstructor
 class ParkingSpotController {
 
-    private final ParkingSpotViewRepository parkingSpotViewRepository;
-    private final OccupyingParkingSpot occupyingParkingSpot;
-    private final ReleasingParkingSpot releasingParkingSpot;
+  private final ParkingSpotViewRepository parkingSpotViewRepository;
+  private final OccupyingParkingSpot occupyingParkingSpot;
+  private final ReleasingParkingSpot releasingParkingSpot;
 
-    @GetMapping("/parking-spots/available")
-    ResponseEntity<List<ParkingSpotViewRepository.CapacityView>> availableParkingSpots() {
-        return ok(parkingSpotViewRepository.queryForAllAvailableParkingSpots());
-    }
+  @GetMapping("/parking-spots/available")
+  ResponseEntity<List<ParkingSpotViewRepository.CapacityView>> availableParkingSpots() {
+    return ok(parkingSpotViewRepository.queryForAllAvailableParkingSpots());
+  }
 
-    @PostMapping("/parking-spot/occupy")
-    ResponseEntity occupy(@RequestBody OccupyParkingSpotRequest request) {
-        Try<Occupation> result = occupyingParkingSpot.occupy(
-                BeneficiaryId.of(request.beneficiaryId),
-                ParkingSpotId.of(request.parkingSpotId),
-                SpotUnits.of(request.units));
+  @PostMapping("/parking-spot/occupy")
+  ResponseEntity occupy(@RequestBody OccupyParkingSpotRequest request) {
+    Try<Occupation> result = occupyingParkingSpot.occupy(
+        BeneficiaryId.of(request.beneficiaryId),
+        ParkingSpotId.of(request.parkingSpotId),
+        SpotUnits.of(request.units));
 
-        return result
-                .map(success -> ResponseEntity.ok().build())
-                .getOrElse(ResponseEntity.status(INTERNAL_SERVER_ERROR).build());
-    }
+    return result
+        .map(success -> ResponseEntity.ok().build())
+        .getOrElse(ResponseEntity.status(INTERNAL_SERVER_ERROR).build());
+  }
 
-    @PostMapping("/parking-spot/occupy/any")
-    ResponseEntity occupyAny(@RequestBody OccupyAnyParkingSpotRequest request) {
-        Try<Occupation> result = occupyingParkingSpot.occupyAny(
-                BeneficiaryId.of(request.beneficiaryId),
-                request.category,
-                SpotUnits.of(request.units));
+  @PostMapping("/parking-spot/occupy/any")
+  ResponseEntity occupyAny(@RequestBody OccupyAnyParkingSpotRequest request) {
+    Try<Occupation> result = occupyingParkingSpot.occupyAny(
+        BeneficiaryId.of(request.beneficiaryId),
+        request.category,
+        SpotUnits.of(request.units));
 
-        return result
-                .map(success -> ResponseEntity.ok().build())
-                .getOrElse(ResponseEntity.status(INTERNAL_SERVER_ERROR).build());
-    }
+    return result
+        .map(success -> ResponseEntity.ok().build())
+        .getOrElse(ResponseEntity.status(INTERNAL_SERVER_ERROR).build());
+  }
 
-    @PostMapping("/parking-spot/occupy-reserved")
-    ResponseEntity occupyReserved(@RequestBody OccupyReservedParkingSpotRequest request) {
-        Try<Occupation> result = occupyingParkingSpot.occupy(
-                ReservationId.of(request.reservationId));
+  @PostMapping("/parking-spot/occupy-reserved")
+  ResponseEntity occupyReserved(@RequestBody OccupyReservedParkingSpotRequest request) {
+    Try<Occupation> result = occupyingParkingSpot.occupy(
+        ReservationId.of(request.reservationId));
 
-        return result
-                .map(success -> ResponseEntity.ok().build())
-                .getOrElse(ResponseEntity.status(INTERNAL_SERVER_ERROR).build());
-    }
+    return result
+        .map(success -> ResponseEntity.ok().build())
+        .getOrElse(ResponseEntity.status(INTERNAL_SERVER_ERROR).build());
+  }
 
-    @PostMapping("/parking-spot/occupy-whole")
-    ResponseEntity occupyWhole(@RequestBody OccupyWholeParkingSpotRequest request) {
-        Try<Occupation> result = occupyingParkingSpot.occupyWhole(
-                BeneficiaryId.of(request.beneficiaryId),
-                ParkingSpotId.of(request.parkingSpotId));
+  @PostMapping("/parking-spot/occupy-whole")
+  ResponseEntity occupyWhole(@RequestBody OccupyWholeParkingSpotRequest request) {
+    Try<Occupation> result = occupyingParkingSpot.occupyWhole(
+        BeneficiaryId.of(request.beneficiaryId),
+        ParkingSpotId.of(request.parkingSpotId));
 
-        return result
-                .map(success -> ResponseEntity.ok().build())
-                .getOrElse(ResponseEntity.status(INTERNAL_SERVER_ERROR).build());
-    }
+    return result
+        .map(success -> ResponseEntity.ok().build())
+        .getOrElse(ResponseEntity.status(INTERNAL_SERVER_ERROR).build());
+  }
 
-    @DeleteMapping("/parking-spot/release")
-    ResponseEntity release(@RequestBody ReleaseParkingSpotRequest request) {
-        Try<Occupation> result = releasingParkingSpot.release(
-                OccupationId.of(request.occupationId));
+  @DeleteMapping("/parking-spot/release")
+  ResponseEntity release(@RequestBody ReleaseParkingSpotRequest request) {
+    Try<Occupation> result = releasingParkingSpot.release(
+        OccupationId.of(request.occupationId));
 
-        return result
-                .map(success -> ResponseEntity.ok().build())
-                .getOrElse(ResponseEntity.status(INTERNAL_SERVER_ERROR).build());
-    }
+    return result
+        .map(success -> ResponseEntity.ok().build())
+        .getOrElse(ResponseEntity.status(INTERNAL_SERVER_ERROR).build());
+  }
 
-    record OccupyParkingSpotRequest(
-            UUID beneficiaryId,
-            UUID parkingSpotId,
-            int units) {
-    }
+  record OccupyParkingSpotRequest(
+      UUID beneficiaryId,
+      UUID parkingSpotId,
+      int units) {
+  }
 
-    record OccupyAnyParkingSpotRequest(
-            UUID beneficiaryId,
-            ParkingSpotCategory category,
-            int units) {
-    }
+  record OccupyAnyParkingSpotRequest(
+      UUID beneficiaryId,
+      ParkingSpotCategory category,
+      int units) {
+  }
 
-    record OccupyReservedParkingSpotRequest(
-            UUID reservationId) {
-    }
+  record OccupyReservedParkingSpotRequest(
+      UUID reservationId) {
+  }
 
-    record OccupyWholeParkingSpotRequest(
-            UUID beneficiaryId,
-            UUID parkingSpotId) {
-    }
+  record OccupyWholeParkingSpotRequest(
+      UUID beneficiaryId,
+      UUID parkingSpotId) {
+  }
 
-    record ReleaseParkingSpotRequest(
-            UUID occupationId) {
-    }
+  record ReleaseParkingSpotRequest(
+      UUID occupationId) {
+  }
 
 }

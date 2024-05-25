@@ -8,12 +8,12 @@ import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.Reser
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ReservationRequesterFixture {
 
-    public static ReservationRequester requesterWithNoReservationRequests(int limit) {
-        return new ReservationRequester(ReservationRequesterId.newOne(), HashSet.empty(), limit);
-    }
+  public static ReservationRequester requesterWithNoReservationRequests(int limit) {
+    return new ReservationRequester(ReservationRequesterId.newOne(), HashSet.empty(), limit);
+  }
 
-    public static ReservationRequester requesterWith(ReservationRequestId reservationRequestId) {
-        return new ReservationRequester(ReservationRequesterId.newOne(), HashSet.of(reservationRequestId), 1);
-    }
+  public static ReservationRequester requesterWith(ReservationRequestId reservationRequestId) {
+    return new ReservationRequester(ReservationRequesterId.newOne(), HashSet.of(reservationRequestId), 1);
+  }
 
 }

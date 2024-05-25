@@ -15,21 +15,21 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 class LocalDateController {
 
-    private final LocalDateProvider localDateProvider;
+  private final LocalDateProvider localDateProvider;
 
-    @GetMapping("/date-provider")
-    LocalDateTime getCurrentDate() {
-        return localDateProvider.now();
-    }
+  @GetMapping("/date-provider")
+  LocalDateTime getCurrentDate() {
+    return localDateProvider.now();
+  }
 
-    @PostMapping("/date-provider/{hours}/hours")
-    LocalDateTime passHours(@PathVariable("hours") int hours) {
-        return localDateProvider.passHours(hours);
-    }
+  @PostMapping("/date-provider/{hours}/hours")
+  LocalDateTime passHours(@PathVariable("hours") int hours) {
+    return localDateProvider.passHours(hours);
+  }
 
-    @PostMapping("/date-provider/{minutes}/minutes")
-    LocalDateTime passMinutes(@PathVariable("minutes") int minutes) {
-        return localDateProvider.passMinutes(minutes);
-    }
+  @PostMapping("/date-provider/{minutes}/minutes")
+  LocalDateTime passMinutes(@PathVariable("minutes") int minutes) {
+    return localDateProvider.passMinutes(minutes);
+  }
 
 }

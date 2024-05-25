@@ -27,100 +27,100 @@ import static org.quartz.CronScheduleBuilder.cronSchedule;
 @RequiredArgsConstructor
 public class RequestingReservationTimeSlotConfig {
 
-    private final DateProvider dateProvider;
+  private final DateProvider dateProvider;
 
-    @Bean
-    MakingReservationRequest storingReservationRequest(ReservationRequestsRepository reservationRequestsRepository) {
-        return new MakingReservationRequest(reservationRequestsRepository);
-    }
+  @Bean
+  MakingReservationRequest storingReservationRequest(ReservationRequestsRepository reservationRequestsRepository) {
+    return new MakingReservationRequest(reservationRequestsRepository);
+  }
 
-    @Bean
-    CancellingReservationRequest cancellingReservationRequest(ReservationRequestsRepository reservationRequestsRepository) {
-        return new CancellingReservationRequest(reservationRequestsRepository);
-    }
+  @Bean
+  CancellingReservationRequest cancellingReservationRequest(ReservationRequestsRepository reservationRequestsRepository) {
+    return new CancellingReservationRequest(reservationRequestsRepository);
+  }
 
-    @Bean
-    CreatingReservationRequestsTemplatesEventHandler creatingParkingSpotReservationRequestsEventHandler(
-            ReservationRequestsTemplateRepository reservationRequestsTemplateRepository
-    ) {
-        return new CreatingReservationRequestsTemplatesEventHandler(reservationRequestsTemplateRepository);
-    }
+  @Bean
+  CreatingReservationRequestsTemplatesEventHandler creatingParkingSpotReservationRequestsEventHandler(
+      ReservationRequestsTemplateRepository reservationRequestsTemplateRepository
+  ) {
+    return new CreatingReservationRequestsTemplatesEventHandler(reservationRequestsTemplateRepository);
+  }
 
-    @Bean
-    CreatingReservationRequesterEventHandler creatingReservationRequesterEventHandler(
-            ReservationRequesterRepository reservationRequesterRepository
-    ) {
-        return new CreatingReservationRequesterEventHandler(reservationRequesterRepository);
-    }
+  @Bean
+  CreatingReservationRequesterEventHandler creatingReservationRequesterEventHandler(
+      ReservationRequesterRepository reservationRequesterRepository
+  ) {
+    return new CreatingReservationRequesterEventHandler(reservationRequesterRepository);
+  }
 
-    @Bean
-    MakingReservationRequestsValid makingReservationRequestsValid(
-            ReservationRequestsRepository reservationRequestsRepository,
-            @Value("${business.reservationRequests.hoursToMakeValid}") int hoursToMakeReservationRequestValid
-    ) {
-        return new MakingReservationRequestsValid(
-                reservationRequestsRepository,
-                dateProvider,
-                hoursToMakeReservationRequestValid);
-    }
+  @Bean
+  MakingReservationRequestsValid makingReservationRequestsValid(
+      ReservationRequestsRepository reservationRequestsRepository,
+      @Value("${business.reservationRequests.hoursToMakeValid}") int hoursToMakeReservationRequestValid
+  ) {
+    return new MakingReservationRequestsValid(
+        reservationRequestsRepository,
+        dateProvider,
+        hoursToMakeReservationRequestValid);
+  }
 
-    @Bean
-    ExchangingReservationRequestsTimeSlots creatingReservationRequestTimeSlots(
-            ReservationRequestsTimeSlotRepository reservationRequestsTimeSlotRepository,
-            ReservationRequestsTemplateRepository reservationRequestsTemplateRepository
-    ) {
-        return new ExchangingReservationRequestsTimeSlots(
-                dateProvider,
-                reservationRequestsTimeSlotRepository,
-                reservationRequestsTemplateRepository);
-    }
+  @Bean
+  ExchangingReservationRequestsTimeSlots creatingReservationRequestTimeSlots(
+      ReservationRequestsTimeSlotRepository reservationRequestsTimeSlotRepository,
+      ReservationRequestsTemplateRepository reservationRequestsTemplateRepository
+  ) {
+    return new ExchangingReservationRequestsTimeSlots(
+        dateProvider,
+        reservationRequestsTimeSlotRepository,
+        reservationRequestsTemplateRepository);
+  }
 
-    @Bean
-    @Profile("!local")
-    JobDetail makingReservationRequestsValidJob() {
-        return JobBuilder.newJob()
-                .storeDurably()
-                .ofType(MakingReservationRequestsValidJob.class)
-                .withIdentity("making-reservation-requests-valid-job")
-                .build();
-    }
+  @Bean
+  @Profile("!local")
+  JobDetail makingReservationRequestsValidJob() {
+    return JobBuilder.newJob()
+        .storeDurably()
+        .ofType(MakingReservationRequestsValidJob.class)
+        .withIdentity("making-reservation-requests-valid-job")
+        .build();
+  }
 
-    @Bean
-    @Profile("!local")
-    Trigger makingRequestsValidJobTrigger(
-            JobDetail makingReservationRequestsValidJob,
-            @Value("${job.makingRequestsValidJob.cronExpression}") String cronExpression
-    ) {
-        return TriggerBuilder.newTrigger()
-                .withIdentity("making-reservation-requests-valid-job-trigger")
-                .forJob(makingReservationRequestsValidJob)
-                .withSchedule(cronSchedule(cronExpression))
-                .startNow()
-                .build();
-    }
+  @Bean
+  @Profile("!local")
+  Trigger makingRequestsValidJobTrigger(
+      JobDetail makingReservationRequestsValidJob,
+      @Value("${job.makingRequestsValidJob.cronExpression}") String cronExpression
+  ) {
+    return TriggerBuilder.newTrigger()
+        .withIdentity("making-reservation-requests-valid-job-trigger")
+        .forJob(makingReservationRequestsValidJob)
+        .withSchedule(cronSchedule(cronExpression))
+        .startNow()
+        .build();
+  }
 
-    @Bean
-    @Profile("!local")
-    JobDetail exchangingReservationRequestsTimeSlotsJob() {
-        return JobBuilder.newJob()
-                .storeDurably()
-                .ofType(ExchangingReservationRequestsTimeSlotsJob.class)
-                .withIdentity("exchanging-reservation-requests-time-slots-job")
-                .build();
-    }
+  @Bean
+  @Profile("!local")
+  JobDetail exchangingReservationRequestsTimeSlotsJob() {
+    return JobBuilder.newJob()
+        .storeDurably()
+        .ofType(ExchangingReservationRequestsTimeSlotsJob.class)
+        .withIdentity("exchanging-reservation-requests-time-slots-job")
+        .build();
+  }
 
-    @Bean
-    @Profile("!local")
-    Trigger creatingReservationRequestTimeSlotsJobTrigger(
-            JobDetail exchangingReservationRequestsTimeSlotsJob,
-            @Value("${job.callingExternalCleaningServicePolicyJob.cronExpression}") String cronExpression
-    ) {
-        return TriggerBuilder.newTrigger()
-                .withIdentity("exchanging-reservation-requests-time-slots-job-trigger")
-                .forJob(exchangingReservationRequestsTimeSlotsJob)
-                .withSchedule(cronSchedule(cronExpression))
-                .startNow()
-                .build();
-    }
+  @Bean
+  @Profile("!local")
+  Trigger creatingReservationRequestTimeSlotsJobTrigger(
+      JobDetail exchangingReservationRequestsTimeSlotsJob,
+      @Value("${job.callingExternalCleaningServicePolicyJob.cronExpression}") String cronExpression
+  ) {
+    return TriggerBuilder.newTrigger()
+        .withIdentity("exchanging-reservation-requests-time-slots-job-trigger")
+        .forJob(exchangingReservationRequestsTimeSlotsJob)
+        .withSchedule(cronSchedule(cronExpression))
+        .startNow()
+        .build();
+  }
 
 }

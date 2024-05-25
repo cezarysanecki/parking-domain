@@ -11,23 +11,23 @@ import java.util.concurrent.ConcurrentHashMap;
 
 interface CatalogueParkingSpotDatabase {
 
-    void saveNew(ParkingSpot parkingSpot);
+  void saveNew(ParkingSpot parkingSpot);
 
-    class InMemoryCatalogueParkingSpotDatabase implements CatalogueParkingSpotDatabase {
+  class InMemoryCatalogueParkingSpotDatabase implements CatalogueParkingSpotDatabase {
 
-        private static final Map<ParkingSpotId, ParkingSpotDatabaseRow> DATABASE = new ConcurrentHashMap<>();
+    private static final Map<ParkingSpotId, ParkingSpotDatabaseRow> DATABASE = new ConcurrentHashMap<>();
 
-        @Override
-        public void saveNew(ParkingSpot parkingSpot) {
-            DATABASE.put(
-                    parkingSpot.getParkingSpotId(),
-                    new ParkingSpotDatabaseRow(
-                            parkingSpot.getParkingSpotId().getValue(),
-                            parkingSpot.getCapacity().getValue(),
-                            parkingSpot.getCategory()));
-        }
-
+    @Override
+    public void saveNew(ParkingSpot parkingSpot) {
+      DATABASE.put(
+          parkingSpot.getParkingSpotId(),
+          new ParkingSpotDatabaseRow(
+              parkingSpot.getParkingSpotId().getValue(),
+              parkingSpot.getCapacity().getValue(),
+              parkingSpot.getCategory()));
     }
+
+  }
 
 }
 
@@ -36,12 +36,12 @@ interface CatalogueParkingSpotDatabase {
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 class ParkingSpotDatabaseRow {
 
-    UUID parkingSpotId;
-    int capacity;
-    ParkingSpotCategory category;
+  UUID parkingSpotId;
+  int capacity;
+  ParkingSpotCategory category;
 
-    ParkingSpot toParkingSpot() {
-        return new ParkingSpot(parkingSpotId, capacity, category);
-    }
+  ParkingSpot toParkingSpot() {
+    return new ParkingSpot(parkingSpotId, capacity, category);
+  }
 
 }

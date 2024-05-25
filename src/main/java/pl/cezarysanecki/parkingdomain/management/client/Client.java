@@ -11,15 +11,15 @@ import java.util.UUID;
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 class Client {
 
-    @NonNull
-    ClientId clientId;
-    @NonNull
-    ClientType type;
-    @NonNull
-    PhoneNumber phoneNumber;
+  @NonNull
+  ClientId clientId;
+  @NonNull
+  ClientType type;
+  @NonNull
+  PhoneNumber phoneNumber;
 
-    Client(UUID clientId, ClientType type, String phoneNumber) {
-        this(ClientId.of(clientId), type, PhoneNumber.of(phoneNumber));
-    }
+  Client(UUID clientId, ClientType type, String phoneNumber) {
+    this(ClientId.of(clientId), type, PhoneNumber.of(phoneNumber));
+  }
 
 }

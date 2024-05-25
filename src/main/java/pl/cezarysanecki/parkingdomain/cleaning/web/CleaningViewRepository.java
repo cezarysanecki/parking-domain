@@ -5,19 +5,19 @@ import java.util.UUID;
 
 public interface CleaningViewRepository {
 
-    CleaningView queryForCleaningView();
+  CleaningView queryForCleaningView();
 
-    record CleaningView(
-            Long exceedsOfThreshold,
-            List<ParkingSpot> parkingSpots
+  record CleaningView(
+      Long exceedsOfThreshold,
+      List<ParkingSpot> parkingSpots
+  ) {
+
+    public record ParkingSpot(
+        UUID parkingSpotId,
+        Integer counter
     ) {
-
-        public record ParkingSpot(
-                UUID parkingSpotId,
-                Integer counter
-        ) {
-        }
-
     }
+
+  }
 
 }

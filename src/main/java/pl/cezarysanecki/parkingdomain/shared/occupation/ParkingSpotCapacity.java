@@ -8,14 +8,14 @@ import lombok.Value;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class ParkingSpotCapacity {
 
-    int value;
+  int value;
 
-    public static ParkingSpotCapacity of(int value) {
-        if (value <= 0) {
-            throw new IllegalArgumentException("parking spot capacity must be positive");
-        }
-        return new ParkingSpotCapacity(value);
+  public static ParkingSpotCapacity of(int value) {
+    if (value <= 0) {
+      throw new IllegalArgumentException("parking spot capacity must be positive");
     }
+    return new ParkingSpotCapacity(value);
+  }
 
 }
 

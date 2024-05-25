@@ -15,34 +15,34 @@ import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.Reser
 @AllArgsConstructor
 public class ReservationRequester {
 
-    @NonNull
-    private final ReservationRequesterId requesterId;
-    @NonNull
-    private final Set<ReservationRequestId> currentRequests;
-    private final int limit;
-    @NonNull
-    private final Version version;
+  @NonNull
+  private final ReservationRequesterId requesterId;
+  @NonNull
+  private final Set<ReservationRequestId> currentRequests;
+  private final int limit;
+  @NonNull
+  private final Version version;
 
-    public static ReservationRequester newOne(ReservationRequesterId requesterId, int limit) {
-        return new ReservationRequester(requesterId, HashSet.empty(), limit, Version.zero());
-    }
+  public static ReservationRequester newOne(ReservationRequesterId requesterId, int limit) {
+    return new ReservationRequester(requesterId, HashSet.empty(), limit, Version.zero());
+  }
 
-    public Try<ReservationRequestAppended> append(ReservationRequestId reservationRequestId) {
-        if (willBeTooManyRequests(reservationRequestId)) {
-            return Try.failure(new IllegalStateException("too many reservation requests"));
-        }
-        return Try.of(() -> new ReservationRequestAppended(requesterId, reservationRequestId, version));
+  public Try<ReservationRequestAppended> append(ReservationRequestId reservationRequestId) {
+    if (willBeTooManyRequests(reservationRequestId)) {
+      return Try.failure(new IllegalStateException("too many reservation requests"));
     }
+    return Try.of(() -> new ReservationRequestAppended(requesterId, reservationRequestId, version));
+  }
 
-    public Try<ReservationRequestRemoved> remove(ReservationRequestId reservationRequestId) {
-        if (!currentRequests.contains(reservationRequestId)) {
-            return Try.failure(new IllegalStateException("does not have request"));
-        }
-        return Try.of(() -> new ReservationRequestRemoved(requesterId, reservationRequestId, version));
+  public Try<ReservationRequestRemoved> remove(ReservationRequestId reservationRequestId) {
+    if (!currentRequests.contains(reservationRequestId)) {
+      return Try.failure(new IllegalStateException("does not have request"));
     }
+    return Try.of(() -> new ReservationRequestRemoved(requesterId, reservationRequestId, version));
+  }
 
-    private boolean willBeTooManyRequests(ReservationRequestId reservationRequestId) {
-        return currentRequests.size() + 1 > limit;
-    }
+  private boolean willBeTooManyRequests(ReservationRequestId reservationRequestId) {
+    return currentRequests.size() + 1 > limit;
+  }
 
 }

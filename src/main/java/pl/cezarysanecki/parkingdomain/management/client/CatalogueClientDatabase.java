@@ -11,23 +11,23 @@ import java.util.concurrent.ConcurrentHashMap;
 
 interface CatalogueClientDatabase {
 
-    void saveNew(Client client);
+  void saveNew(Client client);
 
-    class InMemoryCatalogueClientDatabase implements CatalogueClientDatabase {
+  class InMemoryCatalogueClientDatabase implements CatalogueClientDatabase {
 
-        private static final Map<ClientId, ClientDatabaseRow> DATABASE = new ConcurrentHashMap<>();
+    private static final Map<ClientId, ClientDatabaseRow> DATABASE = new ConcurrentHashMap<>();
 
-        @Override
-        public void saveNew(Client client) {
-            DATABASE.put(
-                    client.getClientId(),
-                    new ClientDatabaseRow(
-                            client.getClientId().getValue(),
-                            client.getType().name(),
-                            client.getPhoneNumber().getValue()));
-        }
-
+    @Override
+    public void saveNew(Client client) {
+      DATABASE.put(
+          client.getClientId(),
+          new ClientDatabaseRow(
+              client.getClientId().getValue(),
+              client.getType().name(),
+              client.getPhoneNumber().getValue()));
     }
+
+  }
 
 }
 
@@ -36,12 +36,12 @@ interface CatalogueClientDatabase {
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 class ClientDatabaseRow {
 
-    UUID clientId;
-    String type;
-    String phoneNumber;
+  UUID clientId;
+  String type;
+  String phoneNumber;
 
-    Client toClient() {
-        return new Client(clientId, ClientType.valueOf(type), phoneNumber);
-    }
+  Client toClient() {
+    return new Client(clientId, ClientType.valueOf(type), phoneNumber);
+  }
 
 }

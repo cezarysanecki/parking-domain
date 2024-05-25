@@ -7,20 +7,20 @@ import java.util.UUID;
 
 public interface ReservationRequesterViewRepository {
 
-    List<ReservationRequesterView> queryForAllReservationRequesters();
+  List<ReservationRequesterView> queryForAllReservationRequesters();
 
-    record ReservationRequesterView(
-            UUID requesterId,
-            List<ReservationRequestView> reservationRequests
+  record ReservationRequesterView(
+      UUID requesterId,
+      List<ReservationRequestView> reservationRequests
+  ) {
+
+    public record ReservationRequestView(
+        UUID reservationRequestId,
+        UUID parkingSpotId,
+        TimeSlot timeSlot
     ) {
-
-        public record ReservationRequestView(
-                UUID reservationRequestId,
-                UUID parkingSpotId,
-                TimeSlot timeSlot
-        ) {
-        }
-
     }
+
+  }
 
 }

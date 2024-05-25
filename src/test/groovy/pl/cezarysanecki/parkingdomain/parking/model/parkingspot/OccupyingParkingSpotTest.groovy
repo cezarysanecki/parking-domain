@@ -5,9 +5,7 @@ import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits
 import spock.lang.Specification
 
 import static ParkingSpotFixture.emptyParkingSpotWithCapacity
-import static pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotFixture.emptyParkingSpotWithReservation
-import static pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotFixture.fullyOccupiedParkingSpot
-import static pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotFixture.occupiedPartiallyBy
+import static pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotFixture.*
 
 class OccupyingParkingSpotTest extends Specification {
   

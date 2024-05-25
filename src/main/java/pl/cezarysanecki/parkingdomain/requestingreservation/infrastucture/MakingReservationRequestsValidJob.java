@@ -12,13 +12,13 @@ import pl.cezarysanecki.parkingdomain.requestingreservation.application.MakingRe
 @RequiredArgsConstructor
 class MakingReservationRequestsValidJob implements Job {
 
-    private final MakingReservationRequestsValid makingReservationRequestsValid;
+  private final MakingReservationRequestsValid makingReservationRequestsValid;
 
-    @Override
-    public void execute(JobExecutionContext jobExecutionContext) {
-        log.debug("=== JOB {} STARTED ===", getClass().getSimpleName());
-        makingReservationRequestsValid.makeValidSince();
-        log.debug("=== JOB {} ENDED ===", getClass().getSimpleName());
-    }
+  @Override
+  public void execute(JobExecutionContext jobExecutionContext) {
+    log.debug("=== JOB {} STARTED ===", getClass().getSimpleName());
+    makingReservationRequestsValid.makeValidSince();
+    log.debug("=== JOB {} ENDED ===", getClass().getSimpleName());
+  }
 
 }

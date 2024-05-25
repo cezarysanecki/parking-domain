@@ -7,15 +7,15 @@ import java.util.UUID;
 @Value(staticConstructor = "of")
 public class ReservationRequestsTemplateId {
 
-    UUID value;
+  UUID value;
 
-    public static ReservationRequestsTemplateId newOne() {
-        return new ReservationRequestsTemplateId(UUID.randomUUID());
-    }
+  public static ReservationRequestsTemplateId newOne() {
+    return new ReservationRequestsTemplateId(UUID.randomUUID());
+  }
 
-    @Override
-    public String toString() {
-        return value.toString();
-    }
+  @Override
+  public String toString() {
+    return value.toString();
+  }
 
 }

@@ -20,57 +20,57 @@ import static org.quartz.CronScheduleBuilder.cronSchedule;
 @RequiredArgsConstructor
 public class CleaningConfig {
 
-    @Bean
-    CountingReleasedOccupationsEventHandler countingReleasedOccupationsEventHandler(
-            CleaningRepository cleaningRepository
-    ) {
-        return new CountingReleasedOccupationsEventHandler(cleaningRepository);
-    }
+  @Bean
+  CountingReleasedOccupationsEventHandler countingReleasedOccupationsEventHandler(
+      CleaningRepository cleaningRepository
+  ) {
+    return new CountingReleasedOccupationsEventHandler(cleaningRepository);
+  }
 
-    @Bean
-    CallingExternalCleaningServicePolicy callingExternalCleaningServicePolicy(
-            CleaningRepository cleaningRepository,
-            ExternalCleaningService externalCleaningService,
-            @Value("${business.cleaning.numberOfDrivesAwayToConsiderParkingSpotDirty}") int numberOfDrivesAwayToConsiderParkingSpotDirty,
-            @Value("${business.cleaning.numberOfDirtyParkingSpotsToCallExternalService}") int numberOfDirtyParkingSpotsToCallExternalService
-    ) {
-        return new CallingExternalCleaningServicePolicy(
-                cleaningRepository,
-                externalCleaningService,
-                numberOfDrivesAwayToConsiderParkingSpotDirty,
-                numberOfDirtyParkingSpotsToCallExternalService);
-    }
+  @Bean
+  CallingExternalCleaningServicePolicy callingExternalCleaningServicePolicy(
+      CleaningRepository cleaningRepository,
+      ExternalCleaningService externalCleaningService,
+      @Value("${business.cleaning.numberOfDrivesAwayToConsiderParkingSpotDirty}") int numberOfDrivesAwayToConsiderParkingSpotDirty,
+      @Value("${business.cleaning.numberOfDirtyParkingSpotsToCallExternalService}") int numberOfDirtyParkingSpotsToCallExternalService
+  ) {
+    return new CallingExternalCleaningServicePolicy(
+        cleaningRepository,
+        externalCleaningService,
+        numberOfDrivesAwayToConsiderParkingSpotDirty,
+        numberOfDirtyParkingSpotsToCallExternalService);
+  }
 
-    @Bean
-    @Profile("!local")
-    JobDetail callingExternalCleaningServicePolicyJob() {
-        return JobBuilder.newJob()
-                .storeDurably()
-                .ofType(CallingExternalCleaningServicePolicyJob.class)
-                .withIdentity("calling-external-cleaning-service-policy-job")
-                .build();
-    }
+  @Bean
+  @Profile("!local")
+  JobDetail callingExternalCleaningServicePolicyJob() {
+    return JobBuilder.newJob()
+        .storeDurably()
+        .ofType(CallingExternalCleaningServicePolicyJob.class)
+        .withIdentity("calling-external-cleaning-service-policy-job")
+        .build();
+  }
 
-    @Bean
-    @Profile("!local")
-    Trigger callingExternalCleaningServicePolicyJobTrigger(
-            JobDetail callingExternalCleaningServicePolicyJob,
-            @Value("${job.callingExternalCleaningServicePolicyJob.cronExpression}") String cronExpression
-    ) {
-        return TriggerBuilder.newTrigger()
-                .withIdentity("calling-external-cleaning-service-policy-job-trigger")
-                .forJob(callingExternalCleaningServicePolicyJob)
-                .withSchedule(cronSchedule(cronExpression))
-                .startNow()
-                .build();
-    }
+  @Bean
+  @Profile("!local")
+  Trigger callingExternalCleaningServicePolicyJobTrigger(
+      JobDetail callingExternalCleaningServicePolicyJob,
+      @Value("${job.callingExternalCleaningServicePolicyJob.cronExpression}") String cronExpression
+  ) {
+    return TriggerBuilder.newTrigger()
+        .withIdentity("calling-external-cleaning-service-policy-job-trigger")
+        .forJob(callingExternalCleaningServicePolicyJob)
+        .withSchedule(cronSchedule(cronExpression))
+        .startNow()
+        .build();
+  }
 
-    @Bean
-    @Profile("local")
-    InMemoryCleaningRepository cleaningRepository(
-            @Value("${business.cleaning.numberOfDrivesAwayToConsiderParkingSpotDirty}") int numberOfDrivesAwayToConsiderParkingSpotDirty
-    ) {
-        return new InMemoryCleaningRepository(numberOfDrivesAwayToConsiderParkingSpotDirty);
-    }
+  @Bean
+  @Profile("local")
+  InMemoryCleaningRepository cleaningRepository(
+      @Value("${business.cleaning.numberOfDrivesAwayToConsiderParkingSpotDirty}") int numberOfDrivesAwayToConsiderParkingSpotDirty
+  ) {
+    return new InMemoryCleaningRepository(numberOfDrivesAwayToConsiderParkingSpotDirty);
+  }
 
 }

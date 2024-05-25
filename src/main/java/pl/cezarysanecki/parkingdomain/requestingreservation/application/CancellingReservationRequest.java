@@ -13,25 +13,20 @@ import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.Reser
 @RequiredArgsConstructor
 public class CancellingReservationRequest {
 
-    private final ReservationRequestsRepository reservationRequestsRepository;
+  private final ReservationRequestsRepository reservationRequestsRepository;
 
-    public Try<ReservationRequest> cancelRequest(ReservationRequestId reservationRequestId) {
-        ReservationRequests reservationRequests = findBy(reservationRequestId);
+  public Try<ReservationRequest> cancelRequest(ReservationRequestId reservationRequestId) {
+    ReservationRequests reservationRequests = reservationRequestsRepository.getBy(reservationRequestId);
 
-        Try<ReservationRequestCancelled> result = reservationRequests.cancel(reservationRequestId);
+    Try<ReservationRequestCancelled> result = reservationRequests.cancel(reservationRequestId);
 
-        return result
-                .onFailure(exception -> log.error("cannot cancel reservation request, reason: {}", exception.getMessage()))
-                .onSuccess(event -> {
-                    log.debug("successfully cancelled reservation request with id {}", reservationRequestId);
-                    reservationRequestsRepository.publish(event);
-                })
-                .map(ReservationRequestCancelled::reservationRequest);
-    }
-
-    private ReservationRequests findBy(ReservationRequestId reservationRequestId) {
-        return reservationRequestsRepository.findBy(reservationRequestId)
-                .getOrElseThrow(() -> new IllegalStateException("cannot find reservation requests by request with id: " + reservationRequestId));
-    }
+    return result
+        .onFailure(exception -> log.error("cannot cancel reservation request, reason: {}", exception.getMessage()))
+        .onSuccess(event -> {
+          log.debug("successfully cancelled reservation request with id {}", reservationRequestId);
+          reservationRequestsRepository.publish(event);
+        })
+        .map(ReservationRequestCancelled::reservationRequest);
+  }
 
 }

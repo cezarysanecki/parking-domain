@@ -13,11 +13,11 @@ import static org.springframework.http.ResponseEntity.ok;
 @RequiredArgsConstructor
 class BeneficiaryController {
 
-    private final BeneficiaryViewRepository beneficiaryViewRepository;
+  private final BeneficiaryViewRepository beneficiaryViewRepository;
 
-    @GetMapping("/beneficiaries")
-    ResponseEntity<List<BeneficiaryViewRepository.BeneficiaryView>> beneficiaries() {
-        return ok(beneficiaryViewRepository.queryForAllBeneficiaries());
-    }
+  @GetMapping("/beneficiaries")
+  ResponseEntity<List<BeneficiaryViewRepository.BeneficiaryView>> beneficiaries() {
+    return ok(beneficiaryViewRepository.queryForAllBeneficiaries());
+  }
 
 }

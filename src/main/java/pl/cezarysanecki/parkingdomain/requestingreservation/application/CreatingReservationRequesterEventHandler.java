@@ -14,23 +14,23 @@ import static pl.cezarysanecki.parkingdomain.requestingreservation.model.request
 @RequiredArgsConstructor
 public class CreatingReservationRequesterEventHandler {
 
-    private final ReservationRequesterRepository reservationRequesterRepository;
+  private final ReservationRequesterRepository reservationRequesterRepository;
 
-    @EventListener
-    public void handle(IndividualClientRegistered event) {
-        ReservationRequesterId requesterId = ReservationRequesterId.of(event.clientId().getValue());
+  @EventListener
+  public void handle(IndividualClientRegistered event) {
+    ReservationRequesterId requesterId = ReservationRequesterId.of(event.clientId().getValue());
 
-        log.debug("storing requester with lower limit with id: {}", requesterId);
-        reservationRequesterRepository.publish(new ReservationRequestCreated(requesterId, 1));
-    }
+    log.debug("storing requester with lower limit with id: {}", requesterId);
+    reservationRequesterRepository.publish(new ReservationRequestCreated(requesterId, 1));
+  }
 
 
-    @EventListener
-    public void handle(BusinessClientRegistered event) {
-        ReservationRequesterId requesterId = ReservationRequesterId.of(event.clientId().getValue());
+  @EventListener
+  public void handle(BusinessClientRegistered event) {
+    ReservationRequesterId requesterId = ReservationRequesterId.of(event.clientId().getValue());
 
-        log.debug("storing requester with higher limit with id: {}", requesterId);
-        reservationRequesterRepository.publish(new ReservationRequestCreated(requesterId, 20));
-    }
+    log.debug("storing requester with higher limit with id: {}", requesterId);
+    reservationRequesterRepository.publish(new ReservationRequestCreated(requesterId, 20));
+  }
 
 }

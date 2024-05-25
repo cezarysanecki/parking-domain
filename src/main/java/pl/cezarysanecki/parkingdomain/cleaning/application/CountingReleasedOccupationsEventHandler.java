@@ -11,13 +11,13 @@ import static pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSp
 @RequiredArgsConstructor
 public class CountingReleasedOccupationsEventHandler {
 
-    private final CleaningRepository cleaningRepository;
+  private final CleaningRepository cleaningRepository;
 
-    @EventListener
-    public void handle(ParkingSpotReleased event) {
-        log.debug("handling parking spot with id {} released to request cleaning", event.parkingSpotId());
+  @EventListener
+  public void handle(ParkingSpotReleased event) {
+    log.debug("handling parking spot with id {} released to request cleaning", event.parkingSpotId());
 
-        cleaningRepository.increaseCounterFor(event.parkingSpotId());
-    }
+    cleaningRepository.increaseCounterFor(event.parkingSpotId());
+  }
 
 }

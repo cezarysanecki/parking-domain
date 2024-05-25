@@ -11,13 +11,13 @@ import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotRepos
 @RequiredArgsConstructor
 public class CreatingParkingSpotEventHandler {
 
-    private final ParkingSpotRepository parkingSpotRepository;
+  private final ParkingSpotRepository parkingSpotRepository;
 
-    @EventListener
-    public void handle(ParkingSpotAdded event) {
-        ParkingSpot parkingSpot = ParkingSpot.newOne(event.parkingSpotId(), event.capacity(), event.category());
-        log.debug("storing parking spot as placement with id: {}", parkingSpot.getParkingSpotId());
-        parkingSpotRepository.save(parkingSpot);
-    }
+  @EventListener
+  public void handle(ParkingSpotAdded event) {
+    ParkingSpot parkingSpot = ParkingSpot.newOne(event.parkingSpotId(), event.capacity(), event.category());
+    log.debug("storing parking spot as placement with id: {}", parkingSpot.getParkingSpotId());
+    parkingSpotRepository.save(parkingSpot);
+  }
 
 }

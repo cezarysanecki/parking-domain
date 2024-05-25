@@ -15,24 +15,24 @@ import static pl.cezarysanecki.parkingdomain.management.client.ClientRegistered.
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 public class RegisteringClient {
 
-    private final CatalogueClientDatabase database;
-    private final EventPublisher eventPublisher;
+  private final CatalogueClientDatabase database;
+  private final EventPublisher eventPublisher;
 
-    public Try<ClientId> registerClient(ClientType clientType, String phoneNumber) {
-        return Try.of(() -> {
-            Client client = new Client(UUID.randomUUID(), clientType, phoneNumber);
-            log.debug("registering {} client with id {}", clientType.name().toLowerCase(), client.getClientId());
+  public Try<ClientId> registerClient(ClientType clientType, String phoneNumber) {
+    return Try.of(() -> {
+      Client client = new Client(UUID.randomUUID(), clientType, phoneNumber);
+      log.debug("registering {} client with id {}", clientType.name().toLowerCase(), client.getClientId());
 
-            database.saveNew(client);
+      database.saveNew(client);
 
-            ClientRegistered clientRegistered = switch (clientType) {
-                case INDIVIDUAL -> new IndividualClientRegistered(client.getClientId());
-                case BUSINESS -> new BusinessClientRegistered(client.getClientId());
-            };
-            eventPublisher.publish(clientRegistered);
+      ClientRegistered clientRegistered = switch (clientType) {
+        case INDIVIDUAL -> new IndividualClientRegistered(client.getClientId());
+        case BUSINESS -> new BusinessClientRegistered(client.getClientId());
+      };
+      eventPublisher.publish(clientRegistered);
 
-            return client.getClientId();
-        }).onFailure(t -> log.error("failed to register client", t));
-    }
+      return client.getClientId();
+    }).onFailure(t -> log.error("failed to register client", t));
+  }
 
 }

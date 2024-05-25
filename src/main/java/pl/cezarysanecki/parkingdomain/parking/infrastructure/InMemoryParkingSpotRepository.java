@@ -16,60 +16,60 @@ import java.util.concurrent.ConcurrentHashMap;
 import static java.util.function.Predicate.not;
 
 class InMemoryParkingSpotRepository implements
-        ParkingSpotRepository,
-        ParkingSpotViewRepository {
+    ParkingSpotRepository,
+    ParkingSpotViewRepository {
 
-    static final Map<ParkingSpotId, ParkingSpot> DATABASE = new ConcurrentHashMap<>();
+  static final Map<ParkingSpotId, ParkingSpot> DATABASE = new ConcurrentHashMap<>();
 
-    @Override
-    public void save(ParkingSpot parkingSpot) {
-        DATABASE.put(parkingSpot.getParkingSpotId(), parkingSpot);
-    }
+  @Override
+  public void save(ParkingSpot parkingSpot) {
+    DATABASE.put(parkingSpot.getParkingSpotId(), parkingSpot);
+  }
 
-    @Override
-    public Option<ParkingSpot> findBy(ParkingSpotId parkingSpotId) {
-        return Option.of(DATABASE.get(parkingSpotId));
-    }
+  @Override
+  public Option<ParkingSpot> findBy(ParkingSpotId parkingSpotId) {
+    return Option.of(DATABASE.get(parkingSpotId));
+  }
 
-    @Override
-    public Option<ParkingSpot> findBy(OccupationId occupationId) {
-        return Option.ofOptional(
-                DATABASE.values()
-                        .stream()
-                        .filter(parkingSpot -> parkingSpot.getOccupations().containsKey(occupationId))
-                        .findFirst());
-    }
+  @Override
+  public Option<ParkingSpot> findBy(OccupationId occupationId) {
+    return Option.ofOptional(
+        DATABASE.values()
+            .stream()
+            .filter(parkingSpot -> parkingSpot.getOccupations().containsKey(occupationId))
+            .findFirst());
+  }
 
-    @Override
-    public Option<ParkingSpot> findBy(ReservationId reservationId) {
-        return Option.ofOptional(
-                DATABASE.values()
-                        .stream()
-                        .filter(parkingSpot -> parkingSpot.getReservations().containsKey(reservationId))
-                        .findFirst());
-    }
+  @Override
+  public Option<ParkingSpot> findBy(ReservationId reservationId) {
+    return Option.ofOptional(
+        DATABASE.values()
+            .stream()
+            .filter(parkingSpot -> parkingSpot.getReservations().containsKey(reservationId))
+            .findFirst());
+  }
 
-    @Override
-    public Option<ParkingSpot> findAvailableBy(ParkingSpotCategory category) {
-        return Option.ofOptional(
-                DATABASE.values()
-                        .stream()
-                        .filter(parkingSpot -> parkingSpot.getCategory() == category)
-                        .filter(not(ParkingSpot::isFull))
-                        .findFirst());
-    }
+  @Override
+  public Option<ParkingSpot> findAvailableBy(ParkingSpotCategory category) {
+    return Option.ofOptional(
+        DATABASE.values()
+            .stream()
+            .filter(parkingSpot -> parkingSpot.getCategory() == category)
+            .filter(not(ParkingSpot::isFull))
+            .findFirst());
+  }
 
-    @Override
-    public List<CapacityView> queryForAllAvailableParkingSpots() {
-        return DATABASE.values()
-                .stream()
-                .filter(not(ParkingSpot::isFull))
-                .map(parkingSpot -> new CapacityView(
-                        parkingSpot.getParkingSpotId().getValue(),
-                        parkingSpot.getCategory(),
-                        parkingSpot.getCapacity().getValue(),
-                        parkingSpot.spaceLeft()
-                ))
-                .toList();
-    }
+  @Override
+  public List<CapacityView> queryForAllAvailableParkingSpots() {
+    return DATABASE.values()
+        .stream()
+        .filter(not(ParkingSpot::isFull))
+        .map(parkingSpot -> new CapacityView(
+            parkingSpot.getParkingSpotId().getValue(),
+            parkingSpot.getCategory(),
+            parkingSpot.getCapacity().getValue(),
+            parkingSpot.spaceLeft()
+        ))
+        .toList();
+  }
 }

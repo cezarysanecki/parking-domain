@@ -29,43 +29,43 @@ import static pl.cezarysanecki.parkingdomain.requestingreservation.web.Reservati
 @RequiredArgsConstructor
 class ReservationRequestsController {
 
-    private final ReservationRequestsViewRepository reservationRequestsViewRepository;
-    private final MakingReservationRequest makingReservationRequest;
-    private final CancellingReservationRequest cancellingReservationRequest;
+  private final ReservationRequestsViewRepository reservationRequestsViewRepository;
+  private final MakingReservationRequest makingReservationRequest;
+  private final CancellingReservationRequest cancellingReservationRequest;
 
-    @GetMapping("/parking-spots/available")
-    ResponseEntity<List<ParkingSpotReservationRequestsView>> availableParkingSpots() {
-        return ok(reservationRequestsViewRepository.queryForAllAvailableParkingSpots());
-    }
+  @GetMapping("/parking-spots/available")
+  ResponseEntity<List<ParkingSpotReservationRequestsView>> availableParkingSpots() {
+    return ok(reservationRequestsViewRepository.queryForAllAvailableParkingSpots());
+  }
 
-    @PostMapping("/parking-spot/store")
-    ResponseEntity storeRequest(@RequestBody StoreReservationRequestRequest request) {
-        Try<ReservationRequest> result = makingReservationRequest.makeRequest(
-                ReservationRequesterId.of(request.requesterId),
-                ReservationRequestsTimeSlotId.of(request.reservationRequestsTimeSlotId),
-                SpotUnits.of(request.units));
-        return result
-                .map(success -> ResponseEntity.ok().build())
-                .getOrElse(ResponseEntity.status(INTERNAL_SERVER_ERROR).build());
-    }
+  @PostMapping("/parking-spot/store")
+  ResponseEntity storeRequest(@RequestBody StoreReservationRequestRequest request) {
+    Try<ReservationRequest> result = makingReservationRequest.makeRequest(
+        ReservationRequesterId.of(request.requesterId),
+        ReservationRequestsTimeSlotId.of(request.reservationRequestsTimeSlotId),
+        SpotUnits.of(request.units));
+    return result
+        .map(success -> ResponseEntity.ok().build())
+        .getOrElse(ResponseEntity.status(INTERNAL_SERVER_ERROR).build());
+  }
 
-    @DeleteMapping("/parking-spot/cancel")
-    ResponseEntity cancel(@RequestBody CancelReservationRequestRequest request) {
-        Try<ReservationRequest> result = cancellingReservationRequest.cancelRequest(
-                ReservationRequestId.of(request.reservationRequestId));
-        return result
-                .map(success -> ResponseEntity.ok().build())
-                .getOrElse(ResponseEntity.status(INTERNAL_SERVER_ERROR).build());
-    }
+  @DeleteMapping("/parking-spot/cancel")
+  ResponseEntity cancel(@RequestBody CancelReservationRequestRequest request) {
+    Try<ReservationRequest> result = cancellingReservationRequest.cancelRequest(
+        ReservationRequestId.of(request.reservationRequestId));
+    return result
+        .map(success -> ResponseEntity.ok().build())
+        .getOrElse(ResponseEntity.status(INTERNAL_SERVER_ERROR).build());
+  }
 
-    record StoreReservationRequestRequest(
-            UUID requesterId,
-            UUID reservationRequestsTimeSlotId,
-            int units) {
-    }
+  record StoreReservationRequestRequest(
+      UUID requesterId,
+      UUID reservationRequestsTimeSlotId,
+      int units) {
+  }
 
-    record CancelReservationRequestRequest(
-            UUID reservationRequestId) {
-    }
+  record CancelReservationRequestRequest(
+      UUID reservationRequestId) {
+  }
 
 }

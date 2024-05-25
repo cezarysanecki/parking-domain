@@ -16,11 +16,11 @@ import static pl.cezarysanecki.parkingdomain.requestingreservation.web.Reservati
 @RequiredArgsConstructor
 class ReservationRequesterController {
 
-    private final ReservationRequesterViewRepository reservationRequesterViewRepository;
+  private final ReservationRequesterViewRepository reservationRequesterViewRepository;
 
-    @GetMapping("/requesters")
-    ResponseEntity<List<ReservationRequesterView>> requesters() {
-        return ok(reservationRequesterViewRepository.queryForAllReservationRequesters());
-    }
+  @GetMapping("/requesters")
+  ResponseEntity<List<ReservationRequesterView>> requesters() {
+    return ok(reservationRequesterViewRepository.queryForAllReservationRequesters());
+  }
 
 }

@@ -21,33 +21,33 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 @RequiredArgsConstructor
 class RegistrationController {
 
-    private final AddingParkingSpot addingParkingSpot;
-    private final RegisteringClient registeringClient;
+  private final AddingParkingSpot addingParkingSpot;
+  private final RegisteringClient registeringClient;
 
-    @PostMapping("/parking-spot")
-    ResponseEntity addParkingSpot(@RequestBody AddParkingSpotRequest request) {
-        Try<ParkingSpotId> result = addingParkingSpot.addParkingSpot(request.capacity, request.category);
-        return result
-                .map(success -> ResponseEntity.ok().build())
-                .getOrElse(ResponseEntity.status(INTERNAL_SERVER_ERROR).build());
-    }
+  @PostMapping("/parking-spot")
+  ResponseEntity addParkingSpot(@RequestBody AddParkingSpotRequest request) {
+    Try<ParkingSpotId> result = addingParkingSpot.addParkingSpot(request.capacity, request.category);
+    return result
+        .map(success -> ResponseEntity.ok().build())
+        .getOrElse(ResponseEntity.status(INTERNAL_SERVER_ERROR).build());
+  }
 
-    @PostMapping("/client")
-    ResponseEntity registerClient(@RequestBody RegisterClientRequest request) {
-        Try<ClientId> result = registeringClient.registerClient(request.clientType, request.phoneNumber);
-        return result
-                .map(success -> ResponseEntity.ok().build())
-                .getOrElse(ResponseEntity.status(INTERNAL_SERVER_ERROR).build());
-    }
+  @PostMapping("/client")
+  ResponseEntity registerClient(@RequestBody RegisterClientRequest request) {
+    Try<ClientId> result = registeringClient.registerClient(request.clientType, request.phoneNumber);
+    return result
+        .map(success -> ResponseEntity.ok().build())
+        .getOrElse(ResponseEntity.status(INTERNAL_SERVER_ERROR).build());
+  }
 
-    record AddParkingSpotRequest(
-            int capacity,
-            ParkingSpotCategory category) {
-    }
+  record AddParkingSpotRequest(
+      int capacity,
+      ParkingSpotCategory category) {
+  }
 
-    record RegisterClientRequest(
-            ClientType clientType,
-            String phoneNumber) {
-    }
+  record RegisterClientRequest(
+      ClientType clientType,
+      String phoneNumber) {
+  }
 
 }

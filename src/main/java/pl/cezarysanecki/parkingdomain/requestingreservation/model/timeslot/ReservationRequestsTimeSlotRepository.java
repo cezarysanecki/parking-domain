@@ -5,12 +5,12 @@ import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.Reser
 
 public interface ReservationRequestsTimeSlotRepository {
 
-    void publish(ReservationRequestsTimeSlotEvent event);
+  void publish(ReservationRequestsTimeSlotEvent event);
 
-    Option<ReservationRequestsTimeSlot> findBy(ReservationRequestsTimeSlotId reservationRequestsTimeSlotId);
+  Option<ReservationRequestsTimeSlot> findBy(ReservationRequestsTimeSlotId reservationRequestsTimeSlotId);
 
-    Option<ReservationRequestsTimeSlot> findBy(ReservationRequestId reservationRequestId);
+  Option<ReservationRequestsTimeSlot> findBy(ReservationRequestId reservationRequestId);
 
-    boolean containsAny();
+  boolean containsAny();
 
 }

@@ -6,17 +6,17 @@ import lombok.Value;
 @Value
 public class Rejection {
 
-    @Value
-    public static class Reason {
-        @NonNull
-        String reason;
-    }
-
+  @Value
+  public static class Reason {
     @NonNull
-    Reason reason;
+    String reason;
+  }
 
-    public static Rejection withReason(String reason) {
-        return new Rejection(new Reason(reason));
-    }
+  @NonNull
+  Reason reason;
+
+  public static Rejection withReason(String reason) {
+    return new Rejection(new Reason(reason));
+  }
 
 }

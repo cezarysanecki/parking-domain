@@ -7,14 +7,14 @@ import java.util.UUID;
 
 public interface ParkingSpotViewRepository {
 
-    List<CapacityView> queryForAllAvailableParkingSpots();
+  List<CapacityView> queryForAllAvailableParkingSpots();
 
-    record CapacityView(
-            UUID parkingSpotId,
-            ParkingSpotCategory category,
-            int capacity,
-            int spaceLeft
-    ) {
-    }
+  record CapacityView(
+      UUID parkingSpotId,
+      ParkingSpotCategory category,
+      int capacity,
+      int spaceLeft
+  ) {
+  }
 
 }

@@ -7,16 +7,16 @@ import java.util.UUID;
 
 public interface DomainEvent {
 
-    default UUID getEventId() {
-        return UUID.randomUUID();
-    }
+  default UUID getEventId() {
+    return UUID.randomUUID();
+  }
 
-    default Instant getWhen() {
-        return Instant.now();
-    }
+  default Instant getWhen() {
+    return Instant.now();
+  }
 
-    default List<DomainEvent> normalize() {
-        return List.of(this);
-    }
+  default List<DomainEvent> normalize() {
+    return List.of(this);
+  }
 
 }

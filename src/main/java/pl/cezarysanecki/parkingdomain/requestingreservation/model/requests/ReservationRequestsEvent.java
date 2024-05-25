@@ -6,37 +6,37 @@ import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.Reser
 
 public interface ReservationRequestsEvent {
 
-    record ReservationRequestMade(
-            ReservationRequesterEvent.ReservationRequestAppended requesterEvent,
-            ReservationRequestsTimeSlotEvent.ReservationRequestAppended timeSlotEvent
-    ) implements ReservationRequestsEvent {
+  record ReservationRequestMade(
+      ReservationRequesterEvent.ReservationRequestAppended requesterEvent,
+      ReservationRequestsTimeSlotEvent.ReservationRequestAppended timeSlotEvent
+  ) implements ReservationRequestsEvent {
 
-        public ReservationRequest reservationRequest() {
-            return timeSlotEvent.reservationRequest();
-        }
-
+    public ReservationRequest reservationRequest() {
+      return timeSlotEvent.reservationRequest();
     }
 
-    record ReservationRequestCancelled(
-            ReservationRequesterEvent.ReservationRequestRemoved requesterEvent,
-            ReservationRequestsTimeSlotEvent.ReservationRequestRemoved timeSlotEvent
-    ) implements ReservationRequestsEvent {
+  }
 
-        public ReservationRequest reservationRequest() {
-            return timeSlotEvent.reservationRequest();
-        }
+  record ReservationRequestCancelled(
+      ReservationRequesterEvent.ReservationRequestRemoved requesterEvent,
+      ReservationRequestsTimeSlotEvent.ReservationRequestRemoved timeSlotEvent
+  ) implements ReservationRequestsEvent {
 
+    public ReservationRequest reservationRequest() {
+      return timeSlotEvent.reservationRequest();
     }
 
-    record ReservationRequestMadeValid(
-            ReservationRequesterEvent.ReservationRequestRemoved requesterEvent,
-            ReservationRequestsTimeSlotEvent.ReservationRequestMadeValid timeSlotEvent
-    ) implements ReservationRequestsEvent {
+  }
 
-        public List<ReservationRequest> reservationRequests() {
-            return timeSlotEvent.reservationRequests();
-        }
+  record ReservationRequestMadeValid(
+      ReservationRequesterEvent.ReservationRequestRemoved requesterEvent,
+      ReservationRequestsTimeSlotEvent.ReservationRequestMadeValid timeSlotEvent
+  ) implements ReservationRequestsEvent {
 
+    public List<ReservationRequest> reservationRequests() {
+      return timeSlotEvent.reservationRequests();
     }
+
+  }
 
 }

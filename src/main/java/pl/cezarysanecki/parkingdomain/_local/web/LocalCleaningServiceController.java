@@ -15,15 +15,15 @@ import pl.cezarysanecki.parkingdomain.commons.commands.Result;
 @RequiredArgsConstructor
 class LocalCleaningServiceController {
 
-    private final CallingExternalCleaningServicePolicy callingExternalCleaningServicePolicy;
+  private final CallingExternalCleaningServicePolicy callingExternalCleaningServicePolicy;
 
-    @PostMapping("/handle")
-    ResponseEntity makeReservationRequestValid() {
-        Result result = callingExternalCleaningServicePolicy.handleCleaningPolicy();
-        if (result == Result.Success) {
-            return ResponseEntity.ok().build();
-        }
-        return ResponseEntity.internalServerError().build();
+  @PostMapping("/handle")
+  ResponseEntity makeReservationRequestValid() {
+    Result result = callingExternalCleaningServicePolicy.handleCleaningPolicy();
+    if (result == Result.Success) {
+      return ResponseEntity.ok().build();
     }
+    return ResponseEntity.internalServerError().build();
+  }
 
 }

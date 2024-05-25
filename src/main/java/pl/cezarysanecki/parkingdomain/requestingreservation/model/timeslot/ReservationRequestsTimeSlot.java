@@ -21,60 +21,60 @@ import static pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslo
 @AllArgsConstructor
 public class ReservationRequestsTimeSlot {
 
-    @NonNull
-    private final ReservationRequestsTimeSlotId timeSlotId;
-    @NonNull
-    private final Set<ReservationRequest> reservationRequests;
-    @NonNull
-    private final ParkingSpotCapacity capacity;
-    @NonNull
-    private final Version version;
+  @NonNull
+  private final ReservationRequestsTimeSlotId timeSlotId;
+  @NonNull
+  private final Set<ReservationRequest> reservationRequests;
+  @NonNull
+  private final ParkingSpotCapacity capacity;
+  @NonNull
+  private final Version version;
 
-    public static ReservationRequestsTimeSlot newOne(
-            ReservationRequestsTimeSlotId reservationRequestsTimeSlotId,
-            ParkingSpotCapacity capacity
-    ) {
-        return new ReservationRequestsTimeSlot(
-                reservationRequestsTimeSlotId,
-                HashSet.empty(),
-                capacity,
-                Version.zero());
-    }
+  public static ReservationRequestsTimeSlot newOne(
+      ReservationRequestsTimeSlotId reservationRequestsTimeSlotId,
+      ParkingSpotCapacity capacity
+  ) {
+    return new ReservationRequestsTimeSlot(
+        reservationRequestsTimeSlotId,
+        HashSet.empty(),
+        capacity,
+        Version.zero());
+  }
 
-    public Try<ReservationRequestAppended> append(ReservationRequest reservationRequest) {
-        if (exceedsAllowedSpace(reservationRequest.spotUnits())) {
-            return Try.failure(new IllegalStateException("not enough space"));
-        }
-        return Try.of(() -> new ReservationRequestAppended(timeSlotId, reservationRequest, version));
+  public Try<ReservationRequestAppended> append(ReservationRequest reservationRequest) {
+    if (exceedsAllowedSpace(reservationRequest.spotUnits())) {
+      return Try.failure(new IllegalStateException("not enough space"));
     }
+    return Try.of(() -> new ReservationRequestAppended(timeSlotId, reservationRequest, version));
+  }
 
-    public Try<ReservationRequestRemoved> remove(ReservationRequestId reservationRequestId) {
-        Option<ReservationRequest> request = findRequestBy(reservationRequestId);
-        if (request.isEmpty()) {
-            return Try.failure(new IllegalStateException("not enough space"));
-        }
-        return Try.of(() -> new ReservationRequestRemoved(timeSlotId, request.get(), version));
+  public Try<ReservationRequestRemoved> remove(ReservationRequestId reservationRequestId) {
+    Option<ReservationRequest> request = findRequestBy(reservationRequestId);
+    if (request.isEmpty()) {
+      return Try.failure(new IllegalStateException("not enough space"));
     }
+    return Try.of(() -> new ReservationRequestRemoved(timeSlotId, request.get(), version));
+  }
 
-    public Try<ReservationRequestMadeValid> madeValid() {
-        return Try.of(() -> new ReservationRequestMadeValid(timeSlotId, reservationRequests.toList(), version));
-    }
+  public Try<ReservationRequestMadeValid> madeValid() {
+    return Try.of(() -> new ReservationRequestMadeValid(timeSlotId, reservationRequests.toList(), version));
+  }
 
-    private boolean exceedsAllowedSpace(SpotUnits spotUnits) {
-        return spotUnits.getValue() + currentRequestedOccupation() > capacity.getValue();
-    }
+  private boolean exceedsAllowedSpace(SpotUnits spotUnits) {
+    return spotUnits.getValue() + currentRequestedOccupation() > capacity.getValue();
+  }
 
-    private int currentRequestedOccupation() {
-        return reservationRequests
-                .map(ReservationRequest::spotUnits)
-                .map(SpotUnits::getValue)
-                .reduceOption(Integer::sum)
-                .getOrElse(0);
-    }
+  private int currentRequestedOccupation() {
+    return reservationRequests
+        .map(ReservationRequest::spotUnits)
+        .map(SpotUnits::getValue)
+        .reduceOption(Integer::sum)
+        .getOrElse(0);
+  }
 
-    private Option<ReservationRequest> findRequestBy(ReservationRequestId reservationRequestId) {
-        return reservationRequests
-                .find(reservationRequest -> reservationRequest.reservationRequestId().equals(reservationRequestId));
-    }
+  private Option<ReservationRequest> findRequestBy(ReservationRequestId reservationRequestId) {
+    return reservationRequests
+        .find(reservationRequest -> reservationRequest.reservationRequestId().equals(reservationRequestId));
+  }
 
 }

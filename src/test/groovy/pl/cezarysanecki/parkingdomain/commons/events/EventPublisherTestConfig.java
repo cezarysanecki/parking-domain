@@ -8,10 +8,10 @@ import org.springframework.context.annotation.Primary;
 @Configuration
 public class EventPublisherTestConfig {
 
-    @Bean
-    @Primary
-    EventPublisher eventPublisher(ApplicationEventPublisher applicationEventPublisher) {
-        return new JustForwardDomainEventPublisher(applicationEventPublisher);
-    }
+  @Bean
+  @Primary
+  EventPublisher eventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+    return new JustForwardDomainEventPublisher(applicationEventPublisher);
+  }
 
 }

@@ -1,17 +1,17 @@
 package pl.cezarysanecki.parkingdomain.requestingreservation.application
 
 import io.vavr.control.Option
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlotRepository
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.ReservationRequestId
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterRepository
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.ReservationRequestId
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlotRepository
 import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits
 import spock.lang.Specification
 import spock.lang.Subject
 
 import static pl.cezarysanecki.parkingdomain.requestingreservation.model.ReservationRequestsEvents.ReservationRequestAppended
-import static pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ParkingSpotReservationRequestsFixture.parkingSpotWithoutReservationRequests
 import static pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterFixture.requesterWith
 import static pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterFixture.requesterWithNoReservationRequests
+import static pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ParkingSpotReservationRequestsFixture.parkingSpotWithoutReservationRequests
 
 class AppendingReservationRequestTest extends Specification {
   

@@ -12,20 +12,20 @@ import java.util.UUID;
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 public class AddingParkingSpot {
 
-    private final CatalogueParkingSpotDatabase database;
-    private final EventPublisher eventPublisher;
+  private final CatalogueParkingSpotDatabase database;
+  private final EventPublisher eventPublisher;
 
-    public Try<ParkingSpotId> addParkingSpot(int capacity, ParkingSpotCategory category) {
-        return Try.of(() -> {
-            ParkingSpot parkingSpot = new ParkingSpot(UUID.randomUUID(), capacity, category);
-            log.debug("adding parking spot with id {}", parkingSpot.getParkingSpotId());
+  public Try<ParkingSpotId> addParkingSpot(int capacity, ParkingSpotCategory category) {
+    return Try.of(() -> {
+      ParkingSpot parkingSpot = new ParkingSpot(UUID.randomUUID(), capacity, category);
+      log.debug("adding parking spot with id {}", parkingSpot.getParkingSpotId());
 
-            database.saveNew(parkingSpot);
+      database.saveNew(parkingSpot);
 
-            eventPublisher.publish(new ParkingSpotAdded(parkingSpot));
+      eventPublisher.publish(new ParkingSpotAdded(parkingSpot));
 
-            return parkingSpot.getParkingSpotId();
-        }).onFailure(t -> log.error("failed to add parking spot", t));
-    }
+      return parkingSpot.getParkingSpotId();
+    }).onFailure(t -> log.error("failed to add parking spot", t));
+  }
 
 }

@@ -4,9 +4,9 @@ import java.time.LocalDateTime;
 
 class ProductionDateProvider implements DateProvider {
 
-    @Override
-    public LocalDateTime now() {
-        return LocalDateTime.now();
-    }
+  @Override
+  public LocalDateTime now() {
+    return LocalDateTime.now();
+  }
 
 }

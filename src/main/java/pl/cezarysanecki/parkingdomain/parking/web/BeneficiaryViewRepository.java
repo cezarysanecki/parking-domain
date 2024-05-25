@@ -5,13 +5,13 @@ import java.util.UUID;
 
 public interface BeneficiaryViewRepository {
 
-    List<BeneficiaryView> queryForAllBeneficiaries();
+  List<BeneficiaryView> queryForAllBeneficiaries();
 
-    record BeneficiaryView(
-            UUID beneficiaryId,
-            List<UUID> occupations,
-            List<UUID> reservations
-    ) {
-    }
+  record BeneficiaryView(
+      UUID beneficiaryId,
+      List<UUID> occupations,
+      List<UUID> reservations
+  ) {
+  }
 
 }

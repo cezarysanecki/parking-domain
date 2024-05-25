@@ -14,31 +14,31 @@ import java.util.UUID;
 @AllArgsConstructor
 class ReservationRequesterEntity {
 
-    UUID requesterId;
-    Set<UUID> currentRequests;
-    int limit;
-    int version;
+  UUID requesterId;
+  Set<UUID> currentRequests;
+  int limit;
+  int version;
 
-    ReservationRequesterEntity handle(ReservationRequesterEvent event) {
-        return switch (event) {
-            case ReservationRequesterEvent.ReservationRequestAppended appended -> {
-                currentRequests.add(appended.reservationRequestId().getValue());
-                yield this;
-            }
-            case ReservationRequesterEvent.ReservationRequestRemoved removed -> {
-                currentRequests.remove(removed.reservationRequestId().getValue());
-                yield this;
-            }
-            default -> this;
-        };
-    }
+  ReservationRequesterEntity handle(ReservationRequesterEvent event) {
+    return switch (event) {
+      case ReservationRequesterEvent.ReservationRequestAppended appended -> {
+        currentRequests.add(appended.reservationRequestId().getValue());
+        yield this;
+      }
+      case ReservationRequesterEvent.ReservationRequestRemoved removed -> {
+        currentRequests.remove(removed.reservationRequestId().getValue());
+        yield this;
+      }
+      default -> this;
+    };
+  }
 
-    ReservationRequester toDomain() {
-        return new ReservationRequester(
-                ReservationRequesterId.of(requesterId),
-                HashSet.ofAll(currentRequests.stream().map(ReservationRequestId::of)),
-                limit,
-                new Version(version));
-    }
+  ReservationRequester toDomain() {
+    return new ReservationRequester(
+        ReservationRequesterId.of(requesterId),
+        HashSet.ofAll(currentRequests.stream().map(ReservationRequestId::of)),
+        limit,
+        new Version(version));
+  }
 
 }

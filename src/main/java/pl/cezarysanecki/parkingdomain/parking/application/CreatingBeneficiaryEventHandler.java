@@ -12,13 +12,13 @@ import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryRepos
 @RequiredArgsConstructor
 public class CreatingBeneficiaryEventHandler {
 
-    private final BeneficiaryRepository beneficiaryRepository;
+  private final BeneficiaryRepository beneficiaryRepository;
 
-    @EventListener
-    public void handle(ClientRegistered event) {
-        Beneficiary beneficiary = Beneficiary.newOne(BeneficiaryId.of(event.clientId().getValue()));
-        log.debug("storing beneficiary with id: {}", beneficiary.getBeneficiaryId());
-        beneficiaryRepository.save(beneficiary);
-    }
+  @EventListener
+  public void handle(ClientRegistered event) {
+    Beneficiary beneficiary = Beneficiary.newOne(BeneficiaryId.of(event.clientId().getValue()));
+    log.debug("storing beneficiary with id: {}", beneficiary.getBeneficiaryId());
+    beneficiaryRepository.save(beneficiary);
+  }
 
 }

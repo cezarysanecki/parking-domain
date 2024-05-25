@@ -17,27 +17,27 @@ import static pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslo
 @RequiredArgsConstructor
 public class ExchangingReservationRequestsTimeSlots {
 
-    private final ReservationRequestsTimeSlotRepository reservationRequestsTimeSlotRepository;
-    private final ReservationRequestsTemplateRepository reservationRequestsTemplateRepository;
+  private final ReservationRequestsTimeSlotRepository reservationRequestsTimeSlotRepository;
+  private final ReservationRequestsTemplateRepository reservationRequestsTemplateRepository;
 
-    public void exchangeTimeSlots(LocalDate date) {
-        if (reservationRequestsTimeSlotRepository.containsAny()) {
-            log.error("there are still reservation requests time slots, check it");
-            return;
-        }
-
-        List<ReservationRequestCreated> events = reservationRequestsTemplateRepository.findAll()
-                .flatMap(template -> Stream.of(
-                                TimeSlot.createTimeSlotAtUTC(date, 7, 17),
-                                TimeSlot.createTimeSlotAtUTC(date, 18, 23))
-                        .map(timeSlot -> new ReservationRequestCreated(
-                                template.templateId(),
-                                ReservationRequestsTimeSlotId.newOne(),
-                                timeSlot
-                        )));
-        log.debug("there is {} time slots to create", events.size());
-
-        events.forEach(reservationRequestsTimeSlotRepository::publish);
+  public void exchangeTimeSlots(LocalDate date) {
+    if (reservationRequestsTimeSlotRepository.containsAny()) {
+      log.error("there are still reservation requests time slots, check it");
+      return;
     }
+
+    List<ReservationRequestCreated> events = reservationRequestsTemplateRepository.findAll()
+        .flatMap(template -> Stream.of(
+                TimeSlot.createTimeSlotAtUTC(date, 7, 17),
+                TimeSlot.createTimeSlotAtUTC(date, 18, 23))
+            .map(timeSlot -> new ReservationRequestCreated(
+                template.templateId(),
+                ReservationRequestsTimeSlotId.newOne(),
+                timeSlot
+            )));
+    log.debug("there is {} time slots to create", events.size());
+
+    events.forEach(reservationRequestsTimeSlotRepository::publish);
+  }
 
 }

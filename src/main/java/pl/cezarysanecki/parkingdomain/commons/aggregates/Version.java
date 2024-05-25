@@ -4,9 +4,9 @@ import lombok.Value;
 
 @Value
 public class Version {
-    int version;
+  int version;
 
-    public static Version zero() {
-        return new Version(0);
-    }
+  public static Version zero() {
+    return new Version(0);
+  }
 }
