@@ -4,6 +4,8 @@ import io.vavr.collection.HashSet;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.ReservationRequestId;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.requester.ReservationRequester;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.requester.ReservationRequesterId;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ReservationRequesterFixture {

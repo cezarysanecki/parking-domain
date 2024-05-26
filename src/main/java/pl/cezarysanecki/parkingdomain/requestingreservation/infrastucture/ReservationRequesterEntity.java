@@ -3,8 +3,8 @@ package pl.cezarysanecki.parkingdomain.requestingreservation.infrastucture;
 import io.vavr.collection.HashSet;
 import lombok.AllArgsConstructor;
 import pl.cezarysanecki.parkingdomain.commons.aggregates.Version;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequester;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterId;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.requester.ReservationRequester;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.requester.ReservationRequesterId;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.ReservationRequestId;
 
 import java.util.Set;

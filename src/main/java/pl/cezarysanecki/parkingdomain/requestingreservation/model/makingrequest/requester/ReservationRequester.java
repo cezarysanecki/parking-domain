@@ -1,11 +1,9 @@
-package pl.cezarysanecki.parkingdomain.requestingreservation.model.requester;
+package pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.requester;
 
 import io.vavr.control.Try;
 import lombok.NonNull;
 import pl.cezarysanecki.parkingdomain.commons.aggregates.Version;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.ReservationRequestId;
-
-import static pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterEvent.ReservationRequestAppended;
 
 public record ReservationRequester(
     @NonNull ReservationRequesterId requesterId,
@@ -14,15 +12,20 @@ public record ReservationRequester(
     @NonNull Version version
 ) {
 
-  public static ReservationRequester newOne(ReservationRequesterId requesterId, int limit) {
-    return new ReservationRequester(requesterId, 0, limit, Version.zero());
+  public ReservationRequester {
+    if (currentUsage > limit) {
+      throw new IllegalStateException("current usage cannot exceed limit");
+    }
+    if (limit <= 0) {
+      throw new IllegalStateException("limit must be positive");
+    }
   }
 
-  public Try<ReservationRequestAppended> append(ReservationRequestId reservationRequestId) {
+  public Try<ReservationRequestId> append(ReservationRequestId reservationRequestId) {
     if (willBeTooManyRequests(reservationRequestId)) {
       return Try.failure(new IllegalStateException("too many reservation requests"));
     }
-    return Try.of(() -> new ReservationRequestAppended(requesterId, reservationRequestId, version));
+    return Try.of(() -> reservationRequestId);
   }
 
   private boolean willBeTooManyRequests(ReservationRequestId reservationRequestId) {

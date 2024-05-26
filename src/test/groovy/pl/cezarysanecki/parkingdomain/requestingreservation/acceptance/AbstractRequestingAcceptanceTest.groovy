@@ -12,7 +12,7 @@ import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.requestingreservation.application.ExchangingReservationRequestsTimeSlots
 import pl.cezarysanecki.parkingdomain.requestingreservation.infrastucture.RequestingReservationTimeSlotConfig
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterId
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.requester.ReservationRequesterId
 import pl.cezarysanecki.parkingdomain.shared.occupation.ParkingSpotCapacity
 import spock.lang.Specification
 

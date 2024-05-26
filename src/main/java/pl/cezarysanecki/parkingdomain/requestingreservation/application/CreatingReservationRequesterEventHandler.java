@@ -3,8 +3,8 @@ package pl.cezarysanecki.parkingdomain.requestingreservation.application;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterId;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterRepository;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.requester.ReservationRequesterId;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.requester.ReservationRequesterRepository;
 
 import static pl.cezarysanecki.parkingdomain.management.client.ClientRegistered.BusinessClientRegistered;
 import static pl.cezarysanecki.parkingdomain.management.client.ClientRegistered.IndividualClientRegistered;

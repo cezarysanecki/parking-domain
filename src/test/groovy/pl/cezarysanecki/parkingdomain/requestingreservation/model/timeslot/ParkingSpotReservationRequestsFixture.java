@@ -5,8 +5,10 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import pl.cezarysanecki.parkingdomain.commons.aggregates.Version;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterId;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.requester.ReservationRequesterId;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.ReservationRequest;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.timeslot.ReservationRequestsTimeSlot;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.timeslot.ReservationRequestsTimeSlotId;
 import pl.cezarysanecki.parkingdomain.shared.occupation.ParkingSpotCapacity;
 import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits;
 

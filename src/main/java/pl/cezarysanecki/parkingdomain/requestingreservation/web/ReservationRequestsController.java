@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.cezarysanecki.parkingdomain.requestingreservation.application.CancellingReservationRequest;
 import pl.cezarysanecki.parkingdomain.requestingreservation.application.MakingReservationRequest;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterId;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.requester.ReservationRequesterId;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.ReservationRequest;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.ReservationRequestId;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlotId;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.timeslot.ReservationRequestsTimeSlotId;
 import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits;
 
 import java.util.List;
@@ -51,7 +51,7 @@ class ReservationRequestsController {
 
   @DeleteMapping("/parking-spot/cancel")
   ResponseEntity cancel(@RequestBody CancelReservationRequestRequest request) {
-    Try<ReservationRequest> result = cancellingReservationRequest.cancelRequest(
+    Try<ReservationRequestId> result = cancellingReservationRequest.cancelRequest(
         ReservationRequestId.of(request.reservationRequestId));
     return result
         .map(success -> ResponseEntity.ok().build())

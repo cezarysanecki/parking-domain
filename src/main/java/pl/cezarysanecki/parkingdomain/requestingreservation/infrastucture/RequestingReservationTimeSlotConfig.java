@@ -16,10 +16,10 @@ import pl.cezarysanecki.parkingdomain.requestingreservation.application.Creating
 import pl.cezarysanecki.parkingdomain.requestingreservation.application.ExchangingReservationRequestsTimeSlots;
 import pl.cezarysanecki.parkingdomain.requestingreservation.application.MakingReservationRequestsValid;
 import pl.cezarysanecki.parkingdomain.requestingreservation.application.MakingReservationRequest;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterRepository;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.ReservationRequestsRepository;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.requester.ReservationRequesterRepository;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.ReservationRequestsRepository;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.template.ReservationRequestsTemplateRepository;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlotRepository;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.timeslot.ReservationRequestsTimeSlotRepository;
 
 import static org.quartz.CronScheduleBuilder.cronSchedule;
 

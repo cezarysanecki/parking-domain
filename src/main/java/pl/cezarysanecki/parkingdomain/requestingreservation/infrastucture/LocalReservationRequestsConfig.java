@@ -9,21 +9,20 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequester;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterId;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.requester.ReservationRequesterRepository;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.requester.ReservationRequester;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.requester.ReservationRequesterId;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.requester.ReservationRequesterRepository;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.ReservationRequest;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.ReservationRequestId;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.ReservationRequests;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.ReservationRequestsEvent;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.ReservationRequestsRepository;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.ReservationRequests;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.ReservationRequestsEvent;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.ReservationRequestsRepository;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.template.ReservationRequestsTemplate;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.template.ReservationRequestsTemplateId;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.template.ReservationRequestsTemplateRepository;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlot;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlotEvent;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlotId;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ReservationRequestsTimeSlotRepository;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.timeslot.ReservationRequestsTimeSlot;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.timeslot.ReservationRequestsTimeSlotId;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.timeslot.ReservationRequestsTimeSlotRepository;
 import pl.cezarysanecki.parkingdomain.requestingreservation.web.ReservationRequesterViewRepository;
 import pl.cezarysanecki.parkingdomain.requestingreservation.web.ReservationRequestsViewRepository;
 import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits;
@@ -238,7 +237,7 @@ class LocalReservationRequestsConfig {
     }
 
     @Override
-    public Option<ReservationRequests> findBy(ReservationRequesterId requesterId, ReservationRequestsTimeSlotId timeSlotId) {
+    public Option<ReservationRequests> getBy(ReservationRequesterId requesterId, ReservationRequestsTimeSlotId timeSlotId) {
       Option<ReservationRequester> requester = requesterRepository.findBy(requesterId);
       Option<ReservationRequestsTimeSlot> timeSlot = timeSlotRepository.findBy(timeSlotId);
       if (requester.isEmpty() || timeSlot.isEmpty()) {

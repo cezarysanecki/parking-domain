@@ -1,7 +1,6 @@
-package pl.cezarysanecki.parkingdomain.requestingreservation.model.requester;
+package pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.requester;
 
 import io.vavr.control.Option;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.ReservationRequestId;
 
 public interface ReservationRequesterRepository {
 
