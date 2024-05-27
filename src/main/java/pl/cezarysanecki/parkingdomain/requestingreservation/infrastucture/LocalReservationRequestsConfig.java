@@ -2,12 +2,12 @@ package pl.cezarysanecki.parkingdomain.requestingreservation.infrastucture;
 
 import io.vavr.collection.List;
 import io.vavr.control.Option;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
+import pl.cezarysanecki.parkingdomain.requestingreservation.integration.ReservationRequestsConfirmed;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.ReservationRequests;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.ReservationRequestsEvent;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.ReservationRequestsRepository;
@@ -37,6 +37,8 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequiredArgsConstructor
 class LocalReservationRequestsConfig {
 
+  private final EventPublisher eventPublisher;
+
   @Bean
   InMemoryTemplateRepository inMemoryTemplateRepository() {
     return new InMemoryTemplateRepository();
@@ -59,7 +61,7 @@ class LocalReservationRequestsConfig {
 
   @Bean
   InMemoryReservationRequestRepository inMemoryReservationRequestRepository() {
-    return new InMemoryReservationRequestRepository();
+    return new InMemoryReservationRequestRepository(eventPublisher);
   }
 
   @Bean
@@ -195,17 +197,29 @@ class LocalReservationRequestsConfig {
 
   }
 
-  @NoArgsConstructor(access = AccessLevel.PRIVATE)
+  @RequiredArgsConstructor
   static class InMemoryReservationRequestRepository implements ReservationRequestRepository {
 
     static final Map<ReservationRequestId, ReservationRequestEntity> DATABASE = new ConcurrentHashMap<>();
+
+    private final EventPublisher eventPublisher;
 
     @Override
     public void publish(ReservationRequestEvent event) {
       if (event instanceof ReservationRequestEvent.ReservationRequestCancelled cancelled) {
         DATABASE.remove(cancelled.reservationRequest().getReservationRequestId());
       } else if (event instanceof ReservationRequestEvent.ReservationRequestConfirmed confirmed) {
-        DATABASE.remove(confirmed.reservationRequest().getReservationRequestId());
+        ReservationRequest reservationRequest = confirmed.reservationRequest();
+        ReservationRequestId reservationRequestId = reservationRequest.getReservationRequestId();
+
+        DATABASE.remove(reservationRequestId);
+
+        ReservationRequestsTimeSlotEntity timeSlot = InMemoryTimeSlotRepository.joinBy(reservationRequest.getTimeSlotId());
+        ReservationRequestsTemplate template = InMemoryTemplateRepository.joinBy(ReservationRequestsTemplateId.of(timeSlot.templateId));
+
+        eventPublisher.publish(new ReservationRequestsConfirmed(
+            template.parkingSpotId(),
+            reservationRequest));
       }
     }
 

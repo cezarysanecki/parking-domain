@@ -10,8 +10,8 @@ import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryId;
 import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryRepository;
 import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotRepository;
-
-import static pl.cezarysanecki.parkingdomain.requestingreservation.model.ReservationRequestEvent.ReservationRequestsConfirmed;
+import pl.cezarysanecki.parkingdomain.requestingreservation.integration.ReservationRequestsConfirmed;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.ReservationRequest;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -22,19 +22,19 @@ public class ReservingParkingSpotEventHandler {
 
   @EventListener
   public void handle(ReservationRequestsConfirmed event) {
-    ParkingSpot parkingSpot = findParkingSpotBy(event.parkingSpotId());
+    ReservationRequest reservationRequest = event.reservationRequest();
+    ParkingSpotId parkingSpotId = event.parkingSpotId();
 
-    event.reservationRequests()
-        .forEach(reservationRequest -> {
-          Beneficiary beneficiary = findBeneficiaryBy(BeneficiaryId.of(reservationRequest.getReservationRequesterId().getValue()));
+    ParkingSpot parkingSpot = findParkingSpotBy(parkingSpotId);
 
-          AppendingReservation.append(
-                  parkingSpot,
-                  beneficiary,
-                  reservationRequest)
-              .onFailure(t -> log.error("cannot create reservation from request with id {}, reason {}", reservationRequest.getReservationRequestId(), t.getMessage()))
-              .onSuccess(reservation -> log.error("created reservation with id {} from request with id {}", reservation.getReservationId(), reservationRequest.getReservationRequestId()));
-        });
+    Beneficiary beneficiary = findBeneficiaryBy(BeneficiaryId.of(reservationRequest.getRequesterId().getValue()));
+
+    AppendingReservation.append(
+            parkingSpot,
+            beneficiary,
+            reservationRequest)
+        .onFailure(t -> log.error("cannot create reservation from request with id {}, reason {}", reservationRequest.getReservationRequestId(), t.getMessage()))
+        .onSuccess(reservation -> log.error("created reservation with id {} from request with id {}", reservation.getReservationId(), reservationRequest.getReservationRequestId()));
 
     parkingSpotRepository.save(parkingSpot);
   }

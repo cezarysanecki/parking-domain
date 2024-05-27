@@ -7,6 +7,8 @@ import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import pl.cezarysanecki.parkingdomain.requestingreservation.application.MakingReservationRequestsValid;
 
+import java.time.Instant;
+
 @Slf4j
 @DisallowConcurrentExecution
 @RequiredArgsConstructor
@@ -16,8 +18,10 @@ class MakingReservationRequestsValidJob implements Job {
 
   @Override
   public void execute(JobExecutionContext jobExecutionContext) {
+    Instant date = jobExecutionContext.getFireTime().toInstant();
+
     log.debug("=== JOB {} STARTED ===", getClass().getSimpleName());
-    makingReservationRequestsValid.makeValidSince();
+    makingReservationRequestsValid.makeValidAllSince(date);
     log.debug("=== JOB {} ENDED ===", getClass().getSimpleName());
   }
 
