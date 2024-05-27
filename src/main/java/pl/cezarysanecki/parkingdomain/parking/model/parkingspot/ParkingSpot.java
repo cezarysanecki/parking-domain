@@ -88,11 +88,11 @@ public class ParkingSpot {
   }
 
   public Try<Reservation> reserveUsing(ReservationRequest reservationRequest) {
-    ReservationId reservationId = ReservationId.of(reservationRequest.reservationRequestId().getValue());
+    ReservationId reservationId = ReservationId.of(reservationRequest.getReservationRequestId().getValue());
     Reservation reservation = new Reservation(
         BeneficiaryId.of(reservationRequest.getRequesterId().getValue()),
         reservationId,
-        reservationRequest.spotUnits());
+        reservationRequest.getSpotUnits());
     reservations = reservations.put(reservationId, reservation);
     return Try.of(() -> reservation);
   }

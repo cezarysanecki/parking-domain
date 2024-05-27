@@ -14,12 +14,13 @@ import pl.cezarysanecki.parkingdomain.requestingreservation.application.Cancelli
 import pl.cezarysanecki.parkingdomain.requestingreservation.application.CreatingReservationRequesterEventHandler;
 import pl.cezarysanecki.parkingdomain.requestingreservation.application.CreatingReservationRequestsTemplatesEventHandler;
 import pl.cezarysanecki.parkingdomain.requestingreservation.application.ExchangingReservationRequestsTimeSlots;
-import pl.cezarysanecki.parkingdomain.requestingreservation.application.MakingReservationRequestsValid;
 import pl.cezarysanecki.parkingdomain.requestingreservation.application.MakingReservationRequest;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.requester.ReservationRequesterRepository;
+import pl.cezarysanecki.parkingdomain.requestingreservation.application.MakingReservationRequestsValid;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.ReservationRequestsRepository;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.template.ReservationRequestsTemplateRepository;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.requester.ReservationRequesterRepository;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.timeslot.ReservationRequestsTimeSlotRepository;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.ReservationRequestRepository;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.template.ReservationRequestsTemplateRepository;
 
 import static org.quartz.CronScheduleBuilder.cronSchedule;
 
@@ -35,8 +36,8 @@ public class RequestingReservationTimeSlotConfig {
   }
 
   @Bean
-  CancellingReservationRequest cancellingReservationRequest(ReservationRequestsRepository reservationRequestsRepository) {
-    return new CancellingReservationRequest(reservationRequestsRepository);
+  CancellingReservationRequest cancellingReservationRequest(ReservationRequestRepository reservationRequestRepository) {
+    return new CancellingReservationRequest(reservationRequestRepository);
   }
 
   @Bean
@@ -54,14 +55,8 @@ public class RequestingReservationTimeSlotConfig {
   }
 
   @Bean
-  MakingReservationRequestsValid makingReservationRequestsValid(
-      ReservationRequestsRepository reservationRequestsRepository,
-      @Value("${business.reservationRequests.hoursToMakeValid}") int hoursToMakeReservationRequestValid
-  ) {
-    return new MakingReservationRequestsValid(
-        reservationRequestsRepository,
-        dateProvider,
-        hoursToMakeReservationRequestValid);
+  MakingReservationRequestsValid makingReservationRequestsValid(ReservationRequestRepository reservationRequestRepository) {
+    return new MakingReservationRequestsValid(reservationRequestRepository);
   }
 
   @Bean
@@ -70,7 +65,6 @@ public class RequestingReservationTimeSlotConfig {
       ReservationRequestsTemplateRepository reservationRequestsTemplateRepository
   ) {
     return new ExchangingReservationRequestsTimeSlots(
-        dateProvider,
         reservationRequestsTimeSlotRepository,
         reservationRequestsTemplateRepository);
   }

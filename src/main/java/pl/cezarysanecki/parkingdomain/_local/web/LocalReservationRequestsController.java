@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.cezarysanecki.parkingdomain.requestingreservation.application.ExchangingReservationRequestsTimeSlots;
 import pl.cezarysanecki.parkingdomain.requestingreservation.application.MakingReservationRequestsValid;
 
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 
 @Profile("local")
@@ -22,13 +24,13 @@ class LocalReservationRequestsController {
 
   @PostMapping("/make-valid")
   ResponseEntity<List<String>> makeReservationRequestValid() {
-    makingReservationRequestsValid.makeValidSince();
+    makingReservationRequestsValid.makeValidAllSince(Instant.now());
     return ResponseEntity.ok().build();
   }
 
   @PostMapping("/create-time-slots")
   ResponseEntity createTimeSlots() {
-    exchangingReservationRequestsTimeSlots.exchangeTimeSlots(exchangingReservationRequestsTimeSlots.dateProvider.tomorrow());
+    exchangingReservationRequestsTimeSlots.exchangeTimeSlots(LocalDate.now());
     return ResponseEntity.ok().build();
   }
 
