@@ -39,7 +39,7 @@ class AppendingReservationRequestTest extends Specification {
     then:
       result.isSuccess()
       result.get().with {
-        assert it.reservationRequesterId == requester.requesterId
+        assert it.requesterId == requester.requesterId
         assert it.spotUnits == spotUnits
       }
     and:

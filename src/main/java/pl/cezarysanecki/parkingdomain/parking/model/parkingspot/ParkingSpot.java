@@ -90,7 +90,7 @@ public class ParkingSpot {
   public Try<Reservation> reserveUsing(ReservationRequest reservationRequest) {
     ReservationId reservationId = ReservationId.of(reservationRequest.reservationRequestId().getValue());
     Reservation reservation = new Reservation(
-        BeneficiaryId.of(reservationRequest.getReservationRequesterId().getValue()),
+        BeneficiaryId.of(reservationRequest.getRequesterId().getValue()),
         reservationId,
         reservationRequest.spotUnits());
     reservations = reservations.put(reservationId, reservation);

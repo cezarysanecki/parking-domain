@@ -1,5 +1,6 @@
 package pl.cezarysanecki.parkingdomain.requestingreservation.model.requests;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.Value;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.requester.ReservationRequesterId;
@@ -10,25 +11,26 @@ import static pl.cezarysanecki.parkingdomain.requestingreservation.model.request
 import static pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.ReservationRequestEvent.ReservationRequestConfirmed;
 
 @Value
+@AllArgsConstructor
 public class ReservationRequest {
 
   @NonNull
   ReservationRequestId reservationRequestId;
   @NonNull
-  ReservationRequesterId reservationRequesterId;
+  ReservationRequesterId requesterId;
   @NonNull
-  ReservationRequestsTimeSlotId reservationRequestsTimeSlotId;
+  ReservationRequestsTimeSlotId timeSlotId;
   @NonNull
   SpotUnits spotUnits;
 
   public ReservationRequest(
-      ReservationRequesterId reservationRequesterId,
-      ReservationRequestsTimeSlotId reservationRequestsTimeSlotId,
+      ReservationRequesterId requesterId,
+      ReservationRequestsTimeSlotId timeSlotId,
       SpotUnits spotUnits
   ) {
     this.reservationRequestId = ReservationRequestId.newOne();
-    this.reservationRequesterId = reservationRequesterId;
-    this.reservationRequestsTimeSlotId = reservationRequestsTimeSlotId;
+    this.requesterId = requesterId;
+    this.timeSlotId = timeSlotId;
     this.spotUnits = spotUnits;
   }
 
