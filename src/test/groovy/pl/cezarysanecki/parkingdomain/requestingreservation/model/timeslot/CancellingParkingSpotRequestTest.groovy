@@ -6,7 +6,7 @@ import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.Reser
 import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits
 import spock.lang.Specification
 
-import static pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ParkingSpotReservationRequestsFixture.parkingSpotWithRequest
+import static TimeSlotReservationRequestsFixture.timeSlotWithRequest
 
 class CancellingParkingSpotRequestTest extends Specification {
   
@@ -17,7 +17,7 @@ class CancellingParkingSpotRequestTest extends Specification {
     and:
       def reservationRequest = ReservationRequest.newOne(requesterId, spotUnits)
     and:
-      def parkingSpotReservationRequests = parkingSpotWithRequest(reservationRequest)
+      def parkingSpotReservationRequests = timeSlotWithRequest(reservationRequest)
     
     when:
       def result = parkingSpotReservationRequests.remove(reservationRequest.reservationRequestId)
@@ -38,7 +38,7 @@ class CancellingParkingSpotRequestTest extends Specification {
     and:
       def reservationRequest = ReservationRequest.newOne(requesterId, spotUnits)
     and:
-      def parkingSpotReservationRequests = parkingSpotWithRequest(reservationRequest)
+      def parkingSpotReservationRequests = timeSlotWithRequest(reservationRequest)
     
     when:
       def result = parkingSpotReservationRequests.remove(ReservationRequestId.newOne())

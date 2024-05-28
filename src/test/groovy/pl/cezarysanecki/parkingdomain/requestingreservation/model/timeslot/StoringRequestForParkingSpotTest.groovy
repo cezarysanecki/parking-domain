@@ -4,14 +4,14 @@ import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.
 import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits
 import spock.lang.Specification
 
-import static ParkingSpotReservationRequestsFixture.parkingSpotWithoutReservationRequests
-import static pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot.ParkingSpotReservationRequestsFixture.parkingSpotFullyRequested
+import static TimeSlotReservationRequestsFixture.timeSlotWithoutRequests
+import static TimeSlotReservationRequestsFixture.timeSlotFullyRequested
 
 class StoringRequestForParkingSpotTest extends Specification {
   
   def "allow to store reservation request for parking spot"() {
     given:
-      def parkingSpotReservationRequests = parkingSpotWithoutReservationRequests()
+      def parkingSpotReservationRequests = timeSlotWithoutRequests()
     and:
       def requesterId = ReservationRequesterId.newOne()
     and:
@@ -31,7 +31,7 @@ class StoringRequestForParkingSpotTest extends Specification {
   
   def "reject storing reservation request for parking spot when there is not enough space"() {
     given:
-      def parkingSpotRequests = parkingSpotFullyRequested()
+      def parkingSpotRequests = timeSlotFullyRequested()
     and:
       def requesterId = ReservationRequesterId.newOne()
     
