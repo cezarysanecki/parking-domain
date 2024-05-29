@@ -40,7 +40,7 @@ class RemovingReservationRequestForParkingSpotAcceptanceTest extends AbstractReq
           requesterId, parkingSpotTimeSlotId, SpotUnits.of(2))
     
     when:
-      cancellingReservationRequest.cancelRequest(reservationRequest.get().reservationRequestId())
+      cancellingReservationRequest.cancelRequest(reservationRequest.get().getReservationRequestId())
     
     then:
       parkingSpotIsEmpty(parkingSpotId)

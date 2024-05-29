@@ -16,6 +16,8 @@ import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.
 import pl.cezarysanecki.parkingdomain.shared.occupation.ParkingSpotCapacity
 import spock.lang.Specification
 
+import java.time.LocalDate
+
 import static pl.cezarysanecki.parkingdomain.management.client.ClientRegistered.IndividualClientRegistered
 
 @ActiveProfiles("local")
@@ -37,7 +39,7 @@ abstract class AbstractRequestingAcceptanceTest extends Specification {
   }
   
   void createTimeSlots() {
-    creatingReservationRequestTimeSlots.exchangeTimeSlots(creatingReservationRequestTimeSlots.dateProvider.tomorrow())
+    creatingReservationRequestTimeSlots.exchangeTimeSlots(LocalDate.now())
   }
   
   ReservationRequesterId registerLowLimitRequester() {

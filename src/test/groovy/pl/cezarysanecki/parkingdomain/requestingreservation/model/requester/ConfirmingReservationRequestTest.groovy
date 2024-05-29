@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot
+package pl.cezarysanecki.parkingdomain.requestingreservation.model.requester
 
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.requester.ReservationRequesterId
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.timeslot.ReservationRequestsTimeSlotId
@@ -6,9 +6,9 @@ import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.Reser
 import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits
 import spock.lang.Specification
 
-class CancellingParkingSpotRequestTest extends Specification {
+class ConfirmingReservationRequestTest extends Specification {
   
-  def "allow to cancel reservation request"() {
+  def "allow to confirm reservation request"() {
     given:
       def requesterId = ReservationRequesterId.newOne()
       def timeSlotId = ReservationRequestsTimeSlotId.newOne()
@@ -17,7 +17,7 @@ class CancellingParkingSpotRequestTest extends Specification {
       def reservationRequest = new ReservationRequest(requesterId, timeSlotId, spotUnits)
     
     when:
-      def result = reservationRequest.cancel()
+      def result = reservationRequest.confirm()
     
     then:
       result.with {

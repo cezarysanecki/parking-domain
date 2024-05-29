@@ -1,6 +1,6 @@
 package pl.cezarysanecki.parkingdomain.requestingreservation.application
 
-import io.vavr.control.Option
+
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.ReservationRequests
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.ReservationRequestsEvent
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.ReservationRequestsRepository
@@ -25,8 +25,7 @@ class AppendingReservationRequestTest extends Specification {
     given:
       def timeSlot = timeSlotWithoutRequests()
       def requester = requesterWithNoReservationRequests(1)
-      reservationRequestsRepository.findBy(requester.requesterId(), timeSlot.timeSlotId()) >> Option.of(
-          new ReservationRequests(timeSlot, requester))
+      reservationRequestsRepository.getBy(requester.requesterId(), timeSlot.timeSlotId()) >> new ReservationRequests(timeSlot, requester)
     and:
       def spotUnits = SpotUnits.of(2)
     
@@ -47,8 +46,7 @@ class AppendingReservationRequestTest extends Specification {
     given:
       def timeSlot = timeSlotWithoutRequests()
       def requester = requesterWith(ReservationRequestId.newOne())
-      reservationRequestsRepository.findBy(requester.requesterId(), timeSlot.timeSlotId()) >> Option.of(
-          new ReservationRequests(timeSlot, requester))
+      reservationRequestsRepository.getBy(requester.requesterId(), timeSlot.timeSlotId()) >> new ReservationRequests(timeSlot, requester)
     and:
       def spotUnits = SpotUnits.of(2)
     

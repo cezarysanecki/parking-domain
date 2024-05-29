@@ -1,5 +1,6 @@
 package pl.cezarysanecki.parkingdomain.requestingreservation.model.timeslot
 
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.ReservationRequests
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.requester.ReservationRequesterId
 import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits
 import spock.lang.Specification
@@ -7,9 +8,9 @@ import spock.lang.Specification
 import static TimeSlotReservationRequestsFixture.timeSlotWithoutRequests
 import static TimeSlotReservationRequestsFixture.timeSlotFullyRequested
 
-class StoringRequestForParkingSpotTest extends Specification {
+class AppendingRequestForParkingSpotTest extends Specification {
   
-  def "allow to store reservation request for parking spot"() {
+  def "allow to append reservation request"() {
     given:
       def parkingSpotReservationRequests = timeSlotWithoutRequests()
     and:

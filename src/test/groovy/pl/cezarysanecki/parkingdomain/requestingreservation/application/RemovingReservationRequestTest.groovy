@@ -1,6 +1,5 @@
 package pl.cezarysanecki.parkingdomain.requestingreservation.application
 
-
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.requester.ReservationRequesterId
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.timeslot.ReservationRequestsTimeSlotId
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.ReservationRequest
@@ -34,7 +33,7 @@ class RemovingReservationRequestTest extends Specification {
         assert it == reservationRequest.reservationRequestId
       }
     and:
-      1 * reservationRequestRepository.publish(ReservationRequestEvent.ReservationRequestCancelled)
+      1 * reservationRequestRepository.publish(_ as ReservationRequestEvent.ReservationRequestCancelled)
   }
   
 }

@@ -8,8 +8,8 @@ import org.quartz.TriggerBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
-import pl.cezarysanecki.parkingdomain.commons.date.DateProvider;
 import pl.cezarysanecki.parkingdomain.requestingreservation.application.CancellingReservationRequest;
 import pl.cezarysanecki.parkingdomain.requestingreservation.application.CreatingReservationRequesterEventHandler;
 import pl.cezarysanecki.parkingdomain.requestingreservation.application.CreatingReservationRequestsTemplatesEventHandler;
@@ -24,11 +24,10 @@ import pl.cezarysanecki.parkingdomain.requestingreservation.model.template.Reser
 
 import static org.quartz.CronScheduleBuilder.cronSchedule;
 
+@Import(LocalReservationRequestsConfig.class)
 @Configuration
 @RequiredArgsConstructor
 public class RequestingReservationTimeSlotConfig {
-
-  private final DateProvider dateProvider;
 
   @Bean
   MakingReservationRequest storingReservationRequest(ReservationRequestsRepository reservationRequestsRepository) {
