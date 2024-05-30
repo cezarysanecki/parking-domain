@@ -2,12 +2,11 @@ package pl.cezarysanecki.parkingdomain.requestingreservation.acceptance
 
 import org.springframework.beans.factory.annotation.Autowired
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory
-import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.parking.acceptance.AbstractParkingAcceptanceTest
 import pl.cezarysanecki.parkingdomain.requestingreservation.application.MakingReservationRequest
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.requester.ReservationRequesterId
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.ReservationRequestId
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.timeslot.ReservationRequestsTimeSlotId
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.ReservationRequestId
 import pl.cezarysanecki.parkingdomain.requestingreservation.web.ReservationRequesterViewRepository
 import pl.cezarysanecki.parkingdomain.requestingreservation.web.ReservationRequestsViewRepository
 import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits
@@ -21,21 +20,20 @@ class AllowingToRequestReservationOnParkingSpotAcceptanceTest extends AbstractPa
   @Autowired
   ReservationRequesterViewRepository reservationRequesterViewRepository
   
-  ParkingSpotId parkingSpotId
   ReservationRequesterId requesterId
   
   def setup() {
     def clientId = registerBeneficiary()
     
-    parkingSpotId = addParkingSpot(4, ParkingSpotCategory.Gold)
     requesterId = ReservationRequesterId.of(clientId.value)
     
+    addParkingSpot(4, ParkingSpotCategory.Gold)
     createTimeSlots()
   }
   
   def "request reservation for parking spot"() {
     given:
-      def parkingSpotTimeSlotId = findAnyFullyFreeParkingSpotTimeSlot(parkingSpotId)
+      def parkingSpotTimeSlotId = findAnyFullyFreeParkingSpotTimeSlot()
     
     when:
       def reservationRequest = storingReservationRequest.makeRequest(
@@ -49,7 +47,7 @@ class AllowingToRequestReservationOnParkingSpotAcceptanceTest extends AbstractPa
   
   def "request reservation for whole parking spot"() {
     given:
-      def parkingSpotTimeSlotId = findAnyFullyFreeParkingSpotTimeSlot(parkingSpotId)
+      def parkingSpotTimeSlotId = findAnyFullyFreeParkingSpotTimeSlot()
     
     when:
       def reservationRequest = storingReservationRequest.makeRequest(
@@ -61,10 +59,10 @@ class AllowingToRequestReservationOnParkingSpotAcceptanceTest extends AbstractPa
       requesterContainsReservationRequest(requesterId, reservationRequest.get().reservationRequestId)
   }
   
-  private ReservationRequestsTimeSlotId findAnyFullyFreeParkingSpotTimeSlot(ParkingSpotId parkingSpotId) {
+  private ReservationRequestsTimeSlotId findAnyFullyFreeParkingSpotTimeSlot() {
     return ReservationRequestsTimeSlotId.of(
         parkingSpotReservationRequestsViewRepository.queryForAllAvailableParkingSpots()
-            .find { it.parkingSpotId() == parkingSpotId.value && it.spaceLeft() == it.capacity() }
+            .find { it.spaceLeft() == it.capacity() }
             .timeSlotId())
   }
   
@@ -72,7 +70,8 @@ class AllowingToRequestReservationOnParkingSpotAcceptanceTest extends AbstractPa
     reservationRequesterViewRepository.queryForAllReservationRequesters()
         .find { it -> it.requesterId() == requesterId.value }
         .with {
-          assert it.reservationRequests().contains(reservationRequestId.value)
+          assert it.reservationRequests()
+              .any { it.reservationRequestId() == reservationRequestId.value }
         }
   }
   
