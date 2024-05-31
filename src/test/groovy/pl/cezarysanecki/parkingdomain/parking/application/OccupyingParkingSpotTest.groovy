@@ -5,13 +5,13 @@ import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory
 import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryRepository
 import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotRepository
-import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.Reservation
+import pl.cezarysanecki.parkingdomain.parking.model.reservation.Reservation
 import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits
 import spock.lang.Specification
 import spock.lang.Subject
 
 import static pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryFixture.emptyBeneficiary
-import static pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotEvents.ParkingSpotOccupied
+import static pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotEvent.ParkingSpotOccupied
 import static pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotFixture.emptyParkingSpotWithCapacity
 import static pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotFixture.emptyParkingSpotWithReservation
 

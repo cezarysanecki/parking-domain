@@ -7,14 +7,13 @@ import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher
 import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.Beneficiary
 import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryId
 import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryRepository
-import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.Occupation
-import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.OccupationId
+import pl.cezarysanecki.parkingdomain.parking.model.occupation.Occupation
+import pl.cezarysanecki.parkingdomain.parking.model.occupation.OccupationId
 import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotRepository
 import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits
 import spock.lang.Specification
 import spock.lang.Subject
 
-import static pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotEvents.ParkingSpotReleased
 import static pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotFixture.occupiedFullyBy
 
 class ReleasingParkingSpotTest extends Specification {

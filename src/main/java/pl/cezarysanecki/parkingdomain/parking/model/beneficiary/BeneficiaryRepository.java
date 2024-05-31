@@ -1,8 +1,8 @@
 package pl.cezarysanecki.parkingdomain.parking.model.beneficiary;
 
 import io.vavr.control.Option;
-import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.OccupationId;
-import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ReservationId;
+import pl.cezarysanecki.parkingdomain.parking.model.occupation.OccupationId;
+import pl.cezarysanecki.parkingdomain.parking.model.reservation.ReservationId;
 
 public interface BeneficiaryRepository {
 

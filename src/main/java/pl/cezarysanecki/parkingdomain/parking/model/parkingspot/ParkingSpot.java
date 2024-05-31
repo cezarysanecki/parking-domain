@@ -12,9 +12,15 @@ import pl.cezarysanecki.parkingdomain.commons.commands.Result;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryId;
+import pl.cezarysanecki.parkingdomain.parking.model.occupation.Occupation;
+import pl.cezarysanecki.parkingdomain.parking.model.occupation.OccupationId;
+import pl.cezarysanecki.parkingdomain.parking.model.reservation.Reservation;
+import pl.cezarysanecki.parkingdomain.parking.model.reservation.ReservationId;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.ReservationRequest;
 import pl.cezarysanecki.parkingdomain.shared.occupation.ParkingSpotCapacity;
 import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits;
+
+import static pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotEvent.ParkingSpotOccupied;
 
 @Getter
 @AllArgsConstructor
@@ -45,11 +51,11 @@ public class ParkingSpot {
         Version.zero());
   }
 
-  public Try<Occupation> occupyWhole(BeneficiaryId beneficiaryId) {
+  public Try<ParkingSpotOccupied> occupyWhole(BeneficiaryId beneficiaryId) {
     return occupy(beneficiaryId, SpotUnits.of(capacity.getValue()));
   }
 
-  public Try<Occupation> occupyUsing(ReservationId reservationId) {
+  public Try<ParkingSpotOccupied> occupyUsing(ReservationId reservationId) {
     Option<Reservation> potentialReservation = reservations.get(reservationId);
     if (potentialReservation.isEmpty()) {
       return Try.failure(new IllegalArgumentException("no such reservation"));
@@ -61,7 +67,7 @@ public class ParkingSpot {
     return occupy(reservation.getBeneficiaryId(), reservation.getSpotUnits());
   }
 
-  public Try<Occupation> occupy(BeneficiaryId beneficiaryId, SpotUnits spotUnits) {
+  public Try<ParkingSpotOccupied> occupy(BeneficiaryId beneficiaryId, SpotUnits spotUnits) {
     if (outOfUse) {
       return Try.failure(new IllegalArgumentException("out of order"));
     }
@@ -72,19 +78,9 @@ public class ParkingSpot {
     Occupation occupation = Occupation.newOne(beneficiaryId, spotUnits);
     occupations = occupations.put(occupation.getOccupationId(), occupation);
 
-    return Try.of(() -> occupation);
-  }
-
-  public Try<Occupation> release(OccupationId occupationId) {
-    Option<Occupation> potentialOccupation = occupations.get(occupationId);
-    if (potentialOccupation.isEmpty()) {
-      return Try.failure(new IllegalArgumentException("no such occupation"));
-    }
-    Occupation occupation = potentialOccupation.get();
-
-    occupations = occupations.remove(occupationId);
-
-    return Try.of(() -> occupation);
+    return Try.of(() -> new ParkingSpotOccupied(
+        parkingSpotId,
+        occupation));
   }
 
   public Try<Reservation> reserveUsing(ReservationRequest reservationRequest) {

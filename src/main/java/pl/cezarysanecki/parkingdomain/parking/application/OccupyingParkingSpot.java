@@ -9,11 +9,11 @@ import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.Beneficiary;
 import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryId;
 import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryRepository;
-import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.Occupation;
+import pl.cezarysanecki.parkingdomain.parking.model.occupation.Occupation;
 import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpot;
-import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotEvents.ParkingSpotOccupied;
+import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotEvent.ParkingSpotOccupied;
 import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotRepository;
-import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ReservationId;
+import pl.cezarysanecki.parkingdomain.parking.model.reservation.ReservationId;
 import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits;
 
 @Slf4j

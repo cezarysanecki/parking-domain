@@ -4,8 +4,8 @@ import io.vavr.collection.HashSet;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import pl.cezarysanecki.parkingdomain.commons.aggregates.Version;
-import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.OccupationId;
-import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ReservationId;
+import pl.cezarysanecki.parkingdomain.parking.model.occupation.OccupationId;
+import pl.cezarysanecki.parkingdomain.parking.model.reservation.ReservationId;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class BeneficiaryFixture {

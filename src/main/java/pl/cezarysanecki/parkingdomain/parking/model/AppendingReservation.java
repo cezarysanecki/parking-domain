@@ -5,7 +5,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.Beneficiary;
 import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpot;
-import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.Reservation;
+import pl.cezarysanecki.parkingdomain.parking.model.reservation.Reservation;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.ReservationRequest;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)

@@ -5,7 +5,7 @@ import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.parking.application.OccupyingParkingSpot
 import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryId
-import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ReservationId
+import pl.cezarysanecki.parkingdomain.parking.model.reservation.ReservationId
 import pl.cezarysanecki.parkingdomain.parking.web.BeneficiaryViewRepository
 import pl.cezarysanecki.parkingdomain.parking.web.ParkingSpotViewRepository
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.requester.ReservationRequesterId

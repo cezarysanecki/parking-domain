@@ -1,6 +1,8 @@
 package pl.cezarysanecki.parkingdomain.parking.model.parkingspot
 
 import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryId
+import pl.cezarysanecki.parkingdomain.parking.model.occupation.Occupation
+import pl.cezarysanecki.parkingdomain.parking.model.occupation.OccupationId
 import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits
 import spock.lang.Specification
 

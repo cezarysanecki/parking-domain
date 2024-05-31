@@ -4,8 +4,8 @@ import io.vavr.control.Option;
 import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.Beneficiary;
 import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryId;
 import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryRepository;
-import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.OccupationId;
-import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ReservationId;
+import pl.cezarysanecki.parkingdomain.parking.model.occupation.OccupationId;
+import pl.cezarysanecki.parkingdomain.parking.model.reservation.ReservationId;
 import pl.cezarysanecki.parkingdomain.parking.web.BeneficiaryViewRepository;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.parking.model.parkingspot;
+package pl.cezarysanecki.parkingdomain.parking.model.occupation;
 
 import lombok.NonNull;
 import lombok.Value;
@@ -9,14 +9,14 @@ import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits;
 public class Occupation {
 
   @NonNull
-  BeneficiaryId beneficiaryId;
-  @NonNull
   OccupationId occupationId;
+  @NonNull
+  BeneficiaryId beneficiaryId;
   @NonNull
   SpotUnits spotUnits;
 
   public static Occupation newOne(BeneficiaryId beneficiaryId, SpotUnits spotUnits) {
-    return new Occupation(beneficiaryId, OccupationId.newOne(), spotUnits);
+    return new Occupation(OccupationId.newOne(), beneficiaryId, spotUnits);
   }
 
 }

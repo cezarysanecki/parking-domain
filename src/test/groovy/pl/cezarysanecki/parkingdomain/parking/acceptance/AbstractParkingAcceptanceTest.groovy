@@ -12,7 +12,7 @@ import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.parking.infrastructure.ParkingSpotConfig
 import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryId
-import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ReservationId
+import pl.cezarysanecki.parkingdomain.parking.model.reservation.ReservationId
 import pl.cezarysanecki.parkingdomain.requestingreservation.application.ExchangingReservationRequestsTimeSlots
 import pl.cezarysanecki.parkingdomain.requestingreservation.infrastucture.RequestingReservationTimeSlotConfig
 import pl.cezarysanecki.parkingdomain.requestingreservation.integration.ReservationRequestsConfirmed

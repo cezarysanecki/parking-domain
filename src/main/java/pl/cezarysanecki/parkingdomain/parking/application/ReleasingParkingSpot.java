@@ -6,10 +6,10 @@ import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.Beneficiary;
 import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryRepository;
-import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.Occupation;
-import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.OccupationId;
+import pl.cezarysanecki.parkingdomain.parking.model.occupation.Occupation;
+import pl.cezarysanecki.parkingdomain.parking.model.occupation.OccupationId;
 import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpot;
-import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotEvents.ParkingSpotReleased;
+import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotEvent.ParkingSpotReleased;
 import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotRepository;
 
 @Slf4j

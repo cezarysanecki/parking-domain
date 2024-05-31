@@ -7,10 +7,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
 import pl.cezarysanecki.parkingdomain.commons.aggregates.Version;
-import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.Occupation;
-import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.OccupationId;
-import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.Reservation;
-import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ReservationId;
+import pl.cezarysanecki.parkingdomain.parking.model.occupation.Occupation;
+import pl.cezarysanecki.parkingdomain.parking.model.occupation.OccupationId;
+import pl.cezarysanecki.parkingdomain.parking.model.reservation.Reservation;
+import pl.cezarysanecki.parkingdomain.parking.model.reservation.ReservationId;
 
 @Getter
 @AllArgsConstructor

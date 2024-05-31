@@ -3,10 +3,10 @@ package pl.cezarysanecki.parkingdomain.parking.infrastructure;
 import io.vavr.control.Option;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.OccupationId;
+import pl.cezarysanecki.parkingdomain.parking.model.occupation.OccupationId;
 import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotRepository;
-import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ReservationId;
+import pl.cezarysanecki.parkingdomain.parking.model.reservation.ReservationId;
 import pl.cezarysanecki.parkingdomain.parking.web.ParkingSpotViewRepository;
 
 import java.util.List;
