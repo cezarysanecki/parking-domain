@@ -5,10 +5,11 @@ import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.model.occupation.OccupationId;
 import pl.cezarysanecki.parkingdomain.parking.model.reservation.ReservationId;
+import pl.cezarysanecki.parkingdomain.shared.occupation.ParkingSpotCapacity;
 
 public interface ParkingSpotRepository {
 
-  void save(ParkingSpot parkingSpot);
+  void saveNew(ParkingSpotId parkingSpotId, ParkingSpotCapacity capacity, ParkingSpotCategory category);
 
   Option<ParkingSpot> findBy(ParkingSpotId parkingSpotId);
 
@@ -17,4 +18,7 @@ public interface ParkingSpotRepository {
   Option<ParkingSpot> findBy(ReservationId reservationId);
 
   Option<ParkingSpot> findAvailableBy(ParkingSpotCategory parkingSpotCategory);
+
+  void publish(ParkingSpotEvent event);
+
 }

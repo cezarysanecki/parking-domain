@@ -7,7 +7,7 @@ public interface ReservationEvent extends DomainEvent {
 
   ReservationId reservationId();
 
-  record ReservationFulfilled(
+  record ReservationAbandoned(
       @NonNull ReservationId reservationId
   ) implements ReservationEvent {
   }

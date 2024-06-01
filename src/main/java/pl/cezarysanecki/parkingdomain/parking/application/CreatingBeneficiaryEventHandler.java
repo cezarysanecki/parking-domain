@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import pl.cezarysanecki.parkingdomain.management.client.ClientRegistered;
-import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.Beneficiary;
 import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryId;
 import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryRepository;
 
@@ -16,9 +15,9 @@ public class CreatingBeneficiaryEventHandler {
 
   @EventListener
   public void handle(ClientRegistered event) {
-    Beneficiary beneficiary = Beneficiary.newOne(BeneficiaryId.of(event.clientId().getValue()));
-    log.debug("storing beneficiary with id: {}", beneficiary.getBeneficiaryId());
-    beneficiaryRepository.save(beneficiary);
+    BeneficiaryId beneficiaryId = BeneficiaryId.of(event.clientId().getValue());
+    log.debug("storing beneficiary with id: {}", beneficiaryId);
+    beneficiaryRepository.save(beneficiaryId);
   }
 
 }

@@ -1,6 +1,5 @@
 package pl.cezarysanecki.parkingdomain.parking.model.parkingspot;
 
-import io.vavr.collection.HashMap;
 import io.vavr.collection.Map;
 import io.vavr.control.Option;
 import io.vavr.control.Try;
@@ -9,14 +8,11 @@ import lombok.Getter;
 import lombok.NonNull;
 import pl.cezarysanecki.parkingdomain.commons.aggregates.Version;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
-import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryId;
 import pl.cezarysanecki.parkingdomain.parking.model.occupation.Occupation;
-import pl.cezarysanecki.parkingdomain.parking.model.occupation.OccupationId;
 import pl.cezarysanecki.parkingdomain.parking.model.reservation.Reservation;
 import pl.cezarysanecki.parkingdomain.parking.model.reservation.ReservationId;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.ReservationRequest;
 import pl.cezarysanecki.parkingdomain.shared.occupation.ParkingSpotCapacity;
 import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits;
 
@@ -30,41 +26,24 @@ public class ParkingSpot {
   private final ParkingSpotId parkingSpotId;
   @NonNull
   private final ParkingSpotCapacity capacity;
+  private final int usedSpace;
   @NonNull
-  private final ParkingSpotCategory category;
-  @NonNull
-  private Map<OccupationId, Occupation> occupations;
-  @NonNull
-  private Map<ReservationId, Reservation> reservations;
+  private final Map<ReservationId, Reservation> reservations;
   private boolean outOfUse;
   @NonNull
   private final Version version;
-
-  public static ParkingSpot newOne(ParkingSpotId parkingSpotId, ParkingSpotCapacity capacity, ParkingSpotCategory category) {
-    return new ParkingSpot(
-        parkingSpotId,
-        capacity,
-        category,
-        HashMap.empty(),
-        HashMap.empty(),
-        false,
-        Version.zero());
-  }
 
   public Try<ParkingSpotOccupied> occupyWhole(BeneficiaryId beneficiaryId) {
     return occupy(beneficiaryId, SpotUnits.of(capacity.getValue()));
   }
 
   public Try<ParkingSpotOccupied> occupyUsing(ReservationId reservationId) {
-    Option<Reservation> potentialReservation = reservations.get(reservationId);
-    if (potentialReservation.isEmpty()) {
+    Option<Reservation> reservation = reservations.get(reservationId);
+    if (reservation.isEmpty()) {
       return Try.failure(new IllegalArgumentException("no such reservation"));
     }
-    Reservation reservation = potentialReservation.get();
-
-    reservations = reservations.remove(reservationId);
-
-    return occupy(reservation.getBeneficiaryId(), reservation.getSpotUnits());
+    Reservation presentReservation = reservation.get();
+    return occupy(presentReservation.getBeneficiaryId(), presentReservation.getSpotUnits());
   }
 
   public Try<ParkingSpotOccupied> occupy(BeneficiaryId beneficiaryId, SpotUnits spotUnits) {
@@ -75,22 +54,9 @@ public class ParkingSpot {
       return Try.failure(new IllegalArgumentException("not enough space"));
     }
 
-    Occupation occupation = Occupation.newOne(beneficiaryId, spotUnits);
-    occupations = occupations.put(occupation.getOccupationId(), occupation);
-
     return Try.of(() -> new ParkingSpotOccupied(
         parkingSpotId,
-        occupation));
-  }
-
-  public Try<Reservation> reserveUsing(ReservationRequest reservationRequest) {
-    ReservationId reservationId = ReservationId.of(reservationRequest.getReservationRequestId().getValue());
-    Reservation reservation = new Reservation(
-        BeneficiaryId.of(reservationRequest.getRequesterId().getValue()),
-        reservationId,
-        reservationRequest.getSpotUnits());
-    reservations = reservations.put(reservationId, reservation);
-    return Try.of(() -> reservation);
+        Occupation.newOne(beneficiaryId, spotUnits)));
   }
 
   public Try<Result> putIntoService() {
@@ -118,17 +84,12 @@ public class ParkingSpot {
   }
 
   private int currentOccupation() {
-    Integer occupationUnits = occupations.values()
-        .map(Occupation::getSpotUnits)
-        .map(SpotUnits::getValue)
-        .reduceOption(Integer::sum)
-        .getOrElse(0);
     Integer reservationUnits = reservations.values()
         .map(Reservation::getSpotUnits)
         .map(SpotUnits::getValue)
         .reduceOption(Integer::sum)
         .getOrElse(0);
-    return occupationUnits + reservationUnits;
+    return usedSpace + reservationUnits;
   }
 
   private boolean exceedsAllowedSpace(SpotUnits spotUnits) {

@@ -5,6 +5,7 @@ import lombok.NonNull;
 import lombok.Value;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryId;
+import pl.cezarysanecki.parkingdomain.parking.model.reservation.ReservationEvent.ReservationAbandoned;
 import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits;
 
 @Value
@@ -25,6 +26,10 @@ public class Reservation {
     this.parkingSpotId = parkingSpotId;
     this.beneficiaryId = beneficiaryId;
     this.spotUnits = spotUnits;
+  }
+
+  public ReservationAbandoned abandon() {
+    return new ReservationAbandoned(reservationId);
   }
 
 }
