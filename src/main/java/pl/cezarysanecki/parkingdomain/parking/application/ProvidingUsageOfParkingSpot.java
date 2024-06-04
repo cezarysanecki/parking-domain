@@ -15,7 +15,7 @@ public class ProvidingUsageOfParkingSpot {
   private final ParkingSpotRepository parkingSpotRepository;
 
   public Try<Result> makeOutOfUse(ParkingSpotId parkingSpotId) {
-    ParkingSpot parkingSpot = findParkingSpotBy(parkingSpotId);
+    ParkingSpot parkingSpot = findBy(parkingSpotId);
     log.debug("found parking spot with id {}", parkingSpot.getParkingSpotId());
 
     Try<Result> result = parkingSpot.makeOutOfUse();
@@ -29,7 +29,7 @@ public class ProvidingUsageOfParkingSpot {
   }
 
   public Try<Result> putIntoService(ParkingSpotId parkingSpotId) {
-    ParkingSpot parkingSpot = findParkingSpotBy(parkingSpotId);
+    ParkingSpot parkingSpot = findBy(parkingSpotId);
     log.debug("found parking spot with id {}", parkingSpot.getParkingSpotId());
 
     Try<Result> result = parkingSpot.putIntoService();
@@ -43,7 +43,7 @@ public class ProvidingUsageOfParkingSpot {
         .onFailure(failure -> log.error("failed to put parking spot with id {} into service", parkingSpot.getParkingSpotId()));
   }
 
-  private ParkingSpot findParkingSpotBy(ParkingSpotId parkingSpotId) {
+  private ParkingSpot findBy(ParkingSpotId parkingSpotId) {
     return parkingSpotRepository.findBy(parkingSpotId)
         .getOrElseThrow(() -> new IllegalStateException("cannot find parking spot with id: " + parkingSpotId));
   }

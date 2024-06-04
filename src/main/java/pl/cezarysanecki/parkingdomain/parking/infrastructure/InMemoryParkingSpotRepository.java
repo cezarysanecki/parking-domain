@@ -5,9 +5,11 @@ import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.model.occupation.OccupationId;
 import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpot;
+import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotEvent;
 import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotRepository;
 import pl.cezarysanecki.parkingdomain.parking.model.reservation.ReservationId;
 import pl.cezarysanecki.parkingdomain.parking.web.ParkingSpotViewRepository;
+import pl.cezarysanecki.parkingdomain.shared.occupation.ParkingSpotCapacity;
 
 import java.util.List;
 import java.util.Map;
@@ -22,22 +24,13 @@ class InMemoryParkingSpotRepository implements
   static final Map<ParkingSpotId, ParkingSpot> DATABASE = new ConcurrentHashMap<>();
 
   @Override
-  public void save(ParkingSpot parkingSpot) {
-    DATABASE.put(parkingSpot.getParkingSpotId(), parkingSpot);
+  public void saveNew(ParkingSpotId parkingSpotId, ParkingSpotCapacity capacity, ParkingSpotCategory category) {
+
   }
 
   @Override
   public Option<ParkingSpot> findBy(ParkingSpotId parkingSpotId) {
     return Option.of(DATABASE.get(parkingSpotId));
-  }
-
-  @Override
-  public Option<ParkingSpot> findBy(OccupationId occupationId) {
-    return Option.ofOptional(
-        DATABASE.values()
-            .stream()
-            .filter(parkingSpot -> parkingSpot.getOccupations().containsKey(occupationId))
-            .findFirst());
   }
 
   @Override
@@ -47,6 +40,11 @@ class InMemoryParkingSpotRepository implements
             .stream()
             .filter(parkingSpot -> parkingSpot.getReservations().containsKey(reservationId))
             .findFirst());
+  }
+
+  @Override
+  public void publish(ParkingSpotEvent event) {
+
   }
 
   @Override
@@ -72,4 +70,5 @@ class InMemoryParkingSpotRepository implements
         ))
         .toList();
   }
+
 }

@@ -11,7 +11,7 @@ import static pl.cezarysanecki.parkingdomain.parking.model.occupation.Occupation
 
 @Slf4j
 @RequiredArgsConstructor
-public class ReleasingParkingSpot {
+public class ReleasingOccupation {
 
   private final OccupationRepository occupationRepository;
 

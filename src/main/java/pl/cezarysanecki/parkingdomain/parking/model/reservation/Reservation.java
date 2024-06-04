@@ -21,7 +21,11 @@ public class Reservation {
   @NonNull
   SpotUnits spotUnits;
 
-  public Reservation(ParkingSpotId parkingSpotId, BeneficiaryId beneficiaryId, SpotUnits spotUnits) {
+  public Reservation(
+      ParkingSpotId parkingSpotId,
+      BeneficiaryId beneficiaryId,
+      SpotUnits spotUnits
+  ) {
     this.reservationId = ReservationId.newOne();
     this.parkingSpotId = parkingSpotId;
     this.beneficiaryId = beneficiaryId;

@@ -11,4 +11,11 @@ public interface ReservationRepository {
 
   Option<Reservation> findBy(ReservationId reservationId);
 
+  default Reservation getBy(ReservationId reservationId) {
+    return findBy(reservationId)
+        .getOrElseThrow(() -> new IllegalStateException("cannot find reservation with id: " + reservationId));
+  }
+
+  void publish(ReservationEvent event);
+
 }

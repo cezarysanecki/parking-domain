@@ -8,7 +8,7 @@ import spock.lang.Specification
 
 import static ParkingSpotFixture.occupiedFullyBy
 
-class ReleasingParkingSpotTest extends Specification {
+class ReleasingOccupationTest extends Specification {
   
   def "allow to release parking spot by beneficiary"() {
     given:

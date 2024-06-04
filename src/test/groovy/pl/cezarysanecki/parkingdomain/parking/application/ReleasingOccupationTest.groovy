@@ -16,14 +16,14 @@ import spock.lang.Subject
 
 import static pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotFixture.occupiedFullyBy
 
-class ReleasingParkingSpotTest extends Specification {
+class ReleasingOccupationTest extends Specification {
   
   EventPublisher eventPublisher = Mock()
   BeneficiaryRepository beneficiaryRepository = Mock()
   ParkingSpotRepository parkingSpotRepository = Mock()
   
   @Subject
-  ReleasingParkingSpot releasingParkingSpot = new ReleasingParkingSpot(
+  ReleasingOccupation releasingParkingSpot = new ReleasingOccupation(
       eventPublisher,
       beneficiaryRepository,
       parkingSpotRepository)

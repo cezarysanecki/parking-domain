@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.application.OccupyingParkingSpot;
-import pl.cezarysanecki.parkingdomain.parking.application.ReleasingParkingSpot;
+import pl.cezarysanecki.parkingdomain.parking.application.ReleasingOccupation;
 import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryId;
 import pl.cezarysanecki.parkingdomain.parking.model.occupation.Occupation;
 import pl.cezarysanecki.parkingdomain.parking.model.occupation.OccupationId;
@@ -30,7 +30,7 @@ class ParkingSpotController {
 
   private final ParkingSpotViewRepository parkingSpotViewRepository;
   private final OccupyingParkingSpot occupyingParkingSpot;
-  private final ReleasingParkingSpot releasingParkingSpot;
+  private final ReleasingOccupation releasingOccupation;
 
   @GetMapping("/parking-spots/available")
   ResponseEntity<List<ParkingSpotViewRepository.CapacityView>> availableParkingSpots() {
@@ -84,7 +84,7 @@ class ParkingSpotController {
 
   @DeleteMapping("/parking-spot/release")
   ResponseEntity release(@RequestBody ReleaseParkingSpotRequest request) {
-    Try<Occupation> result = releasingParkingSpot.release(
+    Try<Occupation> result = releasingOccupation.release(
         OccupationId.of(request.occupationId));
 
     return result
