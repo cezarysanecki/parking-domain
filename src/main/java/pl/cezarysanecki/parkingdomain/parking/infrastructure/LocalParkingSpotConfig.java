@@ -5,8 +5,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
+import pl.cezarysanecki.parkingdomain.parking.integration.ParkingSpotReleased;
 import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryId;
 import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryRepository;
 import pl.cezarysanecki.parkingdomain.parking.model.occupation.Occupation;
@@ -39,6 +41,8 @@ import static java.util.function.Predicate.not;
 @RequiredArgsConstructor
 class LocalParkingSpotConfig {
 
+  private final EventPublisher eventPublisher;
+
   @Bean
   InMemoryBeneficiaryRepository inMemoryBeneficiaryRepository() {
     return new InMemoryBeneficiaryRepository();
@@ -46,7 +50,7 @@ class LocalParkingSpotConfig {
 
   @Bean
   InMemoryOccupationRepository inMemoryOccupationRepository() {
-    return new InMemoryOccupationRepository();
+    return new InMemoryOccupationRepository(eventPublisher);
   }
 
   @Bean
@@ -100,6 +104,8 @@ class LocalParkingSpotConfig {
 
     static final Set<OccupationEntity> DATABASE = new HashSet<>();
 
+    private final EventPublisher eventPublisher;
+
     @Override
     public Option<Occupation> findBy(OccupationId occupationId) {
       return Option.ofOptional(DATABASE.stream()
@@ -112,6 +118,7 @@ class LocalParkingSpotConfig {
     public void publish(OccupationEvent event) {
       if (event instanceof OccupationEvent.OccupationReleased released) {
         DATABASE.removeIf(entity -> entity.occupationId.equals(released.occupationId().getValue()));
+        eventPublisher.publish(new ParkingSpotReleased(released.parkingSpotId()));
       }
     }
 
@@ -156,8 +163,18 @@ class LocalParkingSpotConfig {
         InMemoryOccupationRepository.DATABASE.add(new OccupationEntity(
             occupied.occupation().getOccupationId().getValue(),
             occupied.occupation().getBeneficiaryId().getValue(),
+            occupied.occupation().getParkingSpotId().getValue(),
             occupied.occupation().getSpotUnits().getValue()));
       }
+    }
+
+    @Override
+    public Option<ParkingSpot> findAvailableFor(ParkingSpotCategory category, SpotUnits spotUnits) {
+      return Option.ofOptional(DATABASE.values()
+              .stream()
+              .filter(entity -> entity.category == category && entity.spaceLeft() >= spotUnits.getValue())
+              .findAny())
+          .flatMap(entity -> findBy(ParkingSpotId.of(entity.parkingSpotId)));
     }
 
     @Override

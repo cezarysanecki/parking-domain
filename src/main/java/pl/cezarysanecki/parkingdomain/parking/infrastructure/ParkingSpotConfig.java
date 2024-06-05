@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Configuration;
 import pl.cezarysanecki.parkingdomain.parking.application.CreatingBeneficiaryEventHandler;
 import pl.cezarysanecki.parkingdomain.parking.application.CreatingParkingSpotEventHandler;
 import pl.cezarysanecki.parkingdomain.parking.application.OccupyingParkingSpot;
+import pl.cezarysanecki.parkingdomain.parking.application.OccupyingRandomParkingSpot;
+import pl.cezarysanecki.parkingdomain.parking.application.OccupyingReservedParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.application.ProvidingUsageOfParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.application.ReleasingOccupation;
 import pl.cezarysanecki.parkingdomain.parking.application.ReservingParkingSpotEventHandler;
@@ -24,6 +26,23 @@ public class ParkingSpotConfig {
       ParkingSpotRepository parkingSpotRepository
   ) {
     return new OccupyingParkingSpot(
+        beneficiaryRepository,
+        parkingSpotRepository);
+  }
+
+  @Bean
+  OccupyingReservedParkingSpot occupyingReservedParkingSpot(
+      ParkingSpotRepository parkingSpotRepository
+  ) {
+    return new OccupyingReservedParkingSpot(parkingSpotRepository);
+  }
+
+  @Bean
+  OccupyingRandomParkingSpot occupyingRandomParkingSpot(
+      BeneficiaryRepository beneficiaryRepository,
+      ParkingSpotRepository parkingSpotRepository
+  ) {
+    return new OccupyingRandomParkingSpot(
         beneficiaryRepository,
         parkingSpotRepository);
   }

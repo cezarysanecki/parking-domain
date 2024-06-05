@@ -4,8 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import pl.cezarysanecki.parkingdomain.cleaning.model.CleaningRepository;
-
-import static pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotEvent.ParkingSpotReleased;
+import pl.cezarysanecki.parkingdomain.parking.integration.ParkingSpotReleased;
 
 @Slf4j
 @RequiredArgsConstructor

@@ -7,10 +7,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
 import pl.cezarysanecki.parkingdomain.commons.aggregates.Version;
-import pl.cezarysanecki.parkingdomain.commons.commands.Result;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryId;
 import pl.cezarysanecki.parkingdomain.parking.model.occupation.Occupation;
+import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotEvent.ParkingSpotMadeOutOfUse;
+import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotEvent.ParkingSpotPutIntoService;
 import pl.cezarysanecki.parkingdomain.parking.model.reservation.Reservation;
 import pl.cezarysanecki.parkingdomain.parking.model.reservation.ReservationId;
 import pl.cezarysanecki.parkingdomain.shared.occupation.ParkingSpotCapacity;
@@ -29,7 +30,7 @@ public class ParkingSpot {
   private final int usedSpace;
   @NonNull
   private final Map<ReservationId, Reservation> reservations;
-  private boolean outOfUse;
+  private final boolean outOfUse;
   @NonNull
   private final Version version;
 
@@ -56,31 +57,22 @@ public class ParkingSpot {
 
     return Try.of(() -> new ParkingSpotOccupied(
         parkingSpotId,
-        Occupation.newOne(beneficiaryId, spotUnits)));
+        Occupation.newOne(beneficiaryId, parkingSpotId, spotUnits),
+        version));
   }
 
-  public Try<Result> putIntoService() {
+  public Try<ParkingSpotPutIntoService> putIntoService() {
     if (!outOfUse) {
       return Try.failure(new IllegalStateException("is already in service"));
     }
-    this.outOfUse = false;
-    return Try.success(Result.Success);
+    return Try.of(() -> new ParkingSpotPutIntoService(parkingSpotId, version));
   }
 
-  public Try<Result> makeOutOfUse() {
+  public Try<ParkingSpotMadeOutOfUse> makeOutOfUse() {
     if (outOfUse) {
       return Try.failure(new IllegalStateException("is already out of use"));
     }
-    this.outOfUse = true;
-    return Try.success(Result.Success);
-  }
-
-  public boolean isFull() {
-    return currentOccupation() == capacity.getValue();
-  }
-
-  public int spaceLeft() {
-    return capacity.getValue() - currentOccupation();
+    return Try.of(() -> new ParkingSpotMadeOutOfUse(parkingSpotId, version));
   }
 
   private int currentOccupation() {

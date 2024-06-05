@@ -3,9 +3,9 @@ package pl.cezarysanecki.parkingdomain.parking.application;
 import io.vavr.control.Try;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import pl.cezarysanecki.parkingdomain.commons.commands.Result;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpot;
+import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotEvent;
 import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotRepository;
 
 @Slf4j
@@ -14,32 +14,34 @@ public class ProvidingUsageOfParkingSpot {
 
   private final ParkingSpotRepository parkingSpotRepository;
 
-  public Try<Result> makeOutOfUse(ParkingSpotId parkingSpotId) {
+  public Try<ParkingSpotId> makeOutOfUse(ParkingSpotId parkingSpotId) {
     ParkingSpot parkingSpot = findBy(parkingSpotId);
     log.debug("found parking spot with id {}", parkingSpot.getParkingSpotId());
 
-    Try<Result> result = parkingSpot.makeOutOfUse();
+    var result = parkingSpot.makeOutOfUse();
 
     return result
-        .onSuccess(success -> {
+        .onSuccess(event -> {
           log.debug("parking spot with id {} is out of use", parkingSpot.getParkingSpotId());
-          parkingSpotRepository.save(parkingSpot);
+          parkingSpotRepository.publish(event);
         })
+        .map(ParkingSpotEvent.ParkingSpotMadeOutOfUse::parkingSpotId)
         .onFailure(failure -> log.error("failed to make parking spot with id {} out of use", parkingSpot.getParkingSpotId()));
   }
 
-  public Try<Result> putIntoService(ParkingSpotId parkingSpotId) {
+  public Try<ParkingSpotId> putIntoService(ParkingSpotId parkingSpotId) {
     ParkingSpot parkingSpot = findBy(parkingSpotId);
     log.debug("found parking spot with id {}", parkingSpot.getParkingSpotId());
 
-    Try<Result> result = parkingSpot.putIntoService();
+    var result = parkingSpot.putIntoService();
     log.debug("parking spot with id {} is put into service", parkingSpot.getParkingSpotId());
 
     return result
-        .onSuccess(success -> {
+        .onSuccess(event -> {
           log.debug("parking spot with id {} is in service", parkingSpot.getParkingSpotId());
-          parkingSpotRepository.save(parkingSpot);
+          parkingSpotRepository.publish(event);
         })
+        .map(ParkingSpotEvent.ParkingSpotPutIntoService::parkingSpotId)
         .onFailure(failure -> log.error("failed to put parking spot with id {} into service", parkingSpot.getParkingSpotId()));
   }
 
