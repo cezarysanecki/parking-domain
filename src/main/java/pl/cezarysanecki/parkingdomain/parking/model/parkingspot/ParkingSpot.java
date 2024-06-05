@@ -37,22 +37,22 @@ public class ParkingSpot {
   @NonNull
   private final Version version;
 
-  public Either<ParkingSpotOccupiedEvents, RuntimeException> occupyWhole(BeneficiaryId beneficiaryId) {
+  public Either<RuntimeException, ParkingSpotOccupiedEvents> occupyWhole(BeneficiaryId beneficiaryId) {
     return occupy(beneficiaryId, SpotUnits.of(capacity.getValue()));
   }
 
-  public Try<ParkingSpotOccupiedEvents> occupyUsing(ReservationId reservationId) {
+  public Either<RuntimeException, ParkingSpotOccupiedEvents> occupyUsing(ReservationId reservationId) {
     if (outOfUse) {
-      return Try.failure(new IllegalArgumentException("out of order"));
+      return Either.left(new IllegalArgumentException("out of order"));
     }
 
     Option<Reservation> reservation = reservations.get(reservationId);
     if (reservation.isEmpty()) {
-      return Try.failure(new IllegalArgumentException("no such reservation"));
+      return Either.left(new IllegalArgumentException("no such reservation"));
     }
     Reservation presentReservation = reservation.get();
 
-    return Try.of(() -> ParkingSpotOccupiedEvents.events(
+    return Either.right(ParkingSpotOccupiedEvents.events(
         new ParkingSpotOccupied(
             parkingSpotId,
             Occupation.newOne(presentReservation.getBeneficiaryId(), parkingSpotId, presentReservation.getSpotUnits()),
@@ -63,14 +63,14 @@ public class ParkingSpot {
             version)));
   }
 
-  public Either<ParkingSpotOccupiedEvents, RuntimeException> occupy(BeneficiaryId beneficiaryId, SpotUnits spotUnits) {
+  public Either<RuntimeException, ParkingSpotOccupiedEvents> occupy(BeneficiaryId beneficiaryId, SpotUnits spotUnits) {
     if (outOfUse) {
-      return Either.right(new IllegalArgumentException("out of order"));
+      return Either.left(new IllegalArgumentException("out of order"));
     }
     if (exceedsAllowedSpace(spotUnits)) {
-      return Either.right(new IllegalArgumentException("not enough space"));
+      return Either.left(new IllegalArgumentException("not enough space"));
     }
-    return Either.left(
+    return Either.right(
         ParkingSpotOccupiedEvents.events(
             new ParkingSpotOccupied(
                 parkingSpotId,

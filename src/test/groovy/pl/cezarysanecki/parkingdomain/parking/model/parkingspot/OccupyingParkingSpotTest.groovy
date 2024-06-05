@@ -22,7 +22,7 @@ class OccupyingParkingSpotTest extends Specification {
       def result = emptyParkingSpot.occupy(beneficiary, spotUnits)
     
     then:
-      result.isSuccess()
+      result.isRight()
       result.get().with {
         assert it.occupied().occupation().parkingSpotId == emptyParkingSpot.parkingSpotId
         assert it.occupied().occupation().beneficiaryId == beneficiary
@@ -44,7 +44,7 @@ class OccupyingParkingSpotTest extends Specification {
       def result = emptyParkingSpot.occupyWhole(beneficiary)
     
     then:
-      result.isSuccess()
+      result.isRight()
       result.get().with {
         assert it.occupied().occupation().parkingSpotId == emptyParkingSpot.parkingSpotId
         assert it.occupied().occupation().beneficiaryId == beneficiary
@@ -66,7 +66,7 @@ class OccupyingParkingSpotTest extends Specification {
       def result = emptyParkingSpot.occupyUsing(reservation.reservationId)
     
     then:
-      result.isSuccess()
+      result.isRight()
       result.get().with {
         assert it.occupied().occupation().parkingSpotId == emptyParkingSpot.parkingSpotId
         assert it.occupied().occupation().beneficiaryId == beneficiary
@@ -88,7 +88,7 @@ class OccupyingParkingSpotTest extends Specification {
       def result = fullyOccupiedParkingSpot.occupy(beneficiary, spotUnits)
     
     then:
-      result.isFailure()
+      result.isLeft()
   }
   
   def "reject to occupy whole parking spot by beneficiary when it is already occupied"() {
@@ -102,7 +102,7 @@ class OccupyingParkingSpotTest extends Specification {
       def result = fullyOccupiedParkingSpot.occupyWhole(beneficiary)
     
     then:
-      result.isFailure()
+      result.isLeft()
   }
   
   def "reject to occupy parking spot by beneficiary with reservation when there is no such reservation"() {
@@ -113,7 +113,7 @@ class OccupyingParkingSpotTest extends Specification {
       def result = fullyOccupiedParkingSpot.occupyUsing(ReservationId.newOne())
     
     then:
-      result.isFailure()
+      result.isLeft()
   }
   
 }

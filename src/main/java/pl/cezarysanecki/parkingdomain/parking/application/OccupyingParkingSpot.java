@@ -10,7 +10,6 @@ import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryId;
 import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryRepository;
 import pl.cezarysanecki.parkingdomain.parking.model.occupation.Occupation;
 import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpot;
-import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotEvent;
 import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotRepository;
 import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits;
 
@@ -22,6 +21,7 @@ import static io.vavr.API.Case;
 import static io.vavr.API.Match;
 import static io.vavr.Patterns.$Left;
 import static io.vavr.Patterns.$Right;
+import static pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotEvent.ParkingSpotOccupiedEvents;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -59,13 +59,13 @@ public class OccupyingParkingSpot {
     return occupy(
         beneficiaryId,
         () -> findAvailableFor(category, spotUnits),
-        parkingSpot -> parkingSpot.occupyWhole(beneficiaryId));
+        parkingSpot -> parkingSpot.occupy(beneficiaryId, spotUnits));
   }
 
   private Try<Occupation> occupy(
       BeneficiaryId beneficiaryId,
       Supplier<ParkingSpot> parkingSpotSupplier,
-      Function<ParkingSpot, Either<ParkingSpotEvent.ParkingSpotOccupiedEvents, RuntimeException>> occupationFunction
+      Function<ParkingSpot, Either<RuntimeException, ParkingSpotOccupiedEvents>> occupationFunction
   ) {
     return Try.of(() -> {
       if (!beneficiaryRepository.isPresent(beneficiaryId)) {
@@ -77,11 +77,11 @@ public class OccupyingParkingSpot {
       var result = occupationFunction.apply(parkingSpot);
 
       return Match(result).of(
-          Case($Left($()), event -> {
+          Case($Right($()), event -> {
             parkingSpotRepository.publish(event);
             return event.occupied().occupation();
           }),
-          Case($Right($()), exception -> {
+          Case($Left($()), exception -> {
             throw exception;
           })
       );
