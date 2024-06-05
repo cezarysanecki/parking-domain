@@ -1,6 +1,7 @@
 package pl.cezarysanecki.parkingdomain.parking.model.parkingspot;
 
 import io.vavr.collection.Map;
+import io.vavr.control.Either;
 import io.vavr.control.Option;
 import io.vavr.control.Try;
 import lombok.AllArgsConstructor;
@@ -36,7 +37,7 @@ public class ParkingSpot {
   @NonNull
   private final Version version;
 
-  public Try<ParkingSpotOccupiedEvents> occupyWhole(BeneficiaryId beneficiaryId) {
+  public Either<ParkingSpotOccupiedEvents, RuntimeException> occupyWhole(BeneficiaryId beneficiaryId) {
     return occupy(beneficiaryId, SpotUnits.of(capacity.getValue()));
   }
 
@@ -62,19 +63,19 @@ public class ParkingSpot {
             version)));
   }
 
-  public Try<ParkingSpotOccupiedEvents> occupy(BeneficiaryId beneficiaryId, SpotUnits spotUnits) {
+  public Either<ParkingSpotOccupiedEvents, RuntimeException> occupy(BeneficiaryId beneficiaryId, SpotUnits spotUnits) {
     if (outOfUse) {
-      return Try.failure(new IllegalArgumentException("out of order"));
+      return Either.right(new IllegalArgumentException("out of order"));
     }
     if (exceedsAllowedSpace(spotUnits)) {
-      return Try.failure(new IllegalArgumentException("not enough space"));
+      return Either.right(new IllegalArgumentException("not enough space"));
     }
-
-    return Try.of(() -> ParkingSpotOccupiedEvents.events(
-        new ParkingSpotOccupied(
-            parkingSpotId,
-            Occupation.newOne(beneficiaryId, parkingSpotId, spotUnits),
-            version)));
+    return Either.left(
+        ParkingSpotOccupiedEvents.events(
+            new ParkingSpotOccupied(
+                parkingSpotId,
+                Occupation.newOne(beneficiaryId, parkingSpotId, spotUnits),
+                version)));
   }
 
   public Try<ParkingSpotPutIntoService> putIntoService() {

@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.application.OccupyingParkingSpot;
-import pl.cezarysanecki.parkingdomain.parking.application.OccupyingRandomParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.application.OccupyingReservedParkingSpot;
 import pl.cezarysanecki.parkingdomain.parking.application.ReleasingOccupation;
 import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryId;
@@ -33,7 +32,6 @@ class ParkingSpotController {
   private final ParkingSpotViewRepository parkingSpotViewRepository;
   private final OccupyingParkingSpot occupyingParkingSpot;
   private final OccupyingReservedParkingSpot occupyingReservedParkingSpot;
-  private final OccupyingRandomParkingSpot occupyingRandomParkingSpot;
   private final ReleasingOccupation releasingOccupation;
 
   @GetMapping("/parking-spots/available")
@@ -55,7 +53,7 @@ class ParkingSpotController {
 
   @PostMapping("/parking-spot/occupy/any")
   ResponseEntity occupyAny(@RequestBody OccupyAnyParkingSpotRequest request) {
-    Try<Occupation> result = occupyingRandomParkingSpot.occupy(
+    Try<Occupation> result = occupyingParkingSpot.occupyAvailable(
         BeneficiaryId.of(request.beneficiaryId),
         request.category,
         SpotUnits.of(request.units));
