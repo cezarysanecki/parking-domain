@@ -1,43 +1,32 @@
 package pl.cezarysanecki.parkingdomain.parking.application
 
-import io.vavr.collection.HashSet
+
 import io.vavr.control.Option
-import pl.cezarysanecki.parkingdomain.commons.aggregates.Version
-import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher
-import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.Beneficiary
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryId
-import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryRepository
 import pl.cezarysanecki.parkingdomain.parking.model.occupation.Occupation
-import pl.cezarysanecki.parkingdomain.parking.model.occupation.OccupationId
-import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotRepository
+import pl.cezarysanecki.parkingdomain.parking.model.occupation.OccupationRepository
 import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits
 import spock.lang.Specification
 import spock.lang.Subject
 
-import static pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotFixture.occupiedFullyBy
+import static pl.cezarysanecki.parkingdomain.parking.model.occupation.OccupationEvent.OccupationReleased
 
 class ReleasingOccupationTest extends Specification {
   
-  EventPublisher eventPublisher = Mock()
-  BeneficiaryRepository beneficiaryRepository = Mock()
-  ParkingSpotRepository parkingSpotRepository = Mock()
+  OccupationRepository occupationRepository = Mock()
   
   @Subject
   ReleasingOccupation releasingParkingSpot = new ReleasingOccupation(
-      eventPublisher,
-      beneficiaryRepository,
-      parkingSpotRepository)
+      occupationRepository)
   
   def "should beneficiary parking spot occupation be released if there is such"() {
     given:
       def beneficiaryId = BeneficiaryId.newOne()
-      def occupation = Occupation.newOne(beneficiaryId, SpotUnits.of(4))
+      def parkingSpotId = ParkingSpotId.newOne()
     and:
-      def beneficiary = new Beneficiary(beneficiaryId, HashSet.empty(), HashSet.of(occupation.occupationId), Version.zero())
-      beneficiaryRepository.findBy(occupation.occupationId) >> Option.of(beneficiary)
-    and:
-      def parkingSpot = occupiedFullyBy(occupation)
-      parkingSpotRepository.findBy(occupation.occupationId) >> Option.of(parkingSpot)
+      def occupation = Occupation.newOne(beneficiaryId, parkingSpotId, SpotUnits.of(4))
+      occupationRepository.findBy(occupation.occupationId) >> Option.of(occupation)
     
     when:
       def result = releasingParkingSpot.release(occupation.occupationId)
@@ -45,30 +34,24 @@ class ReleasingOccupationTest extends Specification {
     then:
       result.isSuccess()
       result.get().with {
-        assert it.beneficiaryId == beneficiary.beneficiaryId
+        assert it.beneficiaryId == beneficiaryId
         assert it.occupationId == occupation.occupationId
         assert it.spotUnits == spotUnits
       }
     and:
-      1 * beneficiaryRepository.save(beneficiary)
-      1 * parkingSpotRepository.save(parkingSpot)
-    and:
-      1 * eventPublisher.publish(_ as ParkingSpotReleased)
+      1 * occupationRepository.publish(_ as OccupationReleased)
   }
   
   def "fail to release parking spot occupation if there no such"() {
     given:
       def beneficiaryId = BeneficiaryId.newOne()
-      def occupation = Occupation.newOne(beneficiaryId, SpotUnits.of(4))
+      def parkingSpotId = ParkingSpotId.newOne()
     and:
-      def beneficiary = new Beneficiary(beneficiaryId, HashSet.empty(), HashSet.of(occupation.occupationId), Version.zero())
-      beneficiaryRepository.findBy(_ as OccupationId) >> Option.of(beneficiary)
-    and:
-      def parkingSpot = occupiedFullyBy(occupation)
-      parkingSpotRepository.findBy(_ as OccupationId) >> Option.of(parkingSpot)
+      def occupation = Occupation.newOne(beneficiaryId, parkingSpotId, SpotUnits.of(4))
+      occupationRepository.findBy(occupation.occupationId) >> Option.none()
     
     when:
-      def result = releasingParkingSpot.release(OccupationId.newOne())
+      def result = releasingParkingSpot.release(occupation.occupationId)
     
     then:
       result.isFailure()

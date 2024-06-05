@@ -14,14 +14,14 @@ class OccupationEntity {
 
   UUID occupationId;
   UUID beneficiaryId;
-  UUID parkingSpotID;
+  UUID parkingSpotId;
   int spotUnits;
 
   Occupation toDomain() {
     return new Occupation(
         OccupationId.of(occupationId),
         BeneficiaryId.of(beneficiaryId),
-        ParkingSpotId.of(parkingSpotID),
+        ParkingSpotId.of(parkingSpotId),
         SpotUnits.of(spotUnits));
   }
 

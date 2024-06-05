@@ -4,10 +4,8 @@ import io.vavr.collection.HashMap;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import pl.cezarysanecki.parkingdomain.commons.aggregates.Version;
-import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryId;
-import pl.cezarysanecki.parkingdomain.parking.model.occupation.Occupation;
 import pl.cezarysanecki.parkingdomain.parking.model.reservation.Reservation;
 import pl.cezarysanecki.parkingdomain.shared.occupation.ParkingSpotCapacity;
 import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits;
@@ -16,15 +14,22 @@ import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits;
 public class ParkingSpotFixture {
 
   public static ParkingSpot emptyParkingSpotWithCapacity(int capacity) {
-    return ParkingSpot.newOne(ParkingSpotId.newOne(), ParkingSpotCapacity.of(capacity), ParkingSpotCategory.Silver);
-  }
-
-  public static ParkingSpot emptyParkingSpotWithReservation(Reservation reservation) {
     return new ParkingSpot(
         ParkingSpotId.newOne(),
-        ParkingSpotCapacity.of(reservation.getSpotUnits().getValue()),
-        ParkingSpotCategory.Gold,
+        ParkingSpotCapacity.of(capacity),
+        0,
         HashMap.empty(),
+        false,
+        Version.zero());
+  }
+
+  public static ParkingSpot emptyParkingSpotWithReservationFor(BeneficiaryId beneficiaryId, SpotUnits spotUnits) {
+    ParkingSpotId parkingSpotId = ParkingSpotId.newOne();
+    Reservation reservation = new Reservation(parkingSpotId, beneficiaryId, spotUnits);
+    return new ParkingSpot(
+        parkingSpotId,
+        ParkingSpotCapacity.of(spotUnits.getValue()),
+        0,
         HashMap.of(reservation.getReservationId(), reservation),
         false,
         Version.zero());
@@ -32,36 +37,21 @@ public class ParkingSpotFixture {
 
   public static ParkingSpot fullyOccupiedParkingSpot() {
     ParkingSpotCapacity capacity = ParkingSpotCapacity.of(4);
-    Occupation occupation = Occupation.newOne(BeneficiaryId.newOne(), SpotUnits.of(capacity.getValue()));
     return new ParkingSpot(
         ParkingSpotId.newOne(),
         capacity,
-        ParkingSpotCategory.Gold,
-        HashMap.of(occupation.getOccupationId(), occupation),
+        capacity.getValue(),
         HashMap.empty(),
         false,
         Version.zero());
   }
 
-  public static ParkingSpot occupiedFullyBy(Occupation occupation) {
-    ParkingSpotCapacity capacity = ParkingSpotCapacity.of(occupation.getSpotUnits().getValue());
+  public static ParkingSpot occupiedWithLeftSpace(int spaceLeft) {
+    ParkingSpotCapacity capacity = ParkingSpotCapacity.of(4 + spaceLeft);
     return new ParkingSpot(
         ParkingSpotId.newOne(),
         capacity,
-        ParkingSpotCategory.Gold,
-        HashMap.of(occupation.getOccupationId(), occupation),
-        HashMap.empty(),
-        false,
-        Version.zero());
-  }
-
-  public static ParkingSpot occupiedPartiallyBy(Occupation occupation) {
-    ParkingSpotCapacity capacity = ParkingSpotCapacity.of(occupation.getSpotUnits().getValue() + 1);
-    return new ParkingSpot(
-        ParkingSpotId.newOne(),
-        capacity,
-        ParkingSpotCategory.Gold,
-        HashMap.of(occupation.getOccupationId(), occupation),
+        capacity.getValue() - spaceLeft,
         HashMap.empty(),
         false,
         Version.zero());

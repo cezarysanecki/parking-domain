@@ -9,6 +9,8 @@ import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotEvent
 import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotRepository;
 import pl.cezarysanecki.parkingdomain.parking.model.reservation.ReservationId;
 
+import static pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotEvent.ParkingSpotOccupiedEvents;
+
 @Slf4j
 @RequiredArgsConstructor
 public class OccupyingReservedParkingSpot {
@@ -22,6 +24,7 @@ public class OccupyingReservedParkingSpot {
     return parkingSpot.occupyUsing(reservationId)
         .onFailure(exception -> log.error("cannot occupy parking spot, reason: {}", exception.getMessage()))
         .onSuccess(parkingSpotRepository::publish)
+        .map(ParkingSpotOccupiedEvents::occupied)
         .map(ParkingSpotOccupied::occupation);
   }
 

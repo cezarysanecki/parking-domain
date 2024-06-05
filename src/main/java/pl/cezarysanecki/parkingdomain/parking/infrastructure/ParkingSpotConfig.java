@@ -3,6 +3,7 @@ package pl.cezarysanecki.parkingdomain.parking.infrastructure;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import pl.cezarysanecki.parkingdomain.parking.application.CreatingBeneficiaryEventHandler;
 import pl.cezarysanecki.parkingdomain.parking.application.CreatingParkingSpotEventHandler;
 import pl.cezarysanecki.parkingdomain.parking.application.OccupyingParkingSpot;
@@ -16,6 +17,7 @@ import pl.cezarysanecki.parkingdomain.parking.model.occupation.OccupationReposit
 import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotRepository;
 import pl.cezarysanecki.parkingdomain.parking.model.reservation.ReservationRepository;
 
+@Import(LocalParkingSpotConfig.class)
 @Configuration
 @RequiredArgsConstructor
 public class ParkingSpotConfig {

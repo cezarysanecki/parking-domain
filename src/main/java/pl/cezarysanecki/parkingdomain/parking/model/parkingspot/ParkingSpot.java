@@ -12,12 +12,14 @@ import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryId;
 import pl.cezarysanecki.parkingdomain.parking.model.occupation.Occupation;
 import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotEvent.ParkingSpotMadeOutOfUse;
 import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotEvent.ParkingSpotPutIntoService;
+import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotEvent.ParkingSpotReservationFulfilled;
 import pl.cezarysanecki.parkingdomain.parking.model.reservation.Reservation;
 import pl.cezarysanecki.parkingdomain.parking.model.reservation.ReservationId;
 import pl.cezarysanecki.parkingdomain.shared.occupation.ParkingSpotCapacity;
 import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits;
 
 import static pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotEvent.ParkingSpotOccupied;
+import static pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotEvent.ParkingSpotOccupiedEvents;
 
 @Getter
 @AllArgsConstructor
@@ -34,20 +36,33 @@ public class ParkingSpot {
   @NonNull
   private final Version version;
 
-  public Try<ParkingSpotOccupied> occupyWhole(BeneficiaryId beneficiaryId) {
+  public Try<ParkingSpotOccupiedEvents> occupyWhole(BeneficiaryId beneficiaryId) {
     return occupy(beneficiaryId, SpotUnits.of(capacity.getValue()));
   }
 
-  public Try<ParkingSpotOccupied> occupyUsing(ReservationId reservationId) {
+  public Try<ParkingSpotOccupiedEvents> occupyUsing(ReservationId reservationId) {
+    if (outOfUse) {
+      return Try.failure(new IllegalArgumentException("out of order"));
+    }
+
     Option<Reservation> reservation = reservations.get(reservationId);
     if (reservation.isEmpty()) {
       return Try.failure(new IllegalArgumentException("no such reservation"));
     }
     Reservation presentReservation = reservation.get();
-    return occupy(presentReservation.getBeneficiaryId(), presentReservation.getSpotUnits());
+
+    return Try.of(() -> ParkingSpotOccupiedEvents.events(
+        new ParkingSpotOccupied(
+            parkingSpotId,
+            Occupation.newOne(presentReservation.getBeneficiaryId(), parkingSpotId, presentReservation.getSpotUnits()),
+            version),
+        new ParkingSpotReservationFulfilled(
+            parkingSpotId,
+            presentReservation,
+            version)));
   }
 
-  public Try<ParkingSpotOccupied> occupy(BeneficiaryId beneficiaryId, SpotUnits spotUnits) {
+  public Try<ParkingSpotOccupiedEvents> occupy(BeneficiaryId beneficiaryId, SpotUnits spotUnits) {
     if (outOfUse) {
       return Try.failure(new IllegalArgumentException("out of order"));
     }
@@ -55,10 +70,11 @@ public class ParkingSpot {
       return Try.failure(new IllegalArgumentException("not enough space"));
     }
 
-    return Try.of(() -> new ParkingSpotOccupied(
-        parkingSpotId,
-        Occupation.newOne(beneficiaryId, parkingSpotId, spotUnits),
-        version));
+    return Try.of(() -> ParkingSpotOccupiedEvents.events(
+        new ParkingSpotOccupied(
+            parkingSpotId,
+            Occupation.newOne(beneficiaryId, parkingSpotId, spotUnits),
+            version)));
   }
 
   public Try<ParkingSpotPutIntoService> putIntoService() {
@@ -73,6 +89,14 @@ public class ParkingSpot {
       return Try.failure(new IllegalStateException("is already out of use"));
     }
     return Try.of(() -> new ParkingSpotMadeOutOfUse(parkingSpotId, version));
+  }
+
+  public boolean isFull() {
+    return capacity.getValue() == usedSpace;
+  }
+
+  public int spaceLeft() {
+    return capacity.getValue() - usedSpace;
   }
 
   private int currentOccupation() {

@@ -1,8 +1,6 @@
 package pl.cezarysanecki.parkingdomain.parking.model.parkingspot
 
 import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryId
-import pl.cezarysanecki.parkingdomain.parking.model.occupation.Occupation
-import pl.cezarysanecki.parkingdomain.parking.model.reservation.Reservation
 import pl.cezarysanecki.parkingdomain.parking.model.reservation.ReservationId
 import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits
 import spock.lang.Specification
@@ -26,8 +24,11 @@ class OccupyingParkingSpotTest extends Specification {
     then:
       result.isSuccess()
       result.get().with {
-        assert it.beneficiaryId == beneficiary
-        assert it.spotUnits == spotUnits
+        assert it.occupied().occupation().parkingSpotId == emptyParkingSpot.parkingSpotId
+        assert it.occupied().occupation().beneficiaryId == beneficiary
+        assert it.occupied().occupation().spotUnits == spotUnits
+        
+        assert it.reservationFulfilled().empty
       }
   }
   
@@ -45,8 +46,11 @@ class OccupyingParkingSpotTest extends Specification {
     then:
       result.isSuccess()
       result.get().with {
-        assert it.beneficiaryId == beneficiary
-        assert it.spotUnits == SpotUnits.of(capacity)
+        assert it.occupied().occupation().parkingSpotId == emptyParkingSpot.parkingSpotId
+        assert it.occupied().occupation().beneficiaryId == beneficiary
+        assert it.occupied().occupation().spotUnits == SpotUnits.of(capacity)
+        
+        assert it.reservationFulfilled().empty
       }
   }
   
@@ -54,10 +58,9 @@ class OccupyingParkingSpotTest extends Specification {
     given:
       def beneficiary = BeneficiaryId.newOne()
       def spotUnits = SpotUnits.of(4)
-      def reservation = Reservation.newOne(beneficiary, spotUnits)
-    
     and:
-      def emptyParkingSpot = emptyParkingSpotWithReservation(reservation)
+      def emptyParkingSpot = emptyParkingSpotWithReservationFor(beneficiary, spotUnits)
+      def reservation = emptyParkingSpot.reservations.values().first()
     
     when:
       def result = emptyParkingSpot.occupyUsing(reservation.reservationId)
@@ -65,8 +68,11 @@ class OccupyingParkingSpotTest extends Specification {
     then:
       result.isSuccess()
       result.get().with {
-        assert it.beneficiaryId == beneficiary
-        assert it.spotUnits == spotUnits
+        assert it.occupied().occupation().parkingSpotId == emptyParkingSpot.parkingSpotId
+        assert it.occupied().occupation().beneficiaryId == beneficiary
+        assert it.occupied().occupation().spotUnits == spotUnits
+        
+        assert it.reservationFulfilled().get().reservation() == reservation
       }
   }
   
@@ -90,8 +96,7 @@ class OccupyingParkingSpotTest extends Specification {
       def beneficiary = BeneficiaryId.newOne()
     
     and:
-      def fullyOccupiedParkingSpot = occupiedPartiallyBy(
-          Occupation.newOne(BeneficiaryId.newOne(), SpotUnits.of(1)))
+      def fullyOccupiedParkingSpot = occupiedWithLeftSpace(1)
     
     when:
       def result = fullyOccupiedParkingSpot.occupyWhole(beneficiary)
@@ -102,8 +107,7 @@ class OccupyingParkingSpotTest extends Specification {
   
   def "reject to occupy parking spot by beneficiary with reservation when there is no such reservation"() {
     given:
-      def fullyOccupiedParkingSpot = emptyParkingSpotWithReservation(
-          Reservation.newOne(BeneficiaryId.newOne(), SpotUnits.of(4)))
+      def fullyOccupiedParkingSpot = emptyParkingSpotWithReservationFor(BeneficiaryId.newOne(), SpotUnits.of(4))
     
     when:
       def result = fullyOccupiedParkingSpot.occupyUsing(ReservationId.newOne())

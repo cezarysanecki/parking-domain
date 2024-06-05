@@ -34,8 +34,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static java.util.function.Predicate.not;
-
 @Profile("local")
 @Configuration
 @RequiredArgsConstructor
@@ -122,6 +120,12 @@ class LocalParkingSpotConfig {
       }
     }
 
+    static List<OccupationEntity> joinBy(ParkingSpotId parkingSpotId) {
+      return DATABASE.stream()
+          .filter(entity -> entity.parkingSpotId.equals(parkingSpotId.getValue()))
+          .toList();
+    }
+
   }
 
   @RequiredArgsConstructor
@@ -136,7 +140,6 @@ class LocalParkingSpotConfig {
       DATABASE.put(parkingSpotId, new ParkingSpotEntity(
           parkingSpotId.getValue(),
           capacity.getValue(),
-          0,
           false,
           category,
           0));
@@ -147,7 +150,8 @@ class LocalParkingSpotConfig {
       return Option.of(DATABASE.get(parkingSpotId))
           .map(entity -> {
             List<ReservationEntity> reservations = InMemoryReservationRepository.joinBy(parkingSpotId);
-            return entity.toDomain(reservations);
+            List<OccupationEntity> occupations = InMemoryOccupationRepository.joinBy(parkingSpotId);
+            return entity.toDomain(reservations, occupations);
           });
     }
 
@@ -159,12 +163,19 @@ class LocalParkingSpotConfig {
 
     @Override
     public void publish(ParkingSpotEvent event) {
-      if (event instanceof ParkingSpotEvent.ParkingSpotOccupied occupied) {
+      if (event instanceof ParkingSpotEvent.ParkingSpotOccupiedEvents occupiedEvents) {
+        publish(occupiedEvents.occupied());
+        occupiedEvents.reservationFulfilled()
+            .peek(this::publish);
+      } else if (event instanceof ParkingSpotEvent.ParkingSpotOccupied occupied) {
         InMemoryOccupationRepository.DATABASE.add(new OccupationEntity(
             occupied.occupation().getOccupationId().getValue(),
             occupied.occupation().getBeneficiaryId().getValue(),
             occupied.occupation().getParkingSpotId().getValue(),
             occupied.occupation().getSpotUnits().getValue()));
+      } else if (event instanceof ParkingSpotEvent.ParkingSpotReservationFulfilled reservationFulfilled) {
+        InMemoryReservationRepository.DATABASE.removeIf(
+            reservationEntity -> reservationEntity.reservationId == reservationFulfilled.reservation().getReservationId().getValue());
       }
     }
 
@@ -172,7 +183,8 @@ class LocalParkingSpotConfig {
     public Option<ParkingSpot> findAvailableFor(ParkingSpotCategory category, SpotUnits spotUnits) {
       return Option.ofOptional(DATABASE.values()
               .stream()
-              .filter(entity -> entity.category == category && entity.spaceLeft() >= spotUnits.getValue())
+              .filter(entity -> entity.category == category
+                  && spaceUsedFor(ParkingSpotId.of(entity.parkingSpotId)) >= spotUnits.getValue())
               .findAny())
           .flatMap(entity -> findBy(ParkingSpotId.of(entity.parkingSpotId)));
     }
@@ -181,13 +193,24 @@ class LocalParkingSpotConfig {
     public List<CapacityView> queryForAllAvailableParkingSpots() {
       return DATABASE.values()
           .stream()
-          .filter(not(ParkingSpotEntity::isFull))
-          .map(parkingSpot -> new CapacityView(
-              parkingSpot.parkingSpotId,
-              parkingSpot.category,
-              parkingSpot.capacity,
-              parkingSpot.spaceLeft()))
+          .map(entity -> new CapacityView(
+              entity.parkingSpotId,
+              entity.category,
+              entity.capacity,
+              entity.capacity - spaceUsedFor(ParkingSpotId.of(entity.parkingSpotId))))
           .toList();
+    }
+
+    static int spaceUsedFor(ParkingSpotId parkingSpotId) {
+      Integer occupationUsage = InMemoryOccupationRepository.joinBy(parkingSpotId)
+          .stream()
+          .map(occupationEntity -> occupationEntity.spotUnits)
+          .reduce(0, Integer::sum);
+      Integer reservationUsage = InMemoryReservationRepository.joinBy(parkingSpotId)
+          .stream()
+          .map(reservationEntity -> reservationEntity.spotUnits)
+          .reduce(0, Integer::sum);
+      return occupationUsage + reservationUsage;
     }
 
   }

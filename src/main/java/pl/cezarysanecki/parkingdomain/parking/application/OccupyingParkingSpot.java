@@ -12,6 +12,8 @@ import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotEvent
 import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotRepository;
 import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits;
 
+import static pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotEvent.ParkingSpotOccupiedEvents;
+
 @Slf4j
 @RequiredArgsConstructor
 public class OccupyingParkingSpot {
@@ -24,7 +26,7 @@ public class OccupyingParkingSpot {
       ParkingSpotId parkingSpotId,
       SpotUnits spotUnits
   ) {
-    if (beneficiaryRepository.isPresent(beneficiaryId)) {
+    if (!beneficiaryRepository.isPresent(beneficiaryId)) {
       return Try.failure(new IllegalStateException("cannot find beneficiary with id: " + beneficiaryId));
     }
 
@@ -34,6 +36,7 @@ public class OccupyingParkingSpot {
     return parkingSpot.occupy(beneficiaryId, spotUnits)
         .onFailure(exception -> log.error("cannot occupy parking spot, reason: {}", exception.getMessage()))
         .onSuccess(parkingSpotRepository::publish)
+        .map(ParkingSpotOccupiedEvents::occupied)
         .map(ParkingSpotOccupied::occupation);
   }
 
@@ -41,7 +44,7 @@ public class OccupyingParkingSpot {
       BeneficiaryId beneficiaryId,
       ParkingSpotId parkingSpotId
   ) {
-    if (beneficiaryRepository.isPresent(beneficiaryId)) {
+    if (!beneficiaryRepository.isPresent(beneficiaryId)) {
       return Try.failure(new IllegalStateException("cannot find beneficiary with id: " + beneficiaryId));
     }
 
@@ -51,6 +54,7 @@ public class OccupyingParkingSpot {
     return parkingSpot.occupyWhole(beneficiaryId)
         .onFailure(exception -> log.error("cannot occupy parking spot, reason: {}", exception.getMessage()))
         .onSuccess(parkingSpotRepository::publish)
+        .map(ParkingSpotOccupiedEvents::occupied)
         .map(ParkingSpotOccupied::occupation);
   }
 

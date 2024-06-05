@@ -18,11 +18,14 @@ public class ReleasingOccupation {
   public Try<Occupation> release(OccupationId occupationId) {
     log.debug("releasing parking spot using occupation with id {}", occupationId);
 
-    Occupation occupation = findBy(occupationId);
-    OccupationReleased event = occupation.release();
+    return Try.of(() -> {
+      Occupation occupation = findBy(occupationId);
 
-    occupationRepository.publish(event);
-    return Try.success(occupation);
+      OccupationReleased event = occupation.release();
+      occupationRepository.publish(event);
+
+      return occupation;
+    });
   }
 
   private Occupation findBy(OccupationId occupationId) {

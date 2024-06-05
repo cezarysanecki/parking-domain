@@ -1,5 +1,6 @@
 package pl.cezarysanecki.parkingdomain.parking.model.parkingspot;
 
+import io.vavr.control.Option;
 import lombok.NonNull;
 import pl.cezarysanecki.parkingdomain.commons.aggregates.Version;
 import pl.cezarysanecki.parkingdomain.commons.events.DomainEvent;
@@ -25,6 +26,27 @@ public interface ParkingSpotEvent extends DomainEvent {
       @NonNull Reservation reservation,
       @NonNull Version parkingSpotVersion
   ) implements ParkingSpotEvent {
+  }
+
+  record ParkingSpotOccupiedEvents(
+      @NonNull ParkingSpotId parkingSpotId,
+      @NonNull ParkingSpotOccupied occupied,
+      @NonNull Option<ParkingSpotReservationFulfilled> reservationFulfilled
+  ) implements ParkingSpotEvent {
+
+    @Override
+    public Version parkingSpotVersion() {
+      return occupied.parkingSpotVersion;
+    }
+
+    public static ParkingSpotOccupiedEvents events(ParkingSpotOccupied occupied) {
+      return new ParkingSpotOccupiedEvents(occupied.parkingSpotId, occupied, Option.none());
+    }
+
+    public static ParkingSpotOccupiedEvents events(ParkingSpotOccupied occupied, ParkingSpotReservationFulfilled reservationFulfilled) {
+      return new ParkingSpotOccupiedEvents(occupied.parkingSpotId, occupied, Option.of(reservationFulfilled));
+    }
+
   }
 
   record ParkingSpotPutIntoService(

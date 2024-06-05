@@ -3,7 +3,7 @@ package pl.cezarysanecki.parkingdomain.parking.acceptance
 import org.springframework.beans.factory.annotation.Autowired
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId
-import pl.cezarysanecki.parkingdomain.parking.application.OccupyingParkingSpot
+import pl.cezarysanecki.parkingdomain.parking.application.OccupyingReservedParkingSpot
 import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryId
 import pl.cezarysanecki.parkingdomain.parking.model.reservation.ReservationId
 import pl.cezarysanecki.parkingdomain.parking.web.BeneficiaryViewRepository
@@ -14,7 +14,7 @@ import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits
 class AllowingToParkOnReservedParkingSpotAcceptanceTest extends AbstractParkingAcceptanceTest {
   
   @Autowired
-  OccupyingParkingSpot occupyingParkingSpot
+  OccupyingReservedParkingSpot occupyingReservedParkingSpot
   @Autowired
   ParkingSpotViewRepository parkingSpotViewRepository
   @Autowired
@@ -34,7 +34,7 @@ class AllowingToParkOnReservedParkingSpotAcceptanceTest extends AbstractParkingA
           parkingSpotId, ReservationRequesterId.of(beneficiaryId.value), SpotUnits.of(2))
     
     when:
-      def occupation = occupyingParkingSpot.occupy(reservationId)
+      def occupation = occupyingReservedParkingSpot.occupy(reservationId)
     
     then:
       parkingSpotHasSpaceLeft(parkingSpotId, 2)
@@ -44,7 +44,7 @@ class AllowingToParkOnReservedParkingSpotAcceptanceTest extends AbstractParkingA
   
   def "reject to park on reserved parking spot if this is not reserved for this beneficiary"() {
     when:
-      occupyingParkingSpot.occupy(ReservationId.newOne())
+      occupyingReservedParkingSpot.occupy(ReservationId.newOne())
     
     then:
       thrown(IllegalStateException.class)

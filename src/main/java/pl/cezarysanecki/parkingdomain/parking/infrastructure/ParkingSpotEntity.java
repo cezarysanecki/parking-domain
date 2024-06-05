@@ -18,29 +18,22 @@ class ParkingSpotEntity {
 
   UUID parkingSpotId;
   int capacity;
-  int usedSpace;
   boolean outOfUse;
   ParkingSpotCategory category;
   int version;
 
-  ParkingSpot toDomain(List<ReservationEntity> reservations) {
+  ParkingSpot toDomain(List<ReservationEntity> reservations, List<OccupationEntity> occupations) {
     return new ParkingSpot(
         ParkingSpotId.of(parkingSpotId),
         ParkingSpotCapacity.of(capacity),
-        usedSpace,
+        occupations.stream()
+            .map(occupationEntity -> occupationEntity.spotUnits)
+            .reduce(0, Integer::sum),
         HashMap.ofAll(reservations.stream()
             .map(ReservationEntity::toDomain)
             .collect(Collectors.toMap(Reservation::getReservationId, reservation -> reservation))),
         outOfUse,
         new Version(version));
-  }
-
-  boolean isFull() {
-    return capacity == usedSpace;
-  }
-
-  int spaceLeft() {
-    return capacity - usedSpace;
   }
 
 }
