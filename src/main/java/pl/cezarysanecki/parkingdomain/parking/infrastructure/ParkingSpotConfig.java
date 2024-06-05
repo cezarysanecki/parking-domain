@@ -3,8 +3,6 @@ package pl.cezarysanecki.parkingdomain.parking.infrastructure;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
-import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 import pl.cezarysanecki.parkingdomain.parking.application.CreatingBeneficiaryEventHandler;
 import pl.cezarysanecki.parkingdomain.parking.application.CreatingParkingSpotEventHandler;
 import pl.cezarysanecki.parkingdomain.parking.application.OccupyingParkingSpot;
@@ -12,13 +10,13 @@ import pl.cezarysanecki.parkingdomain.parking.application.ProvidingUsageOfParkin
 import pl.cezarysanecki.parkingdomain.parking.application.ReleasingOccupation;
 import pl.cezarysanecki.parkingdomain.parking.application.ReservingParkingSpotEventHandler;
 import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryRepository;
+import pl.cezarysanecki.parkingdomain.parking.model.occupation.OccupationRepository;
 import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotRepository;
+import pl.cezarysanecki.parkingdomain.parking.model.reservation.ReservationRepository;
 
 @Configuration
 @RequiredArgsConstructor
 public class ParkingSpotConfig {
-
-  private final EventPublisher eventPublisher;
 
   @Bean
   OccupyingParkingSpot occupyingParkingSpot(
@@ -26,20 +24,15 @@ public class ParkingSpotConfig {
       ParkingSpotRepository parkingSpotRepository
   ) {
     return new OccupyingParkingSpot(
-        eventPublisher,
         beneficiaryRepository,
         parkingSpotRepository);
   }
 
   @Bean
   ReleasingOccupation releasingParkingSpot(
-      BeneficiaryRepository beneficiaryRepository,
-      ParkingSpotRepository parkingSpotRepository
+      OccupationRepository occupationRepository
   ) {
-    return new ReleasingOccupation(
-        eventPublisher,
-        beneficiaryRepository,
-        parkingSpotRepository);
+    return new ReleasingOccupation(occupationRepository);
   }
 
   @Bean
@@ -58,12 +51,9 @@ public class ParkingSpotConfig {
 
   @Bean
   ReservingParkingSpotEventHandler reservingParkingSpotEventHandler(
-      BeneficiaryRepository beneficiaryRepository,
-      ParkingSpotRepository parkingSpotRepository
+      ReservationRepository reservationRepository
   ) {
-    return new ReservingParkingSpotEventHandler(
-        beneficiaryRepository,
-        parkingSpotRepository);
+    return new ReservingParkingSpotEventHandler(reservationRepository);
   }
 
   @Bean
@@ -71,18 +61,6 @@ public class ParkingSpotConfig {
       ParkingSpotRepository parkingSpotRepository
   ) {
     return new ProvidingUsageOfParkingSpot(parkingSpotRepository);
-  }
-
-  @Bean
-  @Profile("local")
-  InMemoryBeneficiaryRepository beneficiaryRepository() {
-    return new InMemoryBeneficiaryRepository();
-  }
-
-  @Bean
-  @Profile("local")
-  InMemoryParkingSpotRepository parkingSpotRepository() {
-    return new InMemoryParkingSpotRepository();
   }
 
 }
