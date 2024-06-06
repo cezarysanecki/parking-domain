@@ -131,7 +131,7 @@ vehicles to occupy a single parking spot. Further requirements are outlined belo
 
 ### Reservations
 
-- Reservation can be extended to whole day
+- Reservation can be extended to entire day
     - if it was morning reservation
     - if current spot has no reservation for evening
     - if current reserved parking spot is not available then there will be proposed another one from the same class
