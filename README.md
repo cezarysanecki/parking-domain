@@ -12,8 +12,7 @@ sophisticated solution.
 I'm committed to undertaking this challenge and seeing if I can successfully navigate it. 😎
 
 This is just experiment which serves solely for **educational purposes**. While I will define the MVP and other
-necessary aspects,
-it's important to note that this domain is not the ultimate goal itself.
+necessary aspects, it's important to note that this domain is not the ultimate goal itself.
 
 **Let jump into the code and see what will happen!**
 
@@ -27,6 +26,7 @@ Main:
     - [Web](https://docs.spring.io/spring-boot/docs/current/reference/html/web.html)
     - [JPA](https://spring.io/projects/spring-data-jpa)
 - [Lombok](https://projectlombok.org/)
+- [Quartz](https://www.quartz-scheduler.org/)
 
 Tests:
 
@@ -42,11 +42,11 @@ Tools:
 
 1. _Ideal code does not exist!_
 1. _Make analysis before coding!_
-1. _Tests are great, but when you are prototyping they are slowing you down_
+1. _Tests are great, but when you are prototyping they are slowing you down!_
 
 ## Assumptions
 
-1. Duplication of chosen logic is sometimes good f.ex. validation of exceeding parking spot space (stable requirement)
+1. Duplication of chosen logic is sometimes good f.ex. validation of exceeding parking spot space (stable requirement).
 
 ## FAQ
 
