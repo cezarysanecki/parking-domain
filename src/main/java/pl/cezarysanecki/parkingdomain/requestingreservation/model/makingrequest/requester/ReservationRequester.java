@@ -17,7 +17,7 @@ public record ReservationRequester(
       throw new IllegalStateException("current usage cannot exceed limit");
     }
     if (limit <= 0) {
-      throw new IllegalStateException("limit must be positive");
+      throw new IllegalStateException("value of limit must be positive");
     }
   }
 
