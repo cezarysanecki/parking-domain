@@ -158,6 +158,12 @@ class LocalReservationRequestsConfig {
       return !DATABASE.isEmpty();
     }
 
+    @Override
+    public void removeAllValidSince(Instant date) {
+      DATABASE.values()
+          .removeIf(entity -> date.isAfter(entity.from));
+    }
+
     static ReservationRequestsTimeSlotEntity joinBy(ReservationRequestsTimeSlotId timeSlotId) {
       return Option.of(DATABASE.get(timeSlotId))
           .getOrElseThrow(() -> new IllegalStateException("cannot find time slot with id " + timeSlotId));
@@ -237,7 +243,7 @@ class LocalReservationRequestsConfig {
               .filter(entity -> {
                 ReservationRequestsTimeSlotEntity timeSlot = InMemoryTimeSlotRepository.joinBy(
                     ReservationRequestsTimeSlotId.of(entity.timeSlotId));
-                return timeSlot.from.isAfter(date);
+                return date.isAfter(timeSlot.from);
               })
               .map(ReservationRequestEntity::toDomain)
               .toList());

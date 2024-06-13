@@ -21,7 +21,7 @@ class MakingReservationRequestsValidJob implements Job {
     Instant date = jobExecutionContext.getFireTime().toInstant();
 
     log.debug("=== JOB {} STARTED ===", getClass().getSimpleName());
-    makingReservationRequestsValid.makeValidAllSince(date);
+    makingReservationRequestsValid.makeAllValidSince(date);
     log.debug("=== JOB {} ENDED ===", getClass().getSimpleName());
   }
 

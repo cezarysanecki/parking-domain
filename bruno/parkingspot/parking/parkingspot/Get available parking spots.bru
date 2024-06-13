@@ -16,3 +16,9 @@ body:json {
       "spotUnits": 1
   }
 }
+
+tests {
+  var response = res.getBody();
+  bru.setEnvVar("parkingSpotId", response[0].parkingSpotId);
+  bru.setEnvVar("spotUnits", response[0].spaceLeft);
+}

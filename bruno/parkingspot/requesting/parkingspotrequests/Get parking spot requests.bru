@@ -9,3 +9,16 @@ get {
   body: json
   auth: none
 }
+
+tests {
+  var response = res.getBody();
+  
+  for (var index in response) {
+    var timeSlot = response[index];
+    if (timeSlot.spaceLeft <= 0) {
+      continue;
+    }
+    bru.setEnvVar("timeSlotId", timeSlot.timeSlotId);
+    break;
+  }
+}

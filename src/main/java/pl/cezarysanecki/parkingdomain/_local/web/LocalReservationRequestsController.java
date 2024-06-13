@@ -6,11 +6,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import pl.cezarysanecki.parkingdomain.commons.date.DateProvider;
 import pl.cezarysanecki.parkingdomain.requestingreservation.application.ExchangingReservationRequestsTimeSlots;
 import pl.cezarysanecki.parkingdomain.requestingreservation.application.MakingReservationRequestsValid;
 
-import java.time.Instant;
-import java.time.LocalDate;
+import java.time.Duration;
 import java.util.List;
 
 @Profile("local")
@@ -19,18 +19,19 @@ import java.util.List;
 @RequiredArgsConstructor
 class LocalReservationRequestsController {
 
+  private final DateProvider dateProvider;
   private final MakingReservationRequestsValid makingReservationRequestsValid;
   private final ExchangingReservationRequestsTimeSlots exchangingReservationRequestsTimeSlots;
 
   @PostMapping("/make-valid")
   ResponseEntity<List<String>> makeReservationRequestValid() {
-    makingReservationRequestsValid.makeValidAllSince(Instant.now());
+    makingReservationRequestsValid.makeAllValidSince(dateProvider.nowInstantUTC().minus(Duration.ofHours(1)));
     return ResponseEntity.ok().build();
   }
 
   @PostMapping("/create-time-slots")
   ResponseEntity createTimeSlots() {
-    exchangingReservationRequestsTimeSlots.exchangeTimeSlots(LocalDate.now());
+    exchangingReservationRequestsTimeSlots.exchangeTimeSlots(dateProvider.tomorrow());
     return ResponseEntity.ok().build();
   }
 

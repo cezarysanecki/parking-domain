@@ -183,8 +183,7 @@ class LocalParkingSpotConfig {
     public Option<ParkingSpot> findAvailableFor(ParkingSpotCategory category, SpotUnits spotUnits) {
       return Option.ofOptional(DATABASE.values()
               .stream()
-              .filter(entity -> entity.category == category
-                  && spaceUsedFor(ParkingSpotId.of(entity.parkingSpotId)) >= spotUnits.getValue())
+              .filter(entity -> entity.category == category && spaceLeft(entity) >= spotUnits.getValue())
               .findAny())
           .flatMap(entity -> findBy(ParkingSpotId.of(entity.parkingSpotId)));
     }
@@ -197,11 +196,14 @@ class LocalParkingSpotConfig {
               entity.parkingSpotId,
               entity.category,
               entity.capacity,
-              entity.capacity - spaceUsedFor(ParkingSpotId.of(entity.parkingSpotId))))
+              spaceLeft(entity)))
+          .filter(capacityView -> capacityView.spaceLeft() > 0)
           .toList();
     }
 
-    static int spaceUsedFor(ParkingSpotId parkingSpotId) {
+    static int spaceLeft(ParkingSpotEntity entity) {
+      ParkingSpotId parkingSpotId = ParkingSpotId.of(entity.parkingSpotId);
+
       Integer occupationUsage = InMemoryOccupationRepository.joinBy(parkingSpotId)
           .stream()
           .map(occupationEntity -> occupationEntity.spotUnits)
@@ -210,7 +212,8 @@ class LocalParkingSpotConfig {
           .stream()
           .map(reservationEntity -> reservationEntity.spotUnits)
           .reduce(0, Integer::sum);
-      return occupationUsage + reservationUsage;
+
+      return entity.capacity - (occupationUsage + reservationUsage);
     }
 
   }

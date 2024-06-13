@@ -9,3 +9,13 @@ get {
   body: none
   auth: none
 }
+
+tests {
+  var response = res.getBody();
+  
+  var numberOfBeneficiaries = response.length;
+  var beneficiaryIndex = Math.floor(Math.random() * numberOfBeneficiaries);
+  
+  bru.setEnvVar("beneficiaryId", response[beneficiaryIndex].beneficiaryId);
+  
+}

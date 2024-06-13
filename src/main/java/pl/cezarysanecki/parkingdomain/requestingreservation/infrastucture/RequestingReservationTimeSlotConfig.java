@@ -54,8 +54,13 @@ public class RequestingReservationTimeSlotConfig {
   }
 
   @Bean
-  MakingReservationRequestsValid makingReservationRequestsValid(ReservationRequestRepository reservationRequestRepository) {
-    return new MakingReservationRequestsValid(reservationRequestRepository);
+  MakingReservationRequestsValid makingReservationRequestsValid(
+      ReservationRequestRepository reservationRequestRepository,
+      ReservationRequestsTimeSlotRepository reservationRequestsTimeSlotRepository
+  ) {
+    return new MakingReservationRequestsValid(
+        reservationRequestRepository,
+        reservationRequestsTimeSlotRepository);
   }
 
   @Bean

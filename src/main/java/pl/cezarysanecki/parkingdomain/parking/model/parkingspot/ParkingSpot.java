@@ -92,14 +92,6 @@ public class ParkingSpot {
     return Try.of(() -> new ParkingSpotMadeOutOfUse(parkingSpotId, version));
   }
 
-  public boolean isFull() {
-    return capacity.getValue() == usedSpace;
-  }
-
-  public int spaceLeft() {
-    return capacity.getValue() - usedSpace;
-  }
-
   private int currentOccupation() {
     Integer reservationUnits = reservations.values()
         .map(Reservation::getSpotUnits)
