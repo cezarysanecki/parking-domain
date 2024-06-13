@@ -25,13 +25,13 @@ class LocalReservationRequestsController {
 
   @PostMapping("/make-valid")
   ResponseEntity<List<String>> makeReservationRequestValid() {
-    makingReservationRequestsValid.makeAllValidSince(dateProvider.nowInstantUTC().minus(Duration.ofHours(1)));
+    makingReservationRequestsValid.makeAllValidSince(dateProvider.now().minus(Duration.ofHours(1)));
     return ResponseEntity.ok().build();
   }
 
   @PostMapping("/create-time-slots")
   ResponseEntity createTimeSlots() {
-    exchangingReservationRequestsTimeSlots.exchangeTimeSlots(dateProvider.tomorrow());
+    exchangingReservationRequestsTimeSlots.exchangeTimeSlots(dateProvider.tomorrowMidnight());
     return ResponseEntity.ok().build();
   }
 

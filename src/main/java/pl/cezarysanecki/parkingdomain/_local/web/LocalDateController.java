@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.cezarysanecki.parkingdomain._local.config.LocalDateProvider;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Profile("local")
 @RestController
@@ -18,17 +18,17 @@ class LocalDateController {
   private final LocalDateProvider localDateProvider;
 
   @GetMapping("/date-provider")
-  LocalDateTime getCurrentDate() {
+  Instant getCurrentDate() {
     return localDateProvider.now();
   }
 
   @PostMapping("/date-provider/{hours}/hours")
-  LocalDateTime passHours(@PathVariable("hours") int hours) {
+  Instant passHours(@PathVariable("hours") int hours) {
     return localDateProvider.passHours(hours);
   }
 
   @PostMapping("/date-provider/{minutes}/minutes")
-  LocalDateTime passMinutes(@PathVariable("minutes") int minutes) {
+  Instant passMinutes(@PathVariable("minutes") int minutes) {
     return localDateProvider.passMinutes(minutes);
   }
 

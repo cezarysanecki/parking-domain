@@ -1,33 +1,43 @@
 package pl.cezarysanecki.parkingdomain.commons.date;
 
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 
 public interface DateProvider {
 
-  LocalDateTime now();
+  ZoneId ZONE_OFFSET = ZoneOffset.systemDefault();
 
-  default Instant nowInstantUTC() {
-    return now().toInstant(ZoneOffset.UTC);
+  Instant now();
+
+  default Instant tomorrowMidnight() {
+    return ZonedDateTime.ofInstant(now(), ZONE_OFFSET)
+        .withHour(0)
+        .withMinute(0)
+        .withSecond(0)
+        .withNano(0)
+        .plusDays(1)
+        .toInstant();
   }
 
-  default LocalDate today() {
-    return now().toLocalDate();
-  }
-
-  default LocalDate tomorrow() {
-    return today().plusDays(1);
-  }
-
-  default LocalDateTime nearestFutureDateAt(LocalTime localTime) {
-    LocalDateTime now = now();
-    if (now.toLocalTime().isBefore(localTime)) {
-      return LocalDateTime.of(now.toLocalDate(), localTime);
+  default Instant nearestFutureDateAt(int hour) {
+    ZonedDateTime zonedNow = ZonedDateTime.ofInstant(now(), ZoneId.systemDefault());
+    if (zonedNow.toLocalTime().getHour() < hour) {
+      return zonedNow
+          .withHour(hour)
+          .withMinute(0)
+          .withSecond(0)
+          .withNano(0)
+          .toInstant();
     }
-    return LocalDateTime.of(now.toLocalDate().plusDays(1), localTime);
+    return zonedNow
+        .withHour(hour)
+        .withMinute(0)
+        .withSecond(0)
+        .withNano(0)
+        .plusDays(1)
+        .toInstant();
   }
 
 }

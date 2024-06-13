@@ -10,7 +10,7 @@ import pl.cezarysanecki.parkingdomain.requestingreservation.model.template.Reser
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.template.ReservationRequestsTemplateRepository;
 import pl.cezarysanecki.parkingdomain.shared.timeslot.TimeSlot;
 
-import java.time.LocalDate;
+import java.time.Instant;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -19,7 +19,7 @@ public class ExchangingReservationRequestsTimeSlots {
   private final ReservationRequestsTimeSlotRepository reservationRequestsTimeSlotRepository;
   private final ReservationRequestsTemplateRepository reservationRequestsTemplateRepository;
 
-  public void exchangeTimeSlots(LocalDate date) {
+  public void exchangeTimeSlots(Instant date) {
     if (reservationRequestsTimeSlotRepository.containsAny()) {
       log.error("there are still reservation requests time slots, check it");
       return;
@@ -27,8 +27,8 @@ public class ExchangingReservationRequestsTimeSlots {
 
     List<ToCreate> results = reservationRequestsTemplateRepository.findAll()
         .flatMap(template -> Stream.of(
-                TimeSlot.createTimeSlotAtUTC(date, 7, 17),
-                TimeSlot.createTimeSlotAtUTC(date, 18, 23))
+                TimeSlot.createTimeSlot(date, 7, 17),
+                TimeSlot.createTimeSlot(date, 18, 23))
             .map(timeSlot -> new ToCreate(
                 template.templateId(),
                 ReservationRequestsTimeSlotId.newOne(),

@@ -23,7 +23,7 @@ public class MakingReservationRequest {
       ReservationRequestsTimeSlotId timeSlotId,
       SpotUnits spotUnits
   ) {
-    log.debug("Making reservation request for time slot with id {}", timeSlotId);
+    log.debug("making reservation request for time slot with id {}", timeSlotId);
 
     return Try.of(() -> {
           ReservationRequests reservationRequests = reservationRequestsRepository.getBy(requesterId, timeSlotId);

@@ -19,7 +19,7 @@ class ExchangingReservationRequestsTimeSlotsJob implements Job {
   @Override
   public void execute(JobExecutionContext jobExecutionContext) {
     log.debug("=== JOB {} STARTED ===", getClass().getSimpleName());
-    exchangingReservationRequestsTimeSlots.exchangeTimeSlots(dateProvider.tomorrow());
+    exchangingReservationRequestsTimeSlots.exchangeTimeSlots(dateProvider.tomorrowMidnight());
     log.debug("=== JOB {} ENDED ===", getClass().getSimpleName());
   }
 

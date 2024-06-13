@@ -8,8 +8,6 @@ import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.Reser
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.ReservationRequestRepository;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -23,7 +21,7 @@ public class MakingReservationRequestsValid {
     log.debug("found {} reservation requests to make them valid", reservationRequests.size());
 
     reservationRequestsTimeSlotRepository.removeAllValidSince(date);
-    log.debug("removed time slots which were valid since {}", LocalDateTime.ofInstant(date, ZoneId.systemDefault()));
+    log.debug("removed time slots which were valid since {}", date);
 
     var results = reservationRequests.map(ReservationRequest::confirm);
 

@@ -20,7 +20,7 @@ class CallingExternalCleaningServicePolicyJob implements Job {
     log.debug("=== JOB {} STARTED ===", getClass().getSimpleName());
     Result result = callingExternalCleaningServicePolicy.handleCleaningPolicy();
     if (result == Result.Rejection) {
-      log.debug("Need to wait some time to call external service");
+      log.debug("need to wait some time to call external service");
     }
     log.debug("=== JOB {} ENDED ===", getClass().getSimpleName());
   }

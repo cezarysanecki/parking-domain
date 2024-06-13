@@ -1,12 +1,12 @@
 package pl.cezarysanecki.parkingdomain.commons.date;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 class ProductionDateProvider implements DateProvider {
 
   @Override
-  public LocalDateTime now() {
-    return LocalDateTime.now();
+  public Instant now() {
+    return Instant.now();
   }
 
 }

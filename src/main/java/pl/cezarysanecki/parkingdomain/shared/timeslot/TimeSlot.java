@@ -1,8 +1,8 @@
 package pl.cezarysanecki.parkingdomain.shared.timeslot;
 
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 
 public record TimeSlot(Instant from, Instant to) {
 
@@ -12,9 +12,12 @@ public record TimeSlot(Instant from, Instant to) {
     }
   }
 
-  public static TimeSlot createTimeSlotAtUTC(LocalDate thisDay, int fromHour, int toHour) {
-    Instant from = thisDay.atTime(fromHour, 0).toInstant(ZoneOffset.UTC);
-    Instant to = thisDay.atTime(toHour, 0).toInstant(ZoneOffset.UTC);
+  public static TimeSlot createTimeSlot(Instant date, int fromHour, int toHour) {
+    ZonedDateTime zonedDateTime = date.atZone(ZoneOffset.systemDefault());
+
+    Instant from = zonedDateTime.withHour(fromHour).withMinute(0).withSecond(0).withNano(0).toInstant();
+    Instant to = zonedDateTime.withHour(toHour).withMinute(0).withSecond(0).withNano(0).toInstant();
+
     return new TimeSlot(from, to);
   }
 
