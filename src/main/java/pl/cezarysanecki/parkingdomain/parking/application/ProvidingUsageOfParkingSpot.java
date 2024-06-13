@@ -15,34 +15,44 @@ public class ProvidingUsageOfParkingSpot {
   private final ParkingSpotRepository parkingSpotRepository;
 
   public Try<ParkingSpotId> makeOutOfUse(ParkingSpotId parkingSpotId) {
-    ParkingSpot parkingSpot = findBy(parkingSpotId);
-    log.debug("found parking spot with id {}", parkingSpot.getParkingSpotId());
+    log.debug("making out of use parking spot with id {}", parkingSpotId);
 
-    var result = parkingSpot.makeOutOfUse();
+    return Try.of(() -> {
+          ParkingSpot parkingSpot = findBy(parkingSpotId);
+          log.debug("found parking spot with id {}", parkingSpot.getParkingSpotId());
 
-    return result
-        .onSuccess(event -> {
-          log.debug("parking spot with id {} is out of use", parkingSpot.getParkingSpotId());
-          parkingSpotRepository.publish(event);
+          var result = parkingSpot.makeOutOfUse();
+
+          return result
+              .onSuccess(event -> {
+                parkingSpotRepository.publish(event);
+                log.debug("parking spot with id {} is out of use", parkingSpot.getParkingSpotId());
+              })
+              .map(ParkingSpotEvent.ParkingSpotMadeOutOfUse::parkingSpotId);
         })
-        .map(ParkingSpotEvent.ParkingSpotMadeOutOfUse::parkingSpotId)
-        .onFailure(failure -> log.error("failed to make parking spot with id {} out of use", parkingSpot.getParkingSpotId()));
+        .flatMap(result -> result)
+        .onFailure(failure -> log.error("failed to make parking spot with id {} out of use", parkingSpotId));
   }
 
   public Try<ParkingSpotId> putIntoService(ParkingSpotId parkingSpotId) {
-    ParkingSpot parkingSpot = findBy(parkingSpotId);
-    log.debug("found parking spot with id {}", parkingSpot.getParkingSpotId());
+    log.debug("putting into service parking spot with id {}", parkingSpotId);
 
-    var result = parkingSpot.putIntoService();
-    log.debug("parking spot with id {} is put into service", parkingSpot.getParkingSpotId());
+    return Try.of(() -> {
+          ParkingSpot parkingSpot = findBy(parkingSpotId);
+          log.debug("found parking spot with id {}", parkingSpot.getParkingSpotId());
 
-    return result
-        .onSuccess(event -> {
-          log.debug("parking spot with id {} is in service", parkingSpot.getParkingSpotId());
-          parkingSpotRepository.publish(event);
+          var result = parkingSpot.putIntoService();
+          log.debug("parking spot with id {} is put into service", parkingSpot.getParkingSpotId());
+
+          return result
+              .onSuccess(event -> {
+                parkingSpotRepository.publish(event);
+                log.debug("parking spot with id {} is in service", parkingSpot.getParkingSpotId());
+              })
+              .map(ParkingSpotEvent.ParkingSpotPutIntoService::parkingSpotId);
         })
-        .map(ParkingSpotEvent.ParkingSpotPutIntoService::parkingSpotId)
-        .onFailure(failure -> log.error("failed to put parking spot with id {} into service", parkingSpot.getParkingSpotId()));
+        .flatMap(result -> result)
+        .onFailure(failure -> log.error("failed to put parking spot with id {} into service", parkingSpotId));
   }
 
   private ParkingSpot findBy(ParkingSpotId parkingSpotId) {

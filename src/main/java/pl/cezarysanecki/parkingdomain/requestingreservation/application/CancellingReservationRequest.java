@@ -14,11 +14,14 @@ public class CancellingReservationRequest {
   private final ReservationRequestRepository reservationRequestRepository;
 
   public Try<ReservationRequestId> cancelRequest(ReservationRequestId reservationRequestId) {
+    log.debug("cancelling request reservation with id {}", reservationRequestId);
+
     ReservationRequest reservationRequest = reservationRequestRepository.getBy(reservationRequestId);
 
     var result = reservationRequest.cancel();
 
     reservationRequestRepository.publish(result);
+    log.debug("successfully cancelled request reservation with id {}", reservationRequestId);
 
     return Try.of(reservationRequest::getReservationRequestId);
   }

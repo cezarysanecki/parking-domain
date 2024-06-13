@@ -26,6 +26,8 @@ public class ReservingParkingSpotEventHandler {
     ReservationId reservationId = ReservationId.of(reservationRequest.getReservationRequestId().getValue());
     SpotUnits spotUnits = event.reservationRequest().getSpotUnits();
 
+    log.debug("confirming reservation with id {} for parking spot id {}", reservationId, parkingSpotId);
+
     reservationRepository.saveNew(reservationId, parkingSpotId, beneficiaryId, spotUnits);
   }
 

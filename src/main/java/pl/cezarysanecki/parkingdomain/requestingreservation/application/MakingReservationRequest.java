@@ -3,11 +3,11 @@ package pl.cezarysanecki.parkingdomain.requestingreservation.application;
 import io.vavr.control.Try;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.requester.ReservationRequesterId;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.ReservationRequest;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.ReservationRequests;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.ReservationRequestsRepository;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.requester.ReservationRequesterId;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.timeslot.ReservationRequestsTimeSlotId;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.ReservationRequest;
 import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits;
 
 import static pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.ReservationRequestsEvent.ReservationRequestMade;
@@ -23,17 +23,22 @@ public class MakingReservationRequest {
       ReservationRequestsTimeSlotId timeSlotId,
       SpotUnits spotUnits
   ) {
-    ReservationRequests reservationRequests = reservationRequestsRepository.getBy(requesterId, timeSlotId);
+    log.debug("Making reservation request for time slot with id {}", timeSlotId);
 
-    Try<ReservationRequestMade> result = reservationRequests.makeRequest(spotUnits);
+    return Try.of(() -> {
+          ReservationRequests reservationRequests = reservationRequestsRepository.getBy(requesterId, timeSlotId);
 
-    return result
-        .onFailure(exception -> log.error("cannot make reservation request, reason: {}", exception.getMessage()))
-        .onSuccess(event -> {
-          log.debug("successfully made reservation request with id {}", event.reservationRequest().getReservationRequestId());
-          reservationRequestsRepository.publish(event);
+          Try<ReservationRequestMade> result = reservationRequests.makeRequest(spotUnits);
+
+          return result
+              .onSuccess(event -> {
+                reservationRequestsRepository.publish(event);
+                log.debug("successfully made reservation request with id {}", event.reservationRequest().getReservationRequestId());
+              })
+              .map(ReservationRequestMade::reservationRequest);
         })
-        .map(ReservationRequestMade::reservationRequest);
+        .flatMap(result -> result)
+        .onFailure(exception -> log.error("cannot make reservation request, reason: {}", exception.getMessage()));
   }
 
 }

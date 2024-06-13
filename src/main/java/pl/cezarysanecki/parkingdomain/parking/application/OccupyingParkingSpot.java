@@ -35,6 +35,8 @@ public class OccupyingParkingSpot {
       ParkingSpotId parkingSpotId,
       SpotUnits spotUnits
   ) {
+    log.debug("occupying parking spot with id {} by beneficiary with id {}", parkingSpotId, beneficiaryId);
+
     return occupy(
         beneficiaryId,
         () -> findBy(parkingSpotId),
@@ -45,6 +47,8 @@ public class OccupyingParkingSpot {
       BeneficiaryId beneficiaryId,
       ParkingSpotId parkingSpotId
   ) {
+    log.debug("occupying whole parking spot with id {} by beneficiary with id {}", parkingSpotId, beneficiaryId);
+
     return occupy(
         beneficiaryId,
         () -> findBy(parkingSpotId),
@@ -56,6 +60,8 @@ public class OccupyingParkingSpot {
       ParkingSpotCategory category,
       SpotUnits spotUnits
   ) {
+    log.debug("occupying available parking spot with category {} by beneficiary with id {}", category, beneficiaryId);
+
     return occupy(
         beneficiaryId,
         () -> findAvailableFor(category, spotUnits),
@@ -73,12 +79,13 @@ public class OccupyingParkingSpot {
       }
       ParkingSpot parkingSpot = parkingSpotSupplier.get();
 
-      log.debug("occupying parking spot with id {} by beneficiary with id {}", parkingSpot.getParkingSpotId(), beneficiaryId);
+      log.debug("try to occupy found parking spot with id {} by found beneficiary with id {}", parkingSpot.getParkingSpotId(), beneficiaryId);
       var result = occupationFunction.apply(parkingSpot);
 
       return Match(result).of(
           Case($Right($()), event -> {
             parkingSpotRepository.publish(event);
+            log.debug("successfully occupied parking spot with id {}", parkingSpot.getParkingSpotId());
             return event.occupied().occupation();
           }),
           Case($Left($()), exception -> {

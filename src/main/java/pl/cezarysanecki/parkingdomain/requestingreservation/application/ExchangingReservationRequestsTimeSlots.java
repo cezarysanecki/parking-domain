@@ -4,10 +4,10 @@ import io.vavr.collection.List;
 import io.vavr.collection.Stream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.template.ReservationRequestsTemplateId;
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.template.ReservationRequestsTemplateRepository;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.timeslot.ReservationRequestsTimeSlotId;
 import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.timeslot.ReservationRequestsTimeSlotRepository;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.template.ReservationRequestsTemplateId;
+import pl.cezarysanecki.parkingdomain.requestingreservation.model.template.ReservationRequestsTemplateRepository;
 import pl.cezarysanecki.parkingdomain.shared.timeslot.TimeSlot;
 
 import java.time.LocalDate;
@@ -35,11 +35,14 @@ public class ExchangingReservationRequestsTimeSlots {
                 timeSlot
             )));
 
-    results.forEach(result -> reservationRequestsTimeSlotRepository.saveNew(
-        result.timeSlotId,
-        result.templateId,
-        result.timeSlot
-    ));
+    results.forEach(result -> {
+      log.debug("saving reservation requests time slot with id {} and time slot {}", result.templateId(), result.timeSlot);
+
+      reservationRequestsTimeSlotRepository.saveNew(
+          result.timeSlotId,
+          result.templateId,
+          result.timeSlot);
+    });
   }
 
   record ToCreate(

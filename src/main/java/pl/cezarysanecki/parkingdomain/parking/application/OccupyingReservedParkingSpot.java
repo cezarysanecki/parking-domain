@@ -21,15 +21,17 @@ public class OccupyingReservedParkingSpot {
   private final ParkingSpotRepository parkingSpotRepository;
 
   public Try<Occupation> occupy(ReservationId reservationId) {
+    log.debug("occupying parking spot using reservation with id {}", reservationId);
+
     return Try.of(() -> {
       ParkingSpot parkingSpot = findBy(reservationId);
-      log.debug("occupying parking spot using reservation with id {}", reservationId);
 
       var result = parkingSpot.occupyUsing(reservationId);
 
       return Match(result).of(
           Case($Right($()), event -> {
             parkingSpotRepository.publish(event);
+            log.debug("successfully occupied parking spot with id {} using reservation with id {}", parkingSpot.getParkingSpotId(), reservationId);
             return event.occupied().occupation();
           }),
           Case($Left($()), exception -> {
