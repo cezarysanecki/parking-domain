@@ -120,6 +120,13 @@ class LocalParkingSpotConfig {
       }
     }
 
+    @Override
+    public boolean containsOccupationFor(BeneficiaryId beneficiaryId, ParkingSpotId parkingSpotId) {
+      return DATABASE.stream()
+          .anyMatch(entity -> entity.parkingSpotId.equals(parkingSpotId.getValue())
+              && entity.beneficiaryId.equals(beneficiaryId.getValue()));
+    }
+
     static List<OccupationEntity> joinBy(ParkingSpotId parkingSpotId) {
       return DATABASE.stream()
           .filter(entity -> entity.parkingSpotId.equals(parkingSpotId.getValue()))

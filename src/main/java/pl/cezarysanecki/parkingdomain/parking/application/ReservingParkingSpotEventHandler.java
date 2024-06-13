@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryId;
+import pl.cezarysanecki.parkingdomain.parking.model.occupation.OccupationRepository;
 import pl.cezarysanecki.parkingdomain.parking.model.reservation.ReservationId;
 import pl.cezarysanecki.parkingdomain.parking.model.reservation.ReservationRepository;
 import pl.cezarysanecki.parkingdomain.requestingreservation.integration.ReservationRequestsConfirmed;
@@ -15,6 +16,7 @@ import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits;
 @RequiredArgsConstructor
 public class ReservingParkingSpotEventHandler {
 
+  private final OccupationRepository occupationRepository;
   private final ReservationRepository reservationRepository;
 
   @EventListener
@@ -28,7 +30,13 @@ public class ReservingParkingSpotEventHandler {
 
     log.debug("confirming reservation with id {} for parking spot id {}", reservationId, parkingSpotId);
 
-    reservationRepository.saveNew(reservationId, parkingSpotId, beneficiaryId, spotUnits);
+    if (occupationRepository.containsOccupationFor(beneficiaryId, parkingSpotId)) {
+      log.debug("beneficiary with id {} already occupies parking spot with id {}, skipping reservation", beneficiaryId, parkingSpotId);
+    } else {
+      reservationRepository.saveNew(reservationId, parkingSpotId, beneficiaryId, spotUnits);
+      log.debug("successfully confirmed reservation with id {} for parking spot id {}", reservationId, parkingSpotId);
+    }
+
   }
 
 }

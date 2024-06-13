@@ -1,6 +1,8 @@
 package pl.cezarysanecki.parkingdomain.parking.model.occupation;
 
 import io.vavr.control.Option;
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
+import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryId;
 
 public interface OccupationRepository {
 
@@ -12,5 +14,7 @@ public interface OccupationRepository {
   }
 
   void publish(OccupationEvent event);
+
+  boolean containsOccupationFor(BeneficiaryId beneficiaryId, ParkingSpotId parkingSpotId);
 
 }
