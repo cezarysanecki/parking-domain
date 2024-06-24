@@ -23,7 +23,7 @@ import pl.cezarysanecki.parkingdomain.shared.occupation.ParkingSpotCapacity
 import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits
 import spock.lang.Specification
 
-import java.time.LocalDate
+import java.time.Instant
 
 import static pl.cezarysanecki.parkingdomain.management.client.ClientRegistered.IndividualClientRegistered
 
@@ -41,7 +41,7 @@ abstract class AbstractParkingAcceptanceTest extends Specification {
   ExchangingReservationRequestsTimeSlots creatingReservationRequestTimeSlots
   
   void createTimeSlots() {
-    creatingReservationRequestTimeSlots.exchangeTimeSlots(LocalDate.now())
+    creatingReservationRequestTimeSlots.exchangeTimeSlots(Instant.now())
   }
   
   ParkingSpotId addParkingSpot(int capacity, ParkingSpotCategory category) {
