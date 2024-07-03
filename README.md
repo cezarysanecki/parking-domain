@@ -8,8 +8,7 @@
 > Choosing to learn about the domain before implementing is the optimal decision you can make.
 
 The Parking Domain project aims to demonstrate the evolution from a rudimentary and limited model to a more
-sophisticated solution.
-I'm committed to undertaking this challenge and seeing if I can successfully navigate it. 😎
+sophisticated solution. I'm committed to undertaking this challenge and seeing if I can successfully navigate it. 😎
 
 This is just experiment which serves solely for **educational purposes**. While I will define the MVP and other
 necessary aspects, it's important to note that this domain is not the ultimate goal itself.
@@ -50,7 +49,7 @@ Tools:
 
 ## FAQ
 
-(Cricket...)
+_(Cricket...)_
 
 ### Is it production-ready?
 
@@ -101,7 +100,9 @@ vehicles to occupy a single parking spot. Further requirements are outlined belo
 
 ### Parking
 
-- Parking is available 24/7
+- Parking is available **since 5am until 1am**
+  - Clients can only occupy parking spots **until 12pm**
+- There is technical break **since 1am until 5am**
 - Parking spots have their own identity
 - Parking spots are assigned to groups: BRONZE, SILVER, GOLD (attractiveness spot)
 - Parking spots can be occupied (for now) by: cars, motorcycles and scooters
@@ -120,19 +121,20 @@ vehicles to occupy a single parking spot. Further requirements are outlined belo
 - Client can request any parking spot
     - from class (BRONZE, SILVER, GOLD)
     - for specified size (1, 2, 4 units)
-- Requesting chosen parking spot is available for additional fee
+    - or can request any randomly
 - Request is not valid reservation
 - Request can be made, edited, cancelled until they become valid (become reservations)
-    - this is until 10pm
+    - first part of day - becoming valid at 5am
+    - second part of day - becoming valid at 5pm
 - Requests can be made for
-    - morning (7:00-17:00)
-    - evening (18:00-24:00)
-    - whole day (7:00-24:00)
+    - first part of day (5:00-17:00)
+    - second part of day (18:00-24:00)
+    - whole day (5:00-24:00)
 
 ### Reservations
 
 - Reservation can be extended to entire day
-    - if it was morning reservation
+    - if it was first part of day reservation
     - if current spot has no reservation for evening
     - if current reserved parking spot is not available then there will be proposed another one from the same class
 
@@ -145,73 +147,55 @@ vehicles to occupy a single parking spot. Further requirements are outlined belo
 
 ### Encourage to free reserved parking spot
 
-> To be changed in future!
-
 - Clients who are on reserved chosen parking spot
     - notify them that they should free parking spot
     - give them discount for current parking
 
 ### Cleaning parking spots
 
-> To be changed!
-
-- Because parking is available 24/7, we cannot schedule a technical break to clean the spots
-- We need to track when the spots were last cleaned and mark them as "out of order" when a specified period of time has
-  passed since the last cleaning
-- When 5 spots are marked for cleaning, we request the cleaning service
+- Parking spots can be cleaned during technical break
+- Cleaning service is called when >50% parking spots are considered dirty
+  - It means 20 releases
 
 ### Repair/Maintenance of parking spots
 
-> To be changed!
-
-- Almost the same as cleaning parking spots
 - It may not be as widespread as cleaning, but occasionally, we may need to change the parking surface
 - Clients can report a malfunction or issue with a parking spot
     - They will receive loyalty points
     - If they are given access to the broken spot, they should also be provided access to another parking spot from the
-      emergency bank
+      available bank
 
 ### Fee
-
-> To be changed!
 
 - Standard usage of parking spot:
     - 15 minutes - no charge
     - 1 hour - 5PLN
     - 2 hours - 9PLN
-    - 4 hours - 17PLN
-    - one day - 40PLN
-    - each successive day - 50PLN
-- Subscription:
-    - dedicated spot bank
-    - exclusive parking spot
-    - monthly - 1000PLN
+    - 4 hours - 14PLN
+    - whole day - 50PLN
+- Reservations:
+  - first part of day - 30PLM
+  - second part of day - 20PLM
+  - whole day - 40PLM
 - Discount:
     - 1-10% for:
         - reporting issues
-        - being loyal client (park for more than half of the days in a month)
+        - being loyal client
+          - park for more than half of the days in a month
+          - fulfilling reservations
         - recommendation
 
 ### Loyalty points
 
-> To be changed!
-
 - Clients can receive loyalty points for reporting issues or being "long-term" client
-- "Long-term" client is someone who park for more than half of the days in a month - 3 months in a row
+- "Long-term" client is someone who park for more than half of the days in a month
 - Loyalty points can be redeemed to receive gifts
-
-### Customer recovery
-
-> To be changed!
-
-- A customer labeled as 'difficult' has the right to assert their innocence
-- If the verifier accepts the justification, a discount should be provided to that person as compensation
 
 ## Analysis
 
-### Parking subdomain
+### Timeline model [PL] - Overall view
 
-![Parking subdomain](./docs/public/analysis/parking_subdomain.png)
+![](./docs/public/timeline_model.png)
 
 ## Educational goals
 
