@@ -19,18 +19,13 @@ public class ReleasingOccupation {
     log.debug("releasing parking spot using occupation with id {}", occupationId);
 
     return Try.of(() -> {
-      Occupation occupation = findBy(occupationId);
+      Occupation occupation = occupationRepository.getBy(occupationId, this);
 
       OccupationReleased event = occupation.release();
       occupationRepository.publish(event);
 
       return occupation;
     });
-  }
-
-  private Occupation findBy(OccupationId occupationId) {
-    return occupationRepository.findBy(occupationId)
-        .getOrElseThrow(() -> new IllegalStateException("cannot find occupation with id: " + occupationId));
   }
 
 }

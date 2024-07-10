@@ -24,7 +24,7 @@ public class OccupyingReservedParkingSpot {
     log.debug("occupying parking spot using reservation with id {}", reservationId);
 
     return Try.of(() -> {
-      ParkingSpot parkingSpot = findBy(reservationId);
+      ParkingSpot parkingSpot = parkingSpotRepository.getBy(reservationId, this);
 
       var result = parkingSpot.occupyUsing(reservationId);
 
@@ -38,11 +38,6 @@ public class OccupyingReservedParkingSpot {
             throw exception;
           }));
     }).onFailure(exception -> log.error("cannot occupy parking spot, reason: {}", exception.getMessage()));
-  }
-
-  private ParkingSpot findBy(ReservationId reservationId) {
-    return parkingSpotRepository.findBy(reservationId)
-        .getOrElseThrow(() -> new IllegalStateException("cannot find parking spot containing reservation with id: " + reservationId));
   }
 
 }
