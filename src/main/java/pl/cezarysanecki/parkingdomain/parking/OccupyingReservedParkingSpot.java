@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.parking.application;
+package pl.cezarysanecki.parkingdomain.parking;
 
 import io.vavr.control.Try;
 import lombok.RequiredArgsConstructor;
@@ -16,11 +16,11 @@ import static io.vavr.Patterns.$Right;
 
 @Slf4j
 @RequiredArgsConstructor
-public class OccupyingReservedParkingSpot {
+class OccupyingReservedParkingSpot {
 
   private final ParkingSpotRepository parkingSpotRepository;
 
-  public Try<Occupation> occupy(ReservationId reservationId) {
+  Try<Occupation> occupy(ReservationId reservationId) {
     log.debug("occupying parking spot using reservation with id {}", reservationId);
 
     return Try.of(() -> {

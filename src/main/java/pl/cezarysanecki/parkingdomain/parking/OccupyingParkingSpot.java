@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.parking.application;
+package pl.cezarysanecki.parkingdomain.parking;
 
 import io.vavr.control.Either;
 import io.vavr.control.Try;
@@ -25,12 +25,12 @@ import static pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSp
 
 @Slf4j
 @RequiredArgsConstructor
-public class OccupyingParkingSpot {
+class OccupyingParkingSpot {
 
   private final BeneficiaryRepository beneficiaryRepository;
   private final ParkingSpotRepository parkingSpotRepository;
 
-  public Try<Occupation> occupy(
+  Try<Occupation> occupy(
       BeneficiaryId beneficiaryId,
       ParkingSpotId parkingSpotId,
       SpotUnits spotUnits
@@ -43,7 +43,7 @@ public class OccupyingParkingSpot {
         parkingSpot -> parkingSpot.occupy(beneficiaryId, spotUnits));
   }
 
-  public Try<Occupation> occupyWhole(
+  Try<Occupation> occupyWhole(
       BeneficiaryId beneficiaryId,
       ParkingSpotId parkingSpotId
   ) {
@@ -55,7 +55,7 @@ public class OccupyingParkingSpot {
         parkingSpot -> parkingSpot.occupyWhole(beneficiaryId));
   }
 
-  public Try<Occupation> occupyAvailable(
+  Try<Occupation> occupyAvailable(
       BeneficiaryId beneficiaryId,
       ParkingSpotCategory category,
       SpotUnits spotUnits

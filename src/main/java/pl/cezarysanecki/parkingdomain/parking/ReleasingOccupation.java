@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.parking.application;
+package pl.cezarysanecki.parkingdomain.parking;
 
 import io.vavr.control.Try;
 import lombok.RequiredArgsConstructor;
@@ -11,11 +11,11 @@ import static pl.cezarysanecki.parkingdomain.parking.model.occupation.Occupation
 
 @Slf4j
 @RequiredArgsConstructor
-public class ReleasingOccupation {
+class ReleasingOccupation {
 
   private final OccupationRepository occupationRepository;
 
-  public Try<Occupation> release(OccupationId occupationId) {
+  Try<Occupation> release(OccupationId occupationId) {
     log.debug("releasing parking spot using occupation with id {}", occupationId);
 
     return Try.of(() -> {
