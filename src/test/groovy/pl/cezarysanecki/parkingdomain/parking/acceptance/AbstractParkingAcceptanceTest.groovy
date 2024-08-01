@@ -10,15 +10,14 @@ import pl.cezarysanecki.parkingdomain.management.client.ClientId
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotAdded
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId
-import pl.cezarysanecki.parkingdomain.parking.infrastructure.ParkingSpotConfig
-import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryId
-import pl.cezarysanecki.parkingdomain.parking.model.reservation.ReservationId
-import pl.cezarysanecki.parkingdomain.requestingreservation.application.ExchangingReservationRequestsTimeSlots
-import pl.cezarysanecki.parkingdomain.requestingreservation.infrastucture.RequestingReservationTimeSlotConfig
-import pl.cezarysanecki.parkingdomain.requestingreservation.integration.ReservationRequestsConfirmed
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.requester.ReservationRequesterId
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.timeslot.ReservationRequestsTimeSlotId
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.requests.ReservationRequest
+
+
+import pl.cezarysanecki.parkingdomain.requesting.ExchangingReservationRequestsTimeSlots
+import pl.cezarysanecki.parkingdomain.requesting.RequestingReservationTimeSlotConfig
+import pl.cezarysanecki.parkingdomain.requesting.ReservationRequestsConfirmed
+import pl.cezarysanecki.parkingdomain.requesting.api.RequesterId
+import pl.cezarysanecki.parkingdomain.requesting.ReservationRequestsTimeSlotId
+import pl.cezarysanecki.parkingdomain.requesting.ReservationRequest
 import pl.cezarysanecki.parkingdomain.shared.occupation.ParkingSpotCapacity
 import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits
 import spock.lang.Specification
@@ -56,7 +55,7 @@ abstract class AbstractParkingAcceptanceTest extends Specification {
     return BeneficiaryId.of(clientId.value)
   }
   
-  ReservationId reserveParkingSpot(ParkingSpotId parkingSpotId, ReservationRequesterId requesterId, SpotUnits spotUnits) {
+  ReservationId reserveParkingSpot(ParkingSpotId parkingSpotId, RequesterId requesterId, SpotUnits spotUnits) {
     def reservationRequest = new ReservationRequest(requesterId, ReservationRequestsTimeSlotId.newOne(), spotUnits)
     eventPublisher.publish(new ReservationRequestsConfirmed(parkingSpotId, reservationRequest))
     return ReservationId.of(reservationRequest.getReservationRequestId().value)

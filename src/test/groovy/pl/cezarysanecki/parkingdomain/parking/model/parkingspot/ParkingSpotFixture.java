@@ -5,8 +5,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import pl.cezarysanecki.parkingdomain.commons.aggregates.Version;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryId;
-import pl.cezarysanecki.parkingdomain.parking.model.reservation.Reservation;
+import pl.cezarysanecki.parkingdomain.parking.ParkingSpot;
 import pl.cezarysanecki.parkingdomain.shared.occupation.ParkingSpotCapacity;
 import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits;
 

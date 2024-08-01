@@ -2,14 +2,14 @@ package pl.cezarysanecki.parkingdomain.parking.application
 
 import io.vavr.control.Option
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory
-import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryRepository
-import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotRepository
+
+import pl.cezarysanecki.parkingdomain.parking.ParkingSpotRepository
 import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits
 import spock.lang.Specification
 import spock.lang.Subject
 
 import static pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryFixture.anyBeneficiary
-import static pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotEvent.ParkingSpotOccupiedEvents
+import static pl.cezarysanecki.parkingdomain.parking.ParkingSpotEvent.ParkingSpotOccupiedEvents
 import static pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpotFixture.emptyParkingSpotWithCapacity
 
 class OccupyingParkingSpotTest extends Specification {

@@ -1,63 +1,65 @@
 package pl.cezarysanecki.parkingdomain.parking;
 
-import io.vavr.control.Try;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory;
+import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.parking.application.OccupyingParkingSpot;
-import pl.cezarysanecki.parkingdomain.parking.application.OccupyingReservedParkingSpot;
-import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryId;
-import pl.cezarysanecki.parkingdomain.parking.model.occupation.Occupation;
-import pl.cezarysanecki.parkingdomain.parking.model.occupation.OccupationEvent;
-import pl.cezarysanecki.parkingdomain.parking.model.occupation.OccupationId;
-import pl.cezarysanecki.parkingdomain.parking.model.parkingspot.ParkingSpot;
-import pl.cezarysanecki.parkingdomain.parking.model.reservation.ReservationId;
+import pl.cezarysanecki.parkingdomain.parking.api.Occupant;
+import pl.cezarysanecki.parkingdomain.parking.api.ParkingSpotReleased;
 import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits;
 
-import static io.vavr.API.$;
-import static io.vavr.API.Case;
-import static io.vavr.API.Match;
-import static io.vavr.Patterns.$Left;
-import static io.vavr.Patterns.$Right;
-
-@Slf4j
 @RequiredArgsConstructor
 public class ParkingSpotFacade {
 
-  private final OccupyingParkingSpot occupyingParkingSpot;
-  private final OccupyingReservedParkingSpot occupyingReservedParkingSpot;
-  private final ReleasingOccupation releasingOccupation;
+  private final ParkingSpotRepository parkingSpotRepository;
+  private final EventPublisher eventPublisher;
 
-  public Try<Occupation> occupy(
-      BeneficiaryId beneficiaryId,
+  @Transactional
+  public ParkingSpotId create() {
+    ParkingSpotId parkingSpotId = ParkingSpotId.newOne();
+    ParkingSpotSectionsGrouped parkingSpotSectionsGrouped = ParkingSpotSectionsGrouped.of(parkingSpotId);
+    parkingSpotRepository.saveNew(parkingSpotSectionsGrouped);
+    return parkingSpotId;
+  }
+
+  @Transactional
+  public boolean occupy(
+      Occupant occupant,
       ParkingSpotId parkingSpotId,
       SpotUnits spotUnits
   ) {
-    return occupyingParkingSpot.occupy(beneficiaryId, parkingSpotId, spotUnits);
+    ParkingSpotSectionsGrouped parkingSpotSectionsGrouped = parkingSpotRepository.loadFreeSectionsBy(parkingSpotId);
+    if (!parkingSpotSectionsGrouped.occupyPart(occupant, spotUnits)) {
+      return false;
+    }
+    parkingSpotRepository.saveCheckingVersion(parkingSpotSectionsGrouped);
+    return true;
   }
 
-  public Try<Occupation> occupyWhole(
-      BeneficiaryId beneficiaryId,
+  @Transactional
+  public boolean occupyWhole(
+      Occupant occupant,
       ParkingSpotId parkingSpotId
   ) {
-    return occupyingParkingSpot.occupyWhole(beneficiaryId, parkingSpotId);
+    ParkingSpotSectionsGrouped parkingSpotSectionsGrouped = parkingSpotRepository.loadBy(parkingSpotId);
+    if (!parkingSpotSectionsGrouped.occupyWhole(occupant)) {
+      return false;
+    }
+    parkingSpotRepository.saveCheckingVersion(parkingSpotSectionsGrouped);
+    return true;
   }
 
-  public Try<Occupation> occupyAvailable(
-      BeneficiaryId beneficiaryId,
-      ParkingSpotCategory category,
-      SpotUnits spotUnits
+  @Transactional
+  public boolean release(
+      Occupant occupant
   ) {
-    return occupyingParkingSpot.occupyAvailable(beneficiaryId, category, spotUnits);
-  }
-
-  public Try<Occupation> occupy(ReservationId reservationId) {
-    return occupyingReservedParkingSpot.occupy(reservationId);
-  }
-
-  public Try<Occupation> release(OccupationId occupationId) {
-    return releasingOccupation.release(occupationId);
+    ParkingSpotSectionsGrouped parkingSpotSectionsGrouped = parkingSpotRepository.loadOccupiedSectionsBy(occupant);
+    if (!parkingSpotSectionsGrouped.release(occupant)) {
+      return false;
+    }
+    parkingSpotRepository.saveCheckingVersion(parkingSpotSectionsGrouped);
+    eventPublisher.publish(new ParkingSpotReleased(parkingSpotSectionsGrouped.id()));
+    return true;
   }
 
 }
