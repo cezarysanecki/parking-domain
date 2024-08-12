@@ -3,14 +3,13 @@ package pl.cezarysanecki.parkingdomain.parking.application
 
 import io.vavr.control.Option
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId
-import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryId
-import pl.cezarysanecki.parkingdomain.parking.model.occupation.Occupation
-import pl.cezarysanecki.parkingdomain.parking.model.occupation.OccupationRepository
+
+
 import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits
 import spock.lang.Specification
 import spock.lang.Subject
 
-import static pl.cezarysanecki.parkingdomain.parking.model.occupation.OccupationEvent.OccupationReleased
+import static pl.cezarysanecki.parkingdomain.parking.OccupationEvent.OccupationReleased
 
 class ReleasingOccupationTest extends Specification {
   

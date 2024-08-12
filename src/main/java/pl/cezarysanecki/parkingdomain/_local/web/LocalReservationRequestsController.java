@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.cezarysanecki.parkingdomain.commons.date.DateProvider;
-import pl.cezarysanecki.parkingdomain.requestingreservation.application.ExchangingReservationRequestsTimeSlots;
-import pl.cezarysanecki.parkingdomain.requestingreservation.application.MakingReservationRequestsValid;
+import pl.cezarysanecki.parkingdomain.requesting.ExchangingReservationRequestsTimeSlots;
+import pl.cezarysanecki.parkingdomain.requesting.MakingReservationRequestsValid;
 
 import java.time.Duration;
 import java.util.List;

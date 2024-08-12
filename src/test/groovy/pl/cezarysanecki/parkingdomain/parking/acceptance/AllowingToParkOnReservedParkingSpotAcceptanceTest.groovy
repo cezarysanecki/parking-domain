@@ -4,12 +4,11 @@ package pl.cezarysanecki.parkingdomain.parking.acceptance
 import org.springframework.beans.factory.annotation.Autowired
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId
-import pl.cezarysanecki.parkingdomain.parking.application.OccupyingReservedParkingSpot
-import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryId
-import pl.cezarysanecki.parkingdomain.parking.model.reservation.ReservationId
-import pl.cezarysanecki.parkingdomain.parking.web.BeneficiaryViewRepository
-import pl.cezarysanecki.parkingdomain.parking.web.ParkingSpotViewRepository
-import pl.cezarysanecki.parkingdomain.requestingreservation.model.makingrequest.requester.ReservationRequesterId
+
+
+import pl.cezarysanecki.parkingdomain.web.BeneficiaryViewRepository
+import pl.cezarysanecki.parkingdomain.web.ParkingSpotViewRepository
+import pl.cezarysanecki.parkingdomain.requesting.api.RequesterId
 import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits
 
 class AllowingToParkOnReservedParkingSpotAcceptanceTest extends AbstractParkingAcceptanceTest {
@@ -32,7 +31,7 @@ class AllowingToParkOnReservedParkingSpotAcceptanceTest extends AbstractParkingA
   def "allow to park on reserved parking spot"() {
     given:
       def reservationId = reserveParkingSpot(
-          parkingSpotId, ReservationRequesterId.of(beneficiaryId.value), SpotUnits.of(2))
+          parkingSpotId, RequesterId.of(beneficiaryId.value), SpotUnits.of(2))
     
     when:
       def occupation = occupyingReservedParkingSpot.occupy(reservationId)

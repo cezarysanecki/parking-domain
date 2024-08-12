@@ -3,10 +3,10 @@ package pl.cezarysanecki.parkingdomain.parking.acceptance
 import org.springframework.beans.factory.annotation.Autowired
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId
-import pl.cezarysanecki.parkingdomain.parking.application.OccupyingParkingSpot
-import pl.cezarysanecki.parkingdomain.parking.model.beneficiary.BeneficiaryId
-import pl.cezarysanecki.parkingdomain.parking.web.BeneficiaryViewRepository
-import pl.cezarysanecki.parkingdomain.parking.web.ParkingSpotViewRepository
+
+
+import pl.cezarysanecki.parkingdomain.web.BeneficiaryViewRepository
+import pl.cezarysanecki.parkingdomain.web.ParkingSpotViewRepository
 import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits
 
 class NotAllowingToParkVehicleAcceptanceTest extends AbstractParkingAcceptanceTest {

@@ -121,7 +121,6 @@ vehicles to occupy a single parking spot. Further requirements are outlined belo
 - Client can request any parking spot
     - from class (BRONZE, SILVER, GOLD)
     - for specified size (1, 2, 4 units)
-    - or can request any randomly
 - Request is not valid reservation
 - Request can be made, edited, cancelled until they become valid (become reservations)
     - first part of day - becoming valid at 5am

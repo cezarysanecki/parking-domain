@@ -1,17 +1,19 @@
 package pl.cezarysanecki.parkingdomain.shared.occupation;
 
-import lombok.Value;
+public record SpotUnits(int value) {
 
-@Value(staticConstructor = "of")
-public class SpotUnits {
+  public SpotUnits {
+    if (value <= 0) throw new IllegalArgumentException("spot units cannot be negative");
+    if (!isPowerOfTwo(value)) throw new IllegalArgumentException("spot units must be a power of two");
+  }
 
-  int value;
-
-  public SpotUnits(int value) {
-    if (value <= 0) {
-      throw new IllegalArgumentException("spot units cannot be negative");
+  private static boolean isPowerOfTwo(int value) {
+    if (value < 1) return false;
+    while (value > 1) {
+      if (value % 2 != 0) return false;
+      value /= 2;
     }
-    this.value = value;
+    return true;
   }
 
 }

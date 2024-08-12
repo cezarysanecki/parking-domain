@@ -1,20 +1,13 @@
 package pl.cezarysanecki.parkingdomain.shared.occupation;
 
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.Value;
+public record ParkingSpotCapacity(int value) {
 
-@Value
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class ParkingSpotCapacity {
+  public ParkingSpotCapacity {
+    if (value < 0) throw new IllegalArgumentException("value cannot be negative");
+  }
 
-  int value;
-
-  public static ParkingSpotCapacity of(int value) {
-    if (value <= 0) {
-      throw new IllegalArgumentException("parking spot capacity must be positive");
-    }
-    return new ParkingSpotCapacity(value);
+  public static ParkingSpotCapacity defaultCapacity() {
+    return new ParkingSpotCapacity(4);
   }
 
 }
