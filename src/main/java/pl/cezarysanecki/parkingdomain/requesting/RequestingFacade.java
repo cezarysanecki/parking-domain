@@ -92,7 +92,7 @@ public class RequestingFacade {
     eventPublisher.publish(new MadeRequestsValid(requests.stream()
         .map(request -> new MadeRequestsValid.Request(
             request.requestId(),
-            request.requester(),
+            request.requester().requesterId(),
             request.parkingSpotId(),
             request.timeSlot(),
             request.sections().stream().map(RequestableSection::sectionId).toList()

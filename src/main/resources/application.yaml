@@ -13,11 +13,9 @@ spring:
 
 job:
   callingExternalCleaningServicePolicyJob:
-    cronExpression: "* * 1 * * ?"
+    cronExpression: "0 0 13 * * ?"
   makingRequestsValidJob:
-    cronExpression: "* 0/30 * * * ?"
-  creatingTimeSlots:
-    cronExpression: "0 0 18 * * ?"
+    cronExpression: "0 0 1 * * ?"
 
 business:
   cleaning:

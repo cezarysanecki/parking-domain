@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
-import pl.cezarysanecki.parkingdomain.cleaning.application.CallingExternalCleaningServicePolicy;
+import pl.cezarysanecki.parkingdomain.cleaning.policies.CallingCleaningWhenSpotsDirtyPolicy;
 import pl.cezarysanecki.parkingdomain.commons.commands.Result;
 
 @Slf4j
@@ -13,15 +13,17 @@ import pl.cezarysanecki.parkingdomain.commons.commands.Result;
 @RequiredArgsConstructor
 class CallingExternalCleaningServicePolicyJob implements Job {
 
-  private final CallingExternalCleaningServicePolicy callingExternalCleaningServicePolicy;
+  private final CallingCleaningWhenSpotsDirtyPolicy policy;
 
   @Override
   public void execute(JobExecutionContext jobExecutionContext) {
     log.debug("=== JOB {} STARTED ===", getClass().getSimpleName());
-    Result result = callingExternalCleaningServicePolicy.handleCleaningPolicy();
+
+    Result result = policy.callCleaning();
     if (result == Result.Rejection) {
       log.debug("need to wait some time to call external service");
     }
+
     log.debug("=== JOB {} ENDED ===", getClass().getSimpleName());
   }
 

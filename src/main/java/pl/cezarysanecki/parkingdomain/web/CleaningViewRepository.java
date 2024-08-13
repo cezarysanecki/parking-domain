@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.cleaning.web;
+package pl.cezarysanecki.parkingdomain.web;
 
 import java.util.List;
 import java.util.UUID;

@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.cleaning.web;
+package pl.cezarysanecki.parkingdomain.web;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
