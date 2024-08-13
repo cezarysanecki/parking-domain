@@ -23,11 +23,11 @@ record Requester(
   }
 
   boolean append(RequestId requestId) {
-    if (willBeTooManyRequests(requestId)) {
-      requests.add(requestId);
-      return true;
+    if (!willBeTooManyRequests(requestId)) {
+      return false;
     }
-    return false;
+    requests.add(requestId);
+    return true;
   }
 
   private boolean willBeTooManyRequests(RequestId requestId) {
