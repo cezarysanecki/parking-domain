@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.RequestableSectionEntity;
+import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.RequestableParkingSpotEntity;
 
 @RequiredArgsConstructor
 class InMemoryViews implements
@@ -99,9 +99,9 @@ class InMemoryViews implements
 
   @Override
   public List<FreeTimeSlotEntry> queryFreeTimeSlots() {
-    Map<FreeTimeSlotKey, List<RequestableSectionEntity>> freeTimeSlots = new HashMap<>();
-    for (RequestableSectionEntity entity : InMemoryRepositories.REQUESTABLE_SECTION_DATABASE.values()) {
-      List<RequestableSectionEntity> entries = freeTimeSlots.getOrDefault(new FreeTimeSlotKey(entity.parkingSpotId, entity.timeSlot), new ArrayList<>());
+    Map<FreeTimeSlotKey, List<RequestableParkingSpotEntity>> freeTimeSlots = new HashMap<>();
+    for (RequestableParkingSpotEntity entity : InMemoryRepositories.REQUESTABLE_PARKING_SPOT_DATABASE.values()) {
+      List<RequestableParkingSpotEntity> entries = freeTimeSlots.getOrDefault(new FreeTimeSlotKey(entity.parkingSpotId, entity.timeSlot), new ArrayList<>());
       entries.add(entity);
       freeTimeSlots.put(new FreeTimeSlotKey(entity.parkingSpotId, entity.timeSlot), entries);
     }

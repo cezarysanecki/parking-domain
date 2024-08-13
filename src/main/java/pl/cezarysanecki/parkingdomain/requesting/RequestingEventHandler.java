@@ -12,7 +12,7 @@ import pl.cezarysanecki.parkingdomain.requesting.api.RequesterId;
 class RequestingEventHandler {
 
   private final RequesterRepository requesterRepository;
-  private final RequestableSectionRepository requestableSectionRepository;
+  private final RequestableParkingSpotRepository requestableSectionRepository;
 
   @EventListener
   public void handle(ClientRegistered.IndividualClient event) {
@@ -34,7 +34,7 @@ class RequestingEventHandler {
   @EventListener
   public void handle(ParkingSpotAdded event) {
     log.debug("storing parking spot as reservation requests template with id {}", event.parkingSpotId());
-    requestableSectionRepository.saveTemplate(event.parkingSpotId(), event.sections());
+    requestableSectionRepository.saveTemplate(event.parkingSpotId(), event.sections().size());
   }
 
 }

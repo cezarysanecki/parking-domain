@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import pl.cezarysanecki.parkingdomain.management.client.api.ClientRegistered;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotAdded;
+import pl.cezarysanecki.parkingdomain.requesting.api.MadeRequestsValid;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -21,6 +22,12 @@ class ParkingEventHandler {
 
   @EventListener
   public void handle(ClientRegistered event) {
+    log.debug("storing occupant with id {}", event.clientId());
+    occupantRepository.saveNew(Occupant.newOne(event.clientId()));
+  }
+
+  @EventListener
+  public void handle(MadeRequestsValid event) {
     log.debug("storing occupant with id {}", event.clientId());
     occupantRepository.saveNew(Occupant.newOne(event.clientId()));
   }

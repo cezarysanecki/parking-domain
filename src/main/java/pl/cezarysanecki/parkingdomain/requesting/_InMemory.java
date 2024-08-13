@@ -4,7 +4,6 @@ import jakarta.persistence.EntityNotFoundException;
 import pl.cezarysanecki.parkingdomain._local.InMemoryRepositories;
 import pl.cezarysanecki.parkingdomain.commons.aggregates.Version;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotSectionId;
 import pl.cezarysanecki.parkingdomain.requesting.api.RequestId;
 import pl.cezarysanecki.parkingdomain.requesting.api.RequesterId;
 import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
@@ -14,23 +13,23 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
+import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.FreeTimeSlotKey;
 import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.RequestEntity;
-import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.RequestableSectionEntity;
+import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.RequestableParkingSpotEntity;
 import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.RequesterEntity;
-import static pl.cezarysanecki.parkingdomain._local.InMemoryRepositories.REQUESTABLE_SECTION_DATABASE;
+import static pl.cezarysanecki.parkingdomain._local.InMemoryRepositories.REQUESTABLE_PARKING_SPOT_DATABASE;
 import static pl.cezarysanecki.parkingdomain._local.InMemoryRepositories.REQUESTER_DATABASE;
 import static pl.cezarysanecki.parkingdomain._local.InMemoryRepositories.REQUEST_DATABASE;
 
-class InMemoryRequestableSectionRepository implements RequestableSectionRepository {
+class InMemoryRequestableParkingSpotRepository implements RequestableParkingSpotRepository {
 
-  static final Map<ParkingSpotSectionId, RequestableSectionEntity> DATABASE = REQUESTABLE_SECTION_DATABASE;
-  static final Map<ParkingSpotId, List<ParkingSpotSectionId>> TEMPLATES_DATABASE = InMemoryRepositories.TEMPLATES_DATABASE;
+  static final Map<ParkingSpotId, Integer> TEMPLATES_DATABASE = InMemoryRepositories.TEMPLATES_DATABASE;
+  static final Map<FreeTimeSlotKey, RequestableParkingSpotEntity> DATABASE = REQUESTABLE_PARKING_SPOT_DATABASE;
 
   @Override
-  public void saveTemplate(ParkingSpotId parkingSpotId, List<ParkingSpotSectionId> sections) {
-    TEMPLATES_DATABASE.put(parkingSpotId, sections);
+  public void saveTemplate(ParkingSpotId parkingSpotId, int numberOfSections) {
+    TEMPLATES_DATABASE.put(parkingSpotId, numberOfSections);
   }
 
   @Override
@@ -45,79 +44,43 @@ class InMemoryRequestableSectionRepository implements RequestableSectionReposito
   }
 
   @Override
-  public void saveNew(RequestableSectionsGrouped requestableSectionsGrouped) {
-    requestableSectionsGrouped.sections()
-        .stream()
-        .map(section -> new RequestableSectionEntity(
-            section.parkingSpotId(),
-            section.sectionId(),
-            section.timeSlot(),
-            0
-        ))
-        .forEach(entity -> DATABASE.put(entity.sectionId, entity));
+  public void saveNew(RequestableParkingSpot requestableParkingSpot) {
+    FreeTimeSlotKey key = new FreeTimeSlotKey(
+        requestableParkingSpot.parkingSpotId(),
+        requestableParkingSpot.timeSlot()
+    );
+    DATABASE.put(key, new RequestableParkingSpotEntity(
+        key,
+        requestableParkingSpot.capacity(),
+        requestableParkingSpot.version().getVersion()));
   }
 
   @Override
-  public RequestableSectionsGrouped findFreeSectionsFor(ParkingSpotId parkingSpotId, TimeSlot timeSlot, SpotUnits spotUnits) {
-    List<RequestableSection> sections = DATABASE.values()
-        .stream()
-        .filter(entity -> entity.parkingSpotId.equals(parkingSpotId)
-            && entity.timeSlot.equals(timeSlot))
-        .limit(spotUnits.value())
-        .map(entity -> toDomain(
-            entity,
-            InMemoryRequestRepository.findFor(entity.sectionId).orElse(null)
-        ))
-        .toList();
-    if (sections.isEmpty()) {
-      throw new EntityNotFoundException("cannot find free sections in parking spot with id " + parkingSpotId + " for time slot " + timeSlot);
-    }
-    return new RequestableSectionsGrouped(sections);
-  }
-
-  @Override
-  public RequestableSectionsGrouped loadBy(ParkingSpotId parkingSpotId, TimeSlot timeSlot) {
-    List<RequestableSection> sections = DATABASE.values()
-        .stream()
-        .filter(entity -> entity.parkingSpotId.equals(parkingSpotId)
-            && entity.timeSlot.equals(timeSlot))
-        .map(entity -> toDomain(
-            entity,
-            InMemoryRequestRepository.findFor(entity.sectionId).orElse(null)
-        ))
-        .toList();
-    return new RequestableSectionsGrouped(sections);
+  public RequestableParkingSpot findFor(ParkingSpotId parkingSpotId, TimeSlot timeSlot) {
+    return findBy(parkingSpotId, timeSlot);
   }
 
   @Override
   public boolean intersects(ParkingSpotId parkingSpotId, TimeSlot timeSlot) {
-    List<RequestableSectionEntity> entities = DATABASE.values()
+    List<RequestableParkingSpotEntity> entities = DATABASE.values()
         .stream()
-        .filter(entity -> entity.parkingSpotId.equals(parkingSpotId))
+        .filter(entity -> entity.freeTimeSlotKey.parkingSpotId().equals(parkingSpotId))
         .toList();
     return entities.stream()
-        .anyMatch(entity -> timeSlot.within(entity.timeSlot));
+        .anyMatch(entity -> timeSlot.within(entity.freeTimeSlotKey.timeSlot()));
   }
 
-  static List<RequestableSection> findBy(List<ParkingSpotSectionId> sections) {
-    return DATABASE.values()
-        .stream()
-        .filter(entity -> sections.contains(entity.sectionId))
-        .map(entity -> toDomain(
-            entity,
-            InMemoryRequestRepository.findFor(entity.sectionId).orElse(null)
-        ))
-        .toList();
-  }
-
-  private static RequestableSection toDomain(RequestableSectionEntity entity, RequestId requestId) {
-    return new RequestableSection(
-        entity.parkingSpotId,
-        entity.sectionId,
-        entity.timeSlot,
-        requestId,
-        new Version(entity.version)
-    );
+  static RequestableParkingSpot findBy(ParkingSpotId parkingSpotId, TimeSlot timeSlot) {
+    RequestableParkingSpotEntity entity = DATABASE.get(new FreeTimeSlotKey(parkingSpotId, timeSlot));
+    if (entity == null) {
+      throw new EntityNotFoundException("cannot find requestable parking spot with id " + parkingSpotId + " for time slot " + timeSlot);
+    }
+    return new RequestableParkingSpot(
+        parkingSpotId,
+        entity.capacity,
+        InMemoryRequestRepository.findFor(parkingSpotId).size(),
+        entity.freeTimeSlotKey.timeSlot(),
+        new Version(entity.version));
   }
 
 }
@@ -137,31 +100,17 @@ class InMemoryRequesterRepository implements RequesterRepository {
 
   @Override
   public Requester findBy(RequesterId requesterId) {
+    return findRequesterBy(requesterId);
+  }
+
+  static Requester findRequesterBy(RequesterId requesterId) {
     RequesterEntity entity = DATABASE.get(requesterId);
     if (entity == null) {
       throw new EntityNotFoundException("No requester found with id " + requesterId);
     }
-    return toDomain(
-        entity,
-        InMemoryRequestRepository.findFor(entity.requesterId)
-    );
-  }
-
-  static Optional<Requester> tryFindBy(RequesterId requesterId) {
-    return DATABASE.values()
-        .stream()
-        .filter(entity -> entity.requesterId.equals(requesterId))
-        .map(entity -> toDomain(
-            entity,
-            InMemoryRequestRepository.findFor(requesterId)
-        ))
-        .findFirst();
-  }
-
-  private static Requester toDomain(RequesterEntity entity, List<RequestId> requests) {
     return new Requester(
         entity.requesterId,
-        requests,
+        InMemoryRequestRepository.findFor(requesterId),
         entity.limit,
         new Version(entity.version)
     );
@@ -180,7 +129,7 @@ class InMemoryRequestRepository implements RequestRepository {
         request.requester().requesterId(),
         request.parkingSpotId(),
         request.timeSlot(),
-        request.sections().stream().map(RequestableSection::sectionId).toList()
+        request.spotUnits().value()
     ));
   }
 
@@ -197,18 +146,18 @@ class InMemoryRequestRepository implements RequestRepository {
             entity.timeSlot.from().atZone(ZoneId.systemDefault()).toLocalDate()))
         .map(entity -> toDomain(
             entity,
-            InMemoryRequesterRepository.tryFindBy(entity.requesterId).orElse(null),
-            InMemoryRequestableSectionRepository.findBy(entity.sectionsIds)
+            InMemoryRequestableParkingSpotRepository.findBy(entity.parkingSpotId, entity.timeSlot),
+            InMemoryRequesterRepository.findRequesterBy(entity.requesterId)
         ))
         .toList();
   }
 
-  static Optional<RequestId> findFor(ParkingSpotSectionId sectionId) {
+  static List<RequestId> findFor(ParkingSpotId parkingSpotId) {
     return DATABASE.values()
         .stream()
-        .filter(entity -> entity.sectionsIds.contains(sectionId))
+        .filter(entity -> entity.parkingSpotId.equals(parkingSpotId))
         .map(entity -> entity.requestId)
-        .findFirst();
+        .toList();
   }
 
   static List<RequestId> findFor(RequesterId requesterId) {
@@ -224,13 +173,17 @@ class InMemoryRequestRepository implements RequestRepository {
     DATABASE.values().removeIf(entity -> requestIds.contains(entity.requestId));
   }
 
-  private static Request toDomain(RequestEntity entity, Requester requester, List<RequestableSection> sections) {
+  private static Request toDomain(
+      RequestEntity entity,
+      RequestableParkingSpot requestableParkingSpot,
+      Requester requester) {
     return new Request(
         entity.requestId,
         requester,
         entity.parkingSpotId,
         entity.timeSlot,
-        sections
+        new SpotUnits(entity.units),
+        requestableParkingSpot
     );
   }
 

@@ -10,7 +10,7 @@ import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 @RequiredArgsConstructor
 class RequestingConfig {
 
-  private final RequestableSectionRepository requestableSectionRepository;
+  private final RequestableParkingSpotRepository requestableSectionRepository;
   private final RequesterRepository requesterRepository;
   private final RequestRepository requestRepository;
   private final EventPublisher eventPublisher;
@@ -41,8 +41,8 @@ class RequestingConfig {
 class LocalRequestingConfig {
 
   @Bean
-  InMemoryRequestableSectionRepository inMemoryRequestableSectionRepository() {
-    return new InMemoryRequestableSectionRepository();
+  InMemoryRequestableParkingSpotRepository inMemoryRequestableParkingSpotRepository() {
+    return new InMemoryRequestableParkingSpotRepository();
   }
 
   @Bean

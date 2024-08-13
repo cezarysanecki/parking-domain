@@ -28,11 +28,13 @@ public class InMemoryEntities {
     public int version;
   }
 
+  public record FreeTimeSlotKey(ParkingSpotId parkingSpotId, TimeSlot timeSlot) {
+  }
+
   @AllArgsConstructor
-  public static class RequestableSectionEntity {
-    public final ParkingSpotId parkingSpotId;
-    public final ParkingSpotSectionId sectionId;
-    public final TimeSlot timeSlot;
+  public static class RequestableParkingSpotEntity {
+    public final FreeTimeSlotKey freeTimeSlotKey;
+    public final int capacity;
     public int version;
   }
 
@@ -49,7 +51,7 @@ public class InMemoryEntities {
     public final RequesterId requesterId;
     public final ParkingSpotId parkingSpotId;
     public final TimeSlot timeSlot;
-    public final List<ParkingSpotSectionId> sectionsIds;
+    public final int units;
   }
 
   @AllArgsConstructor

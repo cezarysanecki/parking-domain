@@ -19,7 +19,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class RequestingFacade {
 
-  private final RequestableSectionRepository requestableSectionRepository;
+  private final RequestableParkingSpotRepository requestableSectionRepository;
   private final RequesterRepository requesterRepository;
   private final RequestRepository requestRepository;
   private final EventPublisher eventPublisher;
@@ -32,17 +32,16 @@ public class RequestingFacade {
       SpotUnits spotUnits
   ) {
     log.debug("requesting parking spot with id {} by {} units for {} time slot", parkingSpotId, spotUnits, timeSlot);
-    RequestableSectionsGrouped requestableSectionsGrouped = requestableSectionRepository.findFreeSectionsFor(
-        parkingSpotId, timeSlot, spotUnits);
+    RequestableParkingSpot requestableParkingSpot = requestableSectionRepository.findFor(parkingSpotId, timeSlot);
     Requester requester = requesterRepository.findBy(requesterId);
 
     RequestId requestId = RequestId.newOne();
-    if (!requestableSectionsGrouped.requestBy(requestId) || !requester.append(requestId)) {
+    if (!requestableParkingSpot.requestFor(spotUnits) || !requester.append(requestId)) {
       log.debug("failed to request parking spot with id {}", parkingSpotId);
       return Optional.empty();
     }
     requestRepository.saveCheckingVersion(new Request(
-        requestId, requester, parkingSpotId, timeSlot, requestableSectionsGrouped.sections()
+        requestId, requester, parkingSpotId, timeSlot, spotUnits, requestableParkingSpot
     ));
     return Optional.of(requestId);
   }
@@ -62,11 +61,11 @@ public class RequestingFacade {
   ) {
     List<RequestableParkingSpotTemplate> templates = requestableSectionRepository.findAllTemplates();
 
-    List<RequestableSectionsGrouped> groupedSections = templates.stream()
+    List<RequestableParkingSpot> groupedSections = templates.stream()
         .filter(template -> !requestableSectionRepository.intersects(template.parkingSpotId(), timeSlot))
-        .map(template -> RequestableSectionsGrouped.createNew(
+        .map(template -> RequestableParkingSpot.createNew(
             template.parkingSpotId(),
-            template.sections(),
+            template.numberOfSections(),
             timeSlot)
         )
         .toList();
@@ -88,7 +87,7 @@ public class RequestingFacade {
             request.requester().requesterId(),
             request.parkingSpotId(),
             request.timeSlot(),
-            request.sections().stream().map(RequestableSection::sectionId).toList()
+            request.spotUnits()
         ))
         .toList()));
 
