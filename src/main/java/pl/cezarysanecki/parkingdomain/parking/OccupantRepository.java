@@ -6,4 +6,6 @@ interface OccupantRepository {
 
   Occupant findBy(OccupantId occupantId);
 
+  void saveNew(Occupant occupant);
+
 }

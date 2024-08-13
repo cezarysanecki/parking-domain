@@ -3,8 +3,7 @@ package pl.cezarysanecki.parkingdomain.requesting;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
-import pl.cezarysanecki.parkingdomain.management.client.api.BusinessClientRegistered;
-import pl.cezarysanecki.parkingdomain.management.client.api.IndividualClientRegistered;
+import pl.cezarysanecki.parkingdomain.management.client.api.ClientRegistered;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotAdded;
 import pl.cezarysanecki.parkingdomain.requesting.api.RequesterId;
 
@@ -16,7 +15,7 @@ class RequestingEventHandler {
   private final RequestableSectionRepository requestableSectionRepository;
 
   @EventListener
-  public void handle(IndividualClientRegistered event) {
+  public void handle(ClientRegistered.IndividualClient event) {
     RequesterId requesterId = new RequesterId(event.clientId().value());
 
     log.debug("saving requester with lower limit with id {}", requesterId);
@@ -25,7 +24,7 @@ class RequestingEventHandler {
 
 
   @EventListener
-  public void handle(BusinessClientRegistered event) {
+  public void handle(ClientRegistered.BusinessClient event) {
     RequesterId requesterId = new RequesterId(event.clientId().value());
 
     log.debug("saving requester with higher limit with id {}", requesterId);

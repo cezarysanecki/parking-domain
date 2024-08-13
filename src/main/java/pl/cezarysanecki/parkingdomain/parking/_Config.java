@@ -26,7 +26,9 @@ class ParkingConfig {
 
   @Bean
   ParkingEventHandler parkingEventHandler() {
-    return new ParkingEventHandler(parkingRepository);
+    return new ParkingEventHandler(
+        parkingRepository,
+        occupantRepository);
   }
 
 }

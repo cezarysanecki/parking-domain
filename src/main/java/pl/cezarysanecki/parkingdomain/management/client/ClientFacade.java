@@ -4,12 +4,10 @@ import io.vavr.control.Try;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import pl.cezarysanecki.parkingdomain.commons.events.DomainEvent;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
-import pl.cezarysanecki.parkingdomain.management.client.api.BusinessClientRegistered;
 import pl.cezarysanecki.parkingdomain.management.client.api.ClientId;
+import pl.cezarysanecki.parkingdomain.management.client.api.ClientRegistered;
 import pl.cezarysanecki.parkingdomain.management.client.api.ClientType;
-import pl.cezarysanecki.parkingdomain.management.client.api.IndividualClientRegistered;
 import pl.cezarysanecki.parkingdomain.management.client.api.PhoneNumber;
 
 @Slf4j
@@ -26,9 +24,9 @@ public class ClientFacade {
 
       clientRepository.saveNew(client);
 
-      DomainEvent event = switch (clientType) {
-        case INDIVIDUAL -> new IndividualClientRegistered(client.clientId());
-        case BUSINESS -> new BusinessClientRegistered(client.clientId());
+      ClientRegistered event = switch (clientType) {
+        case INDIVIDUAL -> new ClientRegistered.IndividualClient(client.clientId());
+        case BUSINESS -> new ClientRegistered.BusinessClient(client.clientId());
       };
       eventPublisher.publish(event);
 

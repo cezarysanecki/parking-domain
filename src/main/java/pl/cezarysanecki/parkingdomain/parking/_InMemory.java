@@ -151,6 +151,14 @@ class InMemoryOccupantRepository implements OccupantRepository {
     );
   }
 
+  @Override
+  public void saveNew(Occupant occupant) {
+    DATABASE.put(occupant.occupantId(), new OccupantEntity(
+        occupant.occupantId(),
+        occupant.version().getVersion()
+    ));
+  }
+
   private static Occupant toDomain(OccupantEntity entity, OccupationId occupationId) {
     return new Occupant(
         entity.occupantId,
