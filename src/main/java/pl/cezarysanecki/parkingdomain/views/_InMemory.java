@@ -5,9 +5,6 @@ import lombok.RequiredArgsConstructor;
 import pl.cezarysanecki.parkingdomain._local.InMemoryRepositories;
 import pl.cezarysanecki.parkingdomain.management.client.api.ClientId;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpot;
-import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotSectionId;
-import pl.cezarysanecki.parkingdomain.shared.TimeSlot;
 
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -16,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.FreeTimeSlotKey;
 import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.RequestableParkingSpotEntity;
 
 @RequiredArgsConstructor
@@ -53,7 +51,7 @@ class InMemoryViews implements
             entity.requestId.value(),
             entity.requesterId.value(),
             entity.parkingSpotId.value(),
-            entity.sectionsIds.stream().map(ParkingSpotSectionId::value).toList()
+            entity.units
         ))
         .toList();
   }
@@ -101,33 +99,30 @@ class InMemoryViews implements
   public List<FreeTimeSlotEntry> queryFreeTimeSlots() {
     Map<FreeTimeSlotKey, List<RequestableParkingSpotEntity>> freeTimeSlots = new HashMap<>();
     for (RequestableParkingSpotEntity entity : InMemoryRepositories.REQUESTABLE_PARKING_SPOT_DATABASE.values()) {
-      List<RequestableParkingSpotEntity> entries = freeTimeSlots.getOrDefault(new FreeTimeSlotKey(entity.parkingSpotId, entity.timeSlot), new ArrayList<>());
+      List<RequestableParkingSpotEntity> entries = freeTimeSlots.getOrDefault(entity.freeTimeSlotKey, new ArrayList<>());
       entries.add(entity);
-      freeTimeSlots.put(new FreeTimeSlotKey(entity.parkingSpotId, entity.timeSlot), entries);
+      freeTimeSlots.put(entity.freeTimeSlotKey, entries);
     }
 
     return freeTimeSlots.entrySet()
         .stream()
         .map(entry -> new FreeTimeSlotEntry(
-            entry.getKey().parkingSpotId.value(),
+            entry.getKey().parkingSpotId().value(),
             InMemoryRepositories.PARKING_SPOT_DATABASE.values()
                 .stream()
-                .filter(parkingSpot -> parkingSpot.parkingSpotId().equals(entry.getKey().parkingSpotId))
+                .filter(parkingSpot -> parkingSpot.parkingSpotId().equals(entry.getKey().parkingSpotId()))
                 .findFirst()
                 .map(ParkingSpot::category)
                 .orElse(null),
-            entry.getKey().timeSlot.from().atZone(ZoneId.systemDefault()).toLocalDateTime(),
-            entry.getKey().timeSlot.to().atZone(ZoneId.systemDefault()).toLocalDateTime(),
+            entry.getKey().timeSlot().from().atZone(ZoneId.systemDefault()).toLocalDateTime(),
+            entry.getKey().timeSlot().to().atZone(ZoneId.systemDefault()).toLocalDateTime(),
             entry.getValue().size() - (int) InMemoryRepositories.REQUEST_DATABASE.values()
                 .stream()
-                .filter(request -> request.parkingSpotId.equals(entry.getKey().parkingSpotId)
-                    && request.timeSlot.equals(entry.getKey().timeSlot))
+                .filter(request -> request.parkingSpotId.equals(entry.getKey().parkingSpotId())
+                    && request.timeSlot.equals(entry.getKey().timeSlot()))
                 .count()
         ))
         .toList();
   }
 
-  private record FreeTimeSlotKey(ParkingSpotId parkingSpotId, TimeSlot timeSlot) {
-
-  }
 }
