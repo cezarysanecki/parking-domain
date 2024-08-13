@@ -2,6 +2,7 @@ package pl.cezarysanecki.parkingdomain.requesting;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.requesting.api.MadeRequestsValid;
@@ -13,6 +14,7 @@ import pl.cezarysanecki.parkingdomain.shared.TimeSlot;
 import java.time.Instant;
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 public class RequestingFacade {
 
@@ -28,12 +30,14 @@ public class RequestingFacade {
       TimeSlot timeSlot,
       SpotUnits spotUnits
   ) {
+    log.debug("requesting parking spot with id {} by {} units for {} time slot", parkingSpotId, spotUnits, timeSlot);
     RequestableSectionsGrouped requestableSectionsGrouped = requestableSectionRepository.findFreeSectionsFor(
         parkingSpotId, timeSlot, spotUnits);
     Requester requester = requesterRepository.findBy(requesterId);
 
     RequestId requestId = RequestId.newOne();
     if (!requestableSectionsGrouped.requestBy(requestId) || !requester.append(requestId)) {
+      log.debug("failed to request parking spot with id {}", parkingSpotId);
       return false;
     }
     requestRepository.saveCheckingVersion(new Request(
@@ -46,7 +50,9 @@ public class RequestingFacade {
   public boolean cancel(
       RequestId requestId
   ) {
-    return requestRepository.delete(requestId);
+    boolean result = requestRepository.delete(requestId);
+    log.debug("request with id {} {}", requestId, result ? "canceled" : "failed");
+    return result;
   }
 
   @Transactional
@@ -63,6 +69,7 @@ public class RequestingFacade {
             timeSlot)
         )
         .toList();
+    log.debug("created time slots {} from {}", groupedSections.size(), templates.size());
 
     groupedSections.forEach(requestableSectionRepository::saveNew);
 
@@ -74,6 +81,7 @@ public class RequestingFacade {
       Instant date
   ) {
     List<Request> requests = requestRepository.findAllBy(date);
+    log.debug("making valid {} requests", requests.size());
 
     eventPublisher.publish(new MadeRequestsValid(requests.stream()
         .map(request -> new MadeRequestsValid.Request(
