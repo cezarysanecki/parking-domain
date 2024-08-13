@@ -16,17 +16,21 @@ public class CleaningFacade {
   private final int numberOfDrivesAwayToConsiderParkingSpotDirty;
 
   public Result callCleaning() {
+    log.debug("calling external service to clean parking spots");
     externalCleaningService.call();
     return Result.Success;
   }
 
   public Result markCleaningAsDone() {
+    log.debug("cleaning is done - resetting all counters");
     cleaningRepository.resetAll();
     return Result.Success;
   }
 
   public List<ParkingSpotId> getDirtyParkingSpots() {
-    return cleaningRepository.getAllRecordsWithCounterAbove(numberOfDrivesAwayToConsiderParkingSpotDirty);
+    List<ParkingSpotId> allRecordsWithCounterAbove = cleaningRepository.getAllRecordsWithCounterAbove(numberOfDrivesAwayToConsiderParkingSpotDirty);
+    log.debug("found {} dirty parking spots", allRecordsWithCounterAbove.size());
+    return allRecordsWithCounterAbove;
   }
 
 }
