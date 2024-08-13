@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import pl.cezarysanecki.parkingdomain.management.client.api.ClientRegistered;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotAdded;
+import pl.cezarysanecki.parkingdomain.parking.api.ReservationId;
 import pl.cezarysanecki.parkingdomain.requesting.api.MadeRequestsValid;
 
 @Slf4j
@@ -13,6 +14,7 @@ class ParkingEventHandler {
 
   private final ParkingRepository parkingRepository;
   private final OccupantRepository occupantRepository;
+  private final ReservationRepository reservationRepository;
 
   @EventListener
   public void handle(ParkingSpotAdded event) {
@@ -28,7 +30,11 @@ class ParkingEventHandler {
 
   @EventListener
   public void handle(MadeRequestsValid event) {
-    log.debug("storing occupant with id {}", event.clientId());
+    reservationRepository.saveAll(event.requests().stream()
+        .map(request -> new Reservation(
+            new ReservationId(request.requestId().value()),
+
+        )));
     occupantRepository.saveNew(Occupant.newOne(event.clientId()));
   }
 
