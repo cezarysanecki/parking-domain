@@ -52,4 +52,10 @@ public class InMemoryEntities {
     public final List<ParkingSpotSectionId> sectionsIds;
   }
 
+  @AllArgsConstructor
+  public static class OccupantEntity {
+    public final OccupantId occupantId;
+    public int version;
+  }
+
 }

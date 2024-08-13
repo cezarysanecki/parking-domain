@@ -5,6 +5,7 @@ import pl.cezarysanecki.parkingdomain.management.client.api.ClientId;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpot;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotSectionId;
+import pl.cezarysanecki.parkingdomain.parking.api.OccupantId;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupationId;
 import pl.cezarysanecki.parkingdomain.requesting.api.RequestId;
 import pl.cezarysanecki.parkingdomain.requesting.api.RequesterId;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.OccupantEntity;
 import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.OccupationEntity;
 import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.ParkingSpotSectionEntity;
 import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.RequestEntity;
@@ -30,5 +32,6 @@ public class InMemoryRepositories {
   public static final Map<ParkingSpotId, List<ParkingSpotSectionId>> TEMPLATES_DATABASE = new ConcurrentHashMap<>();
   public static final Map<RequesterId, RequesterEntity> REQUESTER_DATABASE = new ConcurrentHashMap<>();
   public static final Map<RequestId, RequestEntity> REQUEST_DATABASE = new ConcurrentHashMap<>();
+  public static final Map<OccupantId, OccupantEntity> OCCUPANT_DATABASE = new ConcurrentHashMap<>();
 
 }

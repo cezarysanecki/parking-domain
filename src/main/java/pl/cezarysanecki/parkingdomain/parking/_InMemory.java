@@ -1,8 +1,11 @@
 package pl.cezarysanecki.parkingdomain.parking;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import pl.cezarysanecki.parkingdomain.commons.aggregates.Version;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotSectionId;
+import pl.cezarysanecki.parkingdomain.parking.api.OccupantId;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupationId;
 import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
 
@@ -10,8 +13,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.OccupantEntity;
 import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.OccupationEntity;
 import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.ParkingSpotSectionEntity;
+import static pl.cezarysanecki.parkingdomain._local.InMemoryRepositories.OCCUPANT_DATABASE;
 import static pl.cezarysanecki.parkingdomain._local.InMemoryRepositories.OCCUPATION_DATABASE;
 import static pl.cezarysanecki.parkingdomain._local.InMemoryRepositories.PARKING_SPOT_SECTION_DATABASE;
 
@@ -44,6 +49,14 @@ class InMemoryOccupationRepository implements OccupationRepository {
         .stream()
         .filter(entity -> entity.sections.stream()
             .anyMatch(section -> section.equals(sectionId)))
+        .map(entity -> entity.occupationId)
+        .findFirst();
+  }
+
+  static Optional<OccupationId> findFor(OccupantId occupantId) {
+    return DATABASE.values()
+        .stream()
+        .filter(entity -> entity.occupantId.equals(occupantId))
         .map(entity -> entity.occupationId)
         .findFirst();
   }
@@ -116,6 +129,33 @@ class InMemoryParkingRepository implements ParkingRepository {
         entity.sectionId,
         occupationId,
         entity.version
+    );
+  }
+
+}
+
+@RequiredArgsConstructor
+class InMemoryOccupantRepository implements OccupantRepository {
+
+  private static final Map<OccupantId, OccupantEntity> DATABASE = OCCUPANT_DATABASE;
+
+  @Override
+  public Occupant findBy(OccupantId occupantId) {
+    OccupantEntity entity = DATABASE.get(occupantId);
+    if (entity == null) {
+      throw new EntityNotFoundException("No occupant found with id " + occupantId);
+    }
+    return toDomain(
+        entity,
+        InMemoryOccupationRepository.findFor(occupantId).orElse(null)
+    );
+  }
+
+  private static Occupant toDomain(OccupantEntity entity, OccupationId occupationId) {
+    return new Occupant(
+        entity.occupantId,
+        occupationId,
+        new Version(entity.version)
     );
   }
 

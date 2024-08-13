@@ -18,6 +18,7 @@ public class ParkingFacade {
 
   private final ParkingRepository parkingRepository;
   private final OccupationRepository occupationRepository;
+  private final OccupantRepository occupantRepository;
   private final EventPublisher eventPublisher;
 
   @Transactional
@@ -28,9 +29,10 @@ public class ParkingFacade {
   ) {
     log.debug("occupying parking spot with id {} by {} units", parkingSpotId, spotUnits);
     ParkingSpotSectionsGrouped parkingSpotSectionsGrouped = parkingRepository.loadFreeSectionsFor(parkingSpotId, spotUnits);
+    Occupant occupant = occupantRepository.findBy(occupantId);
 
     OccupationId occupationId = OccupationId.newOne();
-    if (!parkingSpotSectionsGrouped.occupyBy(occupationId)) {
+    if (!parkingSpotSectionsGrouped.occupyBy(occupationId) || !occupant.canOccupy(occupationId)) {
       log.debug("failed to occupy parking spot with id {}", parkingSpotId);
       return Optional.empty();
     }

@@ -12,6 +12,7 @@ class ParkingConfig {
 
   private final ParkingRepository parkingRepository;
   private final OccupationRepository occupationRepository;
+  private final OccupantRepository occupantRepository;
   private final EventPublisher eventPublisher;
 
   @Bean
@@ -19,6 +20,7 @@ class ParkingConfig {
     return new ParkingFacade(
         parkingRepository,
         occupationRepository,
+        occupantRepository,
         eventPublisher);
   }
 
@@ -42,6 +44,11 @@ class LocalParkingConfig {
   @Bean
   InMemoryOccupationRepository inMemoryOccupationRepository() {
     return new InMemoryOccupationRepository();
+  }
+
+  @Bean
+  InMemoryOccupantRepository inMemoryOccupantRepository() {
+    return new InMemoryOccupantRepository();
   }
 
 }
