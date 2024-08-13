@@ -19,7 +19,7 @@ class RequestingEventHandler {
   public void handle(IndividualClientRegistered event) {
     RequesterId requesterId = new RequesterId(event.clientId().value());
 
-    log.debug("saving requester with lower limit with id: {}", requesterId);
+    log.debug("saving requester with lower limit with id {}", requesterId);
     requesterRepository.saveNew(requesterId, 1);
   }
 
@@ -28,7 +28,7 @@ class RequestingEventHandler {
   public void handle(BusinessClientRegistered event) {
     RequesterId requesterId = new RequesterId(event.clientId().value());
 
-    log.debug("saving requester with higher limit with id: {}", requesterId);
+    log.debug("saving requester with higher limit with id {}", requesterId);
     requesterRepository.saveNew(requesterId, 20);
   }
 
