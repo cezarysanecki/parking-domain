@@ -13,7 +13,7 @@ import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotCapa
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotCategory;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.ParkingFacade;
-import pl.cezarysanecki.parkingdomain.parking.api.Occupant;
+import pl.cezarysanecki.parkingdomain.parking.api.OccupantId;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupationId;
 import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
 
@@ -43,7 +43,7 @@ class ParkingController {
   @PostMapping("/occupy")
   ResponseEntity occupyParkingSpot(@RequestBody OccupyParkingSpotRequest request) {
     var result = parkingFacade.occupy(
-        new Occupant(request.occupant),
+        new OccupantId(request.occupant),
         new ParkingSpotId(request.parkingSpotId),
         new SpotUnits(request.spotUnits)
     );

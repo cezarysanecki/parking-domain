@@ -24,7 +24,7 @@ class InMemoryOccupationRepository implements OccupationRepository {
   public void saveCheckingVersion(Occupation occupation) {
     DATABASE.put(occupation.occupationId(), new OccupationEntity(
         occupation.occupationId(),
-        occupation.occupant(),
+        occupation.occupantId(),
         occupation.parkingSpotId(),
         occupation.sections().stream().map(ParkingSpotSection::sectionId).toList()
     ));
@@ -51,7 +51,7 @@ class InMemoryOccupationRepository implements OccupationRepository {
   private static Occupation toDomain(OccupationEntity entity, List<ParkingSpotSection> sections) {
     return new Occupation(
         entity.occupationId,
-        entity.occupant,
+        entity.occupantId,
         entity.parkingSpotId,
         sections);
   }

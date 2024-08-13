@@ -8,7 +8,7 @@ import java.util.List;
 
 public record ParkingSpotReleased(
     OccupationId occupationId,
-    Occupant occupant,
+    OccupantId occupantId,
     ParkingSpotId parkingSpotId,
     List<ParkingSpotSectionId> sections
 ) implements DomainEvent {

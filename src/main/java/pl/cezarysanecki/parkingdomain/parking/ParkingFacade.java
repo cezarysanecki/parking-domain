@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.parking.api.Occupant;
+import pl.cezarysanecki.parkingdomain.parking.api.OccupantId;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupationId;
 import pl.cezarysanecki.parkingdomain.parking.api.ParkingSpotReleased;
 import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
@@ -22,7 +22,7 @@ public class ParkingFacade {
 
   @Transactional
   public Optional<OccupationId> occupy(
-      Occupant occupant,
+      OccupantId occupantId,
       ParkingSpotId parkingSpotId,
       SpotUnits spotUnits
   ) {
@@ -35,7 +35,7 @@ public class ParkingFacade {
       return Optional.empty();
     }
     occupationRepository.saveCheckingVersion(new Occupation(
-        occupationId, occupant, parkingSpotId, parkingSpotSectionsGrouped.sections()
+        occupationId, occupantId, parkingSpotId, parkingSpotSectionsGrouped.sections()
     ));
     return Optional.of(occupationId);
   }
@@ -54,7 +54,7 @@ public class ParkingFacade {
     log.debug("releasing occupation for parking spot with id {} for {} units", occupation.parkingSpotId(), occupation.sections().size());
 
     eventPublisher.publish(new ParkingSpotReleased(
-        occupation.occupationId(), occupation.occupant(), occupation.parkingSpotId(),
+        occupation.occupationId(), occupation.occupantId(), occupation.parkingSpotId(),
         occupation.sections().stream().map(ParkingSpotSection::sectionId).toList()
     ));
     return true;

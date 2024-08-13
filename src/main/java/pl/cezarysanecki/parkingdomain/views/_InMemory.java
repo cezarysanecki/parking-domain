@@ -68,7 +68,7 @@ class InMemoryViews implements
             clientId.value(),
             InMemoryRepositories.OCCUPATION_DATABASE.values()
                 .stream()
-                .filter(entity -> entity.occupant.id().equals(clientId.value()))
+                .filter(entity -> entity.occupantId.value().equals(clientId.value()))
                 .map(entity -> entity.occupationId.value())
                 .toList(),
             InMemoryRepositories.REQUEST_DATABASE.values()

@@ -3,7 +3,7 @@ package pl.cezarysanecki.parkingdomain._local;
 import lombok.AllArgsConstructor;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotSectionId;
-import pl.cezarysanecki.parkingdomain.parking.api.Occupant;
+import pl.cezarysanecki.parkingdomain.parking.api.OccupantId;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupationId;
 import pl.cezarysanecki.parkingdomain.requesting.api.RequestId;
 import pl.cezarysanecki.parkingdomain.requesting.api.RequesterId;
@@ -16,7 +16,7 @@ public class InMemoryEntities {
   @AllArgsConstructor
   public static class OccupationEntity {
     public final OccupationId occupationId;
-    public final Occupant occupant;
+    public final OccupantId occupantId;
     public final ParkingSpotId parkingSpotId;
     public final List<ParkingSpotSectionId> sections;
   }
