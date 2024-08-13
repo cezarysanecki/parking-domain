@@ -13,6 +13,7 @@ import pl.cezarysanecki.parkingdomain.shared.TimeSlot;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -24,7 +25,7 @@ public class RequestingFacade {
   private final EventPublisher eventPublisher;
 
   @Transactional
-  public boolean request(
+  public Optional<RequestId> request(
       RequesterId requesterId,
       ParkingSpotId parkingSpotId,
       TimeSlot timeSlot,
@@ -38,12 +39,12 @@ public class RequestingFacade {
     RequestId requestId = RequestId.newOne();
     if (!requestableSectionsGrouped.requestBy(requestId) || !requester.append(requestId)) {
       log.debug("failed to request parking spot with id {}", parkingSpotId);
-      return false;
+      return Optional.empty();
     }
     requestRepository.saveCheckingVersion(new Request(
         requestId, requester, parkingSpotId, timeSlot, requestableSectionsGrouped.sections()
     ));
-    return true;
+    return Optional.of(requestId);
   }
 
   @Transactional
@@ -56,7 +57,7 @@ public class RequestingFacade {
   }
 
   @Transactional
-  public int createForAll(
+  public void createForAll(
       TimeSlot timeSlot
   ) {
     List<RequestableParkingSpotTemplate> templates = requestableSectionRepository.findAllTemplates();
@@ -72,8 +73,6 @@ public class RequestingFacade {
     log.debug("created time slots {} from {}", groupedSections.size(), templates.size());
 
     groupedSections.forEach(requestableSectionRepository::saveNew);
-
-    return groupedSections.size();
   }
 
   @Transactional

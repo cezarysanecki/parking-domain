@@ -42,12 +42,14 @@ class ParkingController {
 
   @PostMapping("/occupy")
   ResponseEntity occupyParkingSpot(@RequestBody OccupyParkingSpotRequest request) {
-    boolean result = parkingFacade.occupy(
+    var result = parkingFacade.occupy(
         new Occupant(request.occupant),
         new ParkingSpotId(request.parkingSpotId),
         new SpotUnits(request.spotUnits)
     );
-    return result ? ResponseEntity.ok().build() : ResponseEntity.status(INTERNAL_SERVER_ERROR).build();
+    return result
+        .map(ResponseEntity::ok)
+        .orElseGet(() -> ResponseEntity.internalServerError().build());
   }
 
   @DeleteMapping("/release")

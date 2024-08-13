@@ -21,7 +21,7 @@ public class ParkingFacade {
   private final EventPublisher eventPublisher;
 
   @Transactional
-  public boolean occupy(
+  public Optional<OccupationId> occupy(
       Occupant occupant,
       ParkingSpotId parkingSpotId,
       SpotUnits spotUnits
@@ -32,12 +32,12 @@ public class ParkingFacade {
     OccupationId occupationId = OccupationId.newOne();
     if (!parkingSpotSectionsGrouped.occupyBy(occupationId)) {
       log.debug("failed to occupy parking spot with id {}", parkingSpotId);
-      return false;
+      return Optional.empty();
     }
     occupationRepository.saveCheckingVersion(new Occupation(
         occupationId, occupant, parkingSpotId, parkingSpotSectionsGrouped.sections()
     ));
-    return true;
+    return Optional.of(occupationId);
   }
 
   @Transactional

@@ -28,21 +28,21 @@ class RequestingController {
 
   @PostMapping("/add-all")
   ResponseEntity createTimeSlots(@RequestBody CreateTimeSlotsRequest request) {
-    int created = requestingFacade.createForAll(
-        new TimeSlot(request.from, request.to)
-    );
-    return ResponseEntity.ok(new CreateTimeSlotsResponse(created));
+    requestingFacade.createForAll(new TimeSlot(request.from, request.to));
+    return ResponseEntity.ok().build();
   }
 
   @PostMapping("/request")
   ResponseEntity request(@RequestBody MakeRequestRequest request) {
-    boolean result = requestingFacade.request(
+    var result = requestingFacade.request(
         new RequesterId(request.requesterId),
         new ParkingSpotId(request.parkingSpotId),
         new TimeSlot(request.from, request.to),
         new SpotUnits(request.spotUnits)
     );
-    return result ? ResponseEntity.ok().build() : ResponseEntity.status(INTERNAL_SERVER_ERROR).build();
+    return result
+        .map(ResponseEntity::ok)
+        .orElseGet(() -> ResponseEntity.internalServerError().build());
   }
 
   @DeleteMapping("/cancel")
@@ -56,11 +56,6 @@ class RequestingController {
   record CreateTimeSlotsRequest(
       Instant from,
       Instant to
-  ) {
-  }
-
-  record CreateTimeSlotsResponse(
-      int created
   ) {
   }
 
