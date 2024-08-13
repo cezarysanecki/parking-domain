@@ -10,4 +10,8 @@ public record OccupationId(
     return new OccupationId(UUID.randomUUID());
   }
 
+  @Override
+  public String toString() {
+    return value.toString();
+  }
 }

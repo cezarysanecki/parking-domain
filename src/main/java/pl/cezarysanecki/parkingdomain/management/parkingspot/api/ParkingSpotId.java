@@ -10,4 +10,8 @@ public record ParkingSpotId(
     return new ParkingSpotId(UUID.randomUUID());
   }
 
+  @Override
+  public String toString() {
+    return value.toString();
+  }
 }
