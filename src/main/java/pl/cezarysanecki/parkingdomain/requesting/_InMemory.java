@@ -66,7 +66,7 @@ class InMemoryRequestableSectionRepository implements RequestableSectionReposito
         .limit(spotUnits.value())
         .map(entity -> toDomain(
             entity,
-            InMemoryRequestRepository.findFor(entity.sectionId).get()
+            InMemoryRequestRepository.findFor(entity.sectionId).orElse(null)
         ))
         .toList();
     return new RequestableSectionsGrouped(sections);
@@ -80,7 +80,7 @@ class InMemoryRequestableSectionRepository implements RequestableSectionReposito
             && entity.timeSlot.equals(timeSlot))
         .map(entity -> toDomain(
             entity,
-            InMemoryRequestRepository.findFor(entity.sectionId).get()
+            InMemoryRequestRepository.findFor(entity.sectionId).orElse(null)
         ))
         .toList();
     return new RequestableSectionsGrouped(sections);
@@ -102,7 +102,7 @@ class InMemoryRequestableSectionRepository implements RequestableSectionReposito
         .filter(entity -> sections.contains(entity.sectionId))
         .map(entity -> toDomain(
             entity,
-            InMemoryRequestRepository.findFor(entity.sectionId).get()
+            InMemoryRequestRepository.findFor(entity.sectionId).orElse(null)
         ))
         .toList();
   }
@@ -194,7 +194,7 @@ class InMemoryRequestRepository implements RequestRepository {
             entity.timeSlot.from().atZone(ZoneId.systemDefault()).toLocalDate()))
         .map(entity -> toDomain(
             entity,
-            InMemoryRequesterRepository.tryFindBy(entity.requesterId).get(),
+            InMemoryRequesterRepository.tryFindBy(entity.requesterId).orElse(null),
             InMemoryRequestableSectionRepository.findBy(entity.sectionsIds)
         ))
         .toList();

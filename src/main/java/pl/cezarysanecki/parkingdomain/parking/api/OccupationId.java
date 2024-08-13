@@ -10,8 +10,4 @@ public record OccupationId(
     return new OccupationId(UUID.randomUUID());
   }
 
-  public UUID id() {
-    return value;
-  }
-
 }

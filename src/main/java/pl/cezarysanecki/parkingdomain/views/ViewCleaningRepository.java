@@ -1,8 +1,7 @@
 package pl.cezarysanecki.parkingdomain.views;
 
-import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
-
 import java.util.List;
+import java.util.UUID;
 
 public interface ViewCleaningRepository {
 
@@ -14,7 +13,7 @@ public interface ViewCleaningRepository {
   ) {
 
     public record ParkingSpot(
-        ParkingSpotId parkingSpotId,
+        UUID parkingSpotId,
         int counter
     ) {
     }

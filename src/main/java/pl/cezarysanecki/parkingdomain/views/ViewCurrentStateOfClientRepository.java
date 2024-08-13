@@ -1,19 +1,18 @@
 package pl.cezarysanecki.parkingdomain.views;
 
 import pl.cezarysanecki.parkingdomain.management.client.api.ClientId;
-import pl.cezarysanecki.parkingdomain.parking.api.OccupationId;
-import pl.cezarysanecki.parkingdomain.requesting.api.RequestId;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface ViewCurrentStateOfClientRepository {
 
   CurrentStateEntry queryFor(ClientId clientId);
 
   record CurrentStateEntry(
-      ClientId clientId,
-      List<OccupationId> occupationIds,
-      List<RequestId> requestIds
+      UUID clientId,
+      List<UUID> occupationIds,
+      List<UUID> requestIds
   ) {
   }
 

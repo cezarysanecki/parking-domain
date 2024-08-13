@@ -1,13 +1,8 @@
 package pl.cezarysanecki.parkingdomain.management.client.api;
 
-import lombok.Value;
-
 import java.util.UUID;
 
-@Value
-public class ClientId {
-
-  UUID value;
+public record ClientId(UUID value) {
 
   public static ClientId newOne() {
     return new ClientId(UUID.randomUUID());

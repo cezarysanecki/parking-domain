@@ -1,16 +1,16 @@
 package pl.cezarysanecki.parkingdomain.views;
 
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotCategory;
-import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface ViewFreeCurrentParkingSpotsRepository {
 
   List<ParkingSpotEntry> queryParkingSpots();
 
   record ParkingSpotEntry(
-      ParkingSpotId parkingSpotId,
+      UUID parkingSpotId,
       ParkingSpotCategory category,
       int spaceLeft
   ) {

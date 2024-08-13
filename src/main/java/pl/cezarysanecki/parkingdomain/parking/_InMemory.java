@@ -81,7 +81,7 @@ class InMemoryParkingRepository implements ParkingRepository {
             .limit(spotUnits.value())
             .map(entity -> toDomain(
                 entity,
-                InMemoryOccupationRepository.findFor(entity.sectionId).get())
+                InMemoryOccupationRepository.findFor(entity.sectionId).orElse(null))
             )
             .toList());
   }
@@ -94,7 +94,7 @@ class InMemoryParkingRepository implements ParkingRepository {
             .filter(section -> section.parkingSpotId.equals(parkingSpotId))
             .map(entity -> toDomain(
                 entity,
-                InMemoryOccupationRepository.findFor(entity.sectionId).get())
+                InMemoryOccupationRepository.findFor(entity.sectionId).orElse(null))
             )
             .toList());
   }
@@ -105,7 +105,7 @@ class InMemoryParkingRepository implements ParkingRepository {
         .filter(entity -> entity.parkingSpotId.equals(parkingSpotId))
         .map(entity -> toDomain(
             entity,
-            InMemoryOccupationRepository.findFor(entity.sectionId).get()
+            InMemoryOccupationRepository.findFor(entity.sectionId).orElse(null)
         ))
         .toList();
   }

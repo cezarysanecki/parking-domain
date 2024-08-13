@@ -6,8 +6,10 @@ import pl.cezarysanecki.parkingdomain._local.InMemoryRepositories;
 import pl.cezarysanecki.parkingdomain.management.client.api.ClientId;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpot;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
+import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotSectionId;
 import pl.cezarysanecki.parkingdomain.shared.TimeSlot;
 
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -31,7 +33,7 @@ class InMemoryViews implements
     List<CleaningView.ParkingSpot> parkingSpots = InMemoryRepositories.CLEANING_DATABASE.entrySet()
         .stream()
         .map(entry -> new CleaningView.ParkingSpot(
-            entry.getKey(),
+            entry.getKey().value(),
             entry.getValue()
         ))
         .toList();
@@ -48,10 +50,10 @@ class InMemoryViews implements
     return InMemoryRepositories.REQUEST_DATABASE.values()
         .stream()
         .map(entity -> new RequestEntry(
-            entity.requestId,
-            entity.requesterId,
-            entity.parkingSpotId,
-            entity.sectionsIds
+            entity.requestId.value(),
+            entity.requesterId.value(),
+            entity.parkingSpotId.value(),
+            entity.sectionsIds.stream().map(ParkingSpotSectionId::value).toList()
         ))
         .toList();
   }
@@ -63,19 +65,19 @@ class InMemoryViews implements
         .filter(entity -> entity.clientId().equals(clientId))
         .findFirst()
         .map(client -> new CurrentStateEntry(
-            clientId,
+            clientId.value(),
             InMemoryRepositories.OCCUPATION_DATABASE.values()
                 .stream()
-                .filter(entity -> entity.occupant.id().equals(clientId.getValue()))
-                .map(entity -> entity.occupationId)
+                .filter(entity -> entity.occupant.id().equals(clientId.value()))
+                .map(entity -> entity.occupationId.value())
                 .toList(),
             InMemoryRepositories.REQUEST_DATABASE.values()
                 .stream()
-                .filter(entity -> entity.requesterId.getValue().equals(clientId.getValue()))
-                .map(entity -> entity.requestId)
+                .filter(entity -> entity.requesterId.value().equals(clientId.value()))
+                .map(entity -> entity.requestId.value())
                 .toList()
         ))
-        .orElseThrow(() -> new EntityNotFoundException("cannot find view for client with id " + clientId.getValue()));
+        .orElseThrow(() -> new EntityNotFoundException("cannot find view for client with id " + clientId.value()));
   }
 
   @Override
@@ -83,7 +85,7 @@ class InMemoryViews implements
     return InMemoryRepositories.PARKING_SPOT_DATABASE.values()
         .stream()
         .map(entity -> new ParkingSpotEntry(
-            entity.parkingSpotId(),
+            entity.parkingSpotId().value(),
             entity.category(),
             entity.sections().size() - InMemoryRepositories.OCCUPATION_DATABASE.values()
                 .stream()
@@ -107,14 +109,15 @@ class InMemoryViews implements
     return freeTimeSlots.entrySet()
         .stream()
         .map(entry -> new FreeTimeSlotEntry(
-            entry.getKey().parkingSpotId,
+            entry.getKey().parkingSpotId.value(),
             InMemoryRepositories.PARKING_SPOT_DATABASE.values()
                 .stream()
                 .filter(parkingSpot -> parkingSpot.parkingSpotId().equals(entry.getKey().parkingSpotId))
                 .findFirst()
                 .map(ParkingSpot::category)
                 .orElse(null),
-            entry.getKey().timeSlot,
+            entry.getKey().timeSlot.from().atZone(ZoneId.systemDefault()).toLocalDateTime(),
+            entry.getKey().timeSlot.to().atZone(ZoneId.systemDefault()).toLocalDateTime(),
             entry.getValue().size() - (int) InMemoryRepositories.REQUEST_DATABASE.values()
                 .stream()
                 .filter(request -> request.parkingSpotId.equals(entry.getKey().parkingSpotId)

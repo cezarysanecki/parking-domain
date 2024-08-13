@@ -1,13 +1,8 @@
 package pl.cezarysanecki.parkingdomain.management.parkingspot.api;
 
-import lombok.Value;
-
 import java.util.UUID;
 
-@Value(staticConstructor = "of")
-public class ParkingSpotSectionId {
-
-  UUID value;
+public record ParkingSpotSectionId(UUID value) {
 
   public static ParkingSpotSectionId newOne() {
     return new ParkingSpotSectionId(UUID.randomUUID());

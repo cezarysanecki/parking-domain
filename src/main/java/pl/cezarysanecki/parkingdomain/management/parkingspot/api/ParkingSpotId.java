@@ -10,8 +10,4 @@ public record ParkingSpotId(
     return new ParkingSpotId(UUID.randomUUID());
   }
 
-  public UUID id() {
-    return value;
-  }
-
 }

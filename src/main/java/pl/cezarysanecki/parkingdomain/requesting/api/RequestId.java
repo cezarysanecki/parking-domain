@@ -1,13 +1,8 @@
 package pl.cezarysanecki.parkingdomain.requesting.api;
 
-import lombok.Value;
-
 import java.util.UUID;
 
-@Value
-public class RequestId {
-
-  UUID value;
+public record RequestId(UUID value) {
 
   public static RequestId newOne() {
     return new RequestId(UUID.randomUUID());
