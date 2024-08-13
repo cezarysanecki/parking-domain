@@ -45,16 +45,6 @@ class RequestingController {
     return result ? ResponseEntity.ok().build() : ResponseEntity.status(INTERNAL_SERVER_ERROR).build();
   }
 
-  @PostMapping("/request-whole")
-  ResponseEntity requestWhole(@RequestBody MakeRequestForWholeRequest request) {
-    boolean result = requestingFacade.requestWhole(
-        new RequesterId(request.requesterId),
-        new ParkingSpotId(request.parkingSpotId),
-        new TimeSlot(request.from, request.to)
-    );
-    return result ? ResponseEntity.ok().build() : ResponseEntity.status(INTERNAL_SERVER_ERROR).build();
-  }
-
   @DeleteMapping("/cancel")
   ResponseEntity cancelRequest(@RequestBody CancelRequestRequest request) {
     boolean result = requestingFacade.cancel(
@@ -80,14 +70,6 @@ class RequestingController {
       Instant from,
       Instant to,
       int spotUnits
-  ) {
-  }
-
-  record MakeRequestForWholeRequest(
-      UUID requesterId,
-      UUID parkingSpotId,
-      Instant from,
-      Instant to
   ) {
   }
 

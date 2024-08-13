@@ -22,26 +22,6 @@ public class RequestingFacade {
   private final EventPublisher eventPublisher;
 
   @Transactional
-  public int createForAll(
-      TimeSlot timeSlot
-  ) {
-    List<RequestableParkingSpotTemplate> templates = requestableSectionRepository.findAllTemplates();
-
-    List<RequestableSectionsGrouped> groupedSections = templates.stream()
-        .filter(template -> !requestableSectionRepository.intersects(template.parkingSpotId(), timeSlot))
-        .map(template -> RequestableSectionsGrouped.createNew(
-            template.parkingSpotId(),
-            template.sections(),
-            timeSlot)
-        )
-        .toList();
-
-    groupedSections.forEach(requestableSectionRepository::saveNew);
-
-    return groupedSections.size();
-  }
-
-  @Transactional
   public boolean request(
       RequesterId requesterId,
       ParkingSpotId parkingSpotId,
@@ -63,30 +43,30 @@ public class RequestingFacade {
   }
 
   @Transactional
-  public boolean requestWhole(
-      RequesterId requesterId,
-      ParkingSpotId parkingSpotId,
-      TimeSlot timeSlot
-  ) {
-    RequestableSectionsGrouped requestableSectionsGrouped = requestableSectionRepository.loadBy(
-        parkingSpotId, timeSlot);
-    Requester requester = requesterRepository.findBy(requesterId);
-
-    RequestId requestId = RequestId.newOne();
-    if (!requestableSectionsGrouped.requestBy(requestId) || !requester.append(requestId)) {
-      return false;
-    }
-    requestRepository.saveCheckingVersion(new Request(
-        requestId, requester, parkingSpotId, timeSlot, requestableSectionsGrouped.sections()
-    ));
-    return true;
-  }
-
-  @Transactional
   public boolean cancel(
       RequestId requestId
   ) {
     return requestRepository.delete(requestId);
+  }
+
+  @Transactional
+  public int createForAll(
+      TimeSlot timeSlot
+  ) {
+    List<RequestableParkingSpotTemplate> templates = requestableSectionRepository.findAllTemplates();
+
+    List<RequestableSectionsGrouped> groupedSections = templates.stream()
+        .filter(template -> !requestableSectionRepository.intersects(template.parkingSpotId(), timeSlot))
+        .map(template -> RequestableSectionsGrouped.createNew(
+            template.parkingSpotId(),
+            template.sections(),
+            timeSlot)
+        )
+        .toList();
+
+    groupedSections.forEach(requestableSectionRepository::saveNew);
+
+    return groupedSections.size();
   }
 
   @Transactional

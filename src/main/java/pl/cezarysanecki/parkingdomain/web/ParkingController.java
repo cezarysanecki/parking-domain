@@ -50,15 +50,6 @@ class ParkingController {
     return result ? ResponseEntity.ok().build() : ResponseEntity.status(INTERNAL_SERVER_ERROR).build();
   }
 
-  @PostMapping("/occupy-whole")
-  ResponseEntity occupyWholeParkingSpot(@RequestBody OccupyWholeParkingSpotRequest request) {
-    boolean result = parkingFacade.occupyWhole(
-        new Occupant(request.occupant),
-        new ParkingSpotId(request.parkingSpotId)
-    );
-    return result ? ResponseEntity.ok().build() : ResponseEntity.status(INTERNAL_SERVER_ERROR).build();
-  }
-
   @DeleteMapping("/release")
   ResponseEntity releaseParkingSpot(@RequestBody ReleaseParkingSpotRequest request) {
     boolean result = parkingFacade.release(new OccupationId(request.occupationId));
@@ -74,12 +65,6 @@ class ParkingController {
       UUID occupant,
       UUID parkingSpotId,
       int spotUnits
-  ) {
-  }
-
-  record OccupyWholeParkingSpotRequest(
-      UUID occupant,
-      UUID parkingSpotId
   ) {
   }
 

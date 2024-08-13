@@ -1,0 +1,18 @@
+meta {
+  name: Add all timeslots
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/requesting/add-all
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "from": "2024-04-04",
+    "to": "2024-04-04"
+  }
+}

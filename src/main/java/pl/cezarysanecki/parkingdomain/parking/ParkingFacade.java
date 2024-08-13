@@ -37,23 +37,6 @@ public class ParkingFacade {
   }
 
   @Transactional
-  public boolean occupyWhole(
-      Occupant occupant,
-      ParkingSpotId parkingSpotId
-  ) {
-    ParkingSpotSectionsGrouped parkingSpotSectionsGrouped = parkingRepository.loadBy(parkingSpotId);
-
-    OccupationId occupationId = OccupationId.newOne();
-    if (!parkingSpotSectionsGrouped.occupyBy(occupationId)) {
-      return false;
-    }
-    occupationRepository.saveCheckingVersion(new Occupation(
-        occupationId, occupant, parkingSpotId, parkingSpotSectionsGrouped.sections()
-    ));
-    return true;
-  }
-
-  @Transactional
   public boolean release(
       OccupationId occupationId
   ) {
