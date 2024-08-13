@@ -69,6 +69,9 @@ class InMemoryRequestableSectionRepository implements RequestableSectionReposito
             InMemoryRequestRepository.findFor(entity.sectionId).orElse(null)
         ))
         .toList();
+    if (sections.isEmpty()) {
+      throw new EntityNotFoundException("cannot find free sections in parking spot with id " + parkingSpotId + " for time slot " + timeSlot);
+    }
     return new RequestableSectionsGrouped(sections);
   }
 

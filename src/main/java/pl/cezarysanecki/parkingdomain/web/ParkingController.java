@@ -43,11 +43,12 @@ class ParkingController {
   @PostMapping("/occupy")
   ResponseEntity occupyParkingSpot(@RequestBody OccupyParkingSpotRequest request) {
     var result = parkingFacade.occupy(
-        new OccupantId(request.occupant),
+        new OccupantId(request.occupantId),
         new ParkingSpotId(request.parkingSpotId),
         new SpotUnits(request.spotUnits)
     );
     return result
+        .map(OccupationId::toString)
         .map(ResponseEntity::ok)
         .orElseGet(() -> ResponseEntity.internalServerError().build());
   }
@@ -64,7 +65,7 @@ class ParkingController {
   }
 
   record OccupyParkingSpotRequest(
-      UUID occupant,
+      UUID occupantId,
       UUID parkingSpotId,
       int spotUnits
   ) {

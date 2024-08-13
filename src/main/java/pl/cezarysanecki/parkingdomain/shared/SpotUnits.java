@@ -16,4 +16,9 @@ public record SpotUnits(int value) {
     return true;
   }
 
+  @Override
+  public String toString() {
+    return "" + value;
+  }
+
 }

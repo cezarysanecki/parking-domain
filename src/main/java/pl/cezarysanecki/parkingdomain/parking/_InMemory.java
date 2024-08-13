@@ -86,17 +86,20 @@ class InMemoryParkingRepository implements ParkingRepository {
 
   @Override
   public ParkingSpotSectionsGrouped loadFreeSectionsFor(ParkingSpotId parkingSpotId, SpotUnits spotUnits) {
-    return new ParkingSpotSectionsGrouped(
-        DATABASE.values()
-            .stream()
-            .filter(section -> section.parkingSpotId.equals(parkingSpotId)
-                && InMemoryOccupationRepository.findFor(section.sectionId).isEmpty())
-            .limit(spotUnits.value())
-            .map(entity -> toDomain(
-                entity,
-                InMemoryOccupationRepository.findFor(entity.sectionId).orElse(null))
-            )
-            .toList());
+    List<ParkingSpotSection> sections = DATABASE.values()
+        .stream()
+        .filter(section -> section.parkingSpotId.equals(parkingSpotId)
+            && InMemoryOccupationRepository.findFor(section.sectionId).isEmpty())
+        .limit(spotUnits.value())
+        .map(entity -> toDomain(
+            entity,
+            InMemoryOccupationRepository.findFor(entity.sectionId).orElse(null))
+        )
+        .toList();
+    if (sections.isEmpty()) {
+      throw new EntityNotFoundException("cannot find free sections in parking spot with id " + parkingSpotId);
+    }
+    return new ParkingSpotSectionsGrouped(sections);
   }
 
   @Override

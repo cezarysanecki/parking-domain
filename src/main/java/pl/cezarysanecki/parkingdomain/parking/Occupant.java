@@ -20,7 +20,7 @@ record Occupant(
   }
 
   boolean canOccupy(OccupationId occupationId) {
-    return occupationId == null;
+    return this.occupationId == null;
   }
 
 }

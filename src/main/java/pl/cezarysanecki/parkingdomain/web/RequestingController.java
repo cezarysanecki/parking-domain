@@ -41,6 +41,7 @@ class RequestingController {
         new SpotUnits(request.spotUnits)
     );
     return result
+        .map(RequestId::toString)
         .map(ResponseEntity::ok)
         .orElseGet(() -> ResponseEntity.internalServerError().build());
   }
