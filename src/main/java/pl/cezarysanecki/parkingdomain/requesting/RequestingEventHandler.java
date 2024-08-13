@@ -1,12 +1,10 @@
-package pl.cezarysanecki.parkingdomain.requesting.infrastructure;
+package pl.cezarysanecki.parkingdomain.requesting;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import pl.cezarysanecki.parkingdomain.management.client.ClientRegistered;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotAdded;
-import pl.cezarysanecki.parkingdomain.requesting.RequestableSectionRepository;
-import pl.cezarysanecki.parkingdomain.requesting.RequesterRepository;
 import pl.cezarysanecki.parkingdomain.requesting.api.RequesterId;
 
 @Slf4j

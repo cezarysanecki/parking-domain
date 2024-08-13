@@ -21,7 +21,16 @@ class RequestingConfig {
         requestableSectionRepository,
         requesterRepository,
         requestRepository,
-        eventPublisher);
+        eventPublisher
+    );
+  }
+
+  @Bean
+  RequestingEventHandler requestingEventHandler() {
+    return new RequestingEventHandler(
+        requesterRepository,
+        requestableSectionRepository
+    );
   }
 
 }
