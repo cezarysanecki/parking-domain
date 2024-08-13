@@ -10,16 +10,21 @@ import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 @RequiredArgsConstructor
 class ParkingSpotConfig {
 
-  private final ParkingSpotRepository parkingSpotRepository;
+  private final ParkingRepository parkingRepository;
   private final OccupationRepository occupationRepository;
   private final EventPublisher eventPublisher;
 
   @Bean
-  ParkingSpotFacade parkingSpotFacade() {
-    return new ParkingSpotFacade(
-        parkingSpotRepository,
+  ParkingFacade parkingFacade() {
+    return new ParkingFacade(
+        parkingRepository,
         occupationRepository,
         eventPublisher);
+  }
+
+  @Bean
+  ParkingEventHandler parkingEventHandler() {
+    return new ParkingEventHandler(parkingRepository);
   }
 
 }
@@ -30,8 +35,8 @@ class ParkingSpotConfig {
 class LocalParkingSpotConfig {
 
   @Bean
-  InMemoryParkingSpotRepository inMemoryParkingSpotRepository() {
-    return new InMemoryParkingSpotRepository();
+  InMemoryParkingRepository inMemoryParkingRepository() {
+    return new InMemoryParkingRepository();
   }
 
   @Bean

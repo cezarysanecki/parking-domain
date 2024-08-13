@@ -4,7 +4,7 @@ import lombok.Value;
 
 import java.util.UUID;
 
-@Value(staticConstructor = "of")
+@Value
 public class ClientId {
 
   UUID value;

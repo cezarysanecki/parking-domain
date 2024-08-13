@@ -11,7 +11,7 @@ interface RequestableSectionRepository {
 
   void saveTemplate(ParkingSpotId parkingSpotId, List<ParkingSpotSectionId> sections);
 
-  RequestableParkingSpotTemplate findTemplateBy(ParkingSpotId parkingSpotId);
+  List<RequestableParkingSpotTemplate> findAllTemplates();
 
   void saveNew(RequestableSectionsGrouped requestableSectionsGrouped);
 

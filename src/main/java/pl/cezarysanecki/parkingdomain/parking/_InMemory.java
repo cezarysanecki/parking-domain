@@ -32,7 +32,7 @@ class InMemoryOccupationRepository implements OccupationRepository {
   public Optional<Occupation> delete(OccupationId occupationId) {
     return Optional.ofNullable(DATABASE.remove(occupationId))
         .map(removed -> removed.toDomain(
-            InMemoryParkingSpotRepository.findBy(removed.parkingSpotId))
+            InMemoryParkingRepository.findBy(removed.parkingSpotId))
         );
   }
 
@@ -65,7 +65,7 @@ class InMemoryOccupationRepository implements OccupationRepository {
 }
 
 @RequiredArgsConstructor
-class InMemoryParkingSpotRepository implements ParkingSpotRepository {
+class InMemoryParkingRepository implements ParkingRepository {
 
   private static final Map<ParkingSpotSectionId, ParkingSpotSectionEntity> DATABASE = new ConcurrentHashMap<>();
 

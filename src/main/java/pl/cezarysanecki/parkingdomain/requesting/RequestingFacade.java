@@ -22,17 +22,23 @@ public class RequestingFacade {
   private final EventPublisher eventPublisher;
 
   @Transactional
-  public void create(
-      ParkingSpotId parkingSpotId,
+  public int createForAll(
       TimeSlot timeSlot
   ) {
-    if (requestableSectionRepository.intersects(parkingSpotId, timeSlot)) {
-      return;
-    }
-    RequestableParkingSpotTemplate template = requestableSectionRepository.findTemplateBy(parkingSpotId);
-    RequestableSectionsGrouped requestableSectionsGrouped = RequestableSectionsGrouped.createNew(
-        template.parkingSpotId(), template.sections(), timeSlot);
-    requestableSectionRepository.saveNew(requestableSectionsGrouped);
+    List<RequestableParkingSpotTemplate> templates = requestableSectionRepository.findAllTemplates();
+
+    List<RequestableSectionsGrouped> groupedSections = templates.stream()
+        .filter(template -> !requestableSectionRepository.intersects(template.parkingSpotId(), timeSlot))
+        .map(template -> RequestableSectionsGrouped.createNew(
+            template.parkingSpotId(),
+            template.sections(),
+            timeSlot)
+        )
+        .toList();
+
+    groupedSections.forEach(requestableSectionRepository::saveNew);
+
+    return groupedSections.size();
   }
 
   @Transactional

@@ -1,10 +1,9 @@
-package pl.cezarysanecki.parkingdomain._local.config;
+package pl.cezarysanecki.parkingdomain._local;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import pl.cezarysanecki.parkingdomain.commons.date.DateProvider;
 
 @Slf4j
 @Configuration

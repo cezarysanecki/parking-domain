@@ -1,16 +1,14 @@
 package pl.cezarysanecki.parkingdomain.parking;
 
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
+import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotSectionId;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupationId;
 
 import java.util.List;
-import java.util.stream.IntStream;
 
 record ParkingSpotSectionsGrouped(
     List<ParkingSpotSection> sections
 ) {
-
-  private static final int DEFAULT_NUMBER_OF_SEGMENTS = 4;
 
   ParkingSpotSectionsGrouped {
     if (sections.isEmpty()) {
@@ -24,11 +22,11 @@ record ParkingSpotSectionsGrouped(
     }
   }
 
-  static ParkingSpotSectionsGrouped create(ParkingSpotId parkingSpotId) {
-    List<ParkingSpotSection> sections = IntStream.of(0, DEFAULT_NUMBER_OF_SEGMENTS)
-        .mapToObj(index -> ParkingSpotSection.free(parkingSpotId))
+  static ParkingSpotSectionsGrouped create(ParkingSpotId parkingSpotId, List<ParkingSpotSectionId> sections) {
+    List<ParkingSpotSection> createdSections = sections.stream()
+        .map(section -> ParkingSpotSection.free(parkingSpotId, section))
         .toList();
-    return new ParkingSpotSectionsGrouped(sections);
+    return new ParkingSpotSectionsGrouped(createdSections);
   }
 
   boolean occupyBy(OccupationId occupationId) {

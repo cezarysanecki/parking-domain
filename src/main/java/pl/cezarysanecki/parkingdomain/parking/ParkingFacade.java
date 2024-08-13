@@ -12,19 +12,11 @@ import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-public class ParkingSpotFacade {
+public class ParkingFacade {
 
-  private final ParkingSpotRepository parkingSpotRepository;
+  private final ParkingRepository parkingRepository;
   private final OccupationRepository occupationRepository;
   private final EventPublisher eventPublisher;
-
-  @Transactional
-  public ParkingSpotId create() {
-    ParkingSpotId parkingSpotId = ParkingSpotId.newOne();
-    ParkingSpotSectionsGrouped parkingSpotSectionsGrouped = ParkingSpotSectionsGrouped.create(parkingSpotId);
-    parkingSpotRepository.saveNew(parkingSpotSectionsGrouped);
-    return parkingSpotId;
-  }
 
   @Transactional
   public boolean occupy(
@@ -32,7 +24,7 @@ public class ParkingSpotFacade {
       ParkingSpotId parkingSpotId,
       SpotUnits spotUnits
   ) {
-    ParkingSpotSectionsGrouped parkingSpotSectionsGrouped = parkingSpotRepository.loadFreeSectionsFor(parkingSpotId, spotUnits);
+    ParkingSpotSectionsGrouped parkingSpotSectionsGrouped = parkingRepository.loadFreeSectionsFor(parkingSpotId, spotUnits);
 
     OccupationId occupationId = OccupationId.newOne();
     if (!parkingSpotSectionsGrouped.occupyBy(occupationId)) {
@@ -49,7 +41,7 @@ public class ParkingSpotFacade {
       Occupant occupant,
       ParkingSpotId parkingSpotId
   ) {
-    ParkingSpotSectionsGrouped parkingSpotSectionsGrouped = parkingSpotRepository.loadBy(parkingSpotId);
+    ParkingSpotSectionsGrouped parkingSpotSectionsGrouped = parkingRepository.loadBy(parkingSpotId);
 
     OccupationId occupationId = OccupationId.newOne();
     if (!parkingSpotSectionsGrouped.occupyBy(occupationId)) {

@@ -1,8 +1,8 @@
 package pl.cezarysanecki.parkingdomain.parking;
 
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.parking.api.OccupationId;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotSectionId;
+import pl.cezarysanecki.parkingdomain.parking.api.OccupationId;
 
 record ParkingSpotSection(
     ParkingSpotId parkingSpotId,
@@ -11,8 +11,8 @@ record ParkingSpotSection(
     int version
 ) {
 
-  static ParkingSpotSection free(ParkingSpotId parkingSpotId) {
-    return new ParkingSpotSection(parkingSpotId, ParkingSpotSectionId.newOne(), null, 0);
+  static ParkingSpotSection free(ParkingSpotId parkingSpotId, ParkingSpotSectionId sectionId) {
+    return new ParkingSpotSection(parkingSpotId, sectionId, null, 0);
   }
 
   boolean isFree() {

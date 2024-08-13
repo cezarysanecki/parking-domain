@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain._local.config;
+package pl.cezarysanecki.parkingdomain._local;
 
 import pl.cezarysanecki.parkingdomain.commons.date.DateProvider;
 
