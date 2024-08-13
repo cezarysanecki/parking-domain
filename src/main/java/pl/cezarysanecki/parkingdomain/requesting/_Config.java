@@ -38,7 +38,7 @@ class RequestingConfig {
 @Profile("local")
 @Configuration
 @RequiredArgsConstructor
-class LocalParkingSpotConfig {
+class LocalRequestingConfig {
 
   @Bean
   InMemoryRequestableSectionRepository inMemoryRequestableSectionRepository() {

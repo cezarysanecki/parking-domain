@@ -2,7 +2,6 @@ package pl.cezarysanecki.parkingdomain.cleaning;
 
 import lombok.RequiredArgsConstructor;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.views.ViewCleaningRepository;
 
 import java.util.List;
 import java.util.Map;
@@ -10,7 +9,7 @@ import java.util.Map;
 import static pl.cezarysanecki.parkingdomain._local.InMemoryRepositories.CLEANING_DATABASE;
 
 @RequiredArgsConstructor
-class InMemoryCleaningRepository implements CleaningRepository, ViewCleaningRepository {
+class InMemoryCleaningRepository implements CleaningRepository {
 
   private static final Map<ParkingSpotId, Integer> DATABASE = CLEANING_DATABASE;
 
@@ -32,20 +31,6 @@ class InMemoryCleaningRepository implements CleaningRepository, ViewCleaningRepo
         .filter(entry -> entry.getValue() >= limit)
         .map(Map.Entry::getKey)
         .toList();
-  }
-
-  @Override
-  public CleaningView queryCleaning() {
-    return new CleaningView(
-        DATABASE.size(),
-        DATABASE.entrySet()
-            .stream()
-            .map(entry -> new CleaningView.ParkingSpot(
-                entry.getKey(),
-                entry.getValue()
-            ))
-            .toList()
-    );
   }
 
 }
