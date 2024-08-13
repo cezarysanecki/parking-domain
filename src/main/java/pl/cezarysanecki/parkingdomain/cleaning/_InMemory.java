@@ -1,7 +1,7 @@
 package pl.cezarysanecki.parkingdomain.cleaning;
 
 import lombok.RequiredArgsConstructor;
-import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
+import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
 
 import java.util.List;
 import java.util.Map;

@@ -1,6 +1,6 @@
 package pl.cezarysanecki.parkingdomain.cleaning;
 
-import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
+import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
 
 import java.util.List;
 

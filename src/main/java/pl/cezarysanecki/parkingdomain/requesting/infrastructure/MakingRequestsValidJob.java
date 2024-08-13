@@ -7,7 +7,6 @@ import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import pl.cezarysanecki.parkingdomain.commons.date.DateProvider;
 import pl.cezarysanecki.parkingdomain.requesting.RequestingFacade;
-import pl.cezarysanecki.parkingdomain.shared.timeslot.TimeSlot;
 
 import java.time.Instant;
 

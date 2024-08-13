@@ -6,8 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pl.cezarysanecki.parkingdomain.cleaning.CleaningFacade;
-import pl.cezarysanecki.parkingdomain.commons.commands.Result;
+import pl.cezarysanecki.parkingdomain.cleaning.policies.CallingCleaningWhenSpotsDirtyPolicy;
+import pl.cezarysanecki.parkingdomain.commons.Result;
 
 @Profile("local")
 @RestController
@@ -15,11 +15,11 @@ import pl.cezarysanecki.parkingdomain.commons.commands.Result;
 @RequiredArgsConstructor
 class LocalCleaningServiceController {
 
-  private final CleaningFacade cleaningFacade;
+  private final CallingCleaningWhenSpotsDirtyPolicy callingCleaningWhenSpotsDirtyPolicy;
 
-  @PostMapping("/handle")
-  ResponseEntity makeReservationRequestValid() {
-    Result result = cleaningFacade.tryToCallCleaning();
+  @PostMapping("/call")
+  ResponseEntity callCleaning() {
+    Result result = callingCleaningWhenSpotsDirtyPolicy.callCleaning();
     if (result == Result.Success) {
       return ResponseEntity.ok().build();
     }

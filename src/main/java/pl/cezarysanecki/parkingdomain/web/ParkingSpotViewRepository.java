@@ -1,6 +1,6 @@
 package pl.cezarysanecki.parkingdomain.web;
 
-import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory;
+import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotCategory;
 
 import java.util.List;
 import java.util.UUID;

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.cezarysanecki.parkingdomain.requesting.CancellingReservationRequest;
 import pl.cezarysanecki.parkingdomain.requesting.MakingReservationRequest;
 import pl.cezarysanecki.parkingdomain.requesting.api.RequesterId;
-import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits;
+import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
 
 import java.util.List;
 import java.util.UUID;

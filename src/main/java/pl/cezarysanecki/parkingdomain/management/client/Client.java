@@ -1,25 +1,11 @@
 package pl.cezarysanecki.parkingdomain.management.client;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.NonNull;
-import lombok.Value;
+import pl.cezarysanecki.parkingdomain.management.client.api.ClientId;
+import pl.cezarysanecki.parkingdomain.management.client.api.ClientType;
+import pl.cezarysanecki.parkingdomain.management.client.api.PhoneNumber;
 
-import java.util.UUID;
-
-@Value
-@AllArgsConstructor(access = AccessLevel.PACKAGE)
-class Client {
-
-  @NonNull
-  ClientId clientId;
-  @NonNull
-  ClientType type;
-  @NonNull
-  PhoneNumber phoneNumber;
-
-  Client(UUID clientId, ClientType type, String phoneNumber) {
-    this(ClientId.of(clientId), type, PhoneNumber.of(phoneNumber));
-  }
-
+record Client(
+    ClientId clientId,
+    ClientType type,
+    PhoneNumber phoneNumber) {
 }

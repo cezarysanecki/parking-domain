@@ -2,11 +2,11 @@ package pl.cezarysanecki.parkingdomain.parking;
 
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
+import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.api.Occupant;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupationId;
-import pl.cezarysanecki.parkingdomain.parking.api.ParkingSpotSectionId;
-import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits;
+import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotSectionId;
+import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
 
 import java.util.List;
 import java.util.Map;

@@ -5,10 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
-import pl.cezarysanecki.parkingdomain.management.client.ClientType;
-import pl.cezarysanecki.parkingdomain.management.client.RegisteringClient;
-import pl.cezarysanecki.parkingdomain.management.parkingspot.AddingParkingSpot;
-import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory;
+import pl.cezarysanecki.parkingdomain.management.client.api.ClientType;
+import pl.cezarysanecki.parkingdomain.management.client.ClientFacade;
+import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotFacade;
+import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotCategory;
 
 @Slf4j
 @Component
@@ -16,17 +16,17 @@ import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotCategory
 @RequiredArgsConstructor
 class LocalInitialData implements CommandLineRunner {
 
-  private final AddingParkingSpot addingParkingSpot;
-  private final RegisteringClient registeringClient;
+  private final ParkingSpotFacade parkingSpotFacade;
+  private final ClientFacade clientFacade;
 
   @Override
   public void run(final String... args) {
-    addingParkingSpot.addParkingSpot(4, ParkingSpotCategory.Gold);
-    addingParkingSpot.addParkingSpot(4, ParkingSpotCategory.Silver);
-    addingParkingSpot.addParkingSpot(4, ParkingSpotCategory.Bronze);
+    parkingSpotFacade.addParkingSpot(4, ParkingSpotCategory.Gold);
+    parkingSpotFacade.addParkingSpot(4, ParkingSpotCategory.Silver);
+    parkingSpotFacade.addParkingSpot(4, ParkingSpotCategory.Bronze);
 
-    registeringClient.registerClient(ClientType.INDIVIDUAL, "123123123");
-    registeringClient.registerClient(ClientType.INDIVIDUAL, "321321321");
-    registeringClient.registerClient(ClientType.BUSINESS, "789789789");
+    clientFacade.registerClient(ClientType.INDIVIDUAL, "123123123");
+    clientFacade.registerClient(ClientType.INDIVIDUAL, "321321321");
+    clientFacade.registerClient(ClientType.BUSINESS, "789789789");
   }
 }

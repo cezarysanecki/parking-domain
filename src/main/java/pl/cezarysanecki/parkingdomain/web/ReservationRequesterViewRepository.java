@@ -1,6 +1,6 @@
 package pl.cezarysanecki.parkingdomain.web;
 
-import pl.cezarysanecki.parkingdomain.shared.timeslot.TimeSlot;
+import pl.cezarysanecki.parkingdomain.shared.TimeSlot;
 
 import java.util.List;
 import java.util.UUID;

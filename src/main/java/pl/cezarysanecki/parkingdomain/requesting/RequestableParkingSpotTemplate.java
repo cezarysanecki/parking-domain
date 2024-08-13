@@ -1,7 +1,7 @@
 package pl.cezarysanecki.parkingdomain.requesting;
 
-import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.parking.api.ParkingSpotSectionId;
+import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
+import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotSectionId;
 
 import java.util.List;
 

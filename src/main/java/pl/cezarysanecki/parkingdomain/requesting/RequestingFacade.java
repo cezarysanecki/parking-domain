@@ -3,12 +3,12 @@ package pl.cezarysanecki.parkingdomain.requesting;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
-import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
+import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.requesting.api.MadeRequestsValid;
 import pl.cezarysanecki.parkingdomain.requesting.api.RequestId;
 import pl.cezarysanecki.parkingdomain.requesting.api.RequesterId;
-import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits;
-import pl.cezarysanecki.parkingdomain.shared.timeslot.TimeSlot;
+import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
+import pl.cezarysanecki.parkingdomain.shared.TimeSlot;
 
 import java.time.Instant;
 import java.util.List;

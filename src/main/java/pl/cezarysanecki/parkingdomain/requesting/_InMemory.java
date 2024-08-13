@@ -3,12 +3,12 @@ package pl.cezarysanecki.parkingdomain.requesting;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import pl.cezarysanecki.parkingdomain.commons.aggregates.Version;
-import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.parking.api.ParkingSpotSectionId;
+import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
+import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotSectionId;
 import pl.cezarysanecki.parkingdomain.requesting.api.RequestId;
 import pl.cezarysanecki.parkingdomain.requesting.api.RequesterId;
-import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits;
-import pl.cezarysanecki.parkingdomain.shared.timeslot.TimeSlot;
+import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
+import pl.cezarysanecki.parkingdomain.shared.TimeSlot;
 
 import java.time.Instant;
 import java.time.ZoneId;

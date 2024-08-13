@@ -4,8 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import pl.cezarysanecki.parkingdomain.cleaning.CleaningFacade;
-import pl.cezarysanecki.parkingdomain.commons.commands.Result;
-import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
+import pl.cezarysanecki.parkingdomain.commons.Result;
+import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
 
 import java.util.List;
 
