@@ -6,7 +6,7 @@ import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotSect
 
 import java.util.List;
 
-record ParkingSpot(
+public record ParkingSpot(
     ParkingSpotId parkingSpotId,
     List<ParkingSpotSectionId> sections,
     ParkingSpotCategory category) {

@@ -2,15 +2,17 @@ package pl.cezarysanecki.parkingdomain.cleaning;
 
 import lombok.RequiredArgsConstructor;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
+import pl.cezarysanecki.parkingdomain.views.ViewCleaningRepository;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+
+import static pl.cezarysanecki.parkingdomain._local.InMemoryRepositories.CLEANING_DATABASE;
 
 @RequiredArgsConstructor
-class InMemoryCleaningRepository implements CleaningRepository {
+class InMemoryCleaningRepository implements CleaningRepository, ViewCleaningRepository {
 
-  private final Map<ParkingSpotId, Integer> DATABASE = new ConcurrentHashMap<>();
+  private static final Map<ParkingSpotId, Integer> DATABASE = CLEANING_DATABASE;
 
   @Override
   public void increaseCounterFor(ParkingSpotId parkingSpotId) {
@@ -30,6 +32,20 @@ class InMemoryCleaningRepository implements CleaningRepository {
         .filter(entry -> entry.getValue() >= limit)
         .map(Map.Entry::getKey)
         .toList();
+  }
+
+  @Override
+  public CleaningView queryCleaning() {
+    return new CleaningView(
+        DATABASE.size(),
+        DATABASE.entrySet()
+            .stream()
+            .map(entry -> new CleaningView.ParkingSpot(
+                entry.getKey(),
+                entry.getValue()
+            ))
+            .toList()
+    );
   }
 
 }

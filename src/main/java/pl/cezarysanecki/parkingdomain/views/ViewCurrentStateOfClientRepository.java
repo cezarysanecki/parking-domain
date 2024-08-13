@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.web;
+package pl.cezarysanecki.parkingdomain.views;
 
 import pl.cezarysanecki.parkingdomain.management.client.api.ClientId;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupationId;

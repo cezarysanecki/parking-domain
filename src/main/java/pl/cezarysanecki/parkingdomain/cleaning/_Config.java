@@ -37,7 +37,6 @@ class CleaningConfig {
 class LocalCleaningConfig {
 
   @Bean
-  @Profile("local")
   InMemoryCleaningRepository cleaningRepository() {
     return new InMemoryCleaningRepository();
   }

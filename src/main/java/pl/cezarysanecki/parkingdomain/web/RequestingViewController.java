@@ -5,6 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import pl.cezarysanecki.parkingdomain.views.ViewCurrentRequestsRepository;
+import pl.cezarysanecki.parkingdomain.views.ViewFreeTimeSlotsRepository;
 
 @RestController
 @RequestMapping("/requesting/view")
@@ -16,12 +18,12 @@ class RequestingViewController {
 
   @GetMapping
   ResponseEntity queryCurrentState() {
-    return ResponseEntity.ok(viewCurrentRequestsRepository.query());
+    return ResponseEntity.ok(viewCurrentRequestsRepository.queryRequests());
   }
 
   @GetMapping("/free")
   ResponseEntity queryFreeTimeSlots() {
-    return ResponseEntity.ok(viewFreeTimeSlotsRepository.query());
+    return ResponseEntity.ok(viewFreeTimeSlotsRepository.queryFreeTimeSlots());
   }
 
 }

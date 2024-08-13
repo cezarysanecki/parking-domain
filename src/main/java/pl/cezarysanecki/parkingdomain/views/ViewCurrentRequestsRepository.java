@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.web;
+package pl.cezarysanecki.parkingdomain.views;
 
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotSectionId;
@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface ViewCurrentRequestsRepository {
 
-  List<RequestEntry> query();
+  List<RequestEntry> queryRequests();
 
   record RequestEntry(
       RequestId requestId,

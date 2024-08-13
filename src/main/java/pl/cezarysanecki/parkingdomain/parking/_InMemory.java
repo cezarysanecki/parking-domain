@@ -1,22 +1,24 @@
 package pl.cezarysanecki.parkingdomain.parking;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.parking.api.Occupant;
-import pl.cezarysanecki.parkingdomain.parking.api.OccupationId;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotSectionId;
+import pl.cezarysanecki.parkingdomain.parking.api.OccupationId;
 import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
+
+import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.OccupationEntity;
+import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.ParkingSpotSectionEntity;
+import static pl.cezarysanecki.parkingdomain._local.InMemoryRepositories.OCCUPATION_DATABASE;
+import static pl.cezarysanecki.parkingdomain._local.InMemoryRepositories.PARKING_SPOT_SECTION_DATABASE;
 
 @RequiredArgsConstructor
 class InMemoryOccupationRepository implements OccupationRepository {
 
-  private static final Map<OccupationId, OccupationEntity> DATABASE = new ConcurrentHashMap<>();
+  private static final Map<OccupationId, OccupationEntity> DATABASE = OCCUPATION_DATABASE;
 
   @Override
   public void saveCheckingVersion(Occupation occupation) {
@@ -31,7 +33,8 @@ class InMemoryOccupationRepository implements OccupationRepository {
   @Override
   public Optional<Occupation> delete(OccupationId occupationId) {
     return Optional.ofNullable(DATABASE.remove(occupationId))
-        .map(removed -> removed.toDomain(
+        .map(removed -> toDomain(
+            removed,
             InMemoryParkingRepository.findBy(removed.parkingSpotId))
         );
   }
@@ -45,21 +48,12 @@ class InMemoryOccupationRepository implements OccupationRepository {
         .findFirst();
   }
 
-  @AllArgsConstructor
-  private static class OccupationEntity {
-    final OccupationId occupationId;
-    final Occupant occupant;
-    final ParkingSpotId parkingSpotId;
-    final List<ParkingSpotSectionId> sections;
-
-    Occupation toDomain(List<ParkingSpotSection> sections) {
-      return new Occupation(
-          occupationId,
-          occupant,
-          parkingSpotId,
-          sections
-      );
-    }
+  private static Occupation toDomain(OccupationEntity entity, List<ParkingSpotSection> sections) {
+    return new Occupation(
+        entity.occupationId,
+        entity.occupant,
+        entity.parkingSpotId,
+        sections);
   }
 
 }
@@ -67,7 +61,7 @@ class InMemoryOccupationRepository implements OccupationRepository {
 @RequiredArgsConstructor
 class InMemoryParkingRepository implements ParkingRepository {
 
-  private static final Map<ParkingSpotSectionId, ParkingSpotSectionEntity> DATABASE = new ConcurrentHashMap<>();
+  private static final Map<ParkingSpotSectionId, ParkingSpotSectionEntity> DATABASE = PARKING_SPOT_SECTION_DATABASE;
 
   @Override
   public void saveNew(ParkingSpotSectionsGrouped parkingSpotSectionsGrouped) {
@@ -85,7 +79,8 @@ class InMemoryParkingRepository implements ParkingRepository {
             .filter(section -> section.parkingSpotId.equals(parkingSpotId)
                 && InMemoryOccupationRepository.findFor(section.sectionId).isEmpty())
             .limit(spotUnits.value())
-            .map(entity -> entity.toDomain(
+            .map(entity -> toDomain(
+                entity,
                 InMemoryOccupationRepository.findFor(entity.sectionId).get())
             )
             .toList());
@@ -97,7 +92,8 @@ class InMemoryParkingRepository implements ParkingRepository {
         DATABASE.values()
             .stream()
             .filter(section -> section.parkingSpotId.equals(parkingSpotId))
-            .map(entity -> entity.toDomain(
+            .map(entity -> toDomain(
+                entity,
                 InMemoryOccupationRepository.findFor(entity.sectionId).get())
             )
             .toList());
@@ -107,27 +103,20 @@ class InMemoryParkingRepository implements ParkingRepository {
     return DATABASE.values()
         .stream()
         .filter(entity -> entity.parkingSpotId.equals(parkingSpotId))
-        .map(entity -> entity.toDomain(
+        .map(entity -> toDomain(
+            entity,
             InMemoryOccupationRepository.findFor(entity.sectionId).get()
         ))
         .toList();
   }
 
-  @AllArgsConstructor
-  private static class ParkingSpotSectionEntity {
-    final ParkingSpotId parkingSpotId;
-    final ParkingSpotSectionId sectionId;
-    int version;
-
-    ParkingSpotSection toDomain(OccupationId occupationId) {
-      return new ParkingSpotSection(
-          parkingSpotId,
-          sectionId,
-          occupationId,
-          version
-      );
-    }
-
+  private static ParkingSpotSection toDomain(ParkingSpotSectionEntity entity, OccupationId occupationId) {
+    return new ParkingSpotSection(
+        entity.parkingSpotId,
+        entity.sectionId,
+        occupationId,
+        entity.version
+    );
   }
 
 }

@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.web;
+package pl.cezarysanecki.parkingdomain.views;
 
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotCategory;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ViewFreeTimeSlotsRepository {
 
-  List<FreeTimeSlotEntry> query();
+  List<FreeTimeSlotEntry> queryFreeTimeSlots();
 
   record FreeTimeSlotEntry(
       ParkingSpotId parkingSpotId,

@@ -21,7 +21,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/local")
 @RequiredArgsConstructor
-class LocalController {
+class _LocalController {
 
   private final LocalDateProvider localDateProvider;
   private final CallingCleaningWhenSpotsDirtyPolicy callingCleaningWhenSpotsDirtyPolicy;

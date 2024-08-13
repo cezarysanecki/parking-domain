@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import pl.cezarysanecki.parkingdomain.views.ViewFreeCurrentParkingSpotsRepository;
 
 @RestController
 @RequestMapping("/parking/view")
@@ -15,7 +16,7 @@ class ParkingViewController {
 
   @GetMapping
   ResponseEntity queryCurrentState() {
-    return ResponseEntity.ok(viewFreeCurrentParkingSpotsRepository.query());
+    return ResponseEntity.ok(viewFreeCurrentParkingSpotsRepository.queryParkingSpots());
   }
 
 }

@@ -3,11 +3,12 @@ package pl.cezarysanecki.parkingdomain.management.client;
 import pl.cezarysanecki.parkingdomain.management.client.api.ClientId;
 
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+
+import static pl.cezarysanecki.parkingdomain._local.InMemoryRepositories.CLIENT_DATABASE;
 
 class InMemoryClientRepository implements ClientRepository {
 
-  private static final Map<ClientId, Client> DATABASE = new ConcurrentHashMap<>();
+  private static final Map<ClientId, Client> DATABASE = CLIENT_DATABASE;
 
   @Override
   public void saveNew(Client client) {

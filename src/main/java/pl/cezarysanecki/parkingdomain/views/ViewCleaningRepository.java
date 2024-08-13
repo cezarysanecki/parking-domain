@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.web;
+package pl.cezarysanecki.parkingdomain.views;
 
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
 
@@ -6,10 +6,10 @@ import java.util.List;
 
 public interface ViewCleaningRepository {
 
-  CleaningView query();
+  CleaningView queryCleaning();
 
   record CleaningView(
-      Long parkingSpotsExceedingThreshold,
+      long parkingSpotsExceedingThreshold,
       List<ParkingSpot> records
   ) {
 

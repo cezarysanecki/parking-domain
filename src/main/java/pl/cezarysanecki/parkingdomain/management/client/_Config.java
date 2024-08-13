@@ -28,7 +28,6 @@ class ClientConfig {
 class LocalClientConfig {
 
   @Bean
-  @Profile("local")
   InMemoryClientRepository inMemoryClientRepository() {
     return new InMemoryClientRepository();
   }
