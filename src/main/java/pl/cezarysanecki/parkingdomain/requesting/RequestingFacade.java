@@ -95,7 +95,7 @@ public class RequestingFacade {
             request.requester(),
             request.parkingSpotId(),
             request.timeSlot(),
-            request.sections().stream().map(RequestableSection::parkingSpotSectionId).toList()
+            request.sections().stream().map(RequestableSection::sectionId).toList()
         ))
         .toList()));
 

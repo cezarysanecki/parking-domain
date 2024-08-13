@@ -5,8 +5,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
-import pl.cezarysanecki.parkingdomain.parking.InMemoryOccupationRepository;
-import pl.cezarysanecki.parkingdomain.parking.InMemoryParkingSpotRepository;
 
 @Configuration
 @RequiredArgsConstructor
@@ -34,18 +32,18 @@ class RequestingConfig {
 class LocalParkingSpotConfig {
 
   @Bean
-  InMemoryParkingSpotRepository inMemoryParkingSpotRepository() {
-    return new InMemoryParkingSpotRepository();
+  InMemoryRequestableSectionRepository inMemoryRequestableSectionRepository() {
+    return new InMemoryRequestableSectionRepository();
   }
 
   @Bean
-  InMemoryOccupationRepository inMemoryOccupationRepository() {
-    return new InMemoryOccupationRepository();
+  InMemoryRequesterRepository inMemoryRequesterRepository() {
+    return new InMemoryRequesterRepository();
   }
 
   @Bean
-  InMemoryOccupationRepository inMemoryOccupationRepository() {
-    return new InMemoryOccupationRepository();
+  InMemoryRequestRepository inMemoryRequestRepository() {
+    return new InMemoryRequestRepository();
   }
 
 }

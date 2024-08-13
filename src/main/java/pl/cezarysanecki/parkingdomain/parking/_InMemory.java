@@ -16,32 +16,37 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequiredArgsConstructor
 class InMemoryOccupationRepository implements OccupationRepository {
 
-  static final Map<OccupationId, Entity> DATABASE = new ConcurrentHashMap<>();
+  private static final Map<OccupationId, OccupationEntity> DATABASE = new ConcurrentHashMap<>();
 
   @Override
   public void saveCheckingVersion(Occupation occupation) {
-    Entity entity = new Entity(
+    DATABASE.put(occupation.occupationId(), new OccupationEntity(
         occupation.occupationId(),
         occupation.occupant(),
         occupation.parkingSpotId(),
         occupation.sections().stream().map(ParkingSpotSection::sectionId).toList()
-    );
-
-    DATABASE.put(occupation.occupationId(), entity);
-    InMemoryParkingSpotRepository.saveOccupation(occupation.parkingSpotId(), occupation.occupationId());
+    ));
   }
 
   @Override
   public Optional<Occupation> delete(OccupationId occupationId) {
     return Optional.ofNullable(DATABASE.remove(occupationId))
-        .map(removed -> {
-          InMemoryParkingSpotRepository.removeOccupation(removed.occupationId);
-          return removed.toDomain(InMemoryParkingSpotRepository.findByOccupation(removed.occupationId));
-        });
+        .map(removed -> removed.toDomain(
+            InMemoryParkingSpotRepository.findBy(removed.parkingSpotId))
+        );
+  }
+
+  static Optional<OccupationId> findFor(ParkingSpotSectionId sectionId) {
+    return DATABASE.values()
+        .stream()
+        .filter(entity -> entity.sections.stream()
+            .anyMatch(section -> section.equals(sectionId)))
+        .map(entity -> entity.occupationId)
+        .findFirst();
   }
 
   @AllArgsConstructor
-  private static class Entity {
+  private static class OccupationEntity {
     final OccupationId occupationId;
     final Occupant occupant;
     final ParkingSpotId parkingSpotId;
@@ -62,14 +67,14 @@ class InMemoryOccupationRepository implements OccupationRepository {
 @RequiredArgsConstructor
 class InMemoryParkingSpotRepository implements ParkingSpotRepository {
 
-  static final Map<ParkingSpotSectionId, Entity> DATABASE = new ConcurrentHashMap<>();
+  private static final Map<ParkingSpotSectionId, ParkingSpotSectionEntity> DATABASE = new ConcurrentHashMap<>();
 
   @Override
   public void saveNew(ParkingSpotSectionsGrouped parkingSpotSectionsGrouped) {
     parkingSpotSectionsGrouped.sections()
         .forEach(section -> DATABASE.put(
             section.sectionId(),
-            new Entity(section.parkingSpotId(), section.sectionId())));
+            new ParkingSpotSectionEntity(section.parkingSpotId(), section.sectionId(), 0)));
   }
 
   @Override
@@ -78,9 +83,11 @@ class InMemoryParkingSpotRepository implements ParkingSpotRepository {
         DATABASE.values()
             .stream()
             .filter(section -> section.parkingSpotId.equals(parkingSpotId)
-                && section.occupationId == null)
+                && InMemoryOccupationRepository.findFor(section.sectionId).isEmpty())
             .limit(spotUnits.value())
-            .map(Entity::toDomain)
+            .map(entity -> entity.toDomain(
+                InMemoryOccupationRepository.findFor(entity.sectionId).get())
+            )
             .toList());
   }
 
@@ -90,46 +97,29 @@ class InMemoryParkingSpotRepository implements ParkingSpotRepository {
         DATABASE.values()
             .stream()
             .filter(section -> section.parkingSpotId.equals(parkingSpotId))
-            .map(Entity::toDomain)
+            .map(entity -> entity.toDomain(
+                InMemoryOccupationRepository.findFor(entity.sectionId).get())
+            )
             .toList());
   }
 
-  static void saveOccupation(ParkingSpotId parkingSpotId, OccupationId occupationId) {
-    DATABASE.values()
-        .stream()
-        .filter(entity -> entity.parkingSpotId.equals(parkingSpotId))
-        .forEach(entity -> entity.occupationId = occupationId);
-  }
-
-  static void removeOccupation(OccupationId occupationId) {
-    DATABASE.values()
-        .stream()
-        .filter(entity -> entity.occupationId.equals(occupationId))
-        .forEach(entity -> entity.occupationId = null);
-  }
-
-  static List<ParkingSpotSection> findByOccupation(OccupationId occupationId) {
+  static List<ParkingSpotSection> findBy(ParkingSpotId parkingSpotId) {
     return DATABASE.values()
         .stream()
-        .filter(entity -> entity.occupationId.equals(occupationId))
-        .map(Entity::toDomain)
+        .filter(entity -> entity.parkingSpotId.equals(parkingSpotId))
+        .map(entity -> entity.toDomain(
+            InMemoryOccupationRepository.findFor(entity.sectionId).get()
+        ))
         .toList();
   }
 
-  private static class Entity {
+  @AllArgsConstructor
+  private static class ParkingSpotSectionEntity {
     final ParkingSpotId parkingSpotId;
     final ParkingSpotSectionId sectionId;
-    OccupationId occupationId;
     int version;
 
-    private Entity(ParkingSpotId parkingSpotId, ParkingSpotSectionId sectionId) {
-      this.parkingSpotId = parkingSpotId;
-      this.sectionId = sectionId;
-      this.occupationId = null;
-      this.version = 0;
-    }
-
-    ParkingSpotSection toDomain() {
+    ParkingSpotSection toDomain(OccupationId occupationId) {
       return new ParkingSpotSection(
           parkingSpotId,
           sectionId,

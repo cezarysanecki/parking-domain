@@ -1,6 +1,7 @@
 package pl.cezarysanecki.parkingdomain.requesting;
 
 import jakarta.persistence.EntityNotFoundException;
+import lombok.AllArgsConstructor;
 import pl.cezarysanecki.parkingdomain.commons.aggregates.Version;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.api.ParkingSpotSectionId;
@@ -10,14 +11,15 @@ import pl.cezarysanecki.parkingdomain.shared.occupation.SpotUnits;
 import pl.cezarysanecki.parkingdomain.shared.timeslot.TimeSlot;
 
 import java.time.Instant;
-import java.util.ArrayList;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 class InMemoryRequestableSectionRepository implements RequestableSectionRepository {
 
-  static final Map<ParkingSpotSectionId, Entity> DATABASE = new ConcurrentHashMap<>();
+  static final Map<ParkingSpotSectionId, RequestableSectionEntity> DATABASE = new ConcurrentHashMap<>();
   static final Map<ParkingSpotId, List<ParkingSpotSectionId>> TEMPLATES_DATABASE = new ConcurrentHashMap<>();
 
   @Override
@@ -38,10 +40,11 @@ class InMemoryRequestableSectionRepository implements RequestableSectionReposito
   public void saveNew(RequestableSectionsGrouped requestableSectionsGrouped) {
     requestableSectionsGrouped.sections()
         .stream()
-        .map(section -> new Entity(
+        .map(section -> new RequestableSectionEntity(
             section.parkingSpotId(),
             section.sectionId(),
-            section.timeSlot()
+            section.timeSlot(),
+            0
         ))
         .forEach(entity -> DATABASE.put(entity.sectionId, entity));
   }
@@ -53,7 +56,9 @@ class InMemoryRequestableSectionRepository implements RequestableSectionReposito
         .filter(entity -> entity.parkingSpotId.equals(parkingSpotId)
             && entity.timeSlot.equals(timeSlot))
         .limit(spotUnits.value())
-        .map(Entity::toDomain)
+        .map(entity -> entity.toDomain(
+            InMemoryRequestRepository.findFor(entity.sectionId).get()
+        ))
         .toList();
     return new RequestableSectionsGrouped(sections);
   }
@@ -64,14 +69,16 @@ class InMemoryRequestableSectionRepository implements RequestableSectionReposito
         .stream()
         .filter(entity -> entity.parkingSpotId.equals(parkingSpotId)
             && entity.timeSlot.equals(timeSlot))
-        .map(Entity::toDomain)
+        .map(entity -> entity.toDomain(
+            InMemoryRequestRepository.findFor(entity.sectionId).get()
+        ))
         .toList();
     return new RequestableSectionsGrouped(sections);
   }
 
   @Override
   public boolean intersects(ParkingSpotId parkingSpotId, TimeSlot timeSlot) {
-    List<Entity> entities = DATABASE.values()
+    List<RequestableSectionEntity> entities = DATABASE.values()
         .stream()
         .filter(entity -> entity.parkingSpotId.equals(parkingSpotId))
         .toList();
@@ -79,22 +86,24 @@ class InMemoryRequestableSectionRepository implements RequestableSectionReposito
         .anyMatch(entity -> timeSlot.within(entity.timeSlot));
   }
 
-  private static class Entity {
+  static List<RequestableSection> findBy(List<ParkingSpotSectionId> sections) {
+    return DATABASE.values()
+        .stream()
+        .filter(entity -> sections.contains(entity.sectionId))
+        .map(entity -> entity.toDomain(
+            InMemoryRequestRepository.findFor(entity.sectionId).get()
+        ))
+        .toList();
+  }
+
+  @AllArgsConstructor
+  private static class RequestableSectionEntity {
     final ParkingSpotId parkingSpotId;
     final ParkingSpotSectionId sectionId;
     final TimeSlot timeSlot;
-    RequestId requestId;
     int version;
 
-    private Entity(ParkingSpotId parkingSpotId, ParkingSpotSectionId sectionId, TimeSlot timeSlot) {
-      this.parkingSpotId = parkingSpotId;
-      this.sectionId = sectionId;
-      this.timeSlot = timeSlot;
-      this.requestId = null;
-      this.version = 0;
-    }
-
-    RequestableSection toDomain() {
+    RequestableSection toDomain(RequestId requestId) {
       return new RequestableSection(
           parkingSpotId,
           sectionId,
@@ -109,39 +118,45 @@ class InMemoryRequestableSectionRepository implements RequestableSectionReposito
 
 class InMemoryRequesterRepository implements RequesterRepository {
 
-  static final Map<RequesterId, Entity> DATABASE = new ConcurrentHashMap<>();
+  static final Map<RequesterId, RequesterEntity> DATABASE = new ConcurrentHashMap<>();
 
   @Override
   public void saveNew(RequesterId requesterId, int limit) {
-    DATABASE.put(requesterId, new Entity(
+    DATABASE.put(requesterId, new RequesterEntity(
         requesterId,
-        limit
+        limit,
+        0
     ));
   }
 
   @Override
   public Requester findBy(RequesterId requesterId) {
-    Entity entity = DATABASE.get(requesterId);
+    RequesterEntity entity = DATABASE.get(requesterId);
     if (entity == null) {
       throw new EntityNotFoundException("No requester found with id " + requesterId);
     }
-    return entity.toDomain();
+    return entity.toDomain(
+        InMemoryRequestRepository.findFor(entity.requesterId)
+    );
   }
 
-  private static class Entity {
+  static Optional<Requester> tryFindBy(RequesterId requesterId) {
+    return DATABASE.values()
+        .stream()
+        .filter(entity -> entity.requesterId.equals(requesterId))
+        .map(entity -> entity.toDomain(
+            InMemoryRequestRepository.findFor(requesterId)
+        ))
+        .findFirst();
+  }
+
+  @AllArgsConstructor
+  private static class RequesterEntity {
     final RequesterId requesterId;
-    final List<RequestId> requests;
     final int limit;
     int version;
 
-    Entity(RequesterId requesterId, int limit) {
-      this.requesterId = requesterId;
-      this.requests = new ArrayList<>();
-      this.limit = limit;
-      this.version = 0;
-    }
-
-    Requester toDomain() {
+    Requester toDomain(List<RequestId> requests) {
       return new Requester(
           requesterId,
           requests,
@@ -153,49 +168,75 @@ class InMemoryRequesterRepository implements RequesterRepository {
 
 }
 
-class InRequestRepository implements RequestRepository {
+class InMemoryRequestRepository implements RequestRepository {
 
-  static final Map<RequestId, Entity> DATABASE = new ConcurrentHashMap<>();
+  static final Map<RequestId, RequestEntity> DATABASE = new ConcurrentHashMap<>();
 
   @Override
   public void saveCheckingVersion(Request request) {
-
+    DATABASE.put(request.requestId(), new RequestEntity(
+        request.requestId(),
+        request.requester().requesterId(),
+        request.parkingSpotId(),
+        request.timeSlot(),
+        request.sections().stream().map(RequestableSection::sectionId).toList()
+    ));
   }
 
   @Override
   public boolean delete(RequestId requestId) {
-    return false;
+    return DATABASE.remove(requestId) != null;
   }
 
   @Override
   public List<Request> findAllBy(Instant date) {
-    return List.of();
+    return DATABASE.values()
+        .stream()
+        .filter(entity -> date.atZone(ZoneId.systemDefault()).toLocalDate().equals(
+            entity.timeSlot.from().atZone(ZoneId.systemDefault()).toLocalDate()))
+        .map(entity -> entity.toDomain(
+            InMemoryRequesterRepository.tryFindBy(entity.requesterId).get(),
+            InMemoryRequestableSectionRepository.findBy(entity.sectionsIds)
+        ))
+        .toList();
+  }
+
+  static Optional<RequestId> findFor(ParkingSpotSectionId sectionId) {
+    return DATABASE.values()
+        .stream()
+        .filter(entity -> entity.sectionsIds.contains(sectionId))
+        .map(entity -> entity.requestId)
+        .findFirst();
+  }
+
+  static List<RequestId> findFor(RequesterId requesterId) {
+    return DATABASE.values()
+        .stream()
+        .filter(entity -> entity.requesterId.equals(requesterId))
+        .map(entity -> entity.requestId)
+        .toList();
   }
 
   @Override
   public void deleteAll(List<RequestId> requestIds) {
-
+    DATABASE.values().removeIf(entity -> requestIds.contains(entity.requestId));
   }
 
-  private static class Entity {
+  @AllArgsConstructor
+  private static class RequestEntity {
+    final RequestId requestId;
     final RequesterId requesterId;
-    final List<RequestId> requests;
-    final int limit;
-    int version;
+    final ParkingSpotId parkingSpotId;
+    final TimeSlot timeSlot;
+    final List<ParkingSpotSectionId> sectionsIds;
 
-    Entity(RequesterId requesterId, int limit) {
-      this.requesterId = requesterId;
-      this.requests = new ArrayList<>();
-      this.limit = limit;
-      this.version = 0;
-    }
-
-    Requester toDomain() {
-      return new Requester(
-          requesterId,
-          requests,
-          limit,
-          new Version(version)
+    Request toDomain(Requester requester, List<RequestableSection> sections) {
+      return new Request(
+          requestId,
+          requester,
+          parkingSpotId,
+          timeSlot,
+          sections
       );
     }
   }
