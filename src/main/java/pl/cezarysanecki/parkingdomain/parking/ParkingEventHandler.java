@@ -6,6 +6,7 @@ import org.springframework.context.event.EventListener;
 import pl.cezarysanecki.parkingdomain.management.client.api.ClientRegistered;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotAdded;
 import pl.cezarysanecki.parkingdomain.parking.api.ReservationId;
+import pl.cezarysanecki.parkingdomain.parking.api.ReservationOwnerId;
 import pl.cezarysanecki.parkingdomain.requesting.api.MadeRequestsValid;
 
 @Slf4j
@@ -30,12 +31,17 @@ class ParkingEventHandler {
 
   @EventListener
   public void handle(MadeRequestsValid event) {
-    reservationRepository.saveAll(event.requests().stream()
-        .map(request -> new Reservation(
-            new ReservationId(request.requestId().value()),
-
-        )));
-    occupantRepository.saveNew(Occupant.newOne(event.clientId()));
+    reservationRepository.saveAll(
+        event.requests()
+            .stream()
+            .map(request -> new Reservation(
+                new ReservationId(request.requestId().value()),
+                new ReservationOwnerId(request.requester().value()),
+                request.parkingSpotId(),
+                request.timeSlot(),
+                request.spotUnits()
+            ))
+            .toList());
   }
 
 }
