@@ -18,7 +18,7 @@ public class CallingCleaningWhenSpotsDirtyPolicy {
 
   CallingCleaningWhenSpotsDirtyPolicy(
       CleaningFacade cleaningFacade,
-      @Value("${business.cleaning.numberOfDirtyParkingSpotsToCallExternalService}") int numberOfDirtyParkingSpotsToCallExternalService
+      @Value("${business.cleaning.number-of-dirty-parking-spots-to-call-external-service}") int numberOfDirtyParkingSpotsToCallExternalService
   ) {
     this.cleaningFacade = cleaningFacade;
     this.numberOfDirtyParkingSpotsToCallExternalService = numberOfDirtyParkingSpotsToCallExternalService;

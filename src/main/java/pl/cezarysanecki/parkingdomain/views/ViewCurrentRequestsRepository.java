@@ -11,7 +11,7 @@ public interface ViewCurrentRequestsRepository {
       UUID requestId,
       UUID requesterId,
       UUID parkingSpotId,
-      int numberOFSections
+      int numberOfSections
   ) {
   }
 

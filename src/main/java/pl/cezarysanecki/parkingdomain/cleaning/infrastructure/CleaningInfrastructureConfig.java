@@ -27,7 +27,7 @@ class CleaningInfrastructureConfig {
   @Bean
   Trigger callingExternalCleaningServicePolicyJobTrigger(
       JobDetail callingExternalCleaningServicePolicyJob,
-      @Value("${job.callingExternalCleaningServicePolicyJob.cronExpression}") String cronExpression
+      @Value("${job.calling-external-cleaning-service-policy-job.cron-expression}") String cronExpression
   ) {
     return TriggerBuilder.newTrigger()
         .withIdentity("calling-external-cleaning-service-policy-job-trigger")

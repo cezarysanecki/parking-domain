@@ -29,7 +29,7 @@ class RequestingController {
   private final CreatingTimeSlotForNextDayPolicy creatingTimeSlotForNextDayPolicy;
 
   @PostMapping("/add-all")
-  ResponseEntity createTimeSlots(@RequestBody CreateTimeSlotsRequest request) {
+  ResponseEntity createTimeSlots() {
     creatingTimeSlotForNextDayPolicy.run();
     return ResponseEntity.ok().build();
   }
@@ -54,12 +54,6 @@ class RequestingController {
         new RequestId(request.requestId)
     );
     return result ? ResponseEntity.ok().build() : ResponseEntity.status(INTERNAL_SERVER_ERROR).build();
-  }
-
-  record CreateTimeSlotsRequest(
-      Instant from,
-      Instant to
-  ) {
   }
 
   record MakeRequestRequest(

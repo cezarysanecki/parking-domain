@@ -1,9 +1,10 @@
 package pl.cezarysanecki.parkingdomain.commons.date;
 
-import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 
 public interface DateProvider {
 
@@ -11,8 +12,14 @@ public interface DateProvider {
 
   Instant now();
 
-  default Instant fromNow(Duration duration) {
-    return now().plus(duration);
+  default LocalDate currentDay() {
+    Instant now = now();
+    ZonedDateTime zonedCurrentDateTime = now.atZone(ZONE_OFFSET);
+    return zonedCurrentDateTime.toLocalDate();
+  }
+
+  default LocalDate nextDay() {
+    return currentDay().plusDays(1);
   }
 
 }

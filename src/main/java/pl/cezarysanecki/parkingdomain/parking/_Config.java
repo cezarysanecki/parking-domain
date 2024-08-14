@@ -21,7 +21,7 @@ class ParkingConfig {
 
   @Bean
   ParkingFacade parkingFacade(
-      @Value("${business.parking.minutesToConsiderReservationActive}") int minutesToConsiderReservationActive
+      @Value("${business.parking.minutes-to-consider-reservation-active}") int minutesToConsiderReservationActive
   ) {
     return new ParkingFacade(
         parkingRepository,

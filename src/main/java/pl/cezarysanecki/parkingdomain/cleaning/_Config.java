@@ -14,7 +14,7 @@ class CleaningConfig {
   CleaningFacade callingExternalCleaningServicePolicy(
       CleaningRepository cleaningRepository,
       ExternalCleaningService externalCleaningService,
-      @Value("${business.cleaning.numberOfDrivesAwayToConsiderParkingSpotDirty}") int numberOfDrivesAwayToConsiderParkingSpotDirty
+      @Value("${business.cleaning.number-of-drives-away-to-consider-parking-spot-dirty}") int numberOfDrivesAwayToConsiderParkingSpotDirty
   ) {
     return new CleaningFacade(
         cleaningRepository,

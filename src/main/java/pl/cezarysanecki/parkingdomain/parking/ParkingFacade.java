@@ -36,7 +36,7 @@ public class ParkingFacade {
     log.debug("occupying parking spot with id {} by {} units", parkingSpotId, spotUnits);
     ParkingSpotSectionsGrouped parkingSpotSectionsGrouped = parkingRepository.loadBy(
         parkingSpotId,
-        dateProvider.fromNow(Duration.ofMinutes(minutesWhenReservationIsActive))
+        dateProvider.now().plus(Duration.ofMinutes(minutesWhenReservationIsActive))
     );
     Occupant occupant = occupantRepository.findBy(occupantId);
 
@@ -59,7 +59,7 @@ public class ParkingFacade {
     log.debug("occupying parking spot using reservation with id {}", reservationId);
     ParkingSpotSectionsGrouped parkingSpotSectionsGrouped = parkingRepository.loadBy(
         reservationId,
-        dateProvider.fromNow(Duration.ofMinutes(minutesWhenReservationIsActive))
+        dateProvider.now().plus(Duration.ofMinutes(minutesWhenReservationIsActive))
     );
     Occupant occupant = occupantRepository.findBy(occupantId);
 

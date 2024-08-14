@@ -10,9 +10,6 @@ import pl.cezarysanecki.parkingdomain.requesting.RequestingFacade;
 import pl.cezarysanecki.parkingdomain.shared.TimeSlot;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 
 @Slf4j
 @Component
@@ -25,17 +22,14 @@ public class CreatingTimeSlotForNextDayPolicy {
   private final CreatingTimeSlotsConfig creatingTimeSlotsConfig;
 
   public void run() {
-    LocalDate currentDay = dateProvider.now().atZone(ZoneId.of("UTC")).toLocalDate();
-    LocalDate nextDay = currentDay.plusDays(1);
+    LocalDate nextDay = dateProvider.nextDay();
 
-    requestingFacade.createForAll(new TimeSlot(
-        ZonedDateTime.of(nextDay, LocalTime.of(creatingTimeSlotsConfig.morningStartHour, 0), ZoneId.of("UTC")).toInstant(),
-        ZonedDateTime.of(nextDay, LocalTime.of(creatingTimeSlotsConfig.morningEndHour, 0), ZoneId.of("UTC")).toInstant()
-    ));
-    requestingFacade.createForAll(new TimeSlot(
-        ZonedDateTime.of(nextDay, LocalTime.of(creatingTimeSlotsConfig.eveningStartHour, 0), ZoneId.of("UTC")).toInstant(),
-        ZonedDateTime.of(nextDay, LocalTime.of(creatingTimeSlotsConfig.eveningEndHour, 0), ZoneId.of("UTC")).toInstant()
-    ));
+    requestingFacade.createForAll(
+        TimeSlot.create(nextDay, creatingTimeSlotsConfig.morningStartHour, creatingTimeSlotsConfig.morningEndHour)
+    );
+    requestingFacade.createForAll(
+        TimeSlot.create(nextDay, creatingTimeSlotsConfig.eveningStartHour, creatingTimeSlotsConfig.eveningEndHour)
+    );
   }
 
   @ConfigurationProperties(prefix = "business.requesting.creating-time-slots")

@@ -11,7 +11,7 @@ class LocalViews {
 
   @Bean
   InMemoryViews inMemoryViews(
-      @Value("${business.cleaning.numberOfDrivesAwayToConsiderParkingSpotDirty}") int numberOfDrivesAwayToConsiderParkingSpotDirty
+      @Value("${business.cleaning.number-of-drives-away-to-consider-parking-spot-dirty}") int numberOfDrivesAwayToConsiderParkingSpotDirty
   ) {
     return new InMemoryViews(
         numberOfDrivesAwayToConsiderParkingSpotDirty

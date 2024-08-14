@@ -12,20 +12,20 @@ spring:
 # to configure jdbc read: https://medium.com/turkcell/spring-boot-quartz-scheduler-1-c61bbbafdbbb
 
 job:
-  callingExternalCleaningServicePolicyJob:
-    cronExpression: "0 0 13 * * ?"
-  makingRequestsValidJob:
-    cronExpression: "0 0 1 * * ?"
+  calling-external-cleaning-service-policy-job:
+    cron-expression: "0 0 13 * * ?"
+  making-requests-valid-job:
+    cron-expression: "0 0 1 * * ?"
 
 business:
   cleaning:
-    numberOfDirtyParkingSpotsToCallExternalService: 2
-    numberOfDrivesAwayToConsiderParkingSpotDirty: 5
-  reservationRequests:
-    hoursToMakeValid: 1
+    number-of-dirty-parking-spots-to-call-external-service: 2
+    number-of-drives-away-to-consider-parking-spot-dirty: 5
   parking:
-    minutesToConsiderReservationActive: 60
-
-logging:
-  level:
-    pl.cezarysanecki.parkingdomain: DEBUG
+    minutes-to-consider-reservation-active: 60
+  requesting:
+    creating-time-slots:
+      morning-start-hour: 5
+      morning-end-hour: 17
+      evening-start-hour: 18
+      evening-end-hour: 24

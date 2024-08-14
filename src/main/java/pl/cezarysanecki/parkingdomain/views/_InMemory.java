@@ -7,14 +7,8 @@ import pl.cezarysanecki.parkingdomain.management.client.api.ClientId;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpot;
 
 import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.FreeTimeSlotKey;
-import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.RequestableParkingSpotEntity;
 
 @RequiredArgsConstructor
 class InMemoryViews implements
@@ -108,8 +102,8 @@ class InMemoryViews implements
                 .findFirst()
                 .map(ParkingSpot::category)
                 .orElse(null),
-            entry.getKey().timeSlot().from().atZone(ZoneId.of("UTC")).withFixedOffsetZone(),
-            entry.getKey().timeSlot().to().atZone(ZoneId.of("UTC")).withFixedOffsetZone(),
+            entry.getKey().timeSlot().from().atZone(ZoneId.of("UTC")).toLocalDateTime(),
+            entry.getKey().timeSlot().to().atZone(ZoneId.of("UTC")).toLocalDateTime(),
             entry.getValue().capacity - (int) InMemoryRepositories.REQUEST_DATABASE.values()
                 .stream()
                 .filter(request -> request.parkingSpotId.equals(entry.getKey().parkingSpotId())
