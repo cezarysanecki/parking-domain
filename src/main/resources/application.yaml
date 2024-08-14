@@ -23,6 +23,8 @@ business:
     numberOfDrivesAwayToConsiderParkingSpotDirty: 5
   reservationRequests:
     hoursToMakeValid: 1
+  parking:
+    minutesToConsiderReservationActive: 60
 
 logging:
   level:

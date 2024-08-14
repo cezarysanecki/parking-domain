@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import pl.cezarysanecki.parkingdomain.commons.date.DateProvider;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 
 @Configuration
@@ -15,18 +16,20 @@ class ParkingConfig {
   private final OccupationRepository occupationRepository;
   private final OccupantRepository occupantRepository;
   private final ReservationRepository reservationRepository;
+  private final DateProvider dateProvider;
   private final EventPublisher eventPublisher;
 
   @Bean
   ParkingFacade parkingFacade(
-      @Value("${business.parking.minutesWhenReservationIsActive}") int minutesWhenReservationIsActive
+      @Value("${business.parking.minutesToConsiderReservationActive}") int minutesToConsiderReservationActive
   ) {
     return new ParkingFacade(
         parkingRepository,
         occupationRepository,
         occupantRepository,
+        dateProvider,
         eventPublisher,
-        minutesWhenReservationIsActive);
+        minutesToConsiderReservationActive);
   }
 
   @Bean
