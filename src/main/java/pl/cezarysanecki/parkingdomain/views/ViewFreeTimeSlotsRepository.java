@@ -2,7 +2,7 @@ package pl.cezarysanecki.parkingdomain.views;
 
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotCategory;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -13,8 +13,8 @@ public interface ViewFreeTimeSlotsRepository {
   record FreeTimeSlotEntry(
       UUID parkingSpotId,
       ParkingSpotCategory parkingSpotCategory,
-      LocalDateTime from,
-      LocalDateTime to,
+      ZonedDateTime from,
+      ZonedDateTime to,
       int spaceLeft
   ) {
   }

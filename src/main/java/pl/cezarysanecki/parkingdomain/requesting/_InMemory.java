@@ -67,7 +67,7 @@ class InMemoryRequestableParkingSpotRepository implements RequestableParkingSpot
         .filter(entity -> entity.freeTimeSlotKey.parkingSpotId().equals(parkingSpotId))
         .toList();
     return entities.stream()
-        .anyMatch(entity -> timeSlot.within(entity.freeTimeSlotKey.timeSlot()));
+        .anyMatch(entity -> timeSlot.intersects(entity.freeTimeSlotKey.timeSlot()));
   }
 
   static RequestableParkingSpot findBy(ParkingSpotId parkingSpotId, TimeSlot timeSlot) {

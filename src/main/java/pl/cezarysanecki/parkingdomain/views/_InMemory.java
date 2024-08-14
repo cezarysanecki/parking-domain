@@ -97,14 +97,8 @@ class InMemoryViews implements
 
   @Override
   public List<FreeTimeSlotEntry> queryFreeTimeSlots() {
-    Map<FreeTimeSlotKey, List<RequestableParkingSpotEntity>> freeTimeSlots = new HashMap<>();
-    for (RequestableParkingSpotEntity entity : InMemoryRepositories.REQUESTABLE_PARKING_SPOT_DATABASE.values()) {
-      List<RequestableParkingSpotEntity> entries = freeTimeSlots.getOrDefault(entity.freeTimeSlotKey, new ArrayList<>());
-      entries.add(entity);
-      freeTimeSlots.put(entity.freeTimeSlotKey, entries);
-    }
-
-    return freeTimeSlots.entrySet()
+    return InMemoryRepositories.REQUESTABLE_PARKING_SPOT_DATABASE
+        .entrySet()
         .stream()
         .map(entry -> new FreeTimeSlotEntry(
             entry.getKey().parkingSpotId().value(),
@@ -114,9 +108,9 @@ class InMemoryViews implements
                 .findFirst()
                 .map(ParkingSpot::category)
                 .orElse(null),
-            entry.getKey().timeSlot().from().atZone(ZoneId.systemDefault()).toLocalDateTime(),
-            entry.getKey().timeSlot().to().atZone(ZoneId.systemDefault()).toLocalDateTime(),
-            entry.getValue().size() - (int) InMemoryRepositories.REQUEST_DATABASE.values()
+            entry.getKey().timeSlot().from().atZone(ZoneId.of("UTC")).withFixedOffsetZone(),
+            entry.getKey().timeSlot().to().atZone(ZoneId.of("UTC")).withFixedOffsetZone(),
+            entry.getValue().capacity - (int) InMemoryRepositories.REQUEST_DATABASE.values()
                 .stream()
                 .filter(request -> request.parkingSpotId.equals(entry.getKey().parkingSpotId())
                     && request.timeSlot.equals(entry.getKey().timeSlot()))

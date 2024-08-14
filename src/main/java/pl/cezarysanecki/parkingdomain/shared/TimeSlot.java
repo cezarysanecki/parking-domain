@@ -25,4 +25,8 @@ public record TimeSlot(Instant from, Instant to) {
     return !this.from.isBefore(other.from) && !this.to.isAfter(other.to);
   }
 
+  public boolean intersects(TimeSlot other) {
+    return !(to.isBefore(other.from) || from.isAfter(other.to));
+  }
+
 }
