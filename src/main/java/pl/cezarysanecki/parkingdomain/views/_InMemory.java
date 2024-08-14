@@ -102,8 +102,8 @@ class InMemoryViews implements
                 .findFirst()
                 .map(ParkingSpot::category)
                 .orElse(null),
-            entry.getKey().timeSlot().from().atZone(ZoneId.of("UTC")).toLocalDateTime(),
-            entry.getKey().timeSlot().to().atZone(ZoneId.of("UTC")).toLocalDateTime(),
+            entry.getKey().timeSlot().from().atZone(ZoneId.systemDefault()).toLocalDateTime(),
+            entry.getKey().timeSlot().to().atZone(ZoneId.systemDefault()).toLocalDateTime(),
             entry.getValue().capacity - (int) InMemoryRepositories.REQUEST_DATABASE.values()
                 .stream()
                 .filter(request -> request.parkingSpotId.equals(entry.getKey().parkingSpotId())
