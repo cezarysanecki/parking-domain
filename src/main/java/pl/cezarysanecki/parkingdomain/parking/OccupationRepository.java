@@ -8,6 +8,6 @@ interface OccupationRepository {
 
   void saveCheckingVersion(Occupation occupation);
 
-  Optional<Occupation> delete(OccupationId occupationId);
+  Optional<ReleasedOccupation> delete(OccupationId occupationId);
 
 }

@@ -8,7 +8,6 @@ import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotSect
 import pl.cezarysanecki.parkingdomain.parking.api.OccupantId;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupationId;
 import pl.cezarysanecki.parkingdomain.parking.api.ReservationId;
-import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
 
 import java.util.List;
 import java.util.Map;
@@ -32,19 +31,21 @@ class InMemoryOccupationRepository implements OccupationRepository {
   public void saveCheckingVersion(Occupation occupation) {
     DATABASE.put(occupation.occupationId(), new OccupationEntity(
         occupation.occupationId(),
-        occupation.occupantId(),
-        occupation.parkingSpotId(),
-        occupation.sections().stream().map(ParkingSpotSection::sectionId).toList()
+        occupation.occupant().occupantId(),
+        occupation.parkingSpotSectionsGrouped().id(),
+        occupation.parkingSpotSectionsGrouped().sections().stream().map(ParkingSpotSection::sectionId).toList()
     ));
   }
 
   @Override
-  public Optional<Occupation> delete(OccupationId occupationId) {
+  public Optional<ReleasedOccupation> delete(OccupationId occupationId) {
     return Optional.ofNullable(DATABASE.remove(occupationId))
-        .map(removed -> toDomain(
-            removed,
-            InMemoryParkingRepository.findBy(removed.parkingSpotId))
-        );
+        .map(removed -> new ReleasedOccupation(
+            removed.occupationId,
+            removed.occupantId,
+            removed.parkingSpotId,
+            removed.sections
+        ));
   }
 
   static Optional<OccupationId> findFor(ParkingSpotSectionId sectionId) {
@@ -64,14 +65,6 @@ class InMemoryOccupationRepository implements OccupationRepository {
         .findFirst();
   }
 
-  private static Occupation toDomain(OccupationEntity entity, List<ParkingSpotSection> sections) {
-    return new Occupation(
-        entity.occupationId,
-        entity.occupantId,
-        entity.parkingSpotId,
-        sections);
-  }
-
 }
 
 @RequiredArgsConstructor
@@ -88,24 +81,6 @@ class InMemoryParkingRepository implements ParkingRepository {
   }
 
   @Override
-  public ParkingSpotSectionsGrouped loadFreeSectionsFor(ParkingSpotId parkingSpotId, SpotUnits spotUnits) {
-    List<ParkingSpotSection> sections = DATABASE.values()
-        .stream()
-        .filter(section -> section.parkingSpotId.equals(parkingSpotId)
-            && InMemoryOccupationRepository.findFor(section.sectionId).isEmpty())
-        .limit(spotUnits.value())
-        .map(entity -> toDomain(
-            entity,
-            InMemoryOccupationRepository.findFor(entity.sectionId).orElse(null))
-        )
-        .toList();
-    if (sections.isEmpty()) {
-      throw new EntityNotFoundException("cannot find free sections in parking spot with id " + parkingSpotId);
-    }
-    return new ParkingSpotSectionsGrouped(sections);
-  }
-
-  @Override
   public ParkingSpotSectionsGrouped loadBy(ParkingSpotId parkingSpotId) {
     return new ParkingSpotSectionsGrouped(
         DATABASE.values()
@@ -115,18 +90,13 @@ class InMemoryParkingRepository implements ParkingRepository {
                 entity,
                 InMemoryOccupationRepository.findFor(entity.sectionId).orElse(null))
             )
-            .toList());
+            .toList(),
+        InMemoryReservationRepository.findFor(parkingSpotId));
   }
 
-  static List<ParkingSpotSection> findBy(ParkingSpotId parkingSpotId) {
-    return DATABASE.values()
-        .stream()
-        .filter(entity -> entity.parkingSpotId.equals(parkingSpotId))
-        .map(entity -> toDomain(
-            entity,
-            InMemoryOccupationRepository.findFor(entity.sectionId).orElse(null)
-        ))
-        .toList();
+  @Override
+  public ParkingSpotSectionsGrouped loadBy(ReservationId reservationId) {
+    return null;
   }
 
   private static ParkingSpotSection toDomain(ParkingSpotSectionEntity entity, OccupationId occupationId) {
@@ -191,6 +161,20 @@ class InMemoryReservationRepository implements ReservationRepository {
             reservation.spotUnits()
         ))
     );
+  }
+
+  static List<Reservation> findFor(ParkingSpotId parkingSpotId) {
+    return DATABASE.values()
+        .stream()
+        .filter(entity -> entity.parkingSpotId.equals(parkingSpotId))
+        .map(entity -> new Reservation(
+            entity.reservationId,
+            entity.ownerId,
+            entity.parkingSpotId,
+            entity.timeSlot,
+            entity.spotUnits
+        ))
+        .toList();
   }
 
 }

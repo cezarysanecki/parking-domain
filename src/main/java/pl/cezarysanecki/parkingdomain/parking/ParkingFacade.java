@@ -8,6 +8,7 @@ import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupantId;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupationId;
 import pl.cezarysanecki.parkingdomain.parking.api.ParkingSpotReleased;
+import pl.cezarysanecki.parkingdomain.parking.api.ReservationId;
 import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
 
 import java.util.Optional;
@@ -28,16 +29,36 @@ public class ParkingFacade {
       SpotUnits spotUnits
   ) {
     log.debug("occupying parking spot with id {} by {} units", parkingSpotId, spotUnits);
-    ParkingSpotSectionsGrouped parkingSpotSectionsGrouped = parkingRepository.loadFreeSectionsFor(parkingSpotId, spotUnits);
+    ParkingSpotSectionsGrouped parkingSpotSectionsGrouped = parkingRepository.loadBy(parkingSpotId);
     Occupant occupant = occupantRepository.findBy(occupantId);
 
     OccupationId occupationId = OccupationId.newOne();
-    if (!parkingSpotSectionsGrouped.occupyBy(spotUnits) || !occupant.canOccupy(occupationId)) {
+    if (!occupant.canOccupy(occupationId) || !parkingSpotSectionsGrouped.occupyBy(spotUnits)) {
       log.debug("failed to occupy parking spot with id {}", parkingSpotId);
       return Optional.empty();
     }
     occupationRepository.saveCheckingVersion(new Occupation(
-        occupationId, occupantId, parkingSpotId, parkingSpotSectionsGrouped.sections()
+        occupationId, occupant, parkingSpotSectionsGrouped, ReservationId.none()
+    ));
+    return Optional.of(occupationId);
+  }
+
+  @Transactional
+  public Optional<OccupationId> occupyUsing(
+      OccupantId occupantId,
+      ReservationId reservationId
+  ) {
+    log.debug("occupying parking spot using reservation with id {}", reservationId);
+    ParkingSpotSectionsGrouped parkingSpotSectionsGrouped = parkingRepository.loadBy(reservationId);
+    Occupant occupant = occupantRepository.findBy(occupantId);
+
+    OccupationId occupationId = OccupationId.newOne();
+    if (!occupant.canOccupy(occupationId) || !parkingSpotSectionsGrouped.occupyUsing(reservationId)) {
+      log.debug("failed to occupy parking spot with id {}", parkingSpotSectionsGrouped.id());
+      return Optional.empty();
+    }
+    occupationRepository.saveCheckingVersion(new Occupation(
+        occupationId, occupant, parkingSpotSectionsGrouped, reservationId
     ));
     return Optional.of(occupationId);
   }
@@ -47,17 +68,19 @@ public class ParkingFacade {
       OccupationId occupationId
   ) {
     log.debug("releasing occupation with id {}", occupationId);
-    Optional<Occupation> deletedOccupation = occupationRepository.delete(occupationId);
-    if (deletedOccupation.isEmpty()) {
+    Optional<ReleasedOccupation> potentiallyReleasedOccupation = occupationRepository.delete(occupationId);
+    if (potentiallyReleasedOccupation.isEmpty()) {
       log.debug("failed to release occupation with id {}", occupationId);
       return false;
     }
-    Occupation occupation = deletedOccupation.get();
-    log.debug("releasing occupation for parking spot with id {} for {} units", occupation.parkingSpotId(), occupation.sections().size());
+    ReleasedOccupation releasedOccupation = potentiallyReleasedOccupation.get();
+    log.debug("releasing occupation for parking spot with id {} for {} units", releasedOccupation.parkingSpotId(), releasedOccupation.sections().size());
 
     eventPublisher.publish(new ParkingSpotReleased(
-        occupation.occupationId(), occupation.occupantId(), occupation.parkingSpotId(),
-        occupation.sections().stream().map(ParkingSpotSection::sectionId).toList()
+        releasedOccupation.occupationId(),
+        releasedOccupation.occupantId(),
+        releasedOccupation.parkingSpotId(),
+        releasedOccupation.sections()
     ));
     return true;
   }
