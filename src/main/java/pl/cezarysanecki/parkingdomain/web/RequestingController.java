@@ -11,6 +11,7 @@ import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.requesting.RequestingFacade;
 import pl.cezarysanecki.parkingdomain.requesting.api.RequestId;
 import pl.cezarysanecki.parkingdomain.requesting.api.RequesterId;
+import pl.cezarysanecki.parkingdomain.requesting.policies.CreatingTimeSlotForNextDayPolicy;
 import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
 import pl.cezarysanecki.parkingdomain.shared.TimeSlot;
 
@@ -25,10 +26,11 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 class RequestingController {
 
   private final RequestingFacade requestingFacade;
+  private final CreatingTimeSlotForNextDayPolicy creatingTimeSlotForNextDayPolicy;
 
   @PostMapping("/add-all")
   ResponseEntity createTimeSlots(@RequestBody CreateTimeSlotsRequest request) {
-    requestingFacade.createForAll(new TimeSlot(request.from, request.to));
+    creatingTimeSlotForNextDayPolicy.run();
     return ResponseEntity.ok().build();
   }
 

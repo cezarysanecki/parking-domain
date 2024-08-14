@@ -30,7 +30,7 @@ class _LocalController {
 
   @PostMapping("/call-cleaning")
   ResponseEntity callCleaning() {
-    Result result = callingCleaningWhenSpotsDirtyPolicy.callCleaning();
+    Result result = callingCleaningWhenSpotsDirtyPolicy.run();
     if (result == Result.Success) {
       return ResponseEntity.ok().build();
     }

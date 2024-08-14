@@ -69,7 +69,7 @@ public class RequestingFacade {
             timeSlot)
         )
         .toList();
-    log.debug("created time slots {} from {}", groupedSections.size(), templates.size());
+    log.debug("created time slots {} from {} for {}", groupedSections.size(), templates.size(), timeSlot);
 
     groupedSections.forEach(requestableSectionRepository::saveNew);
   }

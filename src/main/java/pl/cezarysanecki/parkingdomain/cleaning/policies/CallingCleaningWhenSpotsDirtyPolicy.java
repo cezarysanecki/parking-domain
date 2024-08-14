@@ -24,7 +24,7 @@ public class CallingCleaningWhenSpotsDirtyPolicy {
     this.numberOfDirtyParkingSpotsToCallExternalService = numberOfDirtyParkingSpotsToCallExternalService;
   }
 
-  public Result callCleaning() {
+  public Result run() {
     List<ParkingSpotId> parkingSpotIds = cleaningFacade.getDirtyParkingSpots();
 
     if (parkingSpotIds.size() >= numberOfDirtyParkingSpotsToCallExternalService) {
