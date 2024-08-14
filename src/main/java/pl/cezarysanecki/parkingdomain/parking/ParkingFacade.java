@@ -32,7 +32,7 @@ public class ParkingFacade {
     Occupant occupant = occupantRepository.findBy(occupantId);
 
     OccupationId occupationId = OccupationId.newOne();
-    if (!parkingSpotSectionsGrouped.occupyBy(occupationId) || !occupant.canOccupy(occupationId)) {
+    if (!parkingSpotSectionsGrouped.occupyBy(spotUnits) || !occupant.canOccupy(occupationId)) {
       log.debug("failed to occupy parking spot with id {}", parkingSpotId);
       return Optional.empty();
     }
