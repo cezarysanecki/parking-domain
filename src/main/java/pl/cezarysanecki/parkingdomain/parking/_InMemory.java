@@ -11,6 +11,7 @@ import pl.cezarysanecki.parkingdomain.parking.api.ReservationId;
 import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
 
 import java.time.Instant;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -62,6 +63,13 @@ class InMemoryOccupationRepository implements OccupationRepository {
         .findFirst();
   }
 
+  static Optional<OccupationEntity> findFor(ParkingSpotId parkingSpotId) {
+    return DATABASE.values()
+        .stream()
+        .filter(entity -> entity.parkingSpotId.equals(parkingSpotId))
+        .findFirst();
+  }
+
   static List<OccupationEntity> findFor(OccupantId occupantId) {
     return DATABASE.values()
         .stream()
@@ -86,14 +94,21 @@ class InMemoryParkingRepository implements ParkingRepository {
 
   @Override
   public ParkingSpotSectionsGrouped loadBy(ParkingSpotId parkingSpotId, Instant activationDateOfReservations) {
+    Collection<ParkingSpotSectionEntity> sections = DATABASE.values();
+    List<ReservationEntity> reservations = InMemoryReservationRepository.findFor(parkingSpotId, activationDateOfReservations);
+    Optional<OccupationEntity> occupations = InMemoryOccupationRepository.findFor(parkingSpotId);
+
+    List<ReservationEntity> unused = reservations.stream()
+        .filter(reservation -> occupations.stream()
+            .anyMatch(occupation -> occupation.reservationId.map(reservationId -> reservationId.equals(reservation.reservationId)).orElse(false)))
+        .toList();
+
     return new ParkingSpotSectionsGrouped(
-        DATABASE.values()
-            .stream()
+        sections.stream()
             .filter(section -> section.parkingSpotId.equals(parkingSpotId))
             .map(InMemoryParkingRepository::toDomain)
             .toList(),
-        InMemoryReservationRepository.findFor(parkingSpotId, activationDateOfReservations)
-            .stream()
+        unused.stream()
             .map(reservationEntity -> reservationEntity.spotUnits)
             .map(SpotUnits::value)
             .reduce(0, Integer::sum));
