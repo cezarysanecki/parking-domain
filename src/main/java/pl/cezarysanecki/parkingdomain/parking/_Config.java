@@ -1,6 +1,7 @@
 package pl.cezarysanecki.parkingdomain.parking;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -17,12 +18,15 @@ class ParkingConfig {
   private final EventPublisher eventPublisher;
 
   @Bean
-  ParkingFacade parkingFacade() {
+  ParkingFacade parkingFacade(
+      @Value("${business.parking.minutesWhenReservationIsActive}") int minutesWhenReservationIsActive
+  ) {
     return new ParkingFacade(
         parkingRepository,
         occupationRepository,
         occupantRepository,
-        eventPublisher);
+        eventPublisher,
+        minutesWhenReservationIsActive);
   }
 
   @Bean

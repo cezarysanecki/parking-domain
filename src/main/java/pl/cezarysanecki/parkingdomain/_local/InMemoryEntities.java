@@ -13,6 +13,7 @@ import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
 import pl.cezarysanecki.parkingdomain.shared.TimeSlot;
 
 import java.util.List;
+import java.util.Optional;
 
 public class InMemoryEntities {
 
@@ -22,6 +23,7 @@ public class InMemoryEntities {
     public final OccupantId occupantId;
     public final ParkingSpotId parkingSpotId;
     public final List<ParkingSpotSectionId> sections;
+    public final Optional<ReservationId> reservationId;
   }
 
   @AllArgsConstructor

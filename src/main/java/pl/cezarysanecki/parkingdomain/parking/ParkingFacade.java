@@ -3,6 +3,7 @@ package pl.cezarysanecki.parkingdomain.parking;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import pl.cezarysanecki.parkingdomain.commons.date.DateProvider;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupantId;
@@ -11,6 +12,7 @@ import pl.cezarysanecki.parkingdomain.parking.api.ParkingSpotReleased;
 import pl.cezarysanecki.parkingdomain.parking.api.ReservationId;
 import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
 
+import java.time.Duration;
 import java.util.Optional;
 
 @Slf4j
@@ -20,7 +22,10 @@ public class ParkingFacade {
   private final ParkingRepository parkingRepository;
   private final OccupationRepository occupationRepository;
   private final OccupantRepository occupantRepository;
+  private final DateProvider dateProvider;
   private final EventPublisher eventPublisher;
+
+  private final int minutesWhenReservationIsActive;
 
   @Transactional
   public Optional<OccupationId> occupy(
@@ -29,7 +34,10 @@ public class ParkingFacade {
       SpotUnits spotUnits
   ) {
     log.debug("occupying parking spot with id {} by {} units", parkingSpotId, spotUnits);
-    ParkingSpotSectionsGrouped parkingSpotSectionsGrouped = parkingRepository.loadBy(parkingSpotId);
+    ParkingSpotSectionsGrouped parkingSpotSectionsGrouped = parkingRepository.loadBy(
+        parkingSpotId,
+        dateProvider.fromNow(Duration.ofMinutes(minutesWhenReservationIsActive))
+    );
     Occupant occupant = occupantRepository.findBy(occupantId);
 
     OccupationId occupationId = OccupationId.newOne();
@@ -49,7 +57,10 @@ public class ParkingFacade {
       ReservationId reservationId
   ) {
     log.debug("occupying parking spot using reservation with id {}", reservationId);
-    ParkingSpotSectionsGrouped parkingSpotSectionsGrouped = parkingRepository.loadBy(reservationId);
+    ParkingSpotSectionsGrouped parkingSpotSectionsGrouped = parkingRepository.loadBy(
+        reservationId,
+        dateProvider.fromNow(Duration.ofMinutes(minutesWhenReservationIsActive))
+    );
     Occupant occupant = occupantRepository.findBy(occupantId);
 
     OccupationId occupationId = OccupationId.newOne();
