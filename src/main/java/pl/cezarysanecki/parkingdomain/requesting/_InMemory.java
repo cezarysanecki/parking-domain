@@ -24,8 +24,8 @@ import static pl.cezarysanecki.parkingdomain._local.InMemoryRepositories.REQUEST
 
 class InMemoryRequestableParkingSpotRepository implements RequestableParkingSpotRepository {
 
-  static final Map<ParkingSpotId, Integer> TEMPLATES_DATABASE = InMemoryRepositories.TEMPLATES_DATABASE;
-  static final Map<FreeTimeSlotKey, RequestableParkingSpotEntity> DATABASE = REQUESTABLE_PARKING_SPOT_DATABASE;
+  private static final Map<ParkingSpotId, Integer> TEMPLATES_DATABASE = InMemoryRepositories.TEMPLATES_DATABASE;
+  private static final Map<FreeTimeSlotKey, RequestableParkingSpotEntity> DATABASE = REQUESTABLE_PARKING_SPOT_DATABASE;
 
   @Override
   public void saveTemplate(ParkingSpotId parkingSpotId, int numberOfSections) {
@@ -57,7 +57,8 @@ class InMemoryRequestableParkingSpotRepository implements RequestableParkingSpot
 
   @Override
   public RequestableParkingSpot findFor(ParkingSpotId parkingSpotId, TimeSlot timeSlot) {
-    return findBy(parkingSpotId, timeSlot);
+    RequestableParkingSpotEntity entity = findBy(parkingSpotId, timeSlot);
+    return toDomain(entity);
   }
 
   @Override
@@ -70,15 +71,22 @@ class InMemoryRequestableParkingSpotRepository implements RequestableParkingSpot
         .anyMatch(entity -> timeSlot.intersects(entity.freeTimeSlotKey.timeSlot()));
   }
 
-  static RequestableParkingSpot findBy(ParkingSpotId parkingSpotId, TimeSlot timeSlot) {
+  static RequestableParkingSpotEntity findBy(ParkingSpotId parkingSpotId, TimeSlot timeSlot) {
     RequestableParkingSpotEntity entity = DATABASE.get(new FreeTimeSlotKey(parkingSpotId, timeSlot));
     if (entity == null) {
       throw new EntityNotFoundException("cannot find requestable parking spot with id " + parkingSpotId + " for time slot " + timeSlot);
     }
+    return entity;
+  }
+
+  static RequestableParkingSpot toDomain(RequestableParkingSpotEntity entity) {
     return new RequestableParkingSpot(
-        parkingSpotId,
+        entity.freeTimeSlotKey.parkingSpotId(),
         entity.capacity,
-        InMemoryRequestRepository.findFor(parkingSpotId).size(),
+        InMemoryRequestRepository.findFor(entity.freeTimeSlotKey.parkingSpotId())
+            .stream()
+            .map(request -> request.units)
+            .reduce(0, Integer::sum),
         entity.freeTimeSlotKey.timeSlot(),
         new Version(entity.version));
   }
@@ -87,7 +95,7 @@ class InMemoryRequestableParkingSpotRepository implements RequestableParkingSpot
 
 class InMemoryRequesterRepository implements RequesterRepository {
 
-  static final Map<RequesterId, RequesterEntity> DATABASE = REQUESTER_DATABASE;
+  private static final Map<RequesterId, RequesterEntity> DATABASE = REQUESTER_DATABASE;
 
   @Override
   public void saveNew(RequesterId requesterId, int limit) {
@@ -100,17 +108,25 @@ class InMemoryRequesterRepository implements RequesterRepository {
 
   @Override
   public Requester findBy(RequesterId requesterId) {
-    return findRequesterBy(requesterId);
+    RequesterEntity entity = findRequesterBy(requesterId);
+    return toDomain(entity);
   }
 
-  static Requester findRequesterBy(RequesterId requesterId) {
+  static RequesterEntity findRequesterBy(RequesterId requesterId) {
     RequesterEntity entity = DATABASE.get(requesterId);
     if (entity == null) {
       throw new EntityNotFoundException("No requester found with id " + requesterId);
     }
+    return entity;
+  }
+
+  static Requester toDomain(RequesterEntity entity) {
     return new Requester(
         entity.requesterId,
-        InMemoryRequestRepository.findFor(requesterId),
+        InMemoryRequestRepository.findFor(entity.requesterId)
+            .stream()
+            .map(request -> request.requestId)
+            .toList(),
         entity.limit,
         new Version(entity.version)
     );
@@ -120,7 +136,7 @@ class InMemoryRequesterRepository implements RequesterRepository {
 
 class InMemoryRequestRepository implements RequestRepository {
 
-  static final Map<RequestId, RequestEntity> DATABASE = REQUEST_DATABASE;
+  private static final Map<RequestId, RequestEntity> DATABASE = REQUEST_DATABASE;
 
   @Override
   public void saveCheckingVersion(Request request) {
@@ -144,27 +160,21 @@ class InMemoryRequestRepository implements RequestRepository {
         .stream()
         .filter(entity -> date.atZone(ZoneId.systemDefault()).toLocalDate().equals(
             entity.timeSlot.from().atZone(ZoneId.systemDefault()).toLocalDate()))
-        .map(entity -> toDomain(
-            entity,
-            InMemoryRequestableParkingSpotRepository.findBy(entity.parkingSpotId, entity.timeSlot),
-            InMemoryRequesterRepository.findRequesterBy(entity.requesterId)
-        ))
+        .map(InMemoryRequestRepository::toDomain)
         .toList();
   }
 
-  static List<RequestId> findFor(ParkingSpotId parkingSpotId) {
+  static List<RequestEntity> findFor(ParkingSpotId parkingSpotId) {
     return DATABASE.values()
         .stream()
         .filter(entity -> entity.parkingSpotId.equals(parkingSpotId))
-        .map(entity -> entity.requestId)
         .toList();
   }
 
-  static List<RequestId> findFor(RequesterId requesterId) {
+  static List<RequestEntity> findFor(RequesterId requesterId) {
     return DATABASE.values()
         .stream()
         .filter(entity -> entity.requesterId.equals(requesterId))
-        .map(entity -> entity.requestId)
         .toList();
   }
 
@@ -173,17 +183,16 @@ class InMemoryRequestRepository implements RequestRepository {
     DATABASE.values().removeIf(entity -> requestIds.contains(entity.requestId));
   }
 
-  private static Request toDomain(
-      RequestEntity entity,
-      RequestableParkingSpot requestableParkingSpot,
-      Requester requester) {
+  static Request toDomain(RequestEntity entity) {
     return new Request(
         entity.requestId,
-        requester,
+        InMemoryRequesterRepository.toDomain(
+            InMemoryRequesterRepository.findRequesterBy(entity.requesterId)),
         entity.parkingSpotId,
         entity.timeSlot,
         new SpotUnits(entity.units),
-        requestableParkingSpot
+        InMemoryRequestableParkingSpotRepository.toDomain(
+            InMemoryRequestableParkingSpotRepository.findBy(entity.parkingSpotId, entity.timeSlot))
     );
   }
 

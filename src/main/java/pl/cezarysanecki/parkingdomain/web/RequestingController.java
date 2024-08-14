@@ -15,7 +15,8 @@ import pl.cezarysanecki.parkingdomain.requesting.policies.CreatingTimeSlotForNex
 import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
 import pl.cezarysanecki.parkingdomain.shared.TimeSlot;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
@@ -39,7 +40,10 @@ class RequestingController {
     var result = requestingFacade.request(
         new RequesterId(request.requesterId),
         new ParkingSpotId(request.parkingSpotId),
-        new TimeSlot(request.from, request.to),
+        new TimeSlot(
+            request.from.atZone(ZoneId.systemDefault()).toInstant(),
+            request.to.atZone(ZoneId.systemDefault()).toInstant()
+        ),
         new SpotUnits(request.spotUnits)
     );
     return result
@@ -59,8 +63,8 @@ class RequestingController {
   record MakeRequestRequest(
       UUID requesterId,
       UUID parkingSpotId,
-      Instant from,
-      Instant to,
+      LocalDateTime from,
+      LocalDateTime to,
       int spotUnits
   ) {
   }

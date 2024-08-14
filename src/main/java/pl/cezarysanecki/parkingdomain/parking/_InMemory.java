@@ -8,6 +8,7 @@ import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotSect
 import pl.cezarysanecki.parkingdomain.parking.api.OccupantId;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupationId;
 import pl.cezarysanecki.parkingdomain.parking.api.ReservationId;
+import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
 
 import java.time.Instant;
 import java.util.List;
@@ -53,21 +54,19 @@ class InMemoryOccupationRepository implements OccupationRepository {
         ));
   }
 
-  static Optional<OccupationId> findFor(ParkingSpotSectionId sectionId) {
+  static Optional<OccupationEntity> findFor(ParkingSpotSectionId sectionId) {
     return DATABASE.values()
         .stream()
         .filter(entity -> entity.sections.stream()
             .anyMatch(section -> section.equals(sectionId)))
-        .map(entity -> entity.occupationId)
         .findFirst();
   }
 
-  static Optional<OccupationId> findFor(OccupantId occupantId) {
+  static List<OccupationEntity> findFor(OccupantId occupantId) {
     return DATABASE.values()
         .stream()
         .filter(entity -> entity.occupantId.equals(occupantId))
-        .map(entity -> entity.occupationId)
-        .findFirst();
+        .toList();
   }
 
 }
@@ -91,26 +90,19 @@ class InMemoryParkingRepository implements ParkingRepository {
         DATABASE.values()
             .stream()
             .filter(section -> section.parkingSpotId.equals(parkingSpotId))
-            .map(entity -> toDomain(
-                entity,
-                InMemoryOccupationRepository.findFor(entity.sectionId).orElse(null))
-            )
+            .map(InMemoryParkingRepository::toDomain)
             .toList(),
-        InMemoryReservationRepository.findFor(parkingSpotId, activationDateOfReservations));
+        InMemoryReservationRepository.findFor(parkingSpotId, activationDateOfReservations)
+            .stream()
+            .map(reservationEntity -> reservationEntity.spotUnits)
+            .map(SpotUnits::value)
+            .reduce(0, Integer::sum));
   }
 
-  @Override
-  public ParkingSpotSectionsGrouped loadBy(ReservationId reservationId, Instant activationDateOfReservations) {
-    Optional<Reservation> reservation = InMemoryReservationRepository.tryFindBy(reservationId, activationDateOfReservations);
-    if (reservation.isEmpty()) {
-      throw new EntityNotFoundException("Not found reservation with id " + reservationId);
-    }
-    ParkingSpotId parkingSpotId = reservation.get().parkingSpotId();
-
-    return loadBy(parkingSpotId, activationDateOfReservations);
-  }
-
-  private static ParkingSpotSection toDomain(ParkingSpotSectionEntity entity, OccupationId occupationId) {
+  private static ParkingSpotSection toDomain(ParkingSpotSectionEntity entity) {
+    OccupationId occupationId = InMemoryOccupationRepository.findFor(entity.sectionId)
+        .map(occupationEntity -> occupationEntity.occupationId)
+        .orElse(null);
     return new ParkingSpotSection(
         entity.parkingSpotId,
         entity.sectionId,
@@ -127,15 +119,12 @@ class InMemoryOccupantRepository implements OccupantRepository {
   private static final Map<OccupantId, OccupantEntity> DATABASE = OCCUPANT_DATABASE;
 
   @Override
-  public Occupant findBy(OccupantId occupantId) {
+  public Occupant findBy(OccupantId occupantId, Instant activationDateOfReservations) {
     OccupantEntity entity = DATABASE.get(occupantId);
     if (entity == null) {
       throw new EntityNotFoundException("No occupant found with id " + occupantId);
     }
-    return toDomain(
-        entity,
-        InMemoryOccupationRepository.findFor(occupantId).orElse(null)
-    );
+    return toDomain(entity, activationDateOfReservations);
   }
 
   @Override
@@ -146,10 +135,17 @@ class InMemoryOccupantRepository implements OccupantRepository {
     ));
   }
 
-  private static Occupant toDomain(OccupantEntity entity, OccupationId occupationId) {
+  private static Occupant toDomain(OccupantEntity entity, Instant activationDateOfReservations) {
     return new Occupant(
         entity.occupantId,
-        occupationId,
+        InMemoryOccupationRepository.findFor(entity.occupantId)
+            .stream()
+            .map(occupationEntity -> occupationEntity.occupationId)
+            .toList(),
+        InMemoryReservationRepository.findFor(entity.occupantId, activationDateOfReservations)
+            .stream()
+            .map(reservationEntity -> reservationEntity.reservationId)
+            .toList(),
         new Version(entity.version)
     );
   }
@@ -174,38 +170,42 @@ class InMemoryReservationRepository implements ReservationRepository {
     );
   }
 
-  static Optional<Reservation> tryFindBy(ReservationId reservationId, Instant activationDateOfReservations) {
-    return DATABASE.values()
-        .stream()
-        .filter(entity -> entity.reservationId.equals(reservationId)
-            && entity.timeSlot.from().isBefore(activationDateOfReservations))
-        .findFirst()
-        .map(entity -> new Reservation(
-            entity.reservationId,
-            entity.ownerId,
-            entity.parkingSpotId,
-            entity.timeSlot,
-            entity.spotUnits
-        ));
+  @Override
+  public Reservation loadBy(ReservationId reservationId) {
+    ReservationEntity entity = DATABASE.get(reservationId);
+    if (entity == null) {
+      throw new EntityNotFoundException("No reservation found with id " + reservationId);
+    }
+    return toDomain(entity);
   }
 
-  static List<Reservation> findFor(ParkingSpotId parkingSpotId, Instant activationDateOfReservations) {
+  static List<ReservationEntity> findFor(ParkingSpotId parkingSpotId, Instant activationDateOfReservations) {
     return DATABASE.values()
         .stream()
         .filter(entity -> entity.parkingSpotId.equals(parkingSpotId)
             && entity.timeSlot.from().isBefore(activationDateOfReservations))
-        .map(entity -> new Reservation(
-            entity.reservationId,
-            entity.ownerId,
-            entity.parkingSpotId,
-            entity.timeSlot,
-            entity.spotUnits
-        ))
+        .toList();
+  }
+
+  static List<ReservationEntity> findFor(OccupantId occupantId, Instant activationDateOfReservations) {
+    return DATABASE.values()
+        .stream()
+        .filter(entity -> entity.ownerId.value().equals(occupantId.value())
+            && entity.timeSlot.from().isBefore(activationDateOfReservations))
         .toList();
   }
 
   static void deleteBy(ReservationId reservationId) {
     DATABASE.remove(reservationId);
+  }
+
+  static Reservation toDomain(ReservationEntity entity) {
+    return new Reservation(
+        entity.reservationId,
+        entity.ownerId,
+        entity.parkingSpotId,
+        entity.timeSlot,
+        entity.spotUnits);
   }
 
 }

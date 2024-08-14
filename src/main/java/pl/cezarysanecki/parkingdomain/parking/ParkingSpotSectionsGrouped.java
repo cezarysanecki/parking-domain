@@ -2,15 +2,13 @@ package pl.cezarysanecki.parkingdomain.parking;
 
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotSectionId;
-import pl.cezarysanecki.parkingdomain.parking.api.ReservationId;
 import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
 
 import java.util.List;
-import java.util.Optional;
 
 record ParkingSpotSectionsGrouped(
     List<ParkingSpotSection> sections,
-    List<Reservation> reservations
+    int reservedSpace
 ) {
 
   ParkingSpotSectionsGrouped {
@@ -29,33 +27,14 @@ record ParkingSpotSectionsGrouped(
     List<ParkingSpotSection> createdSections = sections.stream()
         .map(section -> ParkingSpotSection.free(parkingSpotId, section))
         .toList();
-    return new ParkingSpotSectionsGrouped(createdSections, List.of());
+    return new ParkingSpotSectionsGrouped(createdSections, 0);
   }
 
   boolean occupyBy(SpotUnits spotUnits) {
     int freeSpace = (int) sections.stream()
         .filter(ParkingSpotSection::isFree)
         .count();
-    int reservedSpace = reservations.stream()
-        .map(Reservation::spotUnits)
-        .map(SpotUnits::value)
-        .reduce(0, Integer::sum);
     return freeSpace - reservedSpace >= spotUnits.value();
-  }
-
-  boolean occupyUsing(ReservationId reservationId) {
-    Optional<Reservation> currentReservation = reservations.stream()
-        .filter(reservation -> reservation.reservationId().equals(reservationId))
-        .findFirst();
-    if (currentReservation.isEmpty()) {
-      return false;
-    }
-
-    Reservation reservation = currentReservation.get();
-    int freeSpace = (int) sections.stream()
-        .filter(ParkingSpotSection::isFree)
-        .count();
-    return freeSpace >= reservation.spotUnits().value();
   }
 
   ParkingSpotId id() {

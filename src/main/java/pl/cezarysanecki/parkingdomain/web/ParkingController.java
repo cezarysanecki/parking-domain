@@ -15,6 +15,7 @@ import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.ParkingFacade;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupantId;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupationId;
+import pl.cezarysanecki.parkingdomain.parking.api.ReservationId;
 import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
 
 import java.util.UUID;
@@ -53,6 +54,18 @@ class ParkingController {
         .orElseGet(() -> ResponseEntity.internalServerError().build());
   }
 
+  @PostMapping("/occupy-with-reservation")
+  ResponseEntity occupyParkingSpotWithReservation(@RequestBody OccupyParkingSpotUsingReservationRequest request) {
+    var result = parkingFacade.occupyUsing(
+        new OccupantId(request.occupantId),
+        new ReservationId(request.reservationId)
+    );
+    return result
+        .map(OccupationId::toString)
+        .map(ResponseEntity::ok)
+        .orElseGet(() -> ResponseEntity.internalServerError().build());
+  }
+
   @DeleteMapping("/release")
   ResponseEntity releaseParkingSpot(@RequestBody ReleaseParkingSpotRequest request) {
     boolean result = parkingFacade.release(new OccupationId(request.occupationId));
@@ -68,6 +81,12 @@ class ParkingController {
       UUID occupantId,
       UUID parkingSpotId,
       int spotUnits
+  ) {
+  }
+
+  record OccupyParkingSpotUsingReservationRequest(
+      UUID occupantId,
+      UUID reservationId
   ) {
   }
 

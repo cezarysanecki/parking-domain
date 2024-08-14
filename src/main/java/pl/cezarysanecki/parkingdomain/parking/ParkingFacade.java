@@ -13,6 +13,7 @@ import pl.cezarysanecki.parkingdomain.parking.api.ReservationId;
 import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
 
 import java.time.Duration;
+import java.time.Instant;
 import java.util.Optional;
 
 @Slf4j
@@ -22,6 +23,7 @@ public class ParkingFacade {
   private final ParkingRepository parkingRepository;
   private final OccupationRepository occupationRepository;
   private final OccupantRepository occupantRepository;
+  private final ReservationRepository reservationRepository;
   private final DateProvider dateProvider;
   private final EventPublisher eventPublisher;
 
@@ -33,12 +35,11 @@ public class ParkingFacade {
       ParkingSpotId parkingSpotId,
       SpotUnits spotUnits
   ) {
+    Instant activationDate = dateProvider.now().plus(Duration.ofMinutes(minutesWhenReservationIsActive));
+
     log.debug("occupying parking spot with id {} by {} units", parkingSpotId, spotUnits);
-    ParkingSpotSectionsGrouped parkingSpotSectionsGrouped = parkingRepository.loadBy(
-        parkingSpotId,
-        dateProvider.now().plus(Duration.ofMinutes(minutesWhenReservationIsActive))
-    );
-    Occupant occupant = occupantRepository.findBy(occupantId);
+    ParkingSpotSectionsGrouped parkingSpotSectionsGrouped = parkingRepository.loadBy(parkingSpotId, activationDate);
+    Occupant occupant = occupantRepository.findBy(occupantId, activationDate);
 
     OccupationId occupationId = OccupationId.newOne();
     if (!occupant.canOccupy(occupationId) || !parkingSpotSectionsGrouped.occupyBy(spotUnits)) {
@@ -56,16 +57,17 @@ public class ParkingFacade {
       OccupantId occupantId,
       ReservationId reservationId
   ) {
+    Instant activationDate = dateProvider.now().plus(Duration.ofMinutes(minutesWhenReservationIsActive));
+
     log.debug("occupying parking spot using reservation with id {}", reservationId);
-    ParkingSpotSectionsGrouped parkingSpotSectionsGrouped = parkingRepository.loadBy(
-        reservationId,
-        dateProvider.now().plus(Duration.ofMinutes(minutesWhenReservationIsActive))
-    );
-    Occupant occupant = occupantRepository.findBy(occupantId);
+    Reservation reservation = reservationRepository.loadBy(reservationId);
+
+    ParkingSpotSectionsGrouped parkingSpotSectionsGrouped = parkingRepository.loadBy(reservation.parkingSpotId(), activationDate);
+    Occupant occupant = occupantRepository.findBy(occupantId, activationDate);
 
     OccupationId occupationId = OccupationId.newOne();
-    if (!occupant.canOccupy(occupationId) || !parkingSpotSectionsGrouped.occupyUsing(reservationId)) {
-      log.debug("failed to occupy parking spot with id {}", parkingSpotSectionsGrouped.id());
+    if (!occupant.canOccupyWithReservation(reservationId) || !parkingSpotSectionsGrouped.occupyBy(reservation.spotUnits())) {
+      log.debug("failed to occupy parking spot with id {}", reservation.parkingSpotId());
       return Optional.empty();
     }
     occupationRepository.saveCheckingVersion(new Occupation(

@@ -36,7 +36,7 @@ public class RequestingFacade {
     Requester requester = requesterRepository.findBy(requesterId);
 
     RequestId requestId = RequestId.newOne();
-    if (!requestableParkingSpot.requestFor(spotUnits) || !requester.append(requestId)) {
+    if (!requestableParkingSpot.canRequestFor(spotUnits) || !requester.canAppend(requestId)) {
       log.debug("failed to request parking spot with id {}", parkingSpotId);
       return Optional.empty();
     }

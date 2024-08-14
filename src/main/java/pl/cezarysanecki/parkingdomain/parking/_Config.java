@@ -27,6 +27,7 @@ class ParkingConfig {
         parkingRepository,
         occupationRepository,
         occupantRepository,
+        reservationRepository,
         dateProvider,
         eventPublisher,
         minutesToConsiderReservationActive);

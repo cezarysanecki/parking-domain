@@ -22,12 +22,8 @@ record Requester(
     }
   }
 
-  boolean append(RequestId requestId) {
-    if (!willBeTooManyRequests(requestId)) {
-      return false;
-    }
-    requests.add(requestId);
-    return true;
+  boolean canAppend(RequestId requestId) {
+    return !willBeTooManyRequests(requestId);
   }
 
   private boolean willBeTooManyRequests(RequestId requestId) {

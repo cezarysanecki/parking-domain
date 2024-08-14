@@ -17,7 +17,7 @@ record RequestableParkingSpot(
     return new RequestableParkingSpot(parkingSpotId, capacity, 0, timeSlot, Version.zero());
   }
 
-  boolean requestFor(SpotUnits spotUnits) {
+  boolean canRequestFor(SpotUnits spotUnits) {
     return (capacity - occupiedSpots) >= spotUnits.value();
   }
 
