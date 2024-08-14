@@ -5,8 +5,11 @@ import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotSectionId;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupantId;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupationId;
+import pl.cezarysanecki.parkingdomain.parking.api.ReservationId;
+import pl.cezarysanecki.parkingdomain.parking.api.ReservationOwnerId;
 import pl.cezarysanecki.parkingdomain.requesting.api.RequestId;
 import pl.cezarysanecki.parkingdomain.requesting.api.RequesterId;
+import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
 import pl.cezarysanecki.parkingdomain.shared.TimeSlot;
 
 import java.util.List;
@@ -58,6 +61,15 @@ public class InMemoryEntities {
   public static class OccupantEntity {
     public final OccupantId occupantId;
     public int version;
+  }
+
+  @AllArgsConstructor
+  public static class ReservationEntity {
+    public final ReservationId reservationId;
+    public final ReservationOwnerId ownerId;
+    public final ParkingSpotId parkingSpotId;
+    public final TimeSlot timeSlot;
+    public final SpotUnits spotUnits;
   }
 
 }

@@ -7,6 +7,7 @@ import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotSectionId;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupantId;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupationId;
+import pl.cezarysanecki.parkingdomain.parking.api.ReservationId;
 import pl.cezarysanecki.parkingdomain.requesting.api.RequestId;
 import pl.cezarysanecki.parkingdomain.requesting.api.RequesterId;
 
@@ -20,6 +21,7 @@ import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.ParkingSpot
 import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.RequestEntity;
 import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.RequestableParkingSpotEntity;
 import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.RequesterEntity;
+import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.ReservationEntity;
 
 public class InMemoryRepositories {
 
@@ -33,5 +35,6 @@ public class InMemoryRepositories {
   public static final Map<RequesterId, RequesterEntity> REQUESTER_DATABASE = new ConcurrentHashMap<>();
   public static final Map<RequestId, RequestEntity> REQUEST_DATABASE = new ConcurrentHashMap<>();
   public static final Map<OccupantId, OccupantEntity> OCCUPANT_DATABASE = new ConcurrentHashMap<>();
+  public static final Map<ReservationId, ReservationEntity> RESERVATION_DATABASE = new ConcurrentHashMap<>();
 
 }

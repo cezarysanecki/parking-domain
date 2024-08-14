@@ -7,6 +7,7 @@ import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotSectionId;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupantId;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupationId;
+import pl.cezarysanecki.parkingdomain.parking.api.ReservationId;
 import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
 
 import java.util.List;
@@ -16,9 +17,11 @@ import java.util.Optional;
 import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.OccupantEntity;
 import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.OccupationEntity;
 import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.ParkingSpotSectionEntity;
+import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.ReservationEntity;
 import static pl.cezarysanecki.parkingdomain._local.InMemoryRepositories.OCCUPANT_DATABASE;
 import static pl.cezarysanecki.parkingdomain._local.InMemoryRepositories.OCCUPATION_DATABASE;
 import static pl.cezarysanecki.parkingdomain._local.InMemoryRepositories.PARKING_SPOT_SECTION_DATABASE;
+import static pl.cezarysanecki.parkingdomain._local.InMemoryRepositories.RESERVATION_DATABASE;
 
 @RequiredArgsConstructor
 class InMemoryOccupationRepository implements OccupationRepository {
@@ -167,6 +170,26 @@ class InMemoryOccupantRepository implements OccupantRepository {
         entity.occupantId,
         occupationId,
         new Version(entity.version)
+    );
+  }
+
+}
+
+@RequiredArgsConstructor
+class InMemoryReservationRepository implements ReservationRepository {
+
+  private static final Map<ReservationId, ReservationEntity> DATABASE = RESERVATION_DATABASE;
+
+  @Override
+  public void saveAll(List<Reservation> reservations) {
+    reservations.forEach(
+        reservation -> DATABASE.put(reservation.reservationId(), new ReservationEntity(
+            reservation.reservationId(),
+            reservation.ownerId(),
+            reservation.parkingSpotId(),
+            reservation.timeSlot(),
+            reservation.spotUnits()
+        ))
     );
   }
 
