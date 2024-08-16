@@ -11,7 +11,7 @@ import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.requesting.RequestingFacade;
 import pl.cezarysanecki.parkingdomain.requesting.api.RequestId;
 import pl.cezarysanecki.parkingdomain.requesting.api.RequesterId;
-import pl.cezarysanecki.parkingdomain.requesting.policies.CreatingTimeSlotsForNextDayPolicy;
+import pl.cezarysanecki.parkingdomain.requesting.usecase.CreatingTimeSlotsForNextDayUseCase;
 import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
 import pl.cezarysanecki.parkingdomain.shared.TimeSlot;
 
@@ -27,11 +27,11 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 class RequestingController {
 
   private final RequestingFacade requestingFacade;
-  private final CreatingTimeSlotsForNextDayPolicy creatingTimeSlotsForNextDayPolicy;
+  private final CreatingTimeSlotsForNextDayUseCase creatingTimeSlotsForNextDayUseCase;
 
   @PostMapping("/add-all")
   ResponseEntity createTimeSlots() {
-    creatingTimeSlotsForNextDayPolicy.run();
+    creatingTimeSlotsForNextDayUseCase.run();
     return ResponseEntity.ok().build();
   }
 

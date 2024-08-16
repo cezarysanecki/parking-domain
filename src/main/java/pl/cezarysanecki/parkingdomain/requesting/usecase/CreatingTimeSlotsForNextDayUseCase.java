@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.requesting.policies;
+package pl.cezarysanecki.parkingdomain.requesting.usecase;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,8 +14,8 @@ import java.time.LocalDate;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-@EnableConfigurationProperties(CreatingTimeSlotsForNextDayPolicy.CreatingTimeSlotsConfig.class)
-public class CreatingTimeSlotsForNextDayPolicy {
+@EnableConfigurationProperties(CreatingTimeSlotsForNextDayUseCase.CreatingTimeSlotsConfig.class)
+public class CreatingTimeSlotsForNextDayUseCase {
 
   private final DateProvider dateProvider;
 

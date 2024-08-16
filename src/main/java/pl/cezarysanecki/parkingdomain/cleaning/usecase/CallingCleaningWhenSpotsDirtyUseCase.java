@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.cleaning.policies;
+package pl.cezarysanecki.parkingdomain.cleaning.usecase;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,12 +11,12 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class CallingCleaningWhenSpotsDirtyPolicy {
+public class CallingCleaningWhenSpotsDirtyUseCase {
 
   private final CleaningFacade cleaningFacade;
   private final int numberOfDirtyParkingSpotsToCallExternalService;
 
-  CallingCleaningWhenSpotsDirtyPolicy(
+  CallingCleaningWhenSpotsDirtyUseCase(
       CleaningFacade cleaningFacade,
       @Value("${business.cleaning.number-of-dirty-parking-spots-to-call-external-service}") int numberOfDirtyParkingSpotsToCallExternalService
   ) {

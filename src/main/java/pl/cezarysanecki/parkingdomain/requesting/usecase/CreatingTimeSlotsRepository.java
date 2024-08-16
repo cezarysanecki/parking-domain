@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.requesting.policies;
+package pl.cezarysanecki.parkingdomain.requesting.usecase;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;

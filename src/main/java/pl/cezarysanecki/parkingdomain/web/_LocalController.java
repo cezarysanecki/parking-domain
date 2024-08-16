@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.cezarysanecki.parkingdomain._local.LocalDateProvider;
-import pl.cezarysanecki.parkingdomain.cleaning.policies.CallingCleaningWhenSpotsDirtyPolicy;
+import pl.cezarysanecki.parkingdomain.cleaning.usecase.CallingCleaningWhenSpotsDirtyUseCase;
 import pl.cezarysanecki.parkingdomain.commons.Result;
 import pl.cezarysanecki.parkingdomain.commons.date.DateProvider;
 import pl.cezarysanecki.parkingdomain.requesting.RequestingFacade;
@@ -24,13 +24,13 @@ import java.util.List;
 class _LocalController {
 
   private final LocalDateProvider localDateProvider;
-  private final CallingCleaningWhenSpotsDirtyPolicy callingCleaningWhenSpotsDirtyPolicy;
+  private final CallingCleaningWhenSpotsDirtyUseCase callingCleaningWhenSpotsDirtyUsecase;
   private final DateProvider dateProvider;
   private final RequestingFacade requestingFacade;
 
   @PostMapping("/call-cleaning")
   ResponseEntity callCleaning() {
-    Result result = callingCleaningWhenSpotsDirtyPolicy.run();
+    Result result = callingCleaningWhenSpotsDirtyUsecase.run();
     if (result == Result.Success) {
       return ResponseEntity.ok().build();
     }
