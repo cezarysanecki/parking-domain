@@ -1,5 +1,6 @@
 package pl.cezarysanecki.parkingdomain.requesting;
 
+import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotCapacity;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.shared.TimeSlot;
 
@@ -7,7 +8,7 @@ import java.util.List;
 
 interface RequestableParkingSpotRepository {
 
-  void saveTemplate(ParkingSpotId parkingSpotId, int numberOfSections);
+  void saveTemplate(ParkingSpotId parkingSpotId, ParkingSpotCapacity capacity);
 
   List<RequestableParkingSpotTemplate> findAllTemplates();
 

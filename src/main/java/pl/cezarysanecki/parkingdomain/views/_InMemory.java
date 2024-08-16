@@ -5,10 +5,13 @@ import lombok.RequiredArgsConstructor;
 import pl.cezarysanecki.parkingdomain._local.InMemoryRepositories;
 import pl.cezarysanecki.parkingdomain.management.client.api.ClientId;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpot;
+import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
 
 import java.time.ZoneId;
 import java.util.Collection;
 import java.util.List;
+
+import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.OccupationEntity;
 
 @RequiredArgsConstructor
 class InMemoryViews implements
@@ -74,17 +77,17 @@ class InMemoryViews implements
 
   @Override
   public List<ParkingSpotEntry> queryParkingSpots() {
+    Collection<OccupationEntity> occupations = InMemoryRepositories.OCCUPATION_DATABASE.values();
+
     return InMemoryRepositories.PARKING_SPOT_DATABASE.values()
         .stream()
         .map(entity -> new ParkingSpotEntry(
             entity.parkingSpotId().value(),
             entity.category(),
-            entity.sections().size() - InMemoryRepositories.OCCUPATION_DATABASE.values()
-                .stream()
-                .filter(occupationEntity -> occupationEntity.parkingSpotId.equals(entity.parkingSpotId()))
-                .map(occupationEntity -> occupationEntity.sections)
-                .mapToInt(Collection::size)
-                .sum())
+            entity.capacity().value() - occupations.stream()
+                .map(occupationEntity -> occupationEntity.occupiedSpace)
+                .map(SpotUnits::value)
+                .reduce(0, Integer::sum))
         )
         .toList();
   }

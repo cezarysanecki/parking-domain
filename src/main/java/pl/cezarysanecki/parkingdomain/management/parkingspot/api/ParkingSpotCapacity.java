@@ -1,5 +1,7 @@
 package pl.cezarysanecki.parkingdomain.management.parkingspot.api;
 
+import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
+
 public record ParkingSpotCapacity(int value) {
 
   public ParkingSpotCapacity {
@@ -8,6 +10,10 @@ public record ParkingSpotCapacity(int value) {
 
   public static ParkingSpotCapacity defaultCapacity() {
     return new ParkingSpotCapacity(4);
+  }
+
+  public SpotUnits toSpotUnits() {
+    return new SpotUnits(value);
   }
 
 }

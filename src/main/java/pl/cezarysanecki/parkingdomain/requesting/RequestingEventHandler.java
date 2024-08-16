@@ -34,7 +34,7 @@ class RequestingEventHandler {
   @EventListener
   public void handle(ParkingSpotAdded event) {
     log.debug("storing parking spot as reservation requests template with id {}", event.parkingSpotId());
-    requestableSectionRepository.saveTemplate(event.parkingSpotId(), event.sections().size());
+    requestableSectionRepository.saveTemplate(event.parkingSpotId(), event.capacity());
   }
 
 }

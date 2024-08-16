@@ -20,7 +20,7 @@ class ParkingEventHandler {
   @EventListener
   public void handle(ParkingSpotAdded event) {
     log.debug("storing parking spot for occupation with id {}", event.parkingSpotId());
-    parkingRepository.saveNew(ParkingSpotSectionsGrouped.create(event.parkingSpotId(), event.sections()));
+    parkingRepository.saveNew(ParkingSpot.create(event.parkingSpotId(), event.capacity()));
   }
 
   @EventListener

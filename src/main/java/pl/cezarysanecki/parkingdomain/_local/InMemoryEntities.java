@@ -1,8 +1,9 @@
 package pl.cezarysanecki.parkingdomain._local;
 
 import lombok.AllArgsConstructor;
+import org.springframework.lang.Nullable;
+import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotCapacity;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotSectionId;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupantId;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupationId;
 import pl.cezarysanecki.parkingdomain.parking.api.ReservationId;
@@ -12,9 +13,6 @@ import pl.cezarysanecki.parkingdomain.requesting.api.RequesterId;
 import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
 import pl.cezarysanecki.parkingdomain.shared.TimeSlot;
 
-import java.util.List;
-import java.util.Optional;
-
 public class InMemoryEntities {
 
   @AllArgsConstructor
@@ -22,14 +20,14 @@ public class InMemoryEntities {
     public final OccupationId occupationId;
     public final OccupantId occupantId;
     public final ParkingSpotId parkingSpotId;
-    public final List<ParkingSpotSectionId> sections;
-    public final Optional<ReservationId> reservationId;
+    public final SpotUnits occupiedSpace;
+    public final @Nullable ReservationId reservationId;
   }
 
   @AllArgsConstructor
-  public static class ParkingSpotSectionEntity {
+  public static class ParkingSpotEntity {
     public final ParkingSpotId parkingSpotId;
-    public final ParkingSpotSectionId sectionId;
+    public final ParkingSpotCapacity capacity;
     public int version;
   }
 

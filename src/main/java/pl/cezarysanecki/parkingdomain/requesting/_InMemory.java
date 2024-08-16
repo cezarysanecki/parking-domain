@@ -3,6 +3,7 @@ package pl.cezarysanecki.parkingdomain.requesting;
 import jakarta.persistence.EntityNotFoundException;
 import pl.cezarysanecki.parkingdomain._local.InMemoryRepositories;
 import pl.cezarysanecki.parkingdomain.commons.aggregates.Version;
+import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotCapacity;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.requesting.api.RequestId;
 import pl.cezarysanecki.parkingdomain.requesting.api.RequesterId;
@@ -28,8 +29,8 @@ class InMemoryRequestableParkingSpotRepository implements RequestableParkingSpot
   private static final Map<FreeTimeSlotKey, RequestableParkingSpotEntity> DATABASE = REQUESTABLE_PARKING_SPOT_DATABASE;
 
   @Override
-  public void saveTemplate(ParkingSpotId parkingSpotId, int numberOfSections) {
-    TEMPLATES_DATABASE.put(parkingSpotId, numberOfSections);
+  public void saveTemplate(ParkingSpotId parkingSpotId, ParkingSpotCapacity capacity) {
+    TEMPLATES_DATABASE.put(parkingSpotId, capacity.value());
   }
 
   @Override

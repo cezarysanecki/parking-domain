@@ -6,8 +6,8 @@ import java.time.Instant;
 
 interface ParkingRepository {
 
-  void saveNew(ParkingSpotSectionsGrouped parkingSpotSectionsGrouped);
+  void saveNew(ParkingSpot parkingSpot);
 
-  ParkingSpotSectionsGrouped loadBy(ParkingSpotId parkingSpotId, Instant activationDateOfReservations);
+  ParkingSpot loadBy(ParkingSpotId parkingSpotId, Instant activationDateOfReservations);
 
 }

@@ -2,14 +2,12 @@ package pl.cezarysanecki.parkingdomain.parking.api;
 
 import pl.cezarysanecki.parkingdomain.commons.events.DomainEvent;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotSectionId;
-
-import java.util.List;
+import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
 
 public record ParkingSpotReleased(
     OccupationId occupationId,
     OccupantId occupantId,
     ParkingSpotId parkingSpotId,
-    List<ParkingSpotSectionId> sections
+    SpotUnits spotUnits
 ) implements DomainEvent {
 }

@@ -4,21 +4,19 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import pl.cezarysanecki.parkingdomain.commons.aggregates.Version;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotSectionId;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupantId;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupationId;
 import pl.cezarysanecki.parkingdomain.parking.api.ReservationId;
 import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
 
 import java.time.Instant;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.OccupantEntity;
 import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.OccupationEntity;
-import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.ParkingSpotSectionEntity;
+import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.ParkingSpotEntity;
 import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.ReservationEntity;
 import static pl.cezarysanecki.parkingdomain._local.InMemoryRepositories.OCCUPANT_DATABASE;
 import static pl.cezarysanecki.parkingdomain._local.InMemoryRepositories.OCCUPATION_DATABASE;
@@ -35,9 +33,9 @@ class InMemoryOccupationRepository implements OccupationRepository {
     DATABASE.put(occupation.occupationId(), new OccupationEntity(
         occupation.occupationId(),
         occupation.occupant().occupantId(),
-        occupation.parkingSpotSectionsGrouped().id(),
-        occupation.parkingSpotSectionsGrouped().sections().stream().map(ParkingSpotSection::sectionId).toList(),
-        Optional.ofNullable(occupation.reservationId())
+        occupation.parkingSpot().parkingSpotId(),
+        occupation.occupiedUnits(),
+        occupation.reservationId()
     ));
     if (occupation.reservationId() != null) {
       InMemoryReservationRepository.deleteBy(occupation.reservationId());
@@ -51,16 +49,8 @@ class InMemoryOccupationRepository implements OccupationRepository {
             removed.occupationId,
             removed.occupantId,
             removed.parkingSpotId,
-            removed.sections
+            removed.occupiedSpace
         ));
-  }
-
-  static Optional<OccupationEntity> findFor(ParkingSpotSectionId sectionId) {
-    return DATABASE.values()
-        .stream()
-        .filter(entity -> entity.sections.stream()
-            .anyMatch(section -> section.equals(sectionId)))
-        .findFirst();
   }
 
   static Optional<OccupationEntity> findFor(ParkingSpotId parkingSpotId) {
@@ -82,48 +72,39 @@ class InMemoryOccupationRepository implements OccupationRepository {
 @RequiredArgsConstructor
 class InMemoryParkingRepository implements ParkingRepository {
 
-  private static final Map<ParkingSpotSectionId, ParkingSpotSectionEntity> DATABASE = PARKING_SPOT_SECTION_DATABASE;
+  private static final Map<ParkingSpotId, ParkingSpotEntity> DATABASE = PARKING_SPOT_SECTION_DATABASE;
 
   @Override
-  public void saveNew(ParkingSpotSectionsGrouped parkingSpotSectionsGrouped) {
-    parkingSpotSectionsGrouped.sections()
-        .forEach(section -> DATABASE.put(
-            section.sectionId(),
-            new ParkingSpotSectionEntity(section.parkingSpotId(), section.sectionId(), 0)));
+  public void saveNew(ParkingSpot parkingSpot) {
+    DATABASE.put(parkingSpot.parkingSpotId(), new ParkingSpotEntity(
+        parkingSpot.parkingSpotId(),
+        parkingSpot.capacity(),
+        parkingSpot.version().getVersion()
+    ));
   }
 
   @Override
-  public ParkingSpotSectionsGrouped loadBy(ParkingSpotId parkingSpotId, Instant activationDateOfReservations) {
-    Collection<ParkingSpotSectionEntity> sections = DATABASE.values();
-    List<ReservationEntity> reservations = InMemoryReservationRepository.findFor(parkingSpotId, activationDateOfReservations);
-    Optional<OccupationEntity> occupations = InMemoryOccupationRepository.findFor(parkingSpotId);
+  public ParkingSpot loadBy(ParkingSpotId parkingSpotId, Instant activationDateOfReservations) {
+    ParkingSpotEntity parkingSpot = DATABASE.get(parkingSpotId);
+    return toDomain(parkingSpot, activationDateOfReservations);
+  }
 
-    List<ReservationEntity> unused = reservations.stream()
-        .filter(reservation -> occupations.stream()
-            .anyMatch(occupation -> occupation.reservationId.map(reservationId -> reservationId.equals(reservation.reservationId)).orElse(false)))
-        .toList();
+  private static ParkingSpot toDomain(ParkingSpotEntity entity, Instant activationDateOfReservations) {
+    List<ReservationEntity> reservations = InMemoryReservationRepository.findFor(entity.parkingSpotId, activationDateOfReservations);
+    Optional<OccupationEntity> occupations = InMemoryOccupationRepository.findFor(entity.parkingSpotId);
 
-    return new ParkingSpotSectionsGrouped(
-        sections.stream()
-            .filter(section -> section.parkingSpotId.equals(parkingSpotId))
-            .map(InMemoryParkingRepository::toDomain)
-            .toList(),
-        unused.stream()
+    return new ParkingSpot(
+        entity.parkingSpotId,
+        occupations.stream()
+            .map(occupationEntity -> occupationEntity.occupiedSpace)
+            .map(SpotUnits::value)
+            .reduce(0, Integer::sum),
+        reservations.stream()
             .map(reservationEntity -> reservationEntity.spotUnits)
             .map(SpotUnits::value)
-            .reduce(0, Integer::sum));
-  }
-
-  private static ParkingSpotSection toDomain(ParkingSpotSectionEntity entity) {
-    OccupationId occupationId = InMemoryOccupationRepository.findFor(entity.sectionId)
-        .map(occupationEntity -> occupationEntity.occupationId)
-        .orElse(null);
-    return new ParkingSpotSection(
-        entity.parkingSpotId,
-        entity.sectionId,
-        occupationId,
-        entity.version
-    );
+            .reduce(0, Integer::sum),
+        entity.capacity,
+        new Version(entity.version));
   }
 
 }

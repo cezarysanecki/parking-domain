@@ -38,16 +38,16 @@ public class ParkingFacade {
     Instant activationDate = dateProvider.now().plus(Duration.ofMinutes(minutesWhenReservationIsActive));
 
     log.debug("occupying parking spot with id {} by {} units", parkingSpotId, spotUnits);
-    ParkingSpotSectionsGrouped parkingSpotSectionsGrouped = parkingRepository.loadBy(parkingSpotId, activationDate);
+    ParkingSpot parkingSpot = parkingRepository.loadBy(parkingSpotId, activationDate);
     Occupant occupant = occupantRepository.findBy(occupantId, activationDate);
 
     OccupationId occupationId = OccupationId.newOne();
-    if (!occupant.canOccupy(occupationId) || !parkingSpotSectionsGrouped.occupyBy(spotUnits)) {
+    if (!occupant.canOccupy(occupationId) || !parkingSpot.occupyBy(spotUnits)) {
       log.debug("failed to occupy parking spot with id {}", parkingSpotId);
       return Optional.empty();
     }
     occupationRepository.saveCheckingVersion(new Occupation(
-        occupationId, occupant, parkingSpotSectionsGrouped, ReservationId.none()
+        occupationId, occupant, parkingSpot, spotUnits, ReservationId.none()
     ));
     return Optional.of(occupationId);
   }
@@ -62,16 +62,16 @@ public class ParkingFacade {
     log.debug("occupying parking spot using reservation with id {}", reservationId);
     Reservation reservation = reservationRepository.loadBy(reservationId);
 
-    ParkingSpotSectionsGrouped parkingSpotSectionsGrouped = parkingRepository.loadBy(reservation.parkingSpotId(), activationDate);
+    ParkingSpot parkingSpot = parkingRepository.loadBy(reservation.parkingSpotId(), activationDate);
     Occupant occupant = occupantRepository.findBy(occupantId, activationDate);
 
     OccupationId occupationId = OccupationId.newOne();
-    if (!occupant.canOccupyWithReservation(reservationId) || !parkingSpotSectionsGrouped.occupyBy(reservation.spotUnits())) {
+    if (!occupant.canOccupyWithReservation(reservationId) || !parkingSpot.occupyBy(reservation.spotUnits())) {
       log.debug("failed to occupy parking spot with id {}", reservation.parkingSpotId());
       return Optional.empty();
     }
     occupationRepository.saveCheckingVersion(new Occupation(
-        occupationId, occupant, parkingSpotSectionsGrouped, reservationId
+        occupationId, occupant, parkingSpot, parkingSpot.capacity().toSpotUnits(), reservationId
     ));
     return Optional.of(occupationId);
   }
@@ -87,13 +87,13 @@ public class ParkingFacade {
       return false;
     }
     ReleasedOccupation releasedOccupation = potentiallyReleasedOccupation.get();
-    log.debug("releasing occupation for parking spot with id {} for {} units", releasedOccupation.parkingSpotId(), releasedOccupation.sections().size());
+    log.debug("releasing occupation for parking spot with id {} for {} units", releasedOccupation.parkingSpotId(), releasedOccupation.spotUnits().value());
 
     eventPublisher.publish(new ParkingSpotReleased(
         releasedOccupation.occupationId(),
         releasedOccupation.occupantId(),
         releasedOccupation.parkingSpotId(),
-        releasedOccupation.sections()
+        releasedOccupation.spotUnits()
     ));
     return true;
   }
