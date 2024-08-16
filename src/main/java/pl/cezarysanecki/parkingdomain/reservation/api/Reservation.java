@@ -1,12 +1,10 @@
-package pl.cezarysanecki.parkingdomain.parking;
+package pl.cezarysanecki.parkingdomain.reservation.api;
 
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
-import pl.cezarysanecki.parkingdomain.parking.api.ReservationId;
-import pl.cezarysanecki.parkingdomain.parking.api.ReservationOwnerId;
 import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
 import pl.cezarysanecki.parkingdomain.shared.TimeSlot;
 
-record Reservation(
+public record Reservation(
     ReservationId reservationId,
     ReservationOwnerId ownerId,
     ParkingSpotId parkingSpotId,

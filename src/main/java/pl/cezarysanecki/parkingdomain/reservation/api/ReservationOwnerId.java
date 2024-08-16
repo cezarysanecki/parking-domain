@@ -1,4 +1,4 @@
-package pl.cezarysanecki.parkingdomain.parking.api;
+package pl.cezarysanecki.parkingdomain.reservation.api;
 
 import java.util.UUID;
 

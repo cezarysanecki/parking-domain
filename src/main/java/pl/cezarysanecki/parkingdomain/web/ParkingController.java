@@ -16,7 +16,7 @@ import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.ParkingFacade;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupantId;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupationId;
-import pl.cezarysanecki.parkingdomain.parking.api.ReservationId;
+import pl.cezarysanecki.parkingdomain.reservation.api.ReservationId;
 import pl.cezarysanecki.parkingdomain.parking.usecase.OccupyingWithoutAccountUseCase;
 import pl.cezarysanecki.parkingdomain.parking.usecase.ParkingSpotForceReleased;
 import pl.cezarysanecki.parkingdomain.parking.usecase.RemoveOccupationByForceUseCase;

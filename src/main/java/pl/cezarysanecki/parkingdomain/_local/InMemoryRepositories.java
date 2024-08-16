@@ -6,7 +6,7 @@ import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpot;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupantId;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupationId;
-import pl.cezarysanecki.parkingdomain.parking.api.ReservationId;
+import pl.cezarysanecki.parkingdomain.reservation.api.ReservationId;
 import pl.cezarysanecki.parkingdomain.requesting.api.RequestId;
 import pl.cezarysanecki.parkingdomain.requesting.api.RequesterId;
 

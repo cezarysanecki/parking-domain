@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
-import pl.cezarysanecki.parkingdomain.shared.BusinessDateProvider;
 
 @Configuration
 @RequiredArgsConstructor
@@ -14,8 +13,7 @@ class ParkingConfig {
   private final ParkingRepository parkingRepository;
   private final OccupationRepository occupationRepository;
   private final OccupantRepository occupantRepository;
-  private final ReservationRepository reservationRepository;
-  private final BusinessDateProvider businessDateProvider;
+  private final ParkingSpotReservationRepository parkingSpotReservationRepository;
   private final EventPublisher eventPublisher;
 
   @Bean
@@ -24,8 +22,6 @@ class ParkingConfig {
         parkingRepository,
         occupationRepository,
         occupantRepository,
-        reservationRepository,
-        businessDateProvider,
         eventPublisher);
   }
 
@@ -34,7 +30,7 @@ class ParkingConfig {
     return new ParkingEventHandler(
         parkingRepository,
         occupantRepository,
-        reservationRepository);
+        parkingSpotReservationRepository);
   }
 
 }
@@ -60,8 +56,8 @@ class LocalParkingConfig {
   }
 
   @Bean
-  InMemoryReservationRepository inMemoryReservationRepository() {
-    return new InMemoryReservationRepository();
+  InMemoryParkingSpotReservationRepository inMemoryParkingSpotReservationRepository() {
+    return new InMemoryParkingSpotReservationRepository();
   }
 
 }

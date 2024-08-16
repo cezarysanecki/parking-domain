@@ -9,11 +9,8 @@ import pl.cezarysanecki.parkingdomain.parking.api.OccupantId;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupationId;
 import pl.cezarysanecki.parkingdomain.parking.api.ParkingSpotReleased;
 import pl.cezarysanecki.parkingdomain.parking.api.ReleasedOccupation;
-import pl.cezarysanecki.parkingdomain.parking.api.ReservationId;
-import pl.cezarysanecki.parkingdomain.shared.BusinessDateProvider;
 import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
 
-import java.time.Instant;
 import java.util.Optional;
 
 @Slf4j
@@ -23,8 +20,6 @@ public class ParkingFacade {
   private final ParkingRepository parkingRepository;
   private final OccupationRepository occupationRepository;
   private final OccupantRepository occupantRepository;
-  private final ReservationRepository reservationRepository;
-  private final BusinessDateProvider businessDateProvider;
   private final EventPublisher eventPublisher;
 
   @Transactional
@@ -33,11 +28,9 @@ public class ParkingFacade {
       ParkingSpotId parkingSpotId,
       SpotUnits spotUnits
   ) {
-    Instant activationDate = businessDateProvider.provideDateForActivatingReservations();
-
     log.debug("occupying parking spot with id {} by {} units", parkingSpotId, spotUnits);
-    ParkingSpot parkingSpot = parkingRepository.loadBy(parkingSpotId, activationDate);
-    Occupant occupant = occupantRepository.findBy(occupantId, activationDate);
+    ParkingSpot parkingSpot = parkingRepository.loadBy(parkingSpotId);
+    Occupant occupant = occupantRepository.findBy(occupantId);
 
     OccupationId occupationId = OccupationId.newOne();
     if (!occupant.canOccupy(occupationId) || !parkingSpot.occupyBy(spotUnits)) {
@@ -45,30 +38,7 @@ public class ParkingFacade {
       return Optional.empty();
     }
     occupationRepository.saveCheckingVersion(new Occupation(
-        occupationId, occupant, parkingSpot, spotUnits, ReservationId.none()
-    ));
-    return Optional.of(occupationId);
-  }
-
-  @Transactional
-  public Optional<OccupationId> occupyUsing(
-      OccupantId occupantId,
-      ReservationId reservationId
-  ) {
-    Instant activationDate = businessDateProvider.provideDateForActivatingReservations();
-
-    log.debug("occupying parking spot using reservation with id {}", reservationId);
-    Reservation reservation = reservationRepository.loadBy(reservationId);
-    ParkingSpot parkingSpot = parkingRepository.loadBy(reservation.parkingSpotId(), activationDate);
-
-    OccupationId occupationId = OccupationId.newOne();
-    if (!parkingSpot.occupyBy(reservation.spotUnits())) {
-      log.debug("failed to occupy parking spot with id {}", reservation.parkingSpotId());
-      return Optional.empty();
-    }
-    Occupant occupant = occupantRepository.findBy(occupantId, activationDate);
-    occupationRepository.saveCheckingVersion(new Occupation(
-        occupationId, occupant, parkingSpot, parkingSpot.capacity().toSpotUnits(), reservationId
+        occupationId, occupant, parkingSpot, spotUnits
     ));
     return Optional.of(occupationId);
   }

@@ -2,28 +2,26 @@ package pl.cezarysanecki.parkingdomain.parking;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import pl.cezarysanecki.parkingdomain._local.InMemoryRepositories;
 import pl.cezarysanecki.parkingdomain.commons.aggregates.Version;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupantId;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupationId;
 import pl.cezarysanecki.parkingdomain.parking.api.ReleasedOccupation;
-import pl.cezarysanecki.parkingdomain.parking.api.ReservationId;
+import pl.cezarysanecki.parkingdomain.reservation.api.ReservationId;
 import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.OccupantEntity;
 import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.OccupationEntity;
 import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.ParkingSpotEntity;
-import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.ReservationEntity;
 import static pl.cezarysanecki.parkingdomain._local.InMemoryRepositories.OCCUPANT_DATABASE;
 import static pl.cezarysanecki.parkingdomain._local.InMemoryRepositories.OCCUPATION_DATABASE;
 import static pl.cezarysanecki.parkingdomain._local.InMemoryRepositories.PARKING_DATABASE;
-import static pl.cezarysanecki.parkingdomain._local.InMemoryRepositories.RESERVATION_DATABASE;
+import static pl.cezarysanecki.parkingdomain.parking.InMemoryParkingSpotReservationRepository.ReservationEntity;
 
 @RequiredArgsConstructor
 class InMemoryOccupationRepository implements OccupationRepository {
@@ -36,12 +34,8 @@ class InMemoryOccupationRepository implements OccupationRepository {
         occupation.occupationId(),
         occupation.occupant().occupantId(),
         occupation.parkingSpot().parkingSpotId(),
-        occupation.occupiedUnits(),
-        occupation.reservationId()
+        occupation.occupiedUnits()
     ));
-    if (occupation.reservationId() != null) {
-      InMemoryReservationRepository.deleteBy(occupation.reservationId());
-    }
   }
 
   @Override
@@ -86,18 +80,17 @@ class InMemoryParkingRepository implements ParkingRepository {
   }
 
   @Override
-  public ParkingSpot loadBy(ParkingSpotId parkingSpotId, Instant activationDateOfReservations) {
+  public ParkingSpot loadBy(ParkingSpotId parkingSpotId) {
     ParkingSpotEntity parkingSpot = DATABASE.get(parkingSpotId);
     if (parkingSpot == null) {
       throw new IllegalArgumentException("No parking spot with id " + parkingSpotId + " found");
     }
-    return toDomain(parkingSpot, activationDateOfReservations);
+    return toDomain(parkingSpot);
   }
 
-  private static ParkingSpot toDomain(ParkingSpotEntity entity, Instant activationDateOfReservations) {
-    List<ReservationEntity> reservations = InMemoryReservationRepository.findFor(entity.parkingSpotId, activationDateOfReservations);
+  private static ParkingSpot toDomain(ParkingSpotEntity entity) {
     Optional<OccupationEntity> occupations = InMemoryOccupationRepository.findFor(entity.parkingSpotId);
-
+    List<ReservationEntity> reservations = InMemoryParkingSpotReservationRepository.findFor(entity.parkingSpotId);
     return new ParkingSpot(
         entity.parkingSpotId,
         occupations.stream()
@@ -105,7 +98,7 @@ class InMemoryParkingRepository implements ParkingRepository {
             .map(SpotUnits::value)
             .reduce(0, Integer::sum),
         reservations.stream()
-            .map(reservationEntity -> reservationEntity.spotUnits)
+            .map(ReservationEntity::spotUnits)
             .map(SpotUnits::value)
             .reduce(0, Integer::sum),
         entity.capacity,
@@ -120,12 +113,12 @@ class InMemoryOccupantRepository implements OccupantRepository {
   private static final Map<OccupantId, OccupantEntity> DATABASE = OCCUPANT_DATABASE;
 
   @Override
-  public Occupant findBy(OccupantId occupantId, Instant activationDateOfReservations) {
+  public Occupant findBy(OccupantId occupantId) {
     OccupantEntity entity = DATABASE.get(occupantId);
     if (entity == null) {
       throw new EntityNotFoundException("No occupant found with id " + occupantId);
     }
-    return toDomain(entity, activationDateOfReservations);
+    return toDomain(entity);
   }
 
   @Override
@@ -136,16 +129,12 @@ class InMemoryOccupantRepository implements OccupantRepository {
     ));
   }
 
-  private static Occupant toDomain(OccupantEntity entity, Instant activationDateOfReservations) {
+  private static Occupant toDomain(OccupantEntity entity) {
     return new Occupant(
         entity.occupantId,
         InMemoryOccupationRepository.findFor(entity.occupantId)
             .stream()
             .map(occupationEntity -> occupationEntity.occupationId)
-            .toList(),
-        InMemoryReservationRepository.findFor(entity.occupantId, activationDateOfReservations)
-            .stream()
-            .map(reservationEntity -> reservationEntity.reservationId)
             .toList(),
         new Version(entity.version)
     );
@@ -154,58 +143,36 @@ class InMemoryOccupantRepository implements OccupantRepository {
 }
 
 @RequiredArgsConstructor
-class InMemoryReservationRepository implements ReservationRepository {
+class InMemoryParkingSpotReservationRepository implements ParkingSpotReservationRepository {
 
-  private static final Map<ReservationId, ReservationEntity> DATABASE = RESERVATION_DATABASE;
+  static final Map<ReservationId, ReservationEntity> DATABASE = new ConcurrentHashMap<>();
 
   @Override
-  public void saveAll(List<Reservation> reservations) {
-    reservations.forEach(
-        reservation -> DATABASE.put(reservation.reservationId(), new ReservationEntity(
-            reservation.reservationId(),
-            reservation.ownerId(),
-            reservation.parkingSpotId(),
-            reservation.timeSlot(),
-            reservation.spotUnits()
-        ))
-    );
+  public void storeFor(ParkingSpotId parkingSpotId, ReservationId reservationId, SpotUnits spotUnits) {
+    DATABASE.put(reservationId, new ReservationEntity(
+        parkingSpotId,
+        reservationId,
+        spotUnits
+    ));
   }
 
   @Override
-  public Reservation loadBy(ReservationId reservationId) {
-    ReservationEntity entity = DATABASE.get(reservationId);
-    if (entity == null) {
-      throw new EntityNotFoundException("No reservation found with id " + reservationId);
-    }
-    return toDomain(entity);
+  public void remove(ReservationId reservationId) {
+    DATABASE.remove(reservationId);
   }
 
-  static List<ReservationEntity> findFor(ParkingSpotId parkingSpotId, Instant activationDateOfReservations) {
-    return InMemoryRepositories.getActiveReservationFor(activationDateOfReservations)
+  static List<ReservationEntity> findFor(ParkingSpotId parkingSpotId) {
+    return DATABASE.values()
         .stream()
         .filter(entity -> entity.parkingSpotId.equals(parkingSpotId))
         .toList();
   }
 
-  static List<ReservationEntity> findFor(OccupantId occupantId, Instant activationDateOfReservations) {
-    return DATABASE.values()
-        .stream()
-        .filter(entity -> entity.ownerId.value().equals(occupantId.value())
-            && entity.timeSlot.from().isBefore(activationDateOfReservations))
-        .toList();
-  }
-
-  static void deleteBy(ReservationId reservationId) {
-    DATABASE.remove(reservationId);
-  }
-
-  static Reservation toDomain(ReservationEntity entity) {
-    return new Reservation(
-        entity.reservationId,
-        entity.ownerId,
-        entity.parkingSpotId,
-        entity.timeSlot,
-        entity.spotUnits);
+  record ReservationEntity(
+      ParkingSpotId parkingSpotId,
+      ReservationId reservationId,
+      SpotUnits spotUnits
+  ) {
   }
 
 }

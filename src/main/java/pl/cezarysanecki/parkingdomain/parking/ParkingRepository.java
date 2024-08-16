@@ -2,12 +2,10 @@ package pl.cezarysanecki.parkingdomain.parking;
 
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
 
-import java.time.Instant;
-
 interface ParkingRepository {
 
   void saveNew(ParkingSpot parkingSpot);
 
-  ParkingSpot loadBy(ParkingSpotId parkingSpotId, Instant activationDateOfReservations);
+  ParkingSpot loadBy(ParkingSpotId parkingSpotId);
 
 }

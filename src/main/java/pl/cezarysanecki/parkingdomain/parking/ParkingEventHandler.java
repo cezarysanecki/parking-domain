@@ -5,9 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import pl.cezarysanecki.parkingdomain.management.client.api.ClientRegistered;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotAdded;
-import pl.cezarysanecki.parkingdomain.parking.api.ReservationId;
-import pl.cezarysanecki.parkingdomain.parking.api.ReservationOwnerId;
 import pl.cezarysanecki.parkingdomain.requesting.api.MadeRequestsValid;
+import pl.cezarysanecki.parkingdomain.reservation.api.ReservationId;
+import pl.cezarysanecki.parkingdomain.reservation.api.ReservationUsed;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -15,7 +15,7 @@ class ParkingEventHandler {
 
   private final ParkingRepository parkingRepository;
   private final OccupantRepository occupantRepository;
-  private final ReservationRepository reservationRepository;
+  private final ParkingSpotReservationRepository parkingSpotReservationRepository;
 
   @EventListener
   public void handle(ParkingSpotAdded event) {
@@ -30,18 +30,8 @@ class ParkingEventHandler {
   }
 
   @EventListener
-  public void handle(MadeRequestsValid event) {
-    reservationRepository.saveAll(
-        event.requests()
-            .stream()
-            .map(request -> new Reservation(
-                new ReservationId(request.requestId().value()),
-                new ReservationOwnerId(request.requester().value()),
-                request.parkingSpotId(),
-                request.timeSlot(),
-                request.spotUnits()
-            ))
-            .toList());
+  public void handle(ReservationUsed event) {
+    parkingSpotReservationRepository.remove(event.reservationId());
   }
 
 }
