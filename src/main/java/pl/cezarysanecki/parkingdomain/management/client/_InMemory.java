@@ -12,6 +12,12 @@ class InMemoryClientRepository implements ClientRepository {
 
   @Override
   public void saveNew(Client client) {
+    if (DATABASE.values()
+        .stream()
+        .map(Client::phoneNumber)
+        .anyMatch(phoneNumber -> phoneNumber.equals(client.phoneNumber()))) {
+      throw new IllegalStateException("Phone number already in use");
+    }
     DATABASE.put(client.clientId(), client);
   }
 

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import pl.cezarysanecki.parkingdomain.management.client.api.PhoneNumber;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotFacade;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotCapacity;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotCategory;
@@ -16,6 +17,7 @@ import pl.cezarysanecki.parkingdomain.parking.ParkingFacade;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupantId;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupationId;
 import pl.cezarysanecki.parkingdomain.parking.api.ReservationId;
+import pl.cezarysanecki.parkingdomain.parking.usecase.OccupyingWithoutAccountUseCase;
 import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
 
 import java.util.UUID;
@@ -27,6 +29,7 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 @RequiredArgsConstructor
 class ParkingController {
 
+  private final OccupyingWithoutAccountUseCase occupyingWithoutAccountUseCase;
   private final ParkingSpotFacade parkingSpotFacade;
   private final ParkingFacade parkingFacade;
 
@@ -48,6 +51,20 @@ class ParkingController {
         new ParkingSpotId(request.parkingSpotId),
         new SpotUnits(request.spotUnits)
     );
+    return result
+        .map(OccupationId::toString)
+        .map(ResponseEntity::ok)
+        .orElseGet(() -> ResponseEntity.internalServerError().build());
+  }
+
+  @PostMapping("/occupy-without-account")
+  ResponseEntity occupyParkingSpotWihtoutAccount(@RequestBody OccupyParkingSpotWithoutAccountRequest request) {
+    var result = occupyingWithoutAccountUseCase.run(
+        PhoneNumber.of(request.phoneNumber),
+        new ParkingSpotId(request.parkingSpotId),
+        new SpotUnits(request.spotUnits)
+    );
+
     return result
         .map(OccupationId::toString)
         .map(ResponseEntity::ok)
@@ -79,6 +96,13 @@ class ParkingController {
 
   record OccupyParkingSpotRequest(
       UUID occupantId,
+      UUID parkingSpotId,
+      int spotUnits
+  ) {
+  }
+
+  record OccupyParkingSpotWithoutAccountRequest(
+      String phoneNumber,
       UUID parkingSpotId,
       int spotUnits
   ) {

@@ -86,6 +86,9 @@ class InMemoryParkingRepository implements ParkingRepository {
   @Override
   public ParkingSpot loadBy(ParkingSpotId parkingSpotId, Instant activationDateOfReservations) {
     ParkingSpotEntity parkingSpot = DATABASE.get(parkingSpotId);
+    if (parkingSpot == null) {
+      throw new IllegalArgumentException("No parking spot with id " + parkingSpotId + " found");
+    }
     return toDomain(parkingSpot, activationDateOfReservations);
   }
 
