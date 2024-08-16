@@ -18,11 +18,16 @@ import java.time.LocalDate;
 public class CreatingTimeSlotForNextDayPolicy {
 
   private final DateProvider dateProvider;
+
   private final RequestingFacade requestingFacade;
   private final CreatingTimeSlotsConfig creatingTimeSlotsConfig;
 
   public void run() {
     LocalDate nextDay = dateProvider.nextDay();
+
+    if (requestingFacade.wereRequestableParkingSpotsCreatedAt(nextDay)) {
+      throw new IllegalStateException("requestable parking spots were created at + nextDay");
+    }
 
     requestingFacade.createForAll(
         TimeSlot.create(nextDay, creatingTimeSlotsConfig.morningStartHour, creatingTimeSlotsConfig.morningEndHour)

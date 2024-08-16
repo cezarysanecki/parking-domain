@@ -4,7 +4,6 @@ import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotCapa
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.shared.TimeSlot;
 
-import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -14,7 +13,7 @@ interface RequestableParkingSpotRepository {
 
   List<RequestableParkingSpotTemplate> findAllTemplates();
 
-  void saveNew(RequestableParkingSpot requestableParkingSpot);
+  void saveAllNewFor(List<RequestableParkingSpot> requestableParkingSpots);
 
   RequestableParkingSpot findFor(ParkingSpotId parkingSpotId, TimeSlot timeSlot);
 

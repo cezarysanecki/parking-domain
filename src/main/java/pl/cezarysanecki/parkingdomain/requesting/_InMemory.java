@@ -12,6 +12,7 @@ import pl.cezarysanecki.parkingdomain.shared.TimeSlot;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +28,7 @@ class InMemoryRequestableParkingSpotRepository implements RequestableParkingSpot
 
   private static final Map<ParkingSpotId, Integer> TEMPLATES_DATABASE = InMemoryRepositories.TEMPLATES_DATABASE;
   private static final Map<FreeTimeSlotKey, RequestableParkingSpotEntity> DATABASE = REQUESTABLE_PARKING_SPOT_DATABASE;
+  private static final List<LocalDate> CREATION_DATES_OF_REQUESTABLE_PARKING_SPOTS_DATABASE = new ArrayList<>();
 
   @Override
   public void saveTemplate(ParkingSpotId parkingSpotId, ParkingSpotCapacity capacity) {
@@ -45,15 +47,19 @@ class InMemoryRequestableParkingSpotRepository implements RequestableParkingSpot
   }
 
   @Override
-  public void saveNew(RequestableParkingSpot requestableParkingSpot) {
-    FreeTimeSlotKey key = new FreeTimeSlotKey(
-        requestableParkingSpot.parkingSpotId(),
-        requestableParkingSpot.timeSlot()
+  public void saveAllNewFor(List<RequestableParkingSpot> requestableParkingSpots) {
+    requestableParkingSpots.forEach(
+        requestableParkingSpot -> {
+          FreeTimeSlotKey key = new FreeTimeSlotKey(
+              requestableParkingSpot.parkingSpotId(),
+              requestableParkingSpot.timeSlot()
+          );
+          DATABASE.put(key, new RequestableParkingSpotEntity(
+              key,
+              requestableParkingSpot.capacity(),
+              requestableParkingSpot.version().getVersion()));
+        }
     );
-    DATABASE.put(key, new RequestableParkingSpotEntity(
-        key,
-        requestableParkingSpot.capacity(),
-        requestableParkingSpot.version().getVersion()));
   }
 
   @Override
@@ -76,6 +82,11 @@ class InMemoryRequestableParkingSpotRepository implements RequestableParkingSpot
   public void deleteAllFor(LocalDate day) {
     DATABASE.values()
         .removeIf(entity -> day.equals(entity.freeTimeSlotKey.timeSlot().from().atZone(ZoneId.systemDefault()).toLocalDate()));
+  }
+
+  @Override
+  public boolean existsCreationDayEntry(LocalDate day) {
+    return CREATION_DATES_OF_REQUESTABLE_PARKING_SPOTS_DATABASE.contains(day);
   }
 
   static RequestableParkingSpotEntity findBy(ParkingSpotId parkingSpotId, TimeSlot timeSlot) {

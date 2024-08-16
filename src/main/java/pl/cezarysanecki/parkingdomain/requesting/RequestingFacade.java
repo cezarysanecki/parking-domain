@@ -1,8 +1,8 @@
 package pl.cezarysanecki.parkingdomain.requesting;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.requesting.api.MadeRequestsValid;
@@ -61,7 +61,7 @@ public class RequestingFacade {
   ) {
     List<RequestableParkingSpotTemplate> templates = requestableParkingSpotRepository.findAllTemplates();
 
-    List<RequestableParkingSpot> groupedSections = templates.stream()
+    List<RequestableParkingSpot> requestableParkingSpots = templates.stream()
         .filter(template -> !requestableParkingSpotRepository.intersects(template.parkingSpotId(), timeSlot))
         .map(template -> RequestableParkingSpot.createNew(
             template.parkingSpotId(),
@@ -69,9 +69,9 @@ public class RequestingFacade {
             timeSlot)
         )
         .toList();
-    log.debug("created time slots [{}/{}] for {}", groupedSections.size(), templates.size(), timeSlot);
+    log.debug("created time slots [{}/{}] for {}", requestableParkingSpots.size(), templates.size(), timeSlot);
 
-    groupedSections.forEach(requestableParkingSpotRepository::saveNew);
+    requestableParkingSpotRepository.saveAllNewFor(requestableParkingSpots);
   }
 
   @Transactional
