@@ -13,7 +13,7 @@ public class RemoveOccupationByForceUseCase {
   private final ParkingFacade parkingFacade;
   private final EventPublisher eventPublisher;
 
-  public void run(OccupationId occupationId, ParkingSpotForceReleased.Reason reason) {
+  public boolean run(OccupationId occupationId, ParkingSpotForceReleased.Reason reason) {
     var result = parkingFacade.release(occupationId);
 
     result.ifPresent(releasedOccupation -> eventPublisher.publish(new ParkingSpotForceReleased(
@@ -23,6 +23,8 @@ public class RemoveOccupationByForceUseCase {
         releasedOccupation.spotUnits(),
         reason
     )));
+
+    return result.isPresent();
   }
 
 }

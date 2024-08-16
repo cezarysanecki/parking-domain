@@ -18,6 +18,8 @@ import pl.cezarysanecki.parkingdomain.parking.api.OccupantId;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupationId;
 import pl.cezarysanecki.parkingdomain.parking.api.ReservationId;
 import pl.cezarysanecki.parkingdomain.parking.usecase.OccupyingWithoutAccountUseCase;
+import pl.cezarysanecki.parkingdomain.parking.usecase.ParkingSpotForceReleased;
+import pl.cezarysanecki.parkingdomain.parking.usecase.RemoveOccupationByForceUseCase;
 import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
 
 import java.util.UUID;
@@ -30,6 +32,7 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 class ParkingController {
 
   private final OccupyingWithoutAccountUseCase occupyingWithoutAccountUseCase;
+  private final RemoveOccupationByForceUseCase removeOccupationByForceUseCase;
   private final ParkingSpotFacade parkingSpotFacade;
   private final ParkingFacade parkingFacade;
 
@@ -89,6 +92,15 @@ class ParkingController {
     return result.isPresent() ? ResponseEntity.ok().build() : ResponseEntity.status(INTERNAL_SERVER_ERROR).build();
   }
 
+  @DeleteMapping("/release-force")
+  ResponseEntity releaseParkingSpotByForce(@RequestBody ReleaseByForceParkingSpotRequest request) {
+    boolean result = removeOccupationByForceUseCase.run(
+        new OccupationId(request.occupationId),
+        ParkingSpotForceReleased.Reason.NOT_RELEASED_PARKING_SPOT
+    );
+    return result ? ResponseEntity.ok().build() : ResponseEntity.status(INTERNAL_SERVER_ERROR).build();
+  }
+
   record CreateParkingSpotRequest(
       ParkingSpotCategory category
   ) {
@@ -115,6 +127,11 @@ class ParkingController {
   }
 
   record ReleaseParkingSpotRequest(
+      UUID occupationId
+  ) {
+  }
+
+  record ReleaseByForceParkingSpotRequest(
       UUID occupationId
   ) {
   }

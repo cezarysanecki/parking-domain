@@ -12,8 +12,14 @@ post {
 
 body:json {
   {
-    "occupantId": "67b24f43-2168-4fd6-8c5c-0d01bf08ae87",
-    "parkingSpotId": "82ae531e-7b59-4883-ae15-95d16dffa432",
+    "occupantId": "{{clientId}}",
+    "parkingSpotId": "{{parkingSpotId}}",
     "spotUnits": "2"
   }
+}
+
+tests {
+  var occupationId = res.body;
+  
+  bru.setEnvVar("occupationId", occupationId);
 }
