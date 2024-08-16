@@ -1,0 +1,25 @@
+meta {
+  name: Occupy parking spot without account
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/parking/occupy-without-account
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "phoneNumber": "784777444",
+    "parkingSpotId": "{{parkingSpotId}}",
+    "spotUnits": "2"
+  }
+}
+
+tests {
+  var occupationId = res.body;
+  
+  bru.setEnvVar("occupationId", occupationId);
+}

@@ -1,0 +1,21 @@
+meta {
+  name: Make request
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/requesting/request
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "requesterId": "{{clientId}}",
+    "parkingSpotId": "{{parkingSpotId}}",
+    "from": "2024-08-17T05:00:00",
+    "to": "2024-08-17T17:00:00",
+    "spotUnits": "2"
+  }
+}

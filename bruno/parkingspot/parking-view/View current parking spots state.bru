@@ -1,0 +1,17 @@
+meta {
+  name: View current parking spots state
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/parking/view
+  body: none
+  auth: none
+}
+
+tests {
+  var parkingSpotId = res.body[0].parkingSpotId;
+  
+  bru.setEnvVar("parkingSpotId", parkingSpotId);
+}

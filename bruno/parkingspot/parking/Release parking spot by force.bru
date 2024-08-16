@@ -1,0 +1,17 @@
+meta {
+  name: Release parking spot by force
+  type: http
+  seq: 6
+}
+
+delete {
+  url: {{baseUrl}}/parking/release-force
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "occupationId": "{{occupationId}}"
+  }
+}

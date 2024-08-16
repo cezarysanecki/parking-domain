@@ -1,0 +1,17 @@
+meta {
+  name: Release parking spot
+  type: http
+  seq: 6
+}
+
+delete {
+  url: {{baseUrl}}/parking/release
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "occupationId": "{{occupationId}}"
+  }
+}

@@ -1,0 +1,25 @@
+meta {
+  name: Occupy parking spot
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/parking/occupy
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "occupantId": "{{clientId}}",
+    "parkingSpotId": "{{parkingSpotId}}",
+    "spotUnits": "2"
+  }
+}
+
+tests {
+  var occupationId = res.body;
+  
+  bru.setEnvVar("occupationId", occupationId);
+}

@@ -1,0 +1,19 @@
+meta {
+  name: View free time slots to request
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/requesting/view/free
+  body: none
+  auth: none
+}
+
+tests {
+  if (res.body[0] != null) {
+    var parkingSpotId = res.body[0].parkingSpotId;
+    bru.setEnvVar("parkingSpotId", parkingSpotId);
+  }
+  
+}

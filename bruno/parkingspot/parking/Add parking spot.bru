@@ -1,0 +1,17 @@
+meta {
+  name: Add parking spot
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{baseUrl}}/parking/add
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "category": "Gold"
+  }
+}

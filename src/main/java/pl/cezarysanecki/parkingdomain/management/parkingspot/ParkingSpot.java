@@ -1,26 +1,12 @@
 package pl.cezarysanecki.parkingdomain.management.parkingspot;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.NonNull;
-import lombok.Value;
-import pl.cezarysanecki.parkingdomain.shared.occupation.ParkingSpotCapacity;
+import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotCapacity;
+import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotCategory;
+import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
 
-import java.util.UUID;
-
-@Value
-@AllArgsConstructor(access = AccessLevel.PACKAGE)
-class ParkingSpot {
-
-  @NonNull
-  ParkingSpotId parkingSpotId;
-  @NonNull
-  ParkingSpotCapacity capacity;
-  @NonNull
-  ParkingSpotCategory category;
-
-  ParkingSpot(UUID parkingSpotId, int capacity, ParkingSpotCategory category) {
-    this(ParkingSpotId.of(parkingSpotId), ParkingSpotCapacity.of(capacity), category);
-  }
+public record ParkingSpot(
+    ParkingSpotId parkingSpotId,
+    ParkingSpotCapacity capacity,
+    ParkingSpotCategory category) {
 
 }
