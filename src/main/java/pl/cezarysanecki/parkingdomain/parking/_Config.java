@@ -1,12 +1,11 @@
 package pl.cezarysanecki.parkingdomain.parking;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import pl.cezarysanecki.parkingdomain.commons.date.DateProvider;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
+import pl.cezarysanecki.parkingdomain.shared.BusinessDateProvider;
 
 @Configuration
 @RequiredArgsConstructor
@@ -16,21 +15,18 @@ class ParkingConfig {
   private final OccupationRepository occupationRepository;
   private final OccupantRepository occupantRepository;
   private final ReservationRepository reservationRepository;
-  private final DateProvider dateProvider;
+  private final BusinessDateProvider businessDateProvider;
   private final EventPublisher eventPublisher;
 
   @Bean
-  ParkingFacade parkingFacade(
-      @Value("${business.parking.minutes-to-consider-reservation-active}") int minutesToConsiderReservationActive
-  ) {
+  ParkingFacade parkingFacade() {
     return new ParkingFacade(
         parkingRepository,
         occupationRepository,
         occupantRepository,
         reservationRepository,
-        dateProvider,
-        eventPublisher,
-        minutesToConsiderReservationActive);
+        businessDateProvider,
+        eventPublisher);
   }
 
   @Bean

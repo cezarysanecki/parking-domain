@@ -3,16 +3,15 @@ package pl.cezarysanecki.parkingdomain.parking;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import pl.cezarysanecki.parkingdomain.commons.date.DateProvider;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupantId;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupationId;
 import pl.cezarysanecki.parkingdomain.parking.api.ParkingSpotReleased;
 import pl.cezarysanecki.parkingdomain.parking.api.ReservationId;
+import pl.cezarysanecki.parkingdomain.shared.BusinessDateProvider;
 import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.util.Optional;
 
@@ -24,10 +23,8 @@ public class ParkingFacade {
   private final OccupationRepository occupationRepository;
   private final OccupantRepository occupantRepository;
   private final ReservationRepository reservationRepository;
-  private final DateProvider dateProvider;
+  private final BusinessDateProvider businessDateProvider;
   private final EventPublisher eventPublisher;
-
-  private final int minutesWhenReservationIsActive;
 
   @Transactional
   public Optional<OccupationId> occupy(
@@ -35,7 +32,7 @@ public class ParkingFacade {
       ParkingSpotId parkingSpotId,
       SpotUnits spotUnits
   ) {
-    Instant activationDate = dateProvider.now().plus(Duration.ofMinutes(minutesWhenReservationIsActive));
+    Instant activationDate = businessDateProvider.provideDateForActivatingReservations();
 
     log.debug("occupying parking spot with id {} by {} units", parkingSpotId, spotUnits);
     ParkingSpot parkingSpot = parkingRepository.loadBy(parkingSpotId, activationDate);
@@ -57,7 +54,7 @@ public class ParkingFacade {
       OccupantId occupantId,
       ReservationId reservationId
   ) {
-    Instant activationDate = dateProvider.now().plus(Duration.ofMinutes(minutesWhenReservationIsActive));
+    Instant activationDate = businessDateProvider.provideDateForActivatingReservations();
 
     log.debug("occupying parking spot using reservation with id {}", reservationId);
     Reservation reservation = reservationRepository.loadBy(reservationId);

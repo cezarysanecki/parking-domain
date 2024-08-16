@@ -7,6 +7,7 @@ import pl.cezarysanecki.parkingdomain.management.client.api.ClientId;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpot;
 import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
 
+import java.time.Instant;
 import java.time.ZoneId;
 import java.util.Collection;
 import java.util.List;
@@ -90,18 +91,16 @@ class InMemoryViews implements
   }
 
   @Override
-  public List<ParkingSpotEntry> queryParkingSpots() {
-
-
+  public List<ParkingSpotEntry> queryParkingSpots(Instant activationDateOfReservations) {
     return InMemoryRepositories.PARKING_SPOT_DATABASE.values()
         .stream()
-        .map(this::createParkingSpotEntry)
+        .map(entity -> createParkingSpotEntry(entity, activationDateOfReservations))
         .toList();
   }
 
-  private ParkingSpotEntry createParkingSpotEntry(ParkingSpot parkingSpot) {
+  private ParkingSpotEntry createParkingSpotEntry(ParkingSpot parkingSpot, Instant activationDateOfReservations) {
     Collection<OccupationEntity> occupations = InMemoryRepositories.OCCUPATION_DATABASE.values();
-    Collection<ReservationEntity> reservations = InMemoryRepositories.RESERVATION_DATABASE.values();
+    Collection<ReservationEntity> reservations = InMemoryRepositories.getActiveReservationFor(activationDateOfReservations);
 
     int occupiedSpace = occupations.stream()
         .filter(entity -> entity.parkingSpotId.equals(parkingSpot.parkingSpotId()))

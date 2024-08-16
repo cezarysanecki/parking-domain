@@ -10,6 +10,8 @@ import pl.cezarysanecki.parkingdomain.parking.api.ReservationId;
 import pl.cezarysanecki.parkingdomain.requesting.api.RequestId;
 import pl.cezarysanecki.parkingdomain.requesting.api.RequesterId;
 
+import java.time.Instant;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -35,5 +37,12 @@ public class InMemoryRepositories {
   public static final Map<RequestId, RequestEntity> REQUEST_DATABASE = new ConcurrentHashMap<>();
   public static final Map<OccupantId, OccupantEntity> OCCUPANT_DATABASE = new ConcurrentHashMap<>();
   public static final Map<ReservationId, ReservationEntity> RESERVATION_DATABASE = new ConcurrentHashMap<>();
+
+  public static List<ReservationEntity> getActiveReservationFor(Instant activationDate) {
+    return RESERVATION_DATABASE.values()
+        .stream()
+        .filter(reservationEntity -> reservationEntity.timeSlot.from().isBefore(activationDate))
+        .toList();
+  }
 
 }

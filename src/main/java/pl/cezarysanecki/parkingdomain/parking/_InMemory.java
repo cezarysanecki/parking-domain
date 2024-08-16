@@ -2,6 +2,7 @@ package pl.cezarysanecki.parkingdomain.parking;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import pl.cezarysanecki.parkingdomain._local.InMemoryRepositories;
 import pl.cezarysanecki.parkingdomain.commons.aggregates.Version;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupantId;
@@ -179,10 +180,9 @@ class InMemoryReservationRepository implements ReservationRepository {
   }
 
   static List<ReservationEntity> findFor(ParkingSpotId parkingSpotId, Instant activationDateOfReservations) {
-    return DATABASE.values()
+    return InMemoryRepositories.getActiveReservationFor(activationDateOfReservations)
         .stream()
-        .filter(entity -> entity.parkingSpotId.equals(parkingSpotId)
-            && entity.timeSlot.from().isBefore(activationDateOfReservations))
+        .filter(entity -> entity.parkingSpotId.equals(parkingSpotId))
         .toList();
   }
 
