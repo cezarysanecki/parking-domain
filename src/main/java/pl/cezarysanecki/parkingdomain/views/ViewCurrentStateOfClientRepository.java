@@ -7,12 +7,15 @@ import java.util.UUID;
 
 public interface ViewCurrentStateOfClientRepository {
 
+  List<CurrentStateEntry> queryAll();
+
   CurrentStateEntry queryFor(ClientId clientId);
 
   record CurrentStateEntry(
       UUID clientId,
       List<UUID> occupationIds,
-      List<UUID> requestIds
+      List<UUID> requestIds,
+      List<UUID> reservationIds
   ) {
   }
 

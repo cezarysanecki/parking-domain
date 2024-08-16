@@ -9,6 +9,7 @@ import pl.cezarysanecki.parkingdomain.commons.date.DateProvider;
 import pl.cezarysanecki.parkingdomain.requesting.RequestingFacade;
 
 import java.time.Instant;
+import java.time.LocalDate;
 
 @Slf4j
 @DisallowConcurrentExecution
@@ -21,9 +22,9 @@ class MakingRequestsValidJob implements Job {
   @Override
   public void execute(JobExecutionContext jobExecutionContext) {
     log.debug("=== JOB {} STARTED ===", getClass().getSimpleName());
-    Instant date = dateProvider.now();
+    LocalDate currentDay = dateProvider.currentDay();
 
-    requestingFacade.makeValidFor(date);
+    requestingFacade.makeValidFor(currentDay);
 
     log.debug("=== JOB {} ENDED ===", getClass().getSimpleName());
   }

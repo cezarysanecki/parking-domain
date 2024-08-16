@@ -18,6 +18,11 @@ class ClientViewController {
 
   private final ViewCurrentStateOfClientRepository viewCurrentStateOfClientRepository;
 
+  @GetMapping
+  ResponseEntity queryAll() {
+    return ResponseEntity.ok(viewCurrentStateOfClientRepository.queryAll());
+  }
+
   @GetMapping("/{clientId}")
   ResponseEntity query(@PathVariable("clientId") UUID clientId) {
     return ResponseEntity.ok(viewCurrentStateOfClientRepository.queryFor(new ClientId(clientId)));

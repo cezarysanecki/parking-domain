@@ -10,7 +10,7 @@ import pl.cezarysanecki.parkingdomain.requesting.api.RequesterId;
 import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
 import pl.cezarysanecki.parkingdomain.shared.TimeSlot;
 
-import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
@@ -70,6 +70,12 @@ class InMemoryRequestableParkingSpotRepository implements RequestableParkingSpot
         .toList();
     return entities.stream()
         .anyMatch(entity -> timeSlot.intersects(entity.freeTimeSlotKey.timeSlot()));
+  }
+
+  @Override
+  public void deleteAllFor(LocalDate day) {
+    DATABASE.values()
+        .removeIf(entity -> day.equals(entity.freeTimeSlotKey.timeSlot().from().atZone(ZoneId.systemDefault()).toLocalDate()));
   }
 
   static RequestableParkingSpotEntity findBy(ParkingSpotId parkingSpotId, TimeSlot timeSlot) {
@@ -156,11 +162,10 @@ class InMemoryRequestRepository implements RequestRepository {
   }
 
   @Override
-  public List<Request> findAllBy(Instant date) {
+  public List<Request> findAllBy(LocalDate day) {
     return DATABASE.values()
         .stream()
-        .filter(entity -> date.atZone(ZoneId.systemDefault()).toLocalDate().equals(
-            entity.timeSlot.from().atZone(ZoneId.systemDefault()).toLocalDate()))
+        .filter(entity -> day.equals(entity.timeSlot.from().atZone(ZoneId.systemDefault()).toLocalDate()))
         .map(InMemoryRequestRepository::toDomain)
         .toList();
   }

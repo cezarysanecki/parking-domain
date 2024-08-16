@@ -11,7 +11,7 @@ import pl.cezarysanecki.parkingdomain.requesting.api.RequesterId;
 import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
 import pl.cezarysanecki.parkingdomain.shared.TimeSlot;
 
-import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,7 +19,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class RequestingFacade {
 
-  private final RequestableParkingSpotRepository requestableSectionRepository;
+  private final RequestableParkingSpotRepository requestableParkingSpotRepository;
   private final RequesterRepository requesterRepository;
   private final RequestRepository requestRepository;
   private final EventPublisher eventPublisher;
@@ -32,7 +32,7 @@ public class RequestingFacade {
       SpotUnits spotUnits
   ) {
     log.debug("requesting parking spot with id {} by {} units for {} time slot", parkingSpotId, spotUnits, timeSlot);
-    RequestableParkingSpot requestableParkingSpot = requestableSectionRepository.findFor(parkingSpotId, timeSlot);
+    RequestableParkingSpot requestableParkingSpot = requestableParkingSpotRepository.findFor(parkingSpotId, timeSlot);
     Requester requester = requesterRepository.findBy(requesterId);
 
     RequestId requestId = RequestId.newOne();
@@ -59,26 +59,26 @@ public class RequestingFacade {
   public void createForAll(
       TimeSlot timeSlot
   ) {
-    List<RequestableParkingSpotTemplate> templates = requestableSectionRepository.findAllTemplates();
+    List<RequestableParkingSpotTemplate> templates = requestableParkingSpotRepository.findAllTemplates();
 
     List<RequestableParkingSpot> groupedSections = templates.stream()
-        .filter(template -> !requestableSectionRepository.intersects(template.parkingSpotId(), timeSlot))
+        .filter(template -> !requestableParkingSpotRepository.intersects(template.parkingSpotId(), timeSlot))
         .map(template -> RequestableParkingSpot.createNew(
             template.parkingSpotId(),
             template.numberOfSections(),
             timeSlot)
         )
         .toList();
-    log.debug("created time slots {} from {} for {}", groupedSections.size(), templates.size(), timeSlot);
+    log.debug("created time slots [{}/{}] for {}", groupedSections.size(), templates.size(), timeSlot);
 
-    groupedSections.forEach(requestableSectionRepository::saveNew);
+    groupedSections.forEach(requestableParkingSpotRepository::saveNew);
   }
 
   @Transactional
   public void makeValidFor(
-      Instant date
+      LocalDate day
   ) {
-    List<Request> requests = requestRepository.findAllBy(date);
+    List<Request> requests = requestRepository.findAllBy(day);
     log.debug("making valid {} requests", requests.size());
 
     eventPublisher.publish(new MadeRequestsValid(requests.stream()
@@ -94,6 +94,7 @@ public class RequestingFacade {
     requestRepository.deleteAll(requests.stream()
         .map(Request::requestId)
         .toList());
+    requestableParkingSpotRepository.deleteAllFor(day);
   }
 
 }

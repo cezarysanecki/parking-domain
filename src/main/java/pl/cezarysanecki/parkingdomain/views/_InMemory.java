@@ -54,6 +54,14 @@ class InMemoryViews implements
   }
 
   @Override
+  public List<CurrentStateEntry> queryAll() {
+    return InMemoryRepositories.CLIENT_DATABASE.values()
+        .stream()
+        .map(client -> queryFor(client.clientId()))
+        .toList();
+  }
+
+  @Override
   public CurrentStateEntry queryFor(ClientId clientId) {
     return InMemoryRepositories.CLIENT_DATABASE.values()
         .stream()
@@ -70,6 +78,11 @@ class InMemoryViews implements
                 .stream()
                 .filter(entity -> entity.requesterId.value().equals(clientId.value()))
                 .map(entity -> entity.requestId.value())
+                .toList(),
+            InMemoryRepositories.RESERVATION_DATABASE.values()
+                .stream()
+                .filter(entity -> entity.ownerId.value().equals(clientId.value()))
+                .map(entity -> entity.reservationId.value())
                 .toList()
         ))
         .orElseThrow(() -> new EntityNotFoundException("cannot find view for client with id " + clientId.value()));

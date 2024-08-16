@@ -4,6 +4,8 @@ import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotCapa
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.shared.TimeSlot;
 
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 
 interface RequestableParkingSpotRepository {
@@ -17,5 +19,7 @@ interface RequestableParkingSpotRepository {
   RequestableParkingSpot findFor(ParkingSpotId parkingSpotId, TimeSlot timeSlot);
 
   boolean intersects(ParkingSpotId parkingSpotId, TimeSlot timeSlot);
+
+  void deleteAllFor(LocalDate day);
 
 }

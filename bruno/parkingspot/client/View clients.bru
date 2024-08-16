@@ -1,0 +1,23 @@
+meta {
+  name: View clients
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/client/view
+  body: none
+  auth: none
+}
+
+body:json {
+  {
+    "clientId": ""
+  }
+}
+
+tests {
+  var clientId = res.body[0].clientId;
+  
+  bru.setEnvVar("clientId", clientId);
+}

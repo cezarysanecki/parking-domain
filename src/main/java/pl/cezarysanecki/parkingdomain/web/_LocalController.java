@@ -54,7 +54,7 @@ class _LocalController {
 
   @PostMapping("/requests/make-valid")
   ResponseEntity<List<String>> makeReservationRequestValid() {
-    requestingFacade.makeValidFor(dateProvider.now());
+    requestingFacade.makeValidFor(dateProvider.currentDay());
     return ResponseEntity.ok().build();
   }
 
