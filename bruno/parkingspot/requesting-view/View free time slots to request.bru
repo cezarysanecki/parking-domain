@@ -11,7 +11,9 @@ get {
 }
 
 tests {
-  var parkingSpotId = res.body[0].parkingSpotId;
+  if (res.body[0] != null) {
+    var parkingSpotId = res.body[0].parkingSpotId;
+    bru.setEnvVar("parkingSpotId", parkingSpotId);
+  }
   
-  bru.setEnvVar("parkingSpotId", parkingSpotId);
 }

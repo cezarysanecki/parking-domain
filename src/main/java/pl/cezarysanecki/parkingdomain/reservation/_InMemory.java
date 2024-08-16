@@ -21,15 +21,14 @@ class InMemoryReservationRepository implements ReservationRepository {
   @Override
   public void saveAll(List<Reservation> reservations) {
     reservations.forEach(
-        reservation -> new ReservationEntity(
+        reservation -> DATABASE.put(reservation.reservationId(), new ReservationEntity(
             reservation.reservationId(),
             reservation.ownerId(),
             reservation.parkingSpotId(),
             reservation.timeSlot(),
             reservation.spotUnits(),
-            ReservationEntity.Status.STALE
-        )
-    );
+            ReservationEntity.Status.STALE)
+        ));
   }
 
   @Override

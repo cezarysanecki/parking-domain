@@ -1,6 +1,7 @@
 package pl.cezarysanecki.parkingdomain.reservation;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 import pl.cezarysanecki.parkingdomain.reservation.api.ReservationId;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
+@Slf4j
 @RequiredArgsConstructor
 public class ReservationFacade {
 
@@ -41,6 +43,7 @@ public class ReservationFacade {
             reservation.spotUnits()
         ))
         .toList();
+    log.debug("activating {} reservations", activatedReservationEntries.size());
 
     eventPublisher.publish(new ReservationsActivated(activatedReservationEntries));
 
@@ -55,6 +58,7 @@ public class ReservationFacade {
     List<ReservationId> activatedReservationEntries = reservations.stream()
         .map(Reservation::reservationId)
         .toList();
+    log.debug("removing {} not used reservations", activatedReservationEntries.size());
 
     eventPublisher.publish(new ReservationsRemoved(activatedReservationEntries));
 

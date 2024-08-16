@@ -7,12 +7,12 @@ import pl.cezarysanecki.parkingdomain.management.client.api.ClientId;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpot;
 import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
 
-import java.time.Instant;
 import java.time.ZoneId;
 import java.util.Collection;
 import java.util.List;
 
 import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.OccupationEntity;
+import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.ParkingSpotReservationEntity;
 import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.ReservationEntity;
 
 @RequiredArgsConstructor
@@ -83,7 +83,8 @@ class InMemoryViews implements
                 .toList(),
             InMemoryRepositories.RESERVATION_DATABASE.values()
                 .stream()
-                .filter(entity -> entity.ownerId.value().equals(clientId.value()))
+                .filter(entity -> entity.ownerId.value().equals(clientId.value())
+                    && (entity.status == ReservationEntity.Status.ACTIVE || entity.status == ReservationEntity.Status.STALE))
                 .map(entity -> entity.reservationId.value())
                 .toList()
         ))
@@ -91,16 +92,16 @@ class InMemoryViews implements
   }
 
   @Override
-  public List<ParkingSpotEntry> queryParkingSpots(Instant activationDateOfReservations) {
+  public List<ParkingSpotEntry> queryParkingSpots() {
     return InMemoryRepositories.PARKING_SPOT_DATABASE.values()
         .stream()
-        .map(entity -> createParkingSpotEntry(entity, activationDateOfReservations))
+        .map(this::createParkingSpotEntry)
         .toList();
   }
 
-  private ParkingSpotEntry createParkingSpotEntry(ParkingSpot parkingSpot, Instant activationDateOfReservations) {
+  private ParkingSpotEntry createParkingSpotEntry(ParkingSpot parkingSpot) {
     Collection<OccupationEntity> occupations = InMemoryRepositories.OCCUPATION_DATABASE.values();
-    Collection<ReservationEntity> reservations = InMemoryRepositories.getActiveReservationFor(activationDateOfReservations);
+    Collection<ParkingSpotReservationEntity> reservations = InMemoryRepositories.PARKING_SPOT_RESERVATION_DATABASE.values();
 
     int occupiedSpace = occupations.stream()
         .filter(entity -> entity.parkingSpotId.equals(parkingSpot.parkingSpotId()))
@@ -108,8 +109,8 @@ class InMemoryViews implements
         .map(SpotUnits::value)
         .reduce(0, Integer::sum);
     int reservedSpace = reservations.stream()
-        .filter(entity -> entity.parkingSpotId.equals(parkingSpot.parkingSpotId()))
-        .map(entity -> entity.spotUnits)
+        .filter(entity -> entity.parkingSpotId().equals(parkingSpot.parkingSpotId()))
+        .map(ParkingSpotReservationEntity::spotUnits)
         .map(SpotUnits::value)
         .reduce(0, Integer::sum);
 

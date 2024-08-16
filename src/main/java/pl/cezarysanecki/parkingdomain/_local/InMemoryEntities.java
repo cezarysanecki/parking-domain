@@ -76,4 +76,11 @@ public class InMemoryEntities {
 
   }
 
+  public record ParkingSpotReservationEntity(
+      ParkingSpotId parkingSpotId,
+      ReservationId reservationId,
+      SpotUnits spotUnits
+  ) {
+  }
+
 }

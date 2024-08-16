@@ -17,3 +17,9 @@ body:json {
     "spotUnits": "2"
   }
 }
+
+tests {
+  var occupationId = res.body;
+  
+  bru.setEnvVar("occupationId", occupationId);
+}

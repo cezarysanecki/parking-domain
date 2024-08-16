@@ -13,6 +13,12 @@ post {
 body:json {
   {
     "occupantId": "{{clientId}}",
-    "reservationId": "35517bca-c16f-4e67-aa1a-afeb60935873"
+    "reservationId": "da46db04-c0a7-4ccc-a144-b471a8d674c8"
   }
+}
+
+tests {
+  var occupationId = res.body;
+  
+  bru.setEnvVar("occupationId", occupationId);
 }
