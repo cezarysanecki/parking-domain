@@ -20,7 +20,7 @@ import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.ParkingSpot
 import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.ReservationEntity;
 import static pl.cezarysanecki.parkingdomain._local.InMemoryRepositories.OCCUPANT_DATABASE;
 import static pl.cezarysanecki.parkingdomain._local.InMemoryRepositories.OCCUPATION_DATABASE;
-import static pl.cezarysanecki.parkingdomain._local.InMemoryRepositories.PARKING_SPOT_SECTION_DATABASE;
+import static pl.cezarysanecki.parkingdomain._local.InMemoryRepositories.PARKING_DATABASE;
 import static pl.cezarysanecki.parkingdomain._local.InMemoryRepositories.RESERVATION_DATABASE;
 
 @RequiredArgsConstructor
@@ -72,7 +72,7 @@ class InMemoryOccupationRepository implements OccupationRepository {
 @RequiredArgsConstructor
 class InMemoryParkingRepository implements ParkingRepository {
 
-  private static final Map<ParkingSpotId, ParkingSpotEntity> DATABASE = PARKING_SPOT_SECTION_DATABASE;
+  private static final Map<ParkingSpotId, ParkingSpotEntity> DATABASE = PARKING_DATABASE;
 
   @Override
   public void saveNew(ParkingSpot parkingSpot) {

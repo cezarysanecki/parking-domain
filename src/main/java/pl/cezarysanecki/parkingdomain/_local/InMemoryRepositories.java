@@ -28,7 +28,7 @@ public class InMemoryRepositories {
   public static final Map<ClientId, Client> CLIENT_DATABASE = new ConcurrentHashMap<>();
   public static final Map<ParkingSpotId, ParkingSpot> PARKING_SPOT_DATABASE = new ConcurrentHashMap<>();
   public static final Map<OccupationId, OccupationEntity> OCCUPATION_DATABASE = new ConcurrentHashMap<>();
-  public static final Map<ParkingSpotId, ParkingSpotEntity> PARKING_SPOT_SECTION_DATABASE = new ConcurrentHashMap<>();
+  public static final Map<ParkingSpotId, ParkingSpotEntity> PARKING_DATABASE = new ConcurrentHashMap<>();
   public static final Map<ParkingSpotId, Integer> TEMPLATES_DATABASE = new ConcurrentHashMap<>();
   public static final Map<FreeTimeSlotKey, RequestableParkingSpotEntity> REQUESTABLE_PARKING_SPOT_DATABASE = new ConcurrentHashMap<>();
   public static final Map<RequesterId, RequesterEntity> REQUESTER_DATABASE = new ConcurrentHashMap<>();

@@ -27,8 +27,4 @@ record Occupant(
     return occupations.isEmpty();
   }
 
-  boolean canOccupyWithReservation(ReservationId reservationId) {
-    return reservationsToUse.contains(reservationId);
-  }
-
 }

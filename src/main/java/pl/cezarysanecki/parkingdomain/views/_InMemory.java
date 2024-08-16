@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.List;
 
 import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.OccupationEntity;
+import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.ReservationEntity;
 
 @RequiredArgsConstructor
 class InMemoryViews implements
@@ -90,19 +91,33 @@ class InMemoryViews implements
 
   @Override
   public List<ParkingSpotEntry> queryParkingSpots() {
-    Collection<OccupationEntity> occupations = InMemoryRepositories.OCCUPATION_DATABASE.values();
+
 
     return InMemoryRepositories.PARKING_SPOT_DATABASE.values()
         .stream()
-        .map(entity -> new ParkingSpotEntry(
-            entity.parkingSpotId().value(),
-            entity.category(),
-            entity.capacity().value() - occupations.stream()
-                .map(occupationEntity -> occupationEntity.occupiedSpace)
-                .map(SpotUnits::value)
-                .reduce(0, Integer::sum))
-        )
+        .map(this::createParkingSpotEntry)
         .toList();
+  }
+
+  private ParkingSpotEntry createParkingSpotEntry(ParkingSpot parkingSpot) {
+    Collection<OccupationEntity> occupations = InMemoryRepositories.OCCUPATION_DATABASE.values();
+    Collection<ReservationEntity> reservations = InMemoryRepositories.RESERVATION_DATABASE.values();
+
+    int occupiedSpace = occupations.stream()
+        .filter(entity -> entity.parkingSpotId.equals(parkingSpot.parkingSpotId()))
+        .map(entity -> entity.occupiedSpace)
+        .map(SpotUnits::value)
+        .reduce(0, Integer::sum);
+    int reservedSpace = reservations.stream()
+        .filter(entity -> entity.parkingSpotId.equals(parkingSpot.parkingSpotId()))
+        .map(entity -> entity.spotUnits)
+        .map(SpotUnits::value)
+        .reduce(0, Integer::sum);
+
+    return new ParkingSpotEntry(
+        parkingSpot.parkingSpotId().value(),
+        parkingSpot.category(),
+        parkingSpot.capacity().value() - (occupiedSpace + reservedSpace));
   }
 
   @Override
@@ -120,11 +135,12 @@ class InMemoryViews implements
                 .orElse(null),
             entry.getKey().timeSlot().from().atZone(ZoneId.systemDefault()).toLocalDateTime(),
             entry.getKey().timeSlot().to().atZone(ZoneId.systemDefault()).toLocalDateTime(),
-            entry.getValue().capacity - (int) InMemoryRepositories.REQUEST_DATABASE.values()
+            entry.getValue().capacity - InMemoryRepositories.REQUEST_DATABASE.values()
                 .stream()
                 .filter(request -> request.parkingSpotId.equals(entry.getKey().parkingSpotId())
                     && request.timeSlot.equals(entry.getKey().timeSlot()))
-                .count()
+                .map(request -> request.units)
+                .reduce(0, Integer::sum)
         ))
         .toList();
   }

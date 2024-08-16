@@ -61,15 +61,14 @@ public class ParkingFacade {
 
     log.debug("occupying parking spot using reservation with id {}", reservationId);
     Reservation reservation = reservationRepository.loadBy(reservationId);
-
     ParkingSpot parkingSpot = parkingRepository.loadBy(reservation.parkingSpotId(), activationDate);
-    Occupant occupant = occupantRepository.findBy(occupantId, activationDate);
 
     OccupationId occupationId = OccupationId.newOne();
-    if (!occupant.canOccupyWithReservation(reservationId) || !parkingSpot.occupyBy(reservation.spotUnits())) {
+    if (!parkingSpot.occupyBy(reservation.spotUnits())) {
       log.debug("failed to occupy parking spot with id {}", reservation.parkingSpotId());
       return Optional.empty();
     }
+    Occupant occupant = occupantRepository.findBy(occupantId, activationDate);
     occupationRepository.saveCheckingVersion(new Occupation(
         occupationId, occupant, parkingSpot, parkingSpot.capacity().toSpotUnits(), reservationId
     ));
