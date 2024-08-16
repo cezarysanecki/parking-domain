@@ -2,7 +2,6 @@ package pl.cezarysanecki.parkingdomain.reservation;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import pl.cezarysanecki.parkingdomain.reservation.api.Reservation;
 import pl.cezarysanecki.parkingdomain.reservation.api.ReservationId;
 
 import java.util.List;
@@ -18,15 +17,7 @@ class InMemoryReservationRepository implements ReservationRepository {
 
   @Override
   public void saveAll(List<Reservation> reservations) {
-    reservations.forEach(
-        reservation -> DATABASE.put(reservation.reservationId(), new ReservationEntity(
-            reservation.reservationId(),
-            reservation.ownerId(),
-            reservation.parkingSpotId(),
-            reservation.timeSlot(),
-            reservation.spotUnits()
-        ))
-    );
+    reservations.forEach(this::save);
   }
 
   @Override
@@ -39,13 +30,14 @@ class InMemoryReservationRepository implements ReservationRepository {
   }
 
   @Override
-  public void saveCheckingUsage(Reservation reservation) {
-    DATABASE.put(reservation.reservationId(), new ReservationEntity(
-        reservation.reservationId(),
-        reservation.ownerId(),
-        reservation.parkingSpotId(),
-        reservation.timeSlot(),
-        reservation.spotUnits()
+  public void save(Reservation reservation) {
+    DATABASE.put(reservation.reservationId, new ReservationEntity(
+        reservation.reservationId,
+        reservation.ownerId,
+        reservation.parkingSpotId,
+        reservation.timeSlot,
+        reservation.spotUnits,
+        reservation.used
     ));
   }
 
@@ -55,7 +47,8 @@ class InMemoryReservationRepository implements ReservationRepository {
         entity.ownerId,
         entity.parkingSpotId,
         entity.timeSlot,
-        entity.spotUnits);
+        entity.spotUnits,
+        entity.used);
   }
 
 }

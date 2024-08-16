@@ -16,10 +16,11 @@ import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.ParkingFacade;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupantId;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupationId;
-import pl.cezarysanecki.parkingdomain.reservation.api.ReservationId;
+import pl.cezarysanecki.parkingdomain.parking.usecase.OccupyUsingReservationUseCase;
 import pl.cezarysanecki.parkingdomain.parking.usecase.OccupyingWithoutAccountUseCase;
 import pl.cezarysanecki.parkingdomain.parking.usecase.ParkingSpotForceReleased;
 import pl.cezarysanecki.parkingdomain.parking.usecase.RemoveOccupationByForceUseCase;
+import pl.cezarysanecki.parkingdomain.reservation.api.ReservationId;
 import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
 
 import java.util.UUID;
@@ -33,6 +34,7 @@ class ParkingController {
 
   private final OccupyingWithoutAccountUseCase occupyingWithoutAccountUseCase;
   private final RemoveOccupationByForceUseCase removeOccupationByForceUseCase;
+  private final OccupyUsingReservationUseCase occupyUsingReservationUseCase;
   private final ParkingSpotFacade parkingSpotFacade;
   private final ParkingFacade parkingFacade;
 
@@ -76,7 +78,7 @@ class ParkingController {
 
   @PostMapping("/occupy-with-reservation")
   ResponseEntity occupyParkingSpotWithReservation(@RequestBody OccupyParkingSpotUsingReservationRequest request) {
-    var result = parkingFacade.occupyUsing(
+    var result = occupyUsingReservationUseCase.run(
         new OccupantId(request.occupantId),
         new ReservationId(request.reservationId)
     );

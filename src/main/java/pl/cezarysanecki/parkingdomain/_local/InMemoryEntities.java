@@ -68,6 +68,7 @@ public class InMemoryEntities {
     public final ParkingSpotId parkingSpotId;
     public final TimeSlot timeSlot;
     public final SpotUnits spotUnits;
+    public boolean used;
   }
 
 }

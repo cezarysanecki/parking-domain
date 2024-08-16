@@ -8,7 +8,7 @@ import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 
 @Configuration
 @RequiredArgsConstructor
-class ParkingConfig {
+class ReservationConfig {
 
   private final ReservationRepository reservationRepository;
   private final EventPublisher eventPublisher;
@@ -30,7 +30,7 @@ class ParkingConfig {
 @Profile("local")
 @Configuration
 @RequiredArgsConstructor
-class LocalParkingConfig {
+class LocalReservationConfig {
 
   @Bean
   InMemoryReservationRepository inMemoryReservationRepository() {

@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import pl.cezarysanecki.parkingdomain.requesting.api.MadeRequestsValid;
-import pl.cezarysanecki.parkingdomain.reservation.api.Reservation;
 import pl.cezarysanecki.parkingdomain.reservation.api.ReservationId;
 import pl.cezarysanecki.parkingdomain.reservation.api.ReservationOwnerId;
 
@@ -24,7 +23,8 @@ class ReservationEventHandler {
                 new ReservationOwnerId(request.requester().value()),
                 request.parkingSpotId(),
                 request.timeSlot(),
-                request.spotUnits()
+                request.spotUnits(),
+                false
             ))
             .toList());
   }
