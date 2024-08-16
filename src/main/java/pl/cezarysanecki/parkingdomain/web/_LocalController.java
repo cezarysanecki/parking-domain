@@ -11,8 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.cezarysanecki.parkingdomain._local.LocalDateProvider;
 import pl.cezarysanecki.parkingdomain.cleaning.usecase.CallingCleaningWhenSpotsDirtyUseCase;
 import pl.cezarysanecki.parkingdomain.commons.Result;
-import pl.cezarysanecki.parkingdomain.commons.date.DateProvider;
 import pl.cezarysanecki.parkingdomain.requesting.RequestingFacade;
+import pl.cezarysanecki.parkingdomain.reservation.usecase.ActivatingReservationsUseCase;
+import pl.cezarysanecki.parkingdomain.reservation.usecase.RemovingNotUsedReservationsUseCase;
 
 import java.time.Instant;
 import java.util.List;
@@ -24,8 +25,10 @@ import java.util.List;
 class _LocalController {
 
   private final LocalDateProvider localDateProvider;
+
   private final CallingCleaningWhenSpotsDirtyUseCase callingCleaningWhenSpotsDirtyUsecase;
-  private final DateProvider dateProvider;
+  private final ActivatingReservationsUseCase activatingReservationsUseCase;
+  private final RemovingNotUsedReservationsUseCase removingNotUsedReservationsUseCase;
   private final RequestingFacade requestingFacade;
 
   @PostMapping("/call-cleaning")
@@ -54,7 +57,19 @@ class _LocalController {
 
   @PostMapping("/requests/make-valid")
   ResponseEntity<List<String>> makeReservationRequestValid() {
-    requestingFacade.makeValidFor(dateProvider.currentDay());
+    requestingFacade.makeValidFor(localDateProvider.currentDay());
+    return ResponseEntity.ok().build();
+  }
+
+  @PostMapping("/reservations/activate")
+  ResponseEntity<List<String>> activatingReservations() {
+    activatingReservationsUseCase.run();
+    return ResponseEntity.ok().build();
+  }
+
+  @PostMapping("/reservations/remove-not-used")
+  ResponseEntity<List<String>> removingNotUsedReservations() {
+    removingNotUsedReservationsUseCase.run();
     return ResponseEntity.ok().build();
   }
 

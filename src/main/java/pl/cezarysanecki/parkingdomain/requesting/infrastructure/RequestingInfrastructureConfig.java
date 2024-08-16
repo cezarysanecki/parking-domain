@@ -25,7 +25,7 @@ class RequestingInfrastructureConfig {
   }
 
   @Bean
-  Trigger MakingRequestsValidJobTrigger(
+  Trigger makingRequestsValidJobTrigger(
       JobDetail makingRequestsValidJob,
       @Value("${job.making-requests-valid-job.cron-expression}") String cronExpression
   ) {

@@ -23,8 +23,7 @@ class ReservationEventHandler {
                 new ReservationOwnerId(request.requester().value()),
                 request.parkingSpotId(),
                 request.timeSlot(),
-                request.spotUnits(),
-                false
+                request.spotUnits()
             ))
             .toList());
   }

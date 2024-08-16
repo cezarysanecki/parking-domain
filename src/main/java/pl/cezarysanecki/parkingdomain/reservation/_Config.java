@@ -16,8 +16,8 @@ class ReservationConfig {
   @Bean
   ReservationFacade reservationFacade() {
     return new ReservationFacade(
-        reservationRepository,
-        eventPublisher);
+        eventPublisher,
+        reservationRepository);
   }
 
   @Bean

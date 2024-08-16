@@ -16,6 +16,10 @@ job:
     cron-expression: "0 0 13 * * ?"
   making-requests-valid-job:
     cron-expression: "0 0 1 * * ?"
+  activating-reservations-job:
+    cron-expression: "*/1 * * * *"
+  removing-not-used-reservations-job:
+    cron-expression: "*/1 * * * *"
 
 business:
   cleaning:
@@ -23,6 +27,7 @@ business:
     number-of-drives-away-to-consider-parking-spot-dirty: 5
   parking:
     minutes-to-consider-reservation-active: 60
+    minutes-to-consider-reservation-not-used: 15
   requesting:
     creating-time-slots:
       morning-start-hour: 5

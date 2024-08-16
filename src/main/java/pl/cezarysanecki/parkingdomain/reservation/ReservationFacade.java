@@ -16,8 +16,8 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 public class ReservationFacade {
 
-  private final ReservationRepository reservationRepository;
   private final EventPublisher eventPublisher;
+  private final ReservationRepository reservationRepository;
 
   @Transactional
   public <R> Optional<R> useReservationFor(ReservationId reservationId, Function<ReservedSpace, R> useCase) {

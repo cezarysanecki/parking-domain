@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 import pl.cezarysanecki.parkingdomain.parking.ParkingFacade;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupationId;
+import pl.cezarysanecki.parkingdomain.parking.api.ParkingSpotForceReleased;
 
 @Component
 @RequiredArgsConstructor
