@@ -8,6 +8,7 @@ import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupantId;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupationId;
 import pl.cezarysanecki.parkingdomain.parking.api.ParkingSpotReleased;
+import pl.cezarysanecki.parkingdomain.parking.api.ReleasedOccupation;
 import pl.cezarysanecki.parkingdomain.parking.api.ReservationId;
 import pl.cezarysanecki.parkingdomain.shared.BusinessDateProvider;
 import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
@@ -73,14 +74,14 @@ public class ParkingFacade {
   }
 
   @Transactional
-  public boolean release(
+  public Optional<ReleasedOccupation> release(
       OccupationId occupationId
   ) {
     log.debug("releasing occupation with id {}", occupationId);
     Optional<ReleasedOccupation> potentiallyReleasedOccupation = occupationRepository.delete(occupationId);
     if (potentiallyReleasedOccupation.isEmpty()) {
       log.debug("failed to release occupation with id {}", occupationId);
-      return false;
+      return Optional.empty();
     }
     ReleasedOccupation releasedOccupation = potentiallyReleasedOccupation.get();
     log.debug("releasing occupation for parking spot with id {} for {} units", releasedOccupation.parkingSpotId(), releasedOccupation.spotUnits().value());
@@ -91,7 +92,7 @@ public class ParkingFacade {
         releasedOccupation.parkingSpotId(),
         releasedOccupation.spotUnits()
     ));
-    return true;
+    return Optional.of(releasedOccupation);
   }
 
 }

@@ -85,8 +85,8 @@ class ParkingController {
 
   @DeleteMapping("/release")
   ResponseEntity releaseParkingSpot(@RequestBody ReleaseParkingSpotRequest request) {
-    boolean result = parkingFacade.release(new OccupationId(request.occupationId));
-    return result ? ResponseEntity.ok().build() : ResponseEntity.status(INTERNAL_SERVER_ERROR).build();
+    var result = parkingFacade.release(new OccupationId(request.occupationId));
+    return result.isPresent() ? ResponseEntity.ok().build() : ResponseEntity.status(INTERNAL_SERVER_ERROR).build();
   }
 
   record CreateParkingSpotRequest(
