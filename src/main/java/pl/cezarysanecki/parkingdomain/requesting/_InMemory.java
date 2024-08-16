@@ -84,11 +84,6 @@ class InMemoryRequestableParkingSpotRepository implements RequestableParkingSpot
         .removeIf(entity -> day.equals(entity.freeTimeSlotKey.timeSlot().from().atZone(ZoneId.systemDefault()).toLocalDate()));
   }
 
-  @Override
-  public boolean existsCreationDayEntry(LocalDate day) {
-    return CREATION_DATES_OF_REQUESTABLE_PARKING_SPOTS_DATABASE.contains(day);
-  }
-
   static RequestableParkingSpotEntity findBy(ParkingSpotId parkingSpotId, TimeSlot timeSlot) {
     RequestableParkingSpotEntity entity = DATABASE.get(new FreeTimeSlotKey(parkingSpotId, timeSlot));
     if (entity == null) {

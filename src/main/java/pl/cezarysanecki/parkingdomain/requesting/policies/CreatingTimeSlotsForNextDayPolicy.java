@@ -14,19 +14,20 @@ import java.time.LocalDate;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-@EnableConfigurationProperties(CreatingTimeSlotForNextDayPolicy.CreatingTimeSlotsConfig.class)
-public class CreatingTimeSlotForNextDayPolicy {
+@EnableConfigurationProperties(CreatingTimeSlotsForNextDayPolicy.CreatingTimeSlotsConfig.class)
+public class CreatingTimeSlotsForNextDayPolicy {
 
   private final DateProvider dateProvider;
 
   private final RequestingFacade requestingFacade;
+  private final CreatingTimeSlotsRepository creatingTimeSlotsRepository;
   private final CreatingTimeSlotsConfig creatingTimeSlotsConfig;
 
   public void run() {
     LocalDate nextDay = dateProvider.nextDay();
 
-    if (requestingFacade.wereRequestableParkingSpotsCreatedAt(nextDay)) {
-      throw new IllegalStateException("requestable parking spots were created at + nextDay");
+    if (creatingTimeSlotsRepository.wasCreatedFor(nextDay)) {
+      throw new IllegalStateException("requestable parking spots were created at" + nextDay);
     }
 
     requestingFacade.createForAll(
@@ -35,6 +36,8 @@ public class CreatingTimeSlotForNextDayPolicy {
     requestingFacade.createForAll(
         TimeSlot.create(nextDay, creatingTimeSlotsConfig.eveningStartHour, creatingTimeSlotsConfig.eveningEndHour)
     );
+
+    creatingTimeSlotsRepository.markAsCreatedFor(nextDay);
   }
 
   @ConfigurationProperties(prefix = "business.requesting.creating-time-slots")
