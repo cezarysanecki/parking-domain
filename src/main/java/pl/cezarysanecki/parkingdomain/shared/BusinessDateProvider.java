@@ -37,7 +37,7 @@ public interface BusinessDateProvider {
 
     @Override
     public Instant provideDateForMarkingReservationsAsNotUsed() {
-      return dateProvider.now().plus(Duration.ofMinutes(minutesToConsiderReservationNotUsed));
+      return dateProvider.now().minus(Duration.ofMinutes(minutesToConsiderReservationNotUsed));
     }
   }
 
