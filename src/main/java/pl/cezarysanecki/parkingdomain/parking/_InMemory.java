@@ -90,7 +90,7 @@ class InMemoryParkingRepository implements ParkingRepository {
 
   private static ParkingSpot toDomain(ParkingSpotEntity entity) {
     Optional<OccupationEntity> occupations = InMemoryOccupationRepository.findFor(entity.parkingSpotId);
-    List<ParkingSpotReservationEntity> reservations = InMemoryParkingSpotReservationRepository.findFor(entity.parkingSpotId);
+    List<ParkingSpotReservationEntity> reservations = InMemoryActiveReservationRepository.findFor(entity.parkingSpotId);
     return new ParkingSpot(
         entity.parkingSpotId,
         occupations.stream()
@@ -143,7 +143,7 @@ class InMemoryOccupantRepository implements OccupantRepository {
 }
 
 @RequiredArgsConstructor
-class InMemoryParkingSpotReservationRepository implements ParkingSpotReservationRepository {
+class InMemoryActiveReservationRepository implements ActiveReservationRepository {
 
   static final Map<ReservationId, ParkingSpotReservationEntity> DATABASE = InMemoryRepositories.PARKING_SPOT_RESERVATION_DATABASE;
 

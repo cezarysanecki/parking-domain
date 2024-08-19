@@ -17,7 +17,7 @@ class ParkingEventHandler {
 
   private final ParkingRepository parkingRepository;
   private final OccupantRepository occupantRepository;
-  private final ParkingSpotReservationRepository parkingSpotReservationRepository;
+  private final ActiveReservationRepository parkingSpotReservationRepository;
 
   @EventListener
   public void handle(ParkingSpotAdded event) {
