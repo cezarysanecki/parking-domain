@@ -84,7 +84,7 @@ class InMemoryReservationRepository implements ReservationRepository {
   }
 
   @Override
-  public void markAsNotUused(List<ReservationId> reservations) {
+  public void markAsNotUsed(List<ReservationId> reservations) {
     loadBy(
         reservationEntity -> reservations.contains(reservationEntity.reservationId)
     )

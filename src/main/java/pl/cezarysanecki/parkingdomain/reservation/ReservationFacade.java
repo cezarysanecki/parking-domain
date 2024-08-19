@@ -62,7 +62,7 @@ public class ReservationFacade {
 
     eventPublisher.publish(new ReservationsRemoved(activatedReservationEntries));
 
-    reservationRepository.markAsNotUused(activatedReservationEntries);
+    reservationRepository.markAsNotUsed(activatedReservationEntries);
   }
 
 }
