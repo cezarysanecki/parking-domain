@@ -5,8 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import pl.cezarysanecki.parkingdomain.management.client.api.ClientRegistered;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotAdded;
+import pl.cezarysanecki.parkingdomain.reservation.ReservationsRemoved;
 import pl.cezarysanecki.parkingdomain.reservation.api.ReservationUsed;
 import pl.cezarysanecki.parkingdomain.reservation.api.ReservationsActivated;
+
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -40,7 +43,12 @@ class ParkingEventHandler {
 
   @EventListener
   public void handle(ReservationUsed event) {
-    parkingSpotReservationRepository.remove(event.reservationId());
+    parkingSpotReservationRepository.remove(List.of(event.reservationId()));
+  }
+
+  @EventListener
+  public void handle(ReservationsRemoved event) {
+    parkingSpotReservationRepository.remove(event.reservations());
   }
 
 }

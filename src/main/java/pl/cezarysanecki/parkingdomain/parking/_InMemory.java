@@ -157,8 +157,8 @@ class InMemoryParkingSpotReservationRepository implements ParkingSpotReservation
   }
 
   @Override
-  public void remove(ReservationId reservationId) {
-    DATABASE.remove(reservationId);
+  public void remove(List<ReservationId> reservations) {
+    reservations.forEach(DATABASE::remove);
   }
 
   static List<ParkingSpotReservationEntity> findFor(ParkingSpotId parkingSpotId) {
