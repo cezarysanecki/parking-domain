@@ -45,7 +45,7 @@ public class OccupyingParkingSpotAcceptanceTest extends BaseAcceptanceTest {
   }
 
   @Test
-  void canOccupyParkingSpotIfItHasBeenReleased() {
+  void canOccupyParkingSpotIfOccupationHasBeenReleased() {
     //given
     ParkingSpotId parkingSpotId = addParkingSpot(ParkingSpotCapacity.defaultCapacity(), ParkingSpotCategory.Gold);
     ClientId firstClientId = registerClient(ClientType.BUSINESS, RandomTestUtils.randomPhoneNumber());
@@ -65,6 +65,7 @@ public class OccupyingParkingSpotAcceptanceTest extends BaseAcceptanceTest {
         new SpotUnits(4)
     );
 
+    //then
     assertThat(result).isPresent();
   }
 
