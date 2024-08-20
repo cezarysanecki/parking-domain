@@ -12,6 +12,8 @@ import pl.cezarysanecki.parkingdomain.reservation.api.ReservationOwnerId;
 import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
 import pl.cezarysanecki.parkingdomain.shared.TimeSlot;
 
+import java.time.Instant;
+
 public class InMemoryEntities {
 
   @AllArgsConstructor
@@ -81,6 +83,22 @@ public class InMemoryEntities {
       ReservationId reservationId,
       SpotUnits spotUnits
   ) {
+  }
+
+  public record NotificationOccupationEntity(
+      OccupationId occupationId,
+      OccupantId occupantId,
+      ParkingSpotId parkingSpotId,
+      SpotUnits spotUnits
+  ) {
+  }
+
+  public record NotificationReservationEntity(
+      ReservationId reservationId,
+      ReservationOwnerId reservationOwnerId,
+      ParkingSpotId parkingSpotId,
+      SpotUnits spotUnits,
+      Instant validSince) {
   }
 
 }

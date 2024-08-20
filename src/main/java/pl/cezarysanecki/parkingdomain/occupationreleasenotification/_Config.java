@@ -21,8 +21,8 @@ class OccupationReleaseNotificationConfig {
   }
 
   @Bean
-  OccupationReleaseNotificationEventListener occupationReleaseNotificationEventListener() {
-    return new OccupationReleaseNotificationEventListener(occupationReleaseNotificationRepository);
+  OccupationReleaseNotificationEventHandler occupationReleaseNotificationEventListener() {
+    return new OccupationReleaseNotificationEventHandler(occupationReleaseNotificationRepository);
   }
 
 }

@@ -4,6 +4,10 @@ import pl.cezarysanecki.parkingdomain.commons.date.DateProvider;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 public class LocalDateProvider implements DateProvider {
 
@@ -14,8 +18,8 @@ public class LocalDateProvider implements DateProvider {
     return currentDateTime;
   }
 
-  public Instant setCurrentDate(Instant localDateTime) {
-    currentDateTime = localDateTime;
+  public Instant setCurrentDate(LocalDate localDate) {
+    currentDateTime = ZonedDateTime.of(localDate, LocalTime.of(0, 0), ZoneId.systemDefault()).toInstant();
     return currentDateTime;
   }
 

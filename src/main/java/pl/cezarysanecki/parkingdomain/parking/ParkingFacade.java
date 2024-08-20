@@ -10,6 +10,7 @@ import pl.cezarysanecki.parkingdomain.parking.api.OccupationId;
 import pl.cezarysanecki.parkingdomain.parking.api.ParkingSpotOccupied;
 import pl.cezarysanecki.parkingdomain.parking.api.ParkingSpotReleased;
 import pl.cezarysanecki.parkingdomain.parking.api.ReleasedOccupation;
+import pl.cezarysanecki.parkingdomain.reservation.api.ReservationId;
 import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
 
 import java.util.Optional;
@@ -44,6 +45,34 @@ public class ParkingFacade {
 
     eventPublisher.publish(new ParkingSpotOccupied(
         occupationId, occupantId, parkingSpotId, spotUnits
+    ));
+    return Optional.of(occupationId);
+  }
+
+  @Transactional
+  public Optional<OccupationId> occupyUsing(
+      OccupantId occupantId,
+      ParkingSpotId parkingSpotId,
+      ReservationId reservationId
+  ) {
+    log.debug("occupying parking spot with id {} with reservation {}", parkingSpotId, reservationId);
+    ParkingSpot parkingSpot = parkingRepository.loadBy(parkingSpotId);
+    Occupant occupant = occupantRepository.findBy(occupantId);
+
+    OccupationId occupationId = OccupationId.newOne();
+    Optional<Reservation> parkingSpotResult = parkingSpot.occupyBy(reservationId);
+    if (!occupant.canOccupy(occupationId) || parkingSpotResult.isEmpty()) {
+      log.debug("failed to occupy parking spot with id {}", parkingSpotId);
+      return Optional.empty();
+    }
+
+    Reservation reservation = parkingSpotResult.get();
+    occupationRepository.saveCheckingVersion(new Occupation(
+        occupationId, occupant, parkingSpot, reservation.spotUnits()
+    ));
+
+    eventPublisher.publish(new ParkingSpotOccupied(
+        occupationId, occupantId, parkingSpotId, reservation.spotUnits()
     ));
     return Optional.of(occupationId);
   }
