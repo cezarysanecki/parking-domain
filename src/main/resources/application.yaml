@@ -1,15 +1,14 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:parking-domain
-    driverClassName: org.h2.Driver
-    username: sa
-    password: password
-  h2:
-    console:
-      enabled: true
-  quartz:
-    job-store-type: memory
-# to configure jdbc read: https://medium.com/turkcell/spring-boot-quartz-scheduler-1-c61bbbafdbbb
+    url: jdbc:postgresql://localhost:5432/parkingdomain
+    username: postgres
+    password: root
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
 
 job:
   calling-external-cleaning-service-policy-job:
