@@ -1,6 +1,5 @@
 package pl.cezarysanecki.parkingdomain.management.client;
 
-import jakarta.persistence.EntityNotFoundException;
 import pl.cezarysanecki.parkingdomain.management.client.api.ClientId;
 
 import java.util.Map;
@@ -20,15 +19,6 @@ class InMemoryClientRepository implements ClientRepository {
       throw new IllegalStateException("Phone number already in use");
     }
     DATABASE.put(client.clientId(), client);
-  }
-
-  @Override
-  public Client findBy(ClientId clientId) {
-    Client client = DATABASE.get(clientId);
-    if (client == null) {
-      throw new EntityNotFoundException("client with id " + clientId + " not found");
-    }
-    return client;
   }
 
 }

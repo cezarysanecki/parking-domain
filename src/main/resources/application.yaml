@@ -9,6 +9,9 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+  liquibase:
+    change-log: db/changelog/db.changelog-master.xml
+
 
 job:
   calling-external-cleaning-service-policy-job:
