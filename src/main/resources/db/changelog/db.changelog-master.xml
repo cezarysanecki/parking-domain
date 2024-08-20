@@ -7,7 +7,8 @@
     <changeSet id="create_initial_tables" author="cezarysanecki">
         <createTable tableName="parking_spot_catalogue">
             <column name="id" type="uuid">
-                <constraints nullable="false" primaryKey="true"
+                <constraints nullable="false"
+                             primaryKey="true"
                              primaryKeyName="parking_spot_catalogue_primary_key_constraint"/>
             </column>
             <column name="capacity" type="int">
@@ -20,7 +21,8 @@
 
         <createTable tableName="client_catalogue">
             <column name="id" type="uuid">
-                <constraints nullable="false" primaryKey="true"
+                <constraints nullable="false"
+                             primaryKey="true"
                              primaryKeyName="client_catalogue_primary_key_constraint"/>
             </column>
             <column name="type" type="varchar(10)">
@@ -28,6 +30,127 @@
             </column>
             <column name="phoneNumber" type="varchar(20)">
                 <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="parking">
+            <column name="id" type="uuid">
+                <constraints nullable="false"
+                             primaryKey="true"
+                             primaryKeyName="parking_primary_key_constraint"
+                             foreignKeyName="parking_id_catalogue_foreign_key"
+                             references="parking_spot_catalogue(id)"/>
+            </column>
+            <column name="capacity" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="occupant">
+            <column name="id" type="uuid">
+                <constraints nullable="false"
+                             primaryKey="true"
+                             primaryKeyName="occupant_primary_key_constraint"
+                             foreignKeyName="occupant_id_catalogue_foreign_key"
+                             references="client_catalogue(id)"/>
+            </column>
+            <column name="version" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="occupation">
+            <column name="id" type="uuid">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="occupation_primary_key_constraint"/>
+            </column>
+            <column name="occupant" type="uuid">
+                <constraints nullable="false"
+                             foreignKeyName="occupant_id_occupation_foreign_key"
+                             references="occupant(id)"
+                             unique="true"/>
+            </column>
+            <column name="parking_spot" type="uuid">
+                <constraints nullable="false"
+                             foreignKeyName="parking_spot_id_parking_foreign_key"
+                             references="parking(id)"
+                             unique="true"/>
+            </column>
+            <column name="spot_units" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="reservation">
+            <column name="id" type="uuid">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="reservation_primary_key_constraint"/>
+            </column>
+            <column name="owner" type="uuid">
+                <constraints nullable="false"
+                             foreignKeyName="owner_id_occupant_foreign_key"
+                             references="occupant(id)"
+                             unique="true"/>
+            </column>
+            <column name="parking_spot" type="uuid">
+                <constraints nullable="false"
+                             foreignKeyName="reservation_id_parking_foreign_key"
+                             references="parking(id)"
+                             unique="true"/>
+            </column>
+            <column name="from" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="to" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="spot_units" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="varchar(10)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="parking_spot_reservation">
+            <column name="parking_spot" type="uuid">
+                <constraints nullable="false"
+                             foreignKeyName="parking_spot_reservation_id_parking_foreign_key"
+                             references="parking(id)"
+                             unique="true"/>
+            </column>
+            <column name="reservation" type="uuid">
+                <constraints nullable="false"
+                             foreignKeyName="parking_spot_reservation_id_reservation_foreign_key"
+                             references="reservation(id)"
+                             unique="true"/>
+            </column>
+            <column name="spot_units" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="requestable_parking_spot">
+            <column name="parking_spot" type="uuid">
+                <constraints nullable="false"
+                             foreignKeyName="requestable_parking_spot_id_parking_spot_catalogue_foreign_key"
+                             references="parking_spot_catalogue(id)"
+                             unique="true"/>
+            </column>
+            <column name="from" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="to" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="capacity" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="int">
+                <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
