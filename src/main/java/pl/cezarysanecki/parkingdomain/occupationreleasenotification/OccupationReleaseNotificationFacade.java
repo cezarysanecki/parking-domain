@@ -16,7 +16,7 @@ public class OccupationReleaseNotificationFacade {
   private final OccupationReleaseNotificationRepository occupationReleaseNotificationRepository;
   private final NotificationFacade notificationFacade;
 
-  public void notifyToReleaseFor(Instant date) {
+  public int notifyToReleaseFor(Instant date) {
     List<NotificationResolver> notificationResolvers = occupationReleaseNotificationRepository.findFor(date);
 
     log.debug("found {} notifications to resolve", notificationResolvers.size());
@@ -36,6 +36,8 @@ public class OccupationReleaseNotificationFacade {
     );
 
     occupationReleaseNotificationRepository.doneFor(date);
+
+    return occupantsToNotify.size();
   }
 
 }

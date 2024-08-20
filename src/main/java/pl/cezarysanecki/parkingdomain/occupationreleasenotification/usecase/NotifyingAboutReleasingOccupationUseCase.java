@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import pl.cezarysanecki.parkingdomain.occupationreleasenotification.OccupationReleaseNotificationFacade;
-import pl.cezarysanecki.parkingdomain.reservation.ReservationFacade;
 import pl.cezarysanecki.parkingdomain.shared.BusinessDateProvider;
 
 import java.time.Instant;
@@ -17,9 +16,9 @@ public class NotifyingAboutReleasingOccupationUseCase {
   private final OccupationReleaseNotificationFacade occupationReleaseNotificationFacade;
 
   @Transactional
-  public void run() {
+  public int run() {
     Instant date = businessDateProvider.provideDateForReleasingOccupationBecauseOfReservations();
-    occupationReleaseNotificationFacade.notifyToReleaseFor(date);
+    return occupationReleaseNotificationFacade.notifyToReleaseFor(date);
   }
 
 }
