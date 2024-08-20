@@ -100,9 +100,11 @@ class InMemoryParkingRepository implements ParkingRepository {
             .map(SpotUnits::value)
             .reduce(0, Integer::sum),
         reservations.stream()
-            .map(ParkingSpotReservationEntity::spotUnits)
-            .map(SpotUnits::value)
-            .reduce(0, Integer::sum),
+            .map(reservation -> new Reservation(
+                reservation.reservationId(),
+                reservation.spotUnits()
+            ))
+            .toList(),
         entity.capacity,
         new Version(entity.version));
   }

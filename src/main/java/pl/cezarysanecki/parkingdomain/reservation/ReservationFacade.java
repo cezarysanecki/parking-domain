@@ -24,6 +24,7 @@ public class ReservationFacade {
   @Transactional
   public <R> Optional<R> useReservationFor(ReservationId reservationId, Function<ReservedSpace, R> useCase) {
     Reservation reservation = reservationRepository.loadActiveBy(reservationId);
+    log.debug("found valid reservation with id {}", reservationId);
 
     R result = useCase.apply(reservation);
 

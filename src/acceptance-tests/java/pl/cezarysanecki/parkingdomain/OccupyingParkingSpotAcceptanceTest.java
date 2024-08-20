@@ -10,6 +10,7 @@ import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.ParkingFacade;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupantId;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupationId;
+import pl.cezarysanecki.parkingdomain.parking.usecase.OccupyingWithoutAccountUseCase;
 import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
 
 import java.util.Optional;
@@ -20,6 +21,8 @@ public class OccupyingParkingSpotAcceptanceTest extends BaseAcceptanceTest {
 
   @Autowired
   ParkingFacade parkingFacade;
+  @Autowired
+  OccupyingWithoutAccountUseCase occupyingWithoutAccountUseCase;
 
   @Test
   void cannotOccupyParkingSpotIfCapacityIsExceeded() {
@@ -64,6 +67,18 @@ public class OccupyingParkingSpotAcceptanceTest extends BaseAcceptanceTest {
         parkingSpotId,
         new SpotUnits(4)
     );
+
+    //then
+    assertThat(result).isPresent();
+  }
+
+  @Test
+  void canOccupyParkingSpotWithoutAccountButNeedToPassPhoneNumber() {
+    //given
+    ParkingSpotId parkingSpotId = addParkingSpot(ParkingSpotCapacity.defaultCapacity(), ParkingSpotCategory.Gold);
+
+    //when
+    Optional<OccupationId> result = occupyingWithoutAccountUseCase.run(RandomTestUtils.randomPhoneNumber(), parkingSpotId, new SpotUnits(4));
 
     //then
     assertThat(result).isPresent();
