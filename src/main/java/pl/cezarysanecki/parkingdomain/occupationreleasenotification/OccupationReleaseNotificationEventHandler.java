@@ -3,8 +3,9 @@ package pl.cezarysanecki.parkingdomain.occupationreleasenotification;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.event.TransactionalEventListener;
+import org.springframework.transaction.annotation.Transactional;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotAdded;
 import pl.cezarysanecki.parkingdomain.parking.api.ParkingSpotOccupied;
 import pl.cezarysanecki.parkingdomain.parking.api.ParkingSpotReleased;
@@ -17,12 +18,14 @@ class OccupationReleaseNotificationEventHandler {
 
   private final OccupationReleaseNotificationRepository occupationReleaseNotificationRepository;
 
-  @TransactionalEventListener
+  @Transactional
+  @EventListener
   public void handle(ParkingSpotAdded event) {
     occupationReleaseNotificationRepository.saveNew(event.parkingSpotId(), event.capacity());
   }
 
-  @TransactionalEventListener
+  @Transactional
+  @EventListener
   public void handle(ParkingSpotOccupied event) {
     occupationReleaseNotificationRepository.addOccupation(
         event.occupationId(),
@@ -31,12 +34,14 @@ class OccupationReleaseNotificationEventHandler {
         event.spotUnits());
   }
 
-  @TransactionalEventListener
+  @Transactional
+  @EventListener
   public void handle(ParkingSpotReleased event) {
     occupationReleaseNotificationRepository.removeOccupation(event.occupationId());
   }
 
-  @TransactionalEventListener
+  @Transactional
+  @EventListener
   public void handle(ReservationsActivated event) {
     event.reservations()
         .forEach(reservation -> occupationReleaseNotificationRepository.saveReservation(

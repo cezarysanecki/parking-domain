@@ -2,7 +2,8 @@ package pl.cezarysanecki.parkingdomain.parking;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.transaction.event.TransactionalEventListener;
+import org.springframework.context.event.EventListener;
+import org.springframework.transaction.annotation.Transactional;
 import pl.cezarysanecki.parkingdomain.management.client.api.ClientRegistered;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotAdded;
 import pl.cezarysanecki.parkingdomain.reservation.ReservationsRemoved;
@@ -19,19 +20,22 @@ class ParkingEventHandler {
   private final OccupantRepository occupantRepository;
   private final ActiveReservationRepository parkingSpotReservationRepository;
 
-  @TransactionalEventListener
+  @Transactional
+  @EventListener
   public void handle(ParkingSpotAdded event) {
     log.debug("storing parking spot for occupation with id {}", event.parkingSpotId());
     parkingRepository.saveNew(ParkingSpot.create(event.parkingSpotId(), event.capacity()));
   }
 
-  @TransactionalEventListener
+  @Transactional
+  @EventListener
   public void handle(ClientRegistered event) {
     log.debug("storing occupant with id {}", event.clientId());
     occupantRepository.saveNew(Occupant.newOne(event.clientId()));
   }
 
-  @TransactionalEventListener
+  @Transactional
+  @EventListener
   public void handle(ReservationsActivated event) {
     event.reservations()
         .forEach(reservation -> parkingSpotReservationRepository.storeFor(
@@ -42,12 +46,14 @@ class ParkingEventHandler {
         ));
   }
 
-  @TransactionalEventListener
+  @Transactional
+  @EventListener
   public void handle(ReservationUsed event) {
     parkingSpotReservationRepository.remove(List.of(event.reservationId()));
   }
 
-  @TransactionalEventListener
+  @Transactional
+  @EventListener
   public void handle(ReservationsRemoved event) {
     parkingSpotReservationRepository.remove(event.reservations());
   }
