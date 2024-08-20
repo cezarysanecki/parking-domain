@@ -2,7 +2,7 @@ package pl.cezarysanecki.parkingdomain.requesting;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.event.EventListener;
+import org.springframework.transaction.event.TransactionalEventListener;
 import pl.cezarysanecki.parkingdomain.management.client.api.ClientRegistered;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotAdded;
 import pl.cezarysanecki.parkingdomain.requesting.api.RequesterId;
@@ -14,7 +14,7 @@ class RequestingEventHandler {
   private final RequesterRepository requesterRepository;
   private final RequestableParkingSpotRepository requestableSectionRepository;
 
-  @EventListener
+  @TransactionalEventListener
   public void handle(ClientRegistered.IndividualClient event) {
     RequesterId requesterId = new RequesterId(event.clientId().value());
 
@@ -23,7 +23,7 @@ class RequestingEventHandler {
   }
 
 
-  @EventListener
+  @TransactionalEventListener
   public void handle(ClientRegistered.BusinessClient event) {
     RequesterId requesterId = new RequesterId(event.clientId().value());
 
@@ -31,7 +31,7 @@ class RequestingEventHandler {
     requesterRepository.saveNew(requesterId, 20);
   }
 
-  @EventListener
+  @TransactionalEventListener
   public void handle(ParkingSpotAdded event) {
     log.debug("storing parking spot as reservation requests template with id {}", event.parkingSpotId());
     requestableSectionRepository.saveTemplate(event.parkingSpotId(), event.capacity());
