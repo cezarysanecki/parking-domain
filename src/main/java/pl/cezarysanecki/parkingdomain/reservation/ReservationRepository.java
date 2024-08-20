@@ -19,6 +19,6 @@ interface ReservationRepository {
 
   void markAsActive(List<ReservationId> reservations);
 
-  void markAsNotUused(List<ReservationId> reservations);
+  void markAsNotUsed(List<ReservationId> reservations);
 
 }

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.cezarysanecki.parkingdomain._local.LocalDateProvider;
 import pl.cezarysanecki.parkingdomain.cleaning.usecase.CallingCleaningWhenSpotsDirtyUseCase;
 import pl.cezarysanecki.parkingdomain.commons.Result;
+import pl.cezarysanecki.parkingdomain.occupationreleasenotification.usecase.NotifyingAboutReleasingOccupationUseCase;
 import pl.cezarysanecki.parkingdomain.requesting.RequestingFacade;
 import pl.cezarysanecki.parkingdomain.reservation.usecase.ActivatingReservationsUseCase;
 import pl.cezarysanecki.parkingdomain.reservation.usecase.RemovingNotUsedReservationsUseCase;
@@ -29,6 +30,7 @@ class _LocalController {
   private final CallingCleaningWhenSpotsDirtyUseCase callingCleaningWhenSpotsDirtyUsecase;
   private final ActivatingReservationsUseCase activatingReservationsUseCase;
   private final RemovingNotUsedReservationsUseCase removingNotUsedReservationsUseCase;
+  private final NotifyingAboutReleasingOccupationUseCase notifyingAboutReleasingOccupationUseCase;
   private final RequestingFacade requestingFacade;
 
   @PostMapping("/call-cleaning")
@@ -70,6 +72,12 @@ class _LocalController {
   @PostMapping("/reservations/remove-not-used")
   ResponseEntity<List<String>> removingNotUsedReservations() {
     removingNotUsedReservationsUseCase.run();
+    return ResponseEntity.ok().build();
+  }
+
+  @PostMapping("/notification/release-occupations")
+  ResponseEntity<List<String>> notifyAboutReleasingOccupations() {
+    notifyingAboutReleasingOccupationUseCase.run();
     return ResponseEntity.ok().build();
   }
 

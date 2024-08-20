@@ -7,7 +7,7 @@ import pl.cezarysanecki.parkingdomain.parking.api.ParkingSpotForceReleased;
 
 @Slf4j
 @Component
-public class FeeEventListener {
+class FeeEventListener {
 
   @EventListener(value = ParkingSpotForceReleased.class, condition = "#event.reason() == T(pl.cezarysanecki.parkingdomain.parking.api.ParkingSpotForceReleased$Reason).NOT_RELEASED_PARKING_SPOT")
   public void handle(ParkingSpotForceReleased event) {

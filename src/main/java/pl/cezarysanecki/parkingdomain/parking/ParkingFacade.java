@@ -7,6 +7,7 @@ import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupantId;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupationId;
+import pl.cezarysanecki.parkingdomain.parking.api.ParkingSpotOccupied;
 import pl.cezarysanecki.parkingdomain.parking.api.ParkingSpotReleased;
 import pl.cezarysanecki.parkingdomain.parking.api.ReleasedOccupation;
 import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
@@ -39,6 +40,10 @@ public class ParkingFacade {
     }
     occupationRepository.saveCheckingVersion(new Occupation(
         occupationId, occupant, parkingSpot, spotUnits
+    ));
+
+    eventPublisher.publish(new ParkingSpotOccupied(
+        occupationId, occupantId, parkingSpotId, spotUnits
     ));
     return Optional.of(occupationId);
   }
