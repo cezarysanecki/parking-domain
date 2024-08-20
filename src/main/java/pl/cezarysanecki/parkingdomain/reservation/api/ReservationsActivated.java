@@ -4,6 +4,7 @@ import pl.cezarysanecki.parkingdomain.commons.events.DomainEvent;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
 
+import java.time.Instant;
 import java.util.List;
 
 public record ReservationsActivated(
@@ -12,7 +13,9 @@ public record ReservationsActivated(
 
   public record Entry(
       ReservationId reservationId,
+      ReservationOwnerId reservationOwnerId,
       ParkingSpotId parkingSpotId,
+      Instant startDate,
       SpotUnits spotUnits
   ) {
   }

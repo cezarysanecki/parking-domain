@@ -39,7 +39,9 @@ public class ReservationFacade {
     List<ReservationsActivated.Entry> activatedReservationEntries = reservations.stream()
         .map(reservation -> new ReservationsActivated.Entry(
             reservation.reservationId(),
+            reservation.ownerId(),
             reservation.parkingSpotId(),
+            reservation.timeSlot().from(),
             reservation.spotUnits()
         ))
         .toList();
