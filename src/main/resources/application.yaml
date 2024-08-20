@@ -20,6 +20,8 @@ job:
     cron-expression: "*/1 * * * *"
   removing-not-used-reservations-job:
     cron-expression: "*/1 * * * *"
+  notifying-about-releasing-job:
+    cron-expression: "*/5 * * * *"
 
 business:
   cleaning:
@@ -28,6 +30,7 @@ business:
   parking:
     minutes-to-consider-reservation-active: 60
     minutes-to-consider-reservation-not-used: 15
+    minutes-to-release-occupation-because-of-reservations: 30
   requesting:
     creating-time-slots:
       morning-start-hour: 5
