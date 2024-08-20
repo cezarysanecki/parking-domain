@@ -2,8 +2,6 @@ package pl.cezarysanecki.parkingdomain;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 import pl.cezarysanecki.parkingdomain.management.client.api.ClientId;
 import pl.cezarysanecki.parkingdomain.management.client.api.ClientType;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotCapacity;
@@ -18,8 +16,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
-@ActiveProfiles("local")
 public class OccupyingParkingSpotAcceptanceTest extends BaseAcceptanceTest {
 
   @Autowired
@@ -27,11 +23,12 @@ public class OccupyingParkingSpotAcceptanceTest extends BaseAcceptanceTest {
 
   @Test
   void cannotOccupyParkingSpotIfCapacityIsExceeded() {
+    //given
     ParkingSpotId parkingSpotId = addParkingSpot(ParkingSpotCapacity.defaultCapacity(), ParkingSpotCategory.Gold);
-
     ClientId firstClientId = registerClient(ClientType.BUSINESS, RandomTestUtils.randomPhoneNumber());
     ClientId secondclientId = registerClient(ClientType.BUSINESS, RandomTestUtils.randomPhoneNumber());
 
+    //when
     parkingFacade.occupy(
         new OccupantId(firstClientId.value()),
         parkingSpotId,
@@ -43,7 +40,32 @@ public class OccupyingParkingSpotAcceptanceTest extends BaseAcceptanceTest {
         new SpotUnits(1)
     );
 
+    //then
     assertThat(result).isEmpty();
+  }
+
+  @Test
+  void canOccupyParkingSpotIfItHasBeenReleased() {
+    //given
+    ParkingSpotId parkingSpotId = addParkingSpot(ParkingSpotCapacity.defaultCapacity(), ParkingSpotCategory.Gold);
+    ClientId firstClientId = registerClient(ClientType.BUSINESS, RandomTestUtils.randomPhoneNumber());
+    ClientId secondclientId = registerClient(ClientType.BUSINESS, RandomTestUtils.randomPhoneNumber());
+
+    //when
+    OccupationId occupation = parkingFacade.occupy(
+        new OccupantId(firstClientId.value()),
+        parkingSpotId,
+        new SpotUnits(4)
+    ).get();
+    parkingFacade.release(occupation);
+    //and
+    Optional<OccupationId> result = parkingFacade.occupy(
+        new OccupantId(secondclientId.value()),
+        parkingSpotId,
+        new SpotUnits(4)
+    );
+
+    assertThat(result).isPresent();
   }
 
 }
