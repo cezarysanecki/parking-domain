@@ -13,7 +13,7 @@ import pl.cezarysanecki.parkingdomain.reservation.api.ReservationsActivated;
 @Slf4j
 @Component
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-class OccupationReleaseNotificationEventListener {
+class OccupationReleaseNotificationEventHandler {
 
   private final OccupationReleaseNotificationRepository occupationReleaseNotificationRepository;
 

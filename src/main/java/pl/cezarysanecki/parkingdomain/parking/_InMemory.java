@@ -154,13 +154,6 @@ class InMemoryActiveReservationRepository implements ActiveReservationRepository
 
   @Override
   public void storeFor(ParkingSpotId parkingSpotId, ReservationId reservationId, ReservationOwnerId reservationOwnerId, SpotUnits spotUnits) {
-    if (InMemoryOccupationRepository.findFor(new OccupantId(reservationOwnerId.value()))
-        .stream()
-        .anyMatch(occupationEntity -> occupationEntity.parkingSpotId.equals(parkingSpotId))) {
-      log.debug("reservation owner with id {} has already occupation for parking spot with id {}", reservationOwnerId, parkingSpotId);
-      return;
-    }
-
     DATABASE.put(reservationId, new ParkingSpotReservationEntity(
         parkingSpotId,
         reservationId,
