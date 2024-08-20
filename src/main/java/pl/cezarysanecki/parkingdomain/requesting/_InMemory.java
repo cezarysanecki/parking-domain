@@ -1,7 +1,6 @@
 package pl.cezarysanecki.parkingdomain.requesting;
 
 import jakarta.persistence.EntityNotFoundException;
-import pl.cezarysanecki.parkingdomain._local.InMemoryRepositories;
 import pl.cezarysanecki.parkingdomain.commons.aggregates.Version;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotCapacity;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
@@ -12,7 +11,6 @@ import pl.cezarysanecki.parkingdomain.shared.TimeSlot;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -23,21 +21,21 @@ import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.RequesterEn
 import static pl.cezarysanecki.parkingdomain._local.InMemoryRepositories.REQUESTABLE_PARKING_SPOT_DATABASE;
 import static pl.cezarysanecki.parkingdomain._local.InMemoryRepositories.REQUESTER_DATABASE;
 import static pl.cezarysanecki.parkingdomain._local.InMemoryRepositories.REQUEST_DATABASE;
+import static pl.cezarysanecki.parkingdomain._local.InMemoryRepositories.TEMPLATES_DATABASE;
 
 class InMemoryRequestableParkingSpotRepository implements RequestableParkingSpotRepository {
 
-  private static final Map<ParkingSpotId, Integer> TEMPLATES_DATABASE = InMemoryRepositories.TEMPLATES_DATABASE;
+  private static final Map<ParkingSpotId, Integer> CURRENT_TEMPLATES_DATABASE = TEMPLATES_DATABASE;
   private static final Map<FreeTimeSlotKey, RequestableParkingSpotEntity> DATABASE = REQUESTABLE_PARKING_SPOT_DATABASE;
-  private static final List<LocalDate> CREATION_DATES_OF_REQUESTABLE_PARKING_SPOTS_DATABASE = new ArrayList<>();
 
   @Override
   public void saveTemplate(ParkingSpotId parkingSpotId, ParkingSpotCapacity capacity) {
-    TEMPLATES_DATABASE.put(parkingSpotId, capacity.value());
+    CURRENT_TEMPLATES_DATABASE.put(parkingSpotId, capacity.value());
   }
 
   @Override
   public List<RequestableParkingSpotTemplate> findAllTemplates() {
-    return TEMPLATES_DATABASE.entrySet()
+    return CURRENT_TEMPLATES_DATABASE.entrySet()
         .stream()
         .map(entity -> new RequestableParkingSpotTemplate(
             entity.getKey(),

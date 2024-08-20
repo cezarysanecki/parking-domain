@@ -10,20 +10,25 @@ import pl.cezarysanecki.parkingdomain.reservation.api.ReservationOwnerId;
 import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+
+import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.NotificationOccupationEntity;
+import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.NotificationReservationEntity;
+import static pl.cezarysanecki.parkingdomain._local.InMemoryRepositories.DONE_NOTIFICATION_DATABASE;
+import static pl.cezarysanecki.parkingdomain._local.InMemoryRepositories.NOTIFICATION_OCCUPATION_DATABASE;
+import static pl.cezarysanecki.parkingdomain._local.InMemoryRepositories.NOTIFICATION_PARKING_SPOT_DATABASE;
+import static pl.cezarysanecki.parkingdomain._local.InMemoryRepositories.NOTIFICATION_RESERVATION_DATABASE;
 
 @RequiredArgsConstructor
 class InMemoryOccupationReleaseNotificationRepository implements OccupationReleaseNotificationRepository {
 
-  private static final Map<ParkingSpotId, ParkingSpotCapacity> PARKING_SPOT_DATABASE = new ConcurrentHashMap<>();
-  private static final Map<OccupationId, OccupationEntity> OCCUPATION_DATABASE = new ConcurrentHashMap<>();
-  private static final Map<ReservationId, ReservationEntity> RESERVATION_DATABASE = new ConcurrentHashMap<>();
-  private static final List<Instant> DONE_NOTIFICATION_DATABASE = new ArrayList<>();
+  private static final Map<ParkingSpotId, ParkingSpotCapacity> PARKING_SPOT_DATABASE = NOTIFICATION_PARKING_SPOT_DATABASE;
+  private static final Map<OccupationId, NotificationOccupationEntity> OCCUPATION_DATABASE = NOTIFICATION_OCCUPATION_DATABASE;
+  private static final Map<ReservationId, NotificationReservationEntity> RESERVATION_DATABASE = NOTIFICATION_RESERVATION_DATABASE;
+  private static final List<Instant> DONE_NOTIFICATION_DATES_DATABASE = DONE_NOTIFICATION_DATABASE;
 
   @Override
   public void saveNew(ParkingSpotId parkingSpotId, ParkingSpotCapacity capacity) {
@@ -32,7 +37,7 @@ class InMemoryOccupationReleaseNotificationRepository implements OccupationRelea
 
   @Override
   public void addOccupation(OccupationId occupationId, OccupantId occupantId, ParkingSpotId parkingSpotId, SpotUnits spotUnits) {
-    OCCUPATION_DATABASE.put(occupationId, new OccupationEntity(
+    OCCUPATION_DATABASE.put(occupationId, new NotificationOccupationEntity(
         occupationId, occupantId, parkingSpotId, spotUnits
     ));
   }
@@ -44,14 +49,14 @@ class InMemoryOccupationReleaseNotificationRepository implements OccupationRelea
 
   @Override
   public void saveReservation(ReservationId reservationId, ReservationOwnerId reservationOwnerId, ParkingSpotId parkingSpotId, Instant validSince, SpotUnits spotUnits) {
-    RESERVATION_DATABASE.put(reservationId, new ReservationEntity(
+    RESERVATION_DATABASE.put(reservationId, new NotificationReservationEntity(
         reservationId, reservationOwnerId, parkingSpotId, spotUnits, validSince
     ));
   }
 
   @Override
   public void doneFor(Instant date) {
-    DONE_NOTIFICATION_DATABASE.add(date);
+    DONE_NOTIFICATION_DATES_DATABASE.add(date);
   }
 
   @Override
@@ -60,8 +65,8 @@ class InMemoryOccupationReleaseNotificationRepository implements OccupationRelea
 
     Set<Key> keys = RESERVATION_DATABASE.values()
         .stream()
-        .filter(reservationEntity -> reservationEntity.validSince.isBefore(date) && reservationEntity.validSince.isAfter(latestDone))
-        .map(reservationEntity -> new Key(reservationEntity.parkingSpotId, reservationEntity.validSince))
+        .filter(reservationEntity -> reservationEntity.validSince().isBefore(date) && reservationEntity.validSince().isAfter(latestDone))
+        .map(reservationEntity -> new Key(reservationEntity.parkingSpotId(), reservationEntity.validSince()))
         .collect(Collectors.toSet());
 
     return keys.stream()
@@ -70,16 +75,16 @@ class InMemoryOccupationReleaseNotificationRepository implements OccupationRelea
 
           List<NotificationResolver.Occupation> occupations = OCCUPATION_DATABASE.values()
               .stream()
-              .filter(occupationEntity -> occupationEntity.parkingSpotId.equals(key.parkingSpotId))
+              .filter(occupationEntity -> occupationEntity.parkingSpotId().equals(key.parkingSpotId))
               .map(occupationEntity -> new NotificationResolver.Occupation(
-                  occupationEntity.occupationId, occupationEntity.occupantId, occupationEntity.spotUnits
+                  occupationEntity.occupationId(), occupationEntity.occupantId(), occupationEntity.spotUnits()
               ))
               .toList();
           List<NotificationResolver.Reservation> reservations = RESERVATION_DATABASE.values()
               .stream()
-              .filter(reservationEntity -> reservationEntity.parkingSpotId.equals(key.parkingSpotId))
+              .filter(reservationEntity -> reservationEntity.parkingSpotId().equals(key.parkingSpotId))
               .map(reservationEntity -> new NotificationResolver.Reservation(
-                  reservationEntity.reservationId, reservationEntity.reservationOwnerId, reservationEntity.spotUnits
+                  reservationEntity.reservationId(), reservationEntity.reservationOwnerId(), reservationEntity.spotUnits()
               ))
               .toList();
 
@@ -94,7 +99,7 @@ class InMemoryOccupationReleaseNotificationRepository implements OccupationRelea
   }
 
   private Instant latest() {
-    return DONE_NOTIFICATION_DATABASE.stream()
+    return DONE_NOTIFICATION_DATES_DATABASE.stream()
         .max(Instant::compareTo)
         .orElse(Instant.MIN);
   }
@@ -103,22 +108,6 @@ class InMemoryOccupationReleaseNotificationRepository implements OccupationRelea
       ParkingSpotId parkingSpotId,
       Instant validSince
   ) {
-  }
-
-  private record OccupationEntity(
-      OccupationId occupationId,
-      OccupantId occupantId,
-      ParkingSpotId parkingSpotId,
-      SpotUnits spotUnits
-  ) {
-  }
-
-  private record ReservationEntity(
-      ReservationId reservationId,
-      ReservationOwnerId reservationOwnerId,
-      ParkingSpotId parkingSpotId,
-      SpotUnits spotUnits,
-      Instant validSince) {
   }
 
 }
