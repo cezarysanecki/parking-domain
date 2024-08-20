@@ -37,6 +37,7 @@ class ParkingEventHandler {
         .forEach(reservation -> parkingSpotReservationRepository.storeFor(
             reservation.parkingSpotId(),
             reservation.reservationId(),
+            reservation.reservationOwnerId(),
             reservation.spotUnits()
         ));
   }

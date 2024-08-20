@@ -1,5 +1,6 @@
 package pl.cezarysanecki.parkingdomain.occupationreleasenotification;
 
+import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotCapacity;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupantId;
@@ -12,6 +13,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 record NotificationResolver(
     Instant date,
     ParkingSpotId parkingSpotId,
@@ -35,6 +37,7 @@ record NotificationResolver(
       neededSpace -= occupation.spotUnits.value();
 
       if (isReservationOwner(occupation.occupantId)) {
+        log.debug("occupant with id {} has reservation for parking spot with id {}", occupation.occupantId, parkingSpotId);
         continue;
       }
       result.add(new OccupantToNotify(
