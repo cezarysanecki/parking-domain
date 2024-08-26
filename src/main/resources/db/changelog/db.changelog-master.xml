@@ -239,4 +239,12 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="create_initial_tables_creating_time_slots" author="cezarysanecki">
+        <createTable tableName="creating_time_slots">
+            <column name="creation_date" type="date">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
 </databaseChangeLog>
