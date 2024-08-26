@@ -19,7 +19,7 @@ class ProdClientRepository implements ClientRepository {
     create.insertInto(CLIENT_CATALOGUE)
         .set(CLIENT_CATALOGUE.ID, client.clientId().value())
         .set(CLIENT_CATALOGUE.TYPE, client.type().name())
-        .set(CLIENT_CATALOGUE.PHONENUMBER, client.phoneNumber().getValue())
+        .set(CLIENT_CATALOGUE.PHONE_NUMBER, client.phoneNumber().getValue())
         .execute();
   }
 

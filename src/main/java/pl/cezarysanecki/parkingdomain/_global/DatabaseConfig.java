@@ -2,6 +2,7 @@ package pl.cezarysanecki.parkingdomain._global;
 
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
+import org.jooq.SQLDialect;
 import org.jooq.conf.RenderNameCase;
 import org.jooq.conf.RenderQuotedNames;
 import org.jooq.conf.Settings;
@@ -25,7 +26,8 @@ class DatabaseConfig {
         .withRenderNameCase(RenderNameCase.LOWER);
     return new DefaultDSLContext(new DefaultConfiguration()
         .set(dataSource)
-        .set(settings));
+        .set(settings)
+        .set(SQLDialect.POSTGRES));
   }
 
 }

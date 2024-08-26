@@ -88,7 +88,8 @@ class ProdViewCurrentStateOfClientRepository implements ViewCurrentStateOfClient
   @Override
   public List<CurrentStateEntry> queryAll() {
     return create
-        .select(CLIENT_CATALOGUE, CLIENT_CATALOGUE.ID)
+        .select(CLIENT_CATALOGUE.ID)
+        .from(CLIENT_CATALOGUE)
         .stream()
         .map(record -> new ClientId(record.get(CLIENT_CATALOGUE.ID)))
         .map(this::queryFor)
@@ -98,19 +99,22 @@ class ProdViewCurrentStateOfClientRepository implements ViewCurrentStateOfClient
   @Override
   public CurrentStateEntry queryFor(ClientId clientId) {
     List<UUID> occupations = create
-        .select(OCCUPATION, OCCUPATION.ID)
+        .select(OCCUPATION.ID)
+        .from(OCCUPATION)
         .where(OCCUPATION.OCCUPANT.eq(clientId.value()))
         .stream()
         .map(record -> record.get(OCCUPATION.ID))
         .toList();
     List<UUID> requests = create
-        .select(REQUEST, REQUEST.ID)
+        .select(REQUEST.ID)
+        .from(REQUEST)
         .where(REQUEST.REQUESTER.eq(clientId.value()))
         .stream()
         .map(record -> record.get(REQUEST.ID))
         .toList();
     List<UUID> reservations = create
-        .select(RESERVATION, RESERVATION.ID)
+        .select(RESERVATION.ID)
+        .from(RESERVATION)
         .where(RESERVATION.OWNER.eq(clientId.value()))
         .stream()
         .map(record -> record.get(RESERVATION.ID))
@@ -138,13 +142,15 @@ class ProdViewFreeCurrentParkingSpotsRepository implements ViewFreeCurrentParkin
         .stream()
         .map(record -> {
           Integer occupiedSpace = create
-              .select(OCCUPATION, OCCUPATION.SPOT_UNITS)
+              .select(OCCUPATION.SPOT_UNITS)
+              .from(OCCUPATION)
               .where(OCCUPATION.PARKING_SPOT.eq(record.getId()))
               .stream()
               .map(occupationRecord -> occupationRecord.get(OCCUPATION.SPOT_UNITS))
               .reduce(0, Integer::sum);
           Integer reservedSpace = create
-              .select(RESERVED_OCCUPATION, RESERVED_OCCUPATION.SPOT_UNITS)
+              .select(RESERVED_OCCUPATION.SPOT_UNITS)
+              .from(RESERVED_OCCUPATION)
               .where(RESERVED_OCCUPATION.PARKING_SPOT.eq(record.getId()))
               .stream()
               .map(reservedOccupationRecord -> reservedOccupationRecord.get(RESERVED_OCCUPATION.SPOT_UNITS))
@@ -177,7 +183,8 @@ class ProdViewFreeTimeSlotsRepository implements ViewFreeTimeSlotsRepository {
         .stream()
         .map(record -> {
           Integer requestedSpace = create
-              .select(REQUEST, REQUEST.UNITS)
+              .select(REQUEST.UNITS)
+              .from(REQUEST)
               .where(REQUEST.PARKING_SPOT.eq(record.get(REQUESTABLE_PARKING_SPOT.PARKING_SPOT)))
               .and(REQUEST.FROM.eq(record.get(REQUESTABLE_PARKING_SPOT.FROM)))
               .and(REQUEST.TO.eq(record.get(REQUESTABLE_PARKING_SPOT.TO)))

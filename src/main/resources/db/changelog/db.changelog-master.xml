@@ -28,7 +28,7 @@
             <column name="type" type="varchar(10)">
                 <constraints nullable="false"/>
             </column>
-            <column name="phoneNumber" type="varchar(20)">
+            <column name="phone_number" type="varchar(20)">
                 <constraints nullable="false" unique="true"/>
             </column>
         </createTable>
@@ -181,7 +181,9 @@
     <changeSet id="create_initial_tables_cleaning" author="cezarysanecki">
         <createTable tableName="cleaning">
             <column name="parking_spot" type="uuid">
-                <constraints nullable="false"/>
+                <constraints nullable="false"
+                             primaryKey="true"
+                             primaryKeyName="cleaning_primary_key"/>
             </column>
             <column name="counter" type="int">
                 <constraints nullable="false"/>
