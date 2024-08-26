@@ -132,7 +132,7 @@ class ProdReservationRepository implements ReservationRepository {
     create
         .update(RESERVATION)
         .set(RESERVATION.STATUS, Status.ACTIVE.name())
-        .where(RESERVATION.ID.in(reservations))
+        .where(RESERVATION.ID.in(reservations.stream().map(ReservationId::value).toList()))
         .execute();
   }
 
@@ -141,7 +141,7 @@ class ProdReservationRepository implements ReservationRepository {
     create
         .update(RESERVATION)
         .set(RESERVATION.STATUS, Status.NOT_USED.name())
-        .where(RESERVATION.ID.in(reservations))
+        .where(RESERVATION.ID.in(reservations.stream().map(ReservationId::value).toList()))
         .execute();
   }
 }

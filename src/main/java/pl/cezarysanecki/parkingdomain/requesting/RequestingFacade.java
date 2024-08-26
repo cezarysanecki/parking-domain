@@ -78,13 +78,13 @@ public class RequestingFacade {
   public void makeValidFor(
       LocalDate day
   ) {
-    List<Request> requests = requestRepository.findAllBy(day);
+    List<RequestForReservation> requests = requestRepository.findAllBy(day);
     log.debug("making valid {} requests", requests.size());
 
     eventPublisher.publish(new MadeRequestsValid(requests.stream()
         .map(request -> new MadeRequestsValid.Request(
             request.requestId(),
-            request.requester().requesterId(),
+            request.requesterId(),
             request.parkingSpotId(),
             request.timeSlot(),
             request.spotUnits()
@@ -92,7 +92,7 @@ public class RequestingFacade {
         .toList()));
 
     requestRepository.deleteAll(requests.stream()
-        .map(Request::requestId)
+        .map(RequestForReservation::requestId)
         .toList());
     requestableParkingSpotRepository.deleteAllFor(day);
   }

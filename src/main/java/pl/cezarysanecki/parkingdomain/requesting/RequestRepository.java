@@ -11,7 +11,7 @@ interface RequestRepository {
 
   boolean delete(RequestId requestId);
 
-  List<Request> findAllBy(LocalDate day);
+  List<RequestForReservation> findAllBy(LocalDate day);
 
   void deleteAll(List<RequestId> requestIds);
 
