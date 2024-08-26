@@ -21,11 +21,11 @@ job:
   making-requests-valid-job:
     cron-expression: "0 0 1 * * ?"
   activating-reservations-job:
-    cron-expression: "*/1 * * * *"
+    cron-expression: "0 */1 * * * ?"
   removing-not-used-reservations-job:
-    cron-expression: "*/1 * * * *"
+    cron-expression: "0 */1 * * * ?"
   notifying-about-releasing-job:
-    cron-expression: "*/5 * * * *"
+    cron-expression: "0 */5 * * * ?"
 
 business:
   cleaning:
