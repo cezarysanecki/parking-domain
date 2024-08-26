@@ -13,7 +13,7 @@ import javax.sql.DataSource;
 @RequiredArgsConstructor
 class DatabaseConfig {
 
-  private DataSource dataSource;
+  private final DataSource dataSource;
 
   @Bean
   DSLContext jooqDsl() {
