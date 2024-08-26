@@ -14,6 +14,9 @@ spring:
   jooq:
     sql-dialect: postgres
 
+logging:
+  level:
+    pl.cezarysanecki.parkingdomain: DEBUG
 
 job:
   calling-external-cleaning-service-policy-job:
