@@ -254,6 +254,9 @@ class ProdRequestRepository implements RequestRepository {
 
   @Override
   public void deleteAll(List<RequestId> requestIds) {
+    if (requestIds.isEmpty()) {
+      return;
+    }
     create
         .deleteFrom(REQUEST)
         .where(REQUEST.REQUESTER.in(requestIds.stream().map(RequestId::value).toList()))

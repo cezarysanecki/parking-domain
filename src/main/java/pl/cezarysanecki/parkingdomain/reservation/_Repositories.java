@@ -129,6 +129,9 @@ class ProdReservationRepository implements ReservationRepository {
 
   @Override
   public void markAsActive(List<ReservationId> reservations) {
+    if (reservations.isEmpty()) {
+      return;
+    }
     create
         .update(RESERVATION)
         .set(RESERVATION.STATUS, Status.ACTIVE.name())
@@ -138,6 +141,9 @@ class ProdReservationRepository implements ReservationRepository {
 
   @Override
   public void markAsNotUsed(List<ReservationId> reservations) {
+    if (reservations.isEmpty()) {
+      return;
+    }
     create
         .update(RESERVATION)
         .set(RESERVATION.STATUS, Status.NOT_USED.name())

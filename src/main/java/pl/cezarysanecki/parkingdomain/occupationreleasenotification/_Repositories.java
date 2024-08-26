@@ -80,7 +80,7 @@ class ProdOccupationReleaseNotificationRepository implements OccupationReleaseNo
         .orderBy(NOTIFICATION_RUNS.DATE.desc())
         .fetchOptional()
         .map(NotificationRunsRecord::getDate)
-        .orElse(LocalDateTime.MIN);
+        .orElse(LocalDateTime.ofInstant(Instant.EPOCH, ZoneId.systemDefault()));
 
     var parkingSpots = create
         .select(

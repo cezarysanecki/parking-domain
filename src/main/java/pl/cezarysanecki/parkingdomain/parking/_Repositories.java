@@ -110,6 +110,9 @@ class ProdReservedOccupationRepository implements ReservedOccupationRepository {
 
   @Override
   public void remove(List<ReservationId> reservations) {
+    if (reservations.isEmpty()) {
+      return;
+    }
     create.delete(RESERVED_OCCUPATION)
         .where(RESERVED_OCCUPATION.RESERVATION.in(reservations.stream().map(ReservationId::value).toList()))
         .execute();

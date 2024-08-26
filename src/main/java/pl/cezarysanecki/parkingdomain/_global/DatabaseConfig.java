@@ -2,6 +2,9 @@ package pl.cezarysanecki.parkingdomain._global;
 
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
+import org.jooq.conf.RenderNameCase;
+import org.jooq.conf.RenderQuotedNames;
+import org.jooq.conf.Settings;
 import org.jooq.impl.DefaultConfiguration;
 import org.jooq.impl.DefaultDSLContext;
 import org.springframework.context.annotation.Bean;
@@ -17,7 +20,12 @@ class DatabaseConfig {
 
   @Bean
   DSLContext jooqDsl() {
-    return new DefaultDSLContext(new DefaultConfiguration().set(dataSource));
+    Settings settings = new Settings()
+        .withRenderQuotedNames(RenderQuotedNames.ALWAYS)
+        .withRenderNameCase(RenderNameCase.LOWER);
+    return new DefaultDSLContext(new DefaultConfiguration()
+        .set(dataSource)
+        .set(settings));
   }
 
 }

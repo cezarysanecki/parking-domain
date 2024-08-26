@@ -271,6 +271,17 @@
                         <generate>
                             <javaTimeTypes>true</javaTimeTypes>
                         </generate>
+                        <strategy>
+                            <matchers>
+                                <schemas>
+                                    <schema>
+                                        <schemaClass>
+                                            <transform>LOWER</transform>
+                                        </schemaClass>
+                                    </schema>
+                                </schemas>
+                            </matchers>
+                        </strategy>
                     </generator>
                 </configuration>
             </plugin>
