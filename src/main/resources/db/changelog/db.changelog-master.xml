@@ -37,7 +37,7 @@
     <changeSet id="create_initial_tables_parking" author="cezarysanecki">
         <createTable tableName="parking">
             <column name="parking_spot" type="uuid">
-                <constraints nullable="false"/>
+                <constraints nullable="false" unique="true"/>
             </column>
             <column name="capacity" type="int">
                 <constraints nullable="false"/>
@@ -63,14 +63,10 @@
                              primaryKeyName="occupation_primary_key"/>
             </column>
             <column name="occupant" type="uuid">
-                <constraints nullable="false"
-                             foreignKeyName="occupation__occupant_foreign_key"
-                             references="occupant(client_id)"/>
+                <constraints nullable="false"/>
             </column>
             <column name="parking_spot" type="uuid">
-                <constraints nullable="false"
-                             foreignKeyName="occupation__parking_foreign_key"
-                             references="parking(parking_spot_id)"/>
+                <constraints nullable="false"/>
             </column>
             <column name="spot_units" type="int">
                 <constraints nullable="false"/>
@@ -79,9 +75,7 @@
 
         <createTable tableName="reserved_occupation">
             <column name="parking_spot" type="uuid">
-                <constraints nullable="false"
-                             foreignKeyName="reserved_occupation__parking_foreign_key"
-                             references="parking(parking_spot_id)"/>
+                <constraints nullable="false"/>
             </column>
             <column name="reservation" type="uuid">
                 <constraints nullable="false"/>
@@ -167,14 +161,10 @@
                              primaryKeyName="request_primary_key"/>
             </column>
             <column name="requester" type="uuid">
-                <constraints nullable="false"
-                             foreignKeyName="request__requester_foreign_key"
-                             references="requester(client)"/>
+                <constraints nullable="false"/>
             </column>
             <column name="parking_spot" type="uuid">
-                <constraints nullable="false"
-                             foreignKeyName="request__requestable_parking_spot_foreign_key"
-                             references="requestable_parking_spot(parking_spot)"/>
+                <constraints nullable="false"/>
             </column>
             <column name="from" type="timestamp">
                 <constraints nullable="false"/>
@@ -194,6 +184,56 @@
                 <constraints nullable="false"/>
             </column>
             <column name="counter" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create_initial_tables_occupation_release_notification" author="cezarysanecki">
+        <createTable tableName="notification_parking_spot">
+            <column name="parking_spot" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="capacity" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="notification_occupation">
+            <column name="occupation" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="occupant" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="parking_spot" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="spot_units" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="notification_reservation">
+            <column name="reservation" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="reservation_owner" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="parking_spot" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="spot_units" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="valid_since" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="notification_runs">
+            <column name="date" type="timestamp">
                 <constraints nullable="false"/>
             </column>
         </createTable>

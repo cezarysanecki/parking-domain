@@ -19,7 +19,7 @@ interface OccupationReleaseNotificationRepository {
 
   void removeOccupation(OccupationId occupationId);
 
-  void saveReservation(ReservationId reservationId, ReservationOwnerId reservationOwnerId, ParkingSpotId parkingSpotId, Instant instant, SpotUnits spotUnits);
+  void saveReservation(ReservationId reservationId, ReservationOwnerId reservationOwnerId, ParkingSpotId parkingSpotId, Instant startDate, SpotUnits spotUnits);
 
   void doneFor(Instant date);
 

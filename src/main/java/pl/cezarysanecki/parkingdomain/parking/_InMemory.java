@@ -10,7 +10,6 @@ import pl.cezarysanecki.parkingdomain.parking.api.OccupantId;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupationId;
 import pl.cezarysanecki.parkingdomain.parking.api.ReleasedOccupation;
 import pl.cezarysanecki.parkingdomain.reservation.api.ReservationId;
-import pl.cezarysanecki.parkingdomain.reservation.api.ReservationOwnerId;
 import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
 
 import java.util.List;
@@ -153,7 +152,7 @@ class InMemoryReservedOccupationRepository implements ReservedOccupationReposito
   static final Map<ReservationId, ReservedOccupationEntity> DATABASE = InMemoryRepositories.RESERVED_OCCUPATION_DATABASE;
 
   @Override
-  public void storeFor(ParkingSpotId parkingSpotId, ReservationId reservationId, ReservationOwnerId reservationOwnerId, SpotUnits spotUnits) {
+  public void storeFor(ParkingSpotId parkingSpotId, ReservationId reservationId, SpotUnits spotUnits) {
     DATABASE.put(reservationId, new ReservedOccupationEntity(
         parkingSpotId,
         reservationId,

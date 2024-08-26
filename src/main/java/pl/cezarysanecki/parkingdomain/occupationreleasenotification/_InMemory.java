@@ -48,9 +48,9 @@ class InMemoryOccupationReleaseNotificationRepository implements OccupationRelea
   }
 
   @Override
-  public void saveReservation(ReservationId reservationId, ReservationOwnerId reservationOwnerId, ParkingSpotId parkingSpotId, Instant validSince, SpotUnits spotUnits) {
+  public void saveReservation(ReservationId reservationId, ReservationOwnerId reservationOwnerId, ParkingSpotId parkingSpotId, Instant startDate, SpotUnits spotUnits) {
     RESERVATION_DATABASE.put(reservationId, new NotificationReservationEntity(
-        reservationId, reservationOwnerId, parkingSpotId, spotUnits, validSince
+        reservationId, reservationOwnerId, parkingSpotId, spotUnits, startDate
     ));
   }
 

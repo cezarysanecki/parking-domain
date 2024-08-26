@@ -11,6 +11,8 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
   liquibase:
     change-log: db/changelog/db.changelog-master.xml
+  jooq:
+    sql-dialect: postgres
 
 
 job:

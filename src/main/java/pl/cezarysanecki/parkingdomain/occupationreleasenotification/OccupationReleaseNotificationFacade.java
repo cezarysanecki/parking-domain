@@ -2,6 +2,7 @@ package pl.cezarysanecki.parkingdomain.occupationreleasenotification;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
 import pl.cezarysanecki.parkingdomain.management.client.api.ClientId;
 import pl.cezarysanecki.parkingdomain.notification.NotificationFacade;
 
@@ -16,6 +17,7 @@ public class OccupationReleaseNotificationFacade {
   private final OccupationReleaseNotificationRepository occupationReleaseNotificationRepository;
   private final NotificationFacade notificationFacade;
 
+  @Transactional
   public int notifyToReleaseFor(Instant date) {
     List<NotificationResolver> notificationResolvers = occupationReleaseNotificationRepository.findFor(date);
 
@@ -35,7 +37,9 @@ public class OccupationReleaseNotificationFacade {
         )
     );
 
-    occupationReleaseNotificationRepository.doneFor(date);
+    if (!occupantsToNotify.isEmpty()) {
+      occupationReleaseNotificationRepository.doneFor(date);
+    }
 
     return occupantsToNotify.size();
   }
