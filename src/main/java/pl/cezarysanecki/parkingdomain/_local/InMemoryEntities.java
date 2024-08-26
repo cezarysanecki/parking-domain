@@ -78,7 +78,7 @@ public class InMemoryEntities {
 
   }
 
-  public record ParkingSpotReservationEntity(
+  public record ReservedOccupationEntity(
       ParkingSpotId parkingSpotId,
       ReservationId reservationId,
       SpotUnits spotUnits

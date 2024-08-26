@@ -7,7 +7,7 @@ import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
 
 import java.util.List;
 
-interface ActiveReservationRepository {
+interface ReservedOccupationRepository {
 
   void storeFor(ParkingSpotId parkingSpotId, ReservationId reservationId, ReservationOwnerId reservationOwnerId, SpotUnits spotUnits);
 

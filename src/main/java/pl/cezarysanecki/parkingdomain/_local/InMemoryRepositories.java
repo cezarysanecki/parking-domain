@@ -23,7 +23,7 @@ import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.Notificatio
 import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.OccupantEntity;
 import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.OccupationEntity;
 import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.ParkingSpotEntity;
-import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.ParkingSpotReservationEntity;
+import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.ReservedOccupationEntity;
 import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.RequestEntity;
 import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.RequestableParkingSpotEntity;
 import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.RequesterEntity;
@@ -42,7 +42,7 @@ public class InMemoryRepositories {
   public static final Map<RequestId, RequestEntity> REQUEST_DATABASE = new ConcurrentHashMap<>();
   public static final Map<OccupantId, OccupantEntity> OCCUPANT_DATABASE = new ConcurrentHashMap<>();
   public static final Map<ReservationId, ReservationEntity> RESERVATION_DATABASE = new ConcurrentHashMap<>();
-  public static final Map<ReservationId, ParkingSpotReservationEntity> PARKING_SPOT_RESERVATION_DATABASE = new ConcurrentHashMap<>();
+  public static final Map<ReservationId, ReservedOccupationEntity> RESERVED_OCCUPATION_DATABASE = new ConcurrentHashMap<>();
   public static final Map<ParkingSpotId, ParkingSpotCapacity> NOTIFICATION_PARKING_SPOT_DATABASE = new ConcurrentHashMap<>();
   public static final Map<OccupationId, NotificationOccupationEntity> NOTIFICATION_OCCUPATION_DATABASE = new ConcurrentHashMap<>();
   public static final Map<ReservationId, NotificationReservationEntity> NOTIFICATION_RESERVATION_DATABASE = new ConcurrentHashMap<>();
@@ -60,7 +60,7 @@ public class InMemoryRepositories {
     REQUEST_DATABASE.clear();
     OCCUPANT_DATABASE.clear();
     RESERVATION_DATABASE.clear();
-    PARKING_SPOT_RESERVATION_DATABASE.clear();
+    RESERVED_OCCUPATION_DATABASE.clear();
     NOTIFICATION_PARKING_SPOT_DATABASE.clear();
     NOTIFICATION_OCCUPATION_DATABASE.clear();
     NOTIFICATION_RESERVATION_DATABASE.clear();

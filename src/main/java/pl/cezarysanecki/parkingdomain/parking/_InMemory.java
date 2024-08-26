@@ -20,7 +20,7 @@ import java.util.Optional;
 import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.OccupantEntity;
 import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.OccupationEntity;
 import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.ParkingSpotEntity;
-import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.ParkingSpotReservationEntity;
+import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.ReservedOccupationEntity;
 import static pl.cezarysanecki.parkingdomain._local.InMemoryRepositories.OCCUPANT_DATABASE;
 import static pl.cezarysanecki.parkingdomain._local.InMemoryRepositories.OCCUPATION_DATABASE;
 import static pl.cezarysanecki.parkingdomain._local.InMemoryRepositories.PARKING_DATABASE;
@@ -92,7 +92,7 @@ class InMemoryParkingRepository implements ParkingRepository {
 
   private static ParkingSpot toDomain(ParkingSpotEntity entity) {
     Optional<OccupationEntity> occupations = InMemoryOccupationRepository.findFor(entity.parkingSpotId);
-    List<ParkingSpotReservationEntity> reservations = InMemoryActiveReservationRepository.findFor(entity.parkingSpotId);
+    List<ReservedOccupationEntity> reservations = InMemoryReservedOccupationRepository.findFor(entity.parkingSpotId);
     return new ParkingSpot(
         entity.parkingSpotId,
         occupations.stream()
@@ -148,13 +148,13 @@ class InMemoryOccupantRepository implements OccupantRepository {
 
 @Slf4j
 @RequiredArgsConstructor
-class InMemoryActiveReservationRepository implements ActiveReservationRepository {
+class InMemoryReservedOccupationRepository implements ReservedOccupationRepository {
 
-  static final Map<ReservationId, ParkingSpotReservationEntity> DATABASE = InMemoryRepositories.PARKING_SPOT_RESERVATION_DATABASE;
+  static final Map<ReservationId, ReservedOccupationEntity> DATABASE = InMemoryRepositories.RESERVED_OCCUPATION_DATABASE;
 
   @Override
   public void storeFor(ParkingSpotId parkingSpotId, ReservationId reservationId, ReservationOwnerId reservationOwnerId, SpotUnits spotUnits) {
-    DATABASE.put(reservationId, new ParkingSpotReservationEntity(
+    DATABASE.put(reservationId, new ReservedOccupationEntity(
         parkingSpotId,
         reservationId,
         spotUnits
@@ -166,7 +166,7 @@ class InMemoryActiveReservationRepository implements ActiveReservationRepository
     reservations.forEach(DATABASE::remove);
   }
 
-  static List<ParkingSpotReservationEntity> findFor(ParkingSpotId parkingSpotId) {
+  static List<ReservedOccupationEntity> findFor(ParkingSpotId parkingSpotId) {
     return DATABASE.values()
         .stream()
         .filter(entity -> entity.parkingSpotId().equals(parkingSpotId))

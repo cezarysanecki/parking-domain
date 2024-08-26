@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.List;
 
 import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.OccupationEntity;
-import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.ParkingSpotReservationEntity;
+import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.ReservedOccupationEntity;
 import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.ReservationEntity;
 
 @RequiredArgsConstructor
@@ -101,7 +101,7 @@ class InMemoryViews implements
 
   private ParkingSpotEntry createParkingSpotEntry(ParkingSpot parkingSpot) {
     Collection<OccupationEntity> occupations = InMemoryRepositories.OCCUPATION_DATABASE.values();
-    Collection<ParkingSpotReservationEntity> reservations = InMemoryRepositories.PARKING_SPOT_RESERVATION_DATABASE.values();
+    Collection<ReservedOccupationEntity> reservations = InMemoryRepositories.RESERVED_OCCUPATION_DATABASE.values();
 
     int occupiedSpace = occupations.stream()
         .filter(entity -> entity.parkingSpotId.equals(parkingSpot.parkingSpotId()))
@@ -110,7 +110,7 @@ class InMemoryViews implements
         .reduce(0, Integer::sum);
     int reservedSpace = reservations.stream()
         .filter(entity -> entity.parkingSpotId().equals(parkingSpot.parkingSpotId()))
-        .map(ParkingSpotReservationEntity::spotUnits)
+        .map(ReservedOccupationEntity::spotUnits)
         .map(SpotUnits::value)
         .reduce(0, Integer::sum);
 
