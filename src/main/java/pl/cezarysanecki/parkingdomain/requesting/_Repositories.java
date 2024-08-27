@@ -258,7 +258,7 @@ class ProdRequestRepository implements RequestRepository {
     }
     create
         .deleteFrom(REQUEST)
-        .where(REQUEST.REQUESTER.in(requestIds.stream().map(RequestId::value).toList()))
+        .where(REQUEST.ID.in(requestIds.stream().map(RequestId::value).toList()))
         .execute();
   }
 }
