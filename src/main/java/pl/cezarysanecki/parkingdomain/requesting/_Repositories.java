@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
-import pl.cezarysanecki.parkingdomain._global.jooqconverter.LocalDateConverter;
 import pl.cezarysanecki.parkingdomain.commons.aggregates.AggregateRootIsStale;
 import pl.cezarysanecki.parkingdomain.commons.aggregates.Version;
 import pl.cezarysanecki.parkingdomain.jooq.default_schema.tables.records.RequestRecord;
@@ -127,7 +126,7 @@ class ProdRequestableParkingSpotRepository implements RequestableParkingSpotRepo
   public void deleteAllFor(LocalDate day) {
     create
         .deleteFrom(REQUESTABLE_PARKING_SPOT)
-        .where(REQUESTABLE_PARKING_SPOT.FROM.convert(LocalDateConverter.CONVERTER).eq(day))
+        .where(REQUESTABLE_PARKING_SPOT.FROM.cast(LocalDate.class).eq(day))
         .execute();
   }
 
@@ -238,7 +237,7 @@ class ProdRequestRepository implements RequestRepository {
   public List<RequestForReservation> findAllBy(LocalDate day) {
     return create
         .selectFrom(REQUEST)
-        .where(REQUEST.FROM.convert(LocalDateConverter.CONVERTER).eq(day))
+        .where(REQUEST.FROM.cast(LocalDate.class).eq(day))
         .stream()
         .map(record -> new RequestForReservation(
             new RequestId(record.getId()),
