@@ -229,7 +229,7 @@ class ProdRequestRepository implements RequestRepository {
   public boolean delete(RequestId requestId) {
     int result = create
         .deleteFrom(REQUEST)
-        .where(REQUEST.REQUESTER.eq(requestId.value()))
+        .where(REQUEST.ID.eq(requestId.value()))
         .execute();
     return result != 0;
   }

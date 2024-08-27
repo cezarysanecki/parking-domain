@@ -179,6 +179,7 @@ class ProdViewFreeTimeSlotsRepository implements ViewFreeTimeSlotsRepository {
         .select()
         .from(REQUESTABLE_PARKING_SPOT)
         .join(PARKING_SPOT_CATALOGUE).on(PARKING_SPOT_CATALOGUE.ID.eq(REQUESTABLE_PARKING_SPOT.PARKING_SPOT))
+        .orderBy(PARKING_SPOT_CATALOGUE.ID)
         .stream()
         .map(record -> {
           Integer requestedSpace = create

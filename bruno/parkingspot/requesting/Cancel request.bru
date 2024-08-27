@@ -5,13 +5,13 @@ meta {
 }
 
 delete {
-  url: {{baseUrl}}/requests/parking-spot/cancel
+  url: {{baseUrl}}/requesting/cancel
   body: json
   auth: none
 }
 
 body:json {
   {
-    "requestId": "ab84a45e-0eac-4715-a006-082a388bd541"
+    "requestId": "{{requestId}}"
   }
 }

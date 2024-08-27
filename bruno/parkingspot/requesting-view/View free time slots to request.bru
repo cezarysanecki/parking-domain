@@ -13,7 +13,12 @@ get {
 tests {
   if (res.body[0] != null) {
     var parkingSpotId = res.body[0].parkingSpotId;
+    var from = res.body[0].from;
+    var to = res.body[0].to;
+    
     bru.setEnvVar("parkingSpotId", parkingSpotId);
+    bru.setEnvVar("from", from);
+    bru.setEnvVar("to", to);
   }
   
 }
