@@ -14,6 +14,7 @@ spring:
 logging:
   level:
     pl.cezarysanecki.parkingdomain: DEBUG
+    org.jooq.tools.LoggerListener: DEBUG
 
 job:
   calling-external-cleaning-service-policy-job:
