@@ -50,14 +50,14 @@ public class ReservationFacade {
 
     eventPublisher.publish(new ReservationsActivated(activatedReservationEntries));
 
-    reservationRepository.markAsActive(activatedReservationEntries.stream()
-        .map(ReservationsActivated.Entry::reservationId)
+    reservationRepository.markAsActive(reservations.stream()
+        .map(Reservation::reservationId)
         .toList());
   }
 
   @Transactional
   public void removeNotUsedReservationsFor(Instant date) {
-    List<Reservation> reservations = reservationRepository.loadAllActiveBy(date);
+    List<Reservation> reservations = reservationRepository.loadAllActiveSince(date);
     List<ReservationId> activatedReservationEntries = reservations.stream()
         .map(Reservation::reservationId)
         .toList();

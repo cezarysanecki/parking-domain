@@ -15,6 +15,7 @@
     <description>parking-domain</description>
     <properties>
         <java.version>21</java.version>
+        <jooq.version>3.19.11</jooq.version>
     </properties>
     <dependencies>
         <dependency>
@@ -29,6 +30,31 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-quartz</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jooq</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq</artifactId>
+            <version>${jooq.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq-meta</artifactId>
+            <version>${jooq.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq-codegen</artifactId>
+            <version>${jooq.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq-meta-extensions-liquibase</artifactId>
+            <version>${jooq.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>io.vavr</groupId>
@@ -41,6 +67,15 @@
             <optional>true</optional>
         </dependency>
 
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+            <version>4.29.1</version>
+        </dependency>
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
@@ -72,6 +107,11 @@
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>${project.build.directory}/generated-resources</directory>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -184,6 +224,66 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.jooq</groupId>
+                <artifactId>jooq-codegen-maven</artifactId>
+
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+
+                <configuration>
+                    <generator>
+                        <database>
+                            <name>org.jooq.meta.extensions.liquibase.LiquibaseDatabase</name>
+                            <properties>
+                                <property>
+                                    <key>sort</key>
+                                    <value>liquibase</value>
+                                </property>
+                                <property>
+                                    <key>scripts</key>
+                                    <value>db/changelog/db.changelog-master.xml</value>
+                                </property>
+                                <property>
+                                    <key>includeLiquibaseTables</key>
+                                    <value>false</value>
+                                </property>
+                                <property>
+                                    <key>database.liquibaseSchemaName</key>
+                                    <value>lb</value>
+                                </property>
+                                <property>
+                                    <key>changeLogParameters.contexts</key>
+                                    <value>!local</value>
+                                </property>
+                            </properties>
+                        </database>
+                        <target>
+                            <packageName>pl.cezarysanecki.parkingdomain.jooq</packageName>
+                            <directory>target/generated-sources/jooq</directory>
+                        </target>
+                        <generate>
+                            <javaTimeTypes>true</javaTimeTypes>
+                        </generate>
+                        <strategy>
+                            <matchers>
+                                <schemas>
+                                    <schema>
+                                        <schemaClass>
+                                            <transform>LOWER</transform>
+                                        </schemaClass>
+                                    </schema>
+                                </schemas>
+                            </matchers>
+                        </strategy>
+                    </generator>
+                </configuration>
             </plugin>
         </plugins>
     </build>

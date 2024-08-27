@@ -1,15 +1,20 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:parking-domain
-    driverClassName: org.h2.Driver
-    username: sa
-    password: password
-  h2:
-    console:
-      enabled: true
-  quartz:
-    job-store-type: memory
-# to configure jdbc read: https://medium.com/turkcell/spring-boot-quartz-scheduler-1-c61bbbafdbbb
+    url: jdbc:postgresql://localhost:5432/parkingdomain
+    username: postgres
+    password: root
+  jpa:
+    hibernate:
+      ddl-auto: none
+  liquibase:
+    change-log: db/changelog/db.changelog-master.xml
+  jooq:
+    sql-dialect: postgres
+
+logging:
+  level:
+    pl.cezarysanecki.parkingdomain: DEBUG
+    org.jooq.tools.LoggerListener: DEBUG
 
 job:
   calling-external-cleaning-service-policy-job:
@@ -17,11 +22,11 @@ job:
   making-requests-valid-job:
     cron-expression: "0 0 1 * * ?"
   activating-reservations-job:
-    cron-expression: "*/1 * * * *"
+    cron-expression: "0 */1 * * * ?"
   removing-not-used-reservations-job:
-    cron-expression: "*/1 * * * *"
+    cron-expression: "0 */1 * * * ?"
   notifying-about-releasing-job:
-    cron-expression: "*/5 * * * *"
+    cron-expression: "0 */5 * * * ?"
 
 business:
   cleaning:

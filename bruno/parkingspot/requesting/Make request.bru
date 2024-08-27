@@ -14,8 +14,14 @@ body:json {
   {
     "requesterId": "{{clientId}}",
     "parkingSpotId": "{{parkingSpotId}}",
-    "from": "2024-08-17T05:00:00",
-    "to": "2024-08-17T17:00:00",
+    "from": "{{from}}",
+    "to": "{{to}}",
     "spotUnits": "2"
   }
+}
+
+tests {
+  var requestId = res.body;
+  
+  bru.setEnvVar("requestId", requestId);
 }

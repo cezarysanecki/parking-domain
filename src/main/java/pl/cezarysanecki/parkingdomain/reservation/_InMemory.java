@@ -53,8 +53,9 @@ class InMemoryReservationRepository implements ReservationRepository {
   }
 
   @Override
-  public List<Reservation> loadAllActiveBy(Instant date) {
-    return loadBy(reservationEntity -> reservationEntity.timeSlot.from().isBefore(date)
+  public List<Reservation> loadAllActiveSince(Instant date) {
+    return loadBy(
+        reservationEntity -> reservationEntity.timeSlot.from().isBefore(date)
         && reservationEntity.status == ReservationEntity.Status.ACTIVE
     )
         .map(InMemoryReservationRepository::toDomain)

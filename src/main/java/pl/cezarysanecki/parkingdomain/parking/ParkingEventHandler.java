@@ -18,7 +18,7 @@ class ParkingEventHandler {
 
   private final ParkingRepository parkingRepository;
   private final OccupantRepository occupantRepository;
-  private final ActiveReservationRepository parkingSpotReservationRepository;
+  private final ReservedOccupationRepository parkingSpotReservationRepository;
 
   @Transactional
   @EventListener
@@ -41,7 +41,6 @@ class ParkingEventHandler {
         .forEach(reservation -> parkingSpotReservationRepository.storeFor(
             reservation.parkingSpotId(),
             reservation.reservationId(),
-            reservation.reservationOwnerId(),
             reservation.spotUnits()
         ));
   }

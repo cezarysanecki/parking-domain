@@ -13,7 +13,7 @@ class ParkingConfig {
   private final ParkingRepository parkingRepository;
   private final OccupationRepository occupationRepository;
   private final OccupantRepository occupantRepository;
-  private final ActiveReservationRepository activeReservationRepository;
+  private final ReservedOccupationRepository reservedOccupationRepository;
   private final EventPublisher eventPublisher;
 
   @Bean
@@ -30,7 +30,7 @@ class ParkingConfig {
     return new ParkingEventHandler(
         parkingRepository,
         occupantRepository,
-        activeReservationRepository);
+        reservedOccupationRepository);
   }
 
 }
@@ -56,8 +56,8 @@ class LocalParkingConfig {
   }
 
   @Bean
-  InMemoryActiveReservationRepository inMemoryActiveReservationRepository() {
-    return new InMemoryActiveReservationRepository();
+  InMemoryReservedOccupationRepository inMemoryReservedOccupationRepository() {
+    return new InMemoryReservedOccupationRepository();
   }
 
 }

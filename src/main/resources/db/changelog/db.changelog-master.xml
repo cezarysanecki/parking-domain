@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="create_initial_tables_management" author="cezarysanecki">
+        <createTable tableName="parking_spot_catalogue">
+            <column name="id" type="uuid">
+                <constraints nullable="false"
+                             primaryKey="true"
+                             primaryKeyName="parking_spot_catalogue_primary_key"/>
+            </column>
+            <column name="capacity" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="category" type="varchar(10)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="client_catalogue">
+            <column name="id" type="uuid">
+                <constraints nullable="false"
+                             primaryKey="true"
+                             primaryKeyName="client_catalogue_primary_key"/>
+            </column>
+            <column name="type" type="varchar(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="phone_number" type="varchar(20)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create_initial_tables_parking" author="cezarysanecki">
+        <createTable tableName="parking">
+            <column name="parking_spot" type="uuid">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="capacity" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="occupant">
+            <column name="client" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="occupation">
+            <column name="id" type="uuid">
+                <constraints nullable="false"
+                             primaryKey="true"
+                             primaryKeyName="occupation_primary_key"/>
+            </column>
+            <column name="occupant" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="parking_spot" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="spot_units" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="reserved_occupation">
+            <column name="parking_spot" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="reservation" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="spot_units" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create_initial_tables_reservation" author="cezarysanecki">
+        <createTable tableName="reservation">
+            <column name="id" type="uuid">
+                <constraints nullable="false"
+                             primaryKey="true"
+                             primaryKeyName="reservation_primary_key"/>
+            </column>
+            <column name="owner" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="parking_spot" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="from" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="to" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="spot_units" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="varchar(10)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create_initial_tables_requesting" author="cezarysanecki">
+        <createTable tableName="requestable_parking_spot">
+            <column name="parking_spot" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="from" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="to" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="capacity" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="requestable_parking_spot_template">
+            <column name="parking_spot" type="uuid">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="capacity" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="requester">
+            <column name="client" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="limit" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="request">
+            <column name="id" type="uuid">
+                <constraints nullable="false"
+                             primaryKey="true"
+                             primaryKeyName="request_primary_key"/>
+            </column>
+            <column name="requester" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="parking_spot" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="from" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="to" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="units" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create_initial_tables_cleaning" author="cezarysanecki">
+        <createTable tableName="cleaning">
+            <column name="parking_spot" type="uuid">
+                <constraints nullable="false"
+                             primaryKey="true"
+                             primaryKeyName="cleaning_primary_key"/>
+            </column>
+            <column name="counter" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create_initial_tables_occupation_release_notification" author="cezarysanecki">
+        <createTable tableName="notification_parking_spot">
+            <column name="parking_spot" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="capacity" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="notification_occupation">
+            <column name="occupation" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="occupant" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="parking_spot" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="spot_units" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="notification_reservation">
+            <column name="reservation" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="reservation_owner" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="parking_spot" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="spot_units" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="valid_since" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="notification_runs">
+            <column name="date" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create_initial_tables_creating_time_slots" author="cezarysanecki">
+        <createTable tableName="creating_time_slots">
+            <column name="creation_date" type="date">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

@@ -166,11 +166,17 @@ class InMemoryRequestRepository implements RequestRepository {
   }
 
   @Override
-  public List<Request> findAllBy(LocalDate day) {
+  public List<RequestForReservation> findAllBy(LocalDate day) {
     return DATABASE.values()
         .stream()
         .filter(entity -> day.equals(entity.timeSlot.from().atZone(ZoneId.systemDefault()).toLocalDate()))
-        .map(InMemoryRequestRepository::toDomain)
+        .map(entity -> new RequestForReservation(
+            entity.requestId,
+            entity.requesterId,
+            entity.parkingSpotId,
+            entity.timeSlot,
+            new SpotUnits(entity.units)
+        ))
         .toList();
   }
 

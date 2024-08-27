@@ -13,7 +13,7 @@ interface ReservationRepository {
 
   List<Reservation> loadAllStaleSince(Instant date);
 
-  List<Reservation> loadAllActiveBy(Instant date);
+  List<Reservation> loadAllActiveSince(Instant date);
 
   void markAsUsed(Reservation reservation);
 
