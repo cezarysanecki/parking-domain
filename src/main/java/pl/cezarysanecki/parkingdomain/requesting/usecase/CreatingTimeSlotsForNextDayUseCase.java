@@ -27,7 +27,7 @@ public class CreatingTimeSlotsForNextDayUseCase {
     LocalDate nextDay = dateProvider.nextDay();
 
     if (creatingTimeSlotsRepository.wasCreatedFor(nextDay)) {
-      throw new IllegalStateException("requestable parking spots were created at" + nextDay);
+      throw new IllegalStateException("requestable parking spots were created at " + nextDay);
     }
 
     requestingFacade.createForAll(
