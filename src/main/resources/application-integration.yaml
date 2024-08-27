@@ -1,0 +1,3 @@
+logging:
+  level:
+    pl.cezarysanecki.parkingdomain: DEBUG

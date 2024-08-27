@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Profile;
 import org.testcontainers.containers.PostgreSQLContainer;
 import pl.cezarysanecki.parkingdomain.management.client.api.ClientId;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotCapacity;
@@ -15,6 +16,7 @@ import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
 
 import java.util.UUID;
 
+@Profile("integration")
 @SpringBootTest(classes = {
     ParkingConfig.class,
     ProdOccupantRepository.class,
