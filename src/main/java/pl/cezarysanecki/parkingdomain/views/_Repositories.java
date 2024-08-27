@@ -178,8 +178,7 @@ class ProdViewFreeTimeSlotsRepository implements ViewFreeTimeSlotsRepository {
     return create
         .select()
         .from(REQUESTABLE_PARKING_SPOT)
-        .join(PARKING_SPOT_CATALOGUE, JoinType.CROSS_JOIN)
-        .on(PARKING_SPOT_CATALOGUE.ID.eq(REQUESTABLE_PARKING_SPOT.PARKING_SPOT))
+        .join(PARKING_SPOT_CATALOGUE).on(PARKING_SPOT_CATALOGUE.ID.eq(REQUESTABLE_PARKING_SPOT.PARKING_SPOT))
         .stream()
         .map(record -> {
           Integer requestedSpace = create
