@@ -1,6 +1,5 @@
 package pl.cezarysanecki.parkingdomain.management.client;
 
-import io.vavr.control.Try;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +9,8 @@ import pl.cezarysanecki.parkingdomain.management.client.api.ClientRegistered;
 import pl.cezarysanecki.parkingdomain.management.client.api.ClientType;
 import pl.cezarysanecki.parkingdomain.management.client.api.PhoneNumber;
 
+import java.util.Optional;
+
 @Slf4j
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 public class ClientFacade {
@@ -17,8 +18,8 @@ public class ClientFacade {
   private final ClientRepository clientRepository;
   private final EventPublisher eventPublisher;
 
-  public Try<ClientId> registerClient(ClientType clientType, PhoneNumber phoneNumber) {
-    return Try.of(() -> {
+  public Optional<ClientId> registerClient(ClientType clientType, PhoneNumber phoneNumber) {
+    try {
       Client client = new Client(ClientId.newOne(), clientType, phoneNumber);
       log.debug("registering {} client with id {}", clientType.name().toLowerCase(), client.clientId());
 
@@ -30,8 +31,11 @@ public class ClientFacade {
       };
       eventPublisher.publish(event);
 
-      return client.clientId();
-    }).onFailure(t -> log.error("failed to register client", t));
+      return Optional.of(client.clientId());
+    } catch (Exception exception) {
+      log.error("failed to register client", exception);
+      return Optional.empty();
+    }
   }
 
 }

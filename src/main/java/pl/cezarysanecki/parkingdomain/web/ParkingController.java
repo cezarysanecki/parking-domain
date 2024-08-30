@@ -1,6 +1,5 @@
 package pl.cezarysanecki.parkingdomain.web;
 
-import io.vavr.control.Try;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,13 +15,14 @@ import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.ParkingFacade;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupantId;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupationId;
+import pl.cezarysanecki.parkingdomain.parking.api.ParkingSpotForceReleased;
 import pl.cezarysanecki.parkingdomain.parking.usecase.OccupyUsingReservationUseCase;
 import pl.cezarysanecki.parkingdomain.parking.usecase.OccupyingWithoutAccountUseCase;
-import pl.cezarysanecki.parkingdomain.parking.api.ParkingSpotForceReleased;
 import pl.cezarysanecki.parkingdomain.parking.usecase.RemoveOccupationByForceUseCase;
 import pl.cezarysanecki.parkingdomain.reservation.api.ReservationId;
 import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
@@ -40,13 +40,13 @@ class ParkingController {
 
   @PostMapping("/add")
   ResponseEntity createParkingSpot(@RequestBody CreateParkingSpotRequest request) {
-    Try<ParkingSpotId> result = parkingSpotFacade.addParkingSpot(
+    Optional<ParkingSpotId> result = parkingSpotFacade.addParkingSpot(
         ParkingSpotCapacity.defaultCapacity(),
         request.category
     );
     return result
         .map(success -> ResponseEntity.ok().build())
-        .getOrElse(ResponseEntity.status(INTERNAL_SERVER_ERROR).build());
+        .orElseGet(() -> ResponseEntity.status(INTERNAL_SERVER_ERROR).build());
   }
 
   @PostMapping("/occupy")

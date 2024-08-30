@@ -1,6 +1,6 @@
 package pl.cezarysanecki.parkingdomain.commons.events;
 
-import io.vavr.collection.List;
+import java.util.List;
 
 public interface EventPublisher {
 
