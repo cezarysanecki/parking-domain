@@ -6,7 +6,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Profile;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
+import pl.cezarysanecki.parkingdomain.commons.aggregates.AggregateRootIsStale;
 import pl.cezarysanecki.parkingdomain.management.client.api.ClientId;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotCapacity;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
@@ -16,19 +19,22 @@ import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
 
 import java.util.UUID;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 @Profile("integration")
-@SpringBootTest(classes = {
-    ParkingConfig.class,
-    ProdOccupantRepository.class,
-    ProdOccupationRepository.class,
-    ProdParkingRepository.class,
-    ProdReservedOccupationRepository.class
-})
+@SpringBootTest
 class OptimisticLockingForOccupationCaseIntTest {
 
   static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(
       "postgres:16.4"
   );
+
+  @DynamicPropertySource
+  static void configureProperties(DynamicPropertyRegistry registry) {
+    registry.add("spring.datasource.url", postgres::getJdbcUrl);
+    registry.add("spring.datasource.username", postgres::getUsername);
+    registry.add("spring.datasource.password", postgres::getPassword);
+  }
 
   @Autowired
   ParkingRepository parkingRepository;
@@ -48,7 +54,7 @@ class OptimisticLockingForOccupationCaseIntTest {
   }
 
   @Test
-  void shouldGetCustomers() {
+  void checkIfOptimisticLockingIsWorkingCorrectlyForOccupation() {
     //given
     ParkingSpotId parkingSpotId = new ParkingSpotId(UUID.randomUUID());
     ClientId firstClientId = new ClientId(UUID.randomUUID());
@@ -68,16 +74,15 @@ class OptimisticLockingForOccupationCaseIntTest {
         firstOccupant,
         parkingSpot,
         new SpotUnits(2)));
-    //and
-    occupationRepository.saveCheckingVersion(new Occupation(
-        new OccupationId(UUID.randomUUID()),
-        secondOccupant,
-        parkingSpot,
-        new SpotUnits(2)));
 
     //then
-    // ???
+    assertThatThrownBy(() -> occupationRepository.saveCheckingVersion(
+        new Occupation(
+            new OccupationId(UUID.randomUUID()),
+            secondOccupant,
+            parkingSpot,
+            new SpotUnits(2))))
+        .isInstanceOf(AggregateRootIsStale.class);
   }
-
 
 }

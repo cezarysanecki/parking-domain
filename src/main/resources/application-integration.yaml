@@ -1,3 +1,4 @@
 logging:
   level:
     pl.cezarysanecki.parkingdomain: DEBUG
+    org.jooq.tools.LoggerListener: DEBUG

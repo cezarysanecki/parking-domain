@@ -17,7 +17,7 @@ import javax.sql.DataSource;
 
 @Configuration
 @RequiredArgsConstructor
-class DatabaseConfig {
+public class DatabaseConfig {
 
   private final DataSource dataSource;
 
