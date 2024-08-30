@@ -26,12 +26,10 @@ public class OccupyingWithoutAccountUseCase {
       SpotUnits spotUnits
   ) {
     return clientFacade.registerClient(ClientType.INDIVIDUAL, phoneNumber)
-        .toOption()
         .map(clientId -> parkingFacade.occupy(
             new OccupantId(clientId.value()),
             parkingSpotId,
             spotUnits))
-        .toJavaOptional()
         .flatMap(occupationId -> occupationId);
   }
 

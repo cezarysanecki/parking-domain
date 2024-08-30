@@ -1,6 +1,5 @@
 package pl.cezarysanecki.parkingdomain;
 
-import io.vavr.control.Try;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,6 +13,8 @@ import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpotFacade;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotCapacity;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotCategory;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
+
+import java.util.Optional;
 
 @SpringBootTest
 @ActiveProfiles("local")
@@ -31,12 +32,12 @@ public abstract class BaseAcceptanceTest {
   }
 
   ParkingSpotId addParkingSpot(ParkingSpotCapacity capacity, ParkingSpotCategory category) {
-    Try<ParkingSpotId> parkingSpotId = parkingSpotFacade.addParkingSpot(capacity, category);
+    Optional<ParkingSpotId> parkingSpotId = parkingSpotFacade.addParkingSpot(capacity, category);
     return parkingSpotId.get();
   }
 
   ClientId registerClient(ClientType clientType, PhoneNumber phoneNumber) {
-    Try<ClientId> clientId = clientFacade.registerClient(clientType, phoneNumber);
+    Optional<ClientId> clientId = clientFacade.registerClient(clientType, phoneNumber);
     return clientId.get();
   }
 

@@ -1,8 +1,7 @@
 package pl.cezarysanecki.parkingdomain.commons.events;
 
-import io.vavr.collection.List;
-
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 public interface DomainEvent {

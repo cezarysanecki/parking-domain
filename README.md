@@ -5,7 +5,7 @@
 
 # Parking Domain - [contest 100 commits](https://100commitow.pl/)
 
-> Choosing to learn about the domain before implementing is the optimal decision you can make.
+> Studying the business domain before its implementation is the best decision you can make.
 
 The Parking Domain project aims to demonstrate the evolution from a rudimentary and limited model to a more
 sophisticated solution. I'm committed to undertaking this challenge and seeing if I can successfully navigate it. 😎
@@ -13,7 +13,7 @@ sophisticated solution. I'm committed to undertaking this challenge and seeing i
 This is just experiment which serves solely for **educational purposes**. While I will define the MVP and other
 necessary aspects, it's important to note that this domain is not the ultimate goal itself.
 
-**Let jump into the code and see what will happen!**
+**Let’s dive into the code and see where it takes us!**
 
 ## Used frameworks/libraries/tools
 
@@ -24,14 +24,16 @@ Main:
 - [Spring Boot 3](https://spring.io/projects/spring-boot)
     - [Web](https://docs.spring.io/spring-boot/docs/current/reference/html/web.html)
     - [JPA](https://spring.io/projects/spring-data-jpa)
-- [Lombok](https://projectlombok.org/)
 - [Quartz](https://www.quartz-scheduler.org/)
+- [Lombok](https://projectlombok.org/)
+- [JOOQ](https://www.jooq.org/)
+- [Postgres](https://www.postgresql.org/)
+- [Liquibase](https://www.liquibase.com/)
 
 Tests:
 
-- [H2 database](https://www.h2database.com/html/main.html)
-- [vavr](https://docs.vavr.io/)
-- [Awaitility](http://www.awaitility.org/)
+- [Testcontainers](https://testcontainers.com/)
+- [Spock](https://spockframework.org/)
 
 Tools:
 
