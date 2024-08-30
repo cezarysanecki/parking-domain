@@ -11,11 +11,6 @@ spring:
   jooq:
     sql-dialect: postgres
 
-logging:
-  level:
-    pl.cezarysanecki.parkingdomain: DEBUG
-    org.jooq.tools.LoggerListener: DEBUG
-
 job:
   calling-external-cleaning-service-policy-job:
     cron-expression: "0 0 13 * * ?"
