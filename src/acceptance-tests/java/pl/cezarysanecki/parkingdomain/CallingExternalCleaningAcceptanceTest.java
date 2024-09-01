@@ -28,20 +28,17 @@ public class CallingExternalCleaningAcceptanceTest extends BaseAcceptanceTest {
   @Test
   void callCleaningIfThereAreRequiredNumberOfDirtyParkingSpots() {
     //given
-    ParkingSpotId firstParkingSpotId = addParkingSpot(ParkingSpotCapacity.defaultCapacity(), ParkingSpotCategory.Silver);
-    ParkingSpotId secondParkingSpotId = addParkingSpot(ParkingSpotCapacity.defaultCapacity(), ParkingSpotCategory.Silver);
     ClientId clientId = registerClient(ClientType.INDIVIDUAL, RandomTestUtils.randomPhoneNumber());
 
     //when
     IntStream.range(0, 10)
         .forEach(i -> {
-          OccupationId occupationId = parkingFacade.occupy(new OccupantId(clientId.value()), firstParkingSpotId, new SpotUnits(4)).get();
-          parkingFacade.release(occupationId);
-        });
-    IntStream.range(0, 10)
-        .forEach(i -> {
-          OccupationId occupationId = parkingFacade.occupy(new OccupantId(clientId.value()), secondParkingSpotId, new SpotUnits(4)).get();
-          parkingFacade.release(occupationId);
+          ParkingSpotId parkingSpotId = addParkingSpot(ParkingSpotCapacity.defaultCapacity(), ParkingSpotCategory.Silver);
+          IntStream.range(0, 20)
+              .forEach(j -> {
+                OccupationId occupationId = parkingFacade.occupy(new OccupantId(clientId.value()), parkingSpotId, new SpotUnits(4)).get();
+                parkingFacade.release(occupationId);
+              });
         });
     //and
     Result result = callingCleaningWhenSpotsDirtyUseCase.run();
