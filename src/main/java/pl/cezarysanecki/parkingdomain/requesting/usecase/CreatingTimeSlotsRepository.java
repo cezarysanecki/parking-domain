@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static pl.cezarysanecki.parkingdomain.jooq.default_schema.tables.CreatingTimeSlots.CREATING_TIME_SLOTS;
+import static pl.cezarysanecki.parkingdomain.jooq.tables.CreatingTimeSlots.CREATING_TIME_SLOTS;
 
 interface CreatingTimeSlotsRepository {
 

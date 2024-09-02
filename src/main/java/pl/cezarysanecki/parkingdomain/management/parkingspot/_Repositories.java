@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
-import pl.cezarysanecki.parkingdomain.jooq.default_schema.tables.ParkingSpotCatalogue;
+import pl.cezarysanecki.parkingdomain.jooq.tables.ParkingSpotCatalogue;
 
 @Profile("!local")
 @Repository

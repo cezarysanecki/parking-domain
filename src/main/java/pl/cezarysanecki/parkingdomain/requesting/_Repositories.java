@@ -7,9 +7,9 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 import pl.cezarysanecki.parkingdomain.commons.aggregates.AggregateRootIsStale;
 import pl.cezarysanecki.parkingdomain.commons.aggregates.Version;
-import pl.cezarysanecki.parkingdomain.jooq.default_schema.tables.records.RequestRecord;
-import pl.cezarysanecki.parkingdomain.jooq.default_schema.tables.records.RequestableParkingSpotRecord;
-import pl.cezarysanecki.parkingdomain.jooq.default_schema.tables.records.RequesterRecord;
+import pl.cezarysanecki.parkingdomain.jooq.tables.records.RequestRecord;
+import pl.cezarysanecki.parkingdomain.jooq.tables.records.RequestableParkingSpotRecord;
+import pl.cezarysanecki.parkingdomain.jooq.tables.records.RequesterRecord;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotCapacity;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.requesting.api.RequestId;
@@ -23,10 +23,10 @@ import java.time.ZoneId;
 import java.util.List;
 
 import static org.jooq.impl.DSL.row;
-import static pl.cezarysanecki.parkingdomain.jooq.default_schema.tables.Request.REQUEST;
-import static pl.cezarysanecki.parkingdomain.jooq.default_schema.tables.RequestableParkingSpot.REQUESTABLE_PARKING_SPOT;
-import static pl.cezarysanecki.parkingdomain.jooq.default_schema.tables.RequestableParkingSpotTemplate.REQUESTABLE_PARKING_SPOT_TEMPLATE;
-import static pl.cezarysanecki.parkingdomain.jooq.default_schema.tables.Requester.REQUESTER;
+import static pl.cezarysanecki.parkingdomain.jooq.tables.Request.REQUEST;
+import static pl.cezarysanecki.parkingdomain.jooq.tables.RequestableParkingSpot.REQUESTABLE_PARKING_SPOT;
+import static pl.cezarysanecki.parkingdomain.jooq.tables.RequestableParkingSpotTemplate.REQUESTABLE_PARKING_SPOT_TEMPLATE;
+import static pl.cezarysanecki.parkingdomain.jooq.tables.Requester.REQUESTER;
 
 @Profile("!local")
 @Repository

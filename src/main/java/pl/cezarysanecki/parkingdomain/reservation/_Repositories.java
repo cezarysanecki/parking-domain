@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
-import pl.cezarysanecki.parkingdomain.jooq.default_schema.tables.records.ReservationRecord;
+import pl.cezarysanecki.parkingdomain.jooq.tables.records.ReservationRecord;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.reservation.api.ReservationId;
 import pl.cezarysanecki.parkingdomain.reservation.api.ReservationOwnerId;
@@ -18,7 +18,7 @@ import java.time.ZoneId;
 import java.util.List;
 
 import static org.jooq.impl.DSL.row;
-import static pl.cezarysanecki.parkingdomain.jooq.default_schema.tables.Reservation.RESERVATION;
+import static pl.cezarysanecki.parkingdomain.jooq.tables.Reservation.RESERVATION;
 
 @Profile("!local")
 @Repository

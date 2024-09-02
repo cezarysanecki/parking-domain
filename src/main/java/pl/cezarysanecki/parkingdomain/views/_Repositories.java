@@ -12,14 +12,14 @@ import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotCate
 import java.util.List;
 import java.util.UUID;
 
-import static pl.cezarysanecki.parkingdomain.jooq.default_schema.tables.Cleaning.CLEANING;
-import static pl.cezarysanecki.parkingdomain.jooq.default_schema.tables.ClientCatalogue.CLIENT_CATALOGUE;
-import static pl.cezarysanecki.parkingdomain.jooq.default_schema.tables.Occupation.OCCUPATION;
-import static pl.cezarysanecki.parkingdomain.jooq.default_schema.tables.ParkingSpotCatalogue.PARKING_SPOT_CATALOGUE;
-import static pl.cezarysanecki.parkingdomain.jooq.default_schema.tables.Request.REQUEST;
-import static pl.cezarysanecki.parkingdomain.jooq.default_schema.tables.RequestableParkingSpot.REQUESTABLE_PARKING_SPOT;
-import static pl.cezarysanecki.parkingdomain.jooq.default_schema.tables.Reservation.RESERVATION;
-import static pl.cezarysanecki.parkingdomain.jooq.default_schema.tables.ReservedOccupation.RESERVED_OCCUPATION;
+import static pl.cezarysanecki.parkingdomain.jooq.tables.Cleaning.CLEANING;
+import static pl.cezarysanecki.parkingdomain.jooq.tables.ClientCatalogue.CLIENT_CATALOGUE;
+import static pl.cezarysanecki.parkingdomain.jooq.tables.Occupation.OCCUPATION;
+import static pl.cezarysanecki.parkingdomain.jooq.tables.ParkingSpotCatalogue.PARKING_SPOT_CATALOGUE;
+import static pl.cezarysanecki.parkingdomain.jooq.tables.Request.REQUEST;
+import static pl.cezarysanecki.parkingdomain.jooq.tables.RequestableParkingSpot.REQUESTABLE_PARKING_SPOT;
+import static pl.cezarysanecki.parkingdomain.jooq.tables.Reservation.RESERVATION;
+import static pl.cezarysanecki.parkingdomain.jooq.tables.ReservedOccupation.RESERVED_OCCUPATION;
 
 @Profile("!local")
 @Repository

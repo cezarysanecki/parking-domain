@@ -5,7 +5,7 @@ import org.jooq.DSLContext;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
-import static pl.cezarysanecki.parkingdomain.jooq.default_schema.tables.ClientCatalogue.CLIENT_CATALOGUE;
+import static pl.cezarysanecki.parkingdomain.jooq.tables.ClientCatalogue.CLIENT_CATALOGUE;
 
 @Profile("!local")
 @Repository

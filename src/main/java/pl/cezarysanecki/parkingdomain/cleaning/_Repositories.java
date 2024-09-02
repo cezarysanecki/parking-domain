@@ -8,7 +8,7 @@ import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
 
 import java.util.List;
 
-import static pl.cezarysanecki.parkingdomain.jooq.default_schema.tables.Cleaning.CLEANING;
+import static pl.cezarysanecki.parkingdomain.jooq.tables.Cleaning.CLEANING;
 
 @Profile("!local")
 @Repository

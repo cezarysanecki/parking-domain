@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
-import pl.cezarysanecki.parkingdomain.jooq.default_schema.tables.records.NotificationRunsRecord;
+import pl.cezarysanecki.parkingdomain.jooq.tables.records.NotificationRunsRecord;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotCapacity;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupantId;
@@ -19,10 +19,10 @@ import java.time.ZoneId;
 import java.util.List;
 import java.util.UUID;
 
-import static pl.cezarysanecki.parkingdomain.jooq.default_schema.tables.NotificationOccupation.NOTIFICATION_OCCUPATION;
-import static pl.cezarysanecki.parkingdomain.jooq.default_schema.tables.NotificationParkingSpot.NOTIFICATION_PARKING_SPOT;
-import static pl.cezarysanecki.parkingdomain.jooq.default_schema.tables.NotificationReservation.NOTIFICATION_RESERVATION;
-import static pl.cezarysanecki.parkingdomain.jooq.default_schema.tables.NotificationRuns.NOTIFICATION_RUNS;
+import static pl.cezarysanecki.parkingdomain.jooq.tables.NotificationOccupation.NOTIFICATION_OCCUPATION;
+import static pl.cezarysanecki.parkingdomain.jooq.tables.NotificationParkingSpot.NOTIFICATION_PARKING_SPOT;
+import static pl.cezarysanecki.parkingdomain.jooq.tables.NotificationReservation.NOTIFICATION_RESERVATION;
+import static pl.cezarysanecki.parkingdomain.jooq.tables.NotificationRuns.NOTIFICATION_RUNS;
 
 @Profile("!local")
 @Repository
