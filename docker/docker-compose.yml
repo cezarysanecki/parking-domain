@@ -1,0 +1,31 @@
+version: '3.1'
+
+services:
+  db:
+    container_name: parkingdomain_db
+    image: postgres:16.4
+    restart: always
+    environment:
+      POSTGRES_DB: parkingdomain
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+    ports:
+      - "5432:5432"
+    volumes:
+      - /c/_temp/db-data:/var/lib/postgresql/data
+  prometheus:
+    image: prom/prometheus:v2.54.0
+    ports:
+      - "9090:9090"
+    volumes:
+      - /c/_temp/prometheus-data:/prometheus
+      - ./prometheus:/etc/prometheus
+    command: --config.file=/etc/prometheus/prometheus.yml
+  grafana:
+    image: grafana/grafana:9.1.7
+    ports:
+      - "3000:3000"
+    volumes:
+      - /c/_temp/grafana-data:/var/lib/grafana
+    depends_on:
+      - prometheus

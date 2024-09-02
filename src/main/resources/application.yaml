@@ -1,7 +1,9 @@
 spring:
+  application:
+    name: 'parkingdomain'
   datasource:
     url: jdbc:postgresql://localhost:5432/parkingdomain
-    username: postgres
+    username: root
     password: root
   jpa:
     hibernate:
@@ -43,3 +45,11 @@ management:
     web:
       exposure:
         include: "*"
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+server:
+  tomcat:
+    mbeanregistry:
+      enabled: true
