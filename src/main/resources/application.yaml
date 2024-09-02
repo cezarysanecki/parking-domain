@@ -37,3 +37,9 @@ business:
       morning-end-hour: 17
       evening-start-hour: 18
       evening-end-hour: 24
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
