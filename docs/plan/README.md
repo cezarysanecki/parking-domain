@@ -12,6 +12,7 @@
 | Próg brudnego miejsca | Miejsce jest brudne po **2 zwolnieniach**, więc 10 brudnych miejsc to ok. 20 zwolnień. |
 | JPA | **Usunąć** JPA z README i z `pom.xml`. Jedyną warstwą zapisu zostaje JOOQ. |
 | Spock | Przepisać **wszystkie** testy na Spocka (akceptacyjne i integracyjne) i dodać testy jednostkowe. |
+| Godzina sprzątania | Serwis sprzątający wzywamy o **1:30**, w przerwie technicznej. Uzasadnienie jest w README. |
 | Pojazdy po północy | Między 0:00 a 1:00 **przypomnienie** o zwolnieniu miejsca, a o 1:00 **wymuszone zwolnienie** (odholowanie). |
 
 ## 1. Godziny działania parkingu
@@ -36,7 +37,8 @@ README: miejsca parkingowe można sprzątać w przerwie technicznej (1:00–5:00
 Stan obecny: `calling-external-cleaning-service-policy-job` uruchamia się o 13:00.
 
 Do zrobienia:
-- Przestawić harmonogram wzywania serwisu sprzątającego na okno przerwy technicznej.
+- Przestawić cron `calling-external-cleaning-service-policy-job` z `0 0 13 * * ?` na `0 30 1 * * ?`
+  (1:30).
 - Rozważyć regułę domenową, która nie pozwala wezwać sprzątania poza przerwą (dziś można to
   zrobić przez `/local/call-cleaning` o dowolnej porze).
 
