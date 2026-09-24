@@ -12,6 +12,7 @@
 | Próg brudnego miejsca | Miejsce jest brudne po **2 zwolnieniach**, więc 10 brudnych miejsc to ok. 20 zwolnień. |
 | JPA | **Usunąć** JPA z README i z `pom.xml`. Jedyną warstwą zapisu zostaje JOOQ. |
 | Spock | Przepisać **wszystkie** testy na Spocka (akceptacyjne i integracyjne) i dodać testy jednostkowe. |
+| Pojazdy po północy | Między 0:00 a 1:00 **przypomnienie** o zwolnieniu miejsca, a o 1:00 **wymuszone zwolnienie** (odholowanie). |
 
 ## 1. Godziny działania parkingu
 
@@ -24,8 +25,8 @@ Do zrobienia:
 - Wprowadzić do domeny pojęcie godzin otwarcia i przerwy technicznej.
 - Odrzucać zajmowanie miejsc (także z rezerwacją i bez konta) poza dozwolonymi godzinami.
 - Wymusić koniec zajmowania o północy (24:00).
-- Ostatnią godzinę (do 1:00) przeznaczyć na przypomnienia o zwolnieniu miejsca i odholowanie,
-  np. wymuszone zwolnienie pozostałych zajęć.
+- Między 0:00 a 1:00 wysyłać przypomnienia o zwolnieniu miejsca.
+- O 1:00 wymuszać zwolnienie wszystkich pozostałych zajęć (odholowanie).
 - W README poprawić „until 12pm” na „until 12am (midnight)”.
 
 ## 2. Sprzątanie w przerwie technicznej
