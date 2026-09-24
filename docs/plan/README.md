@@ -39,6 +39,11 @@ Stan obecny: `calling-external-cleaning-service-policy-job` uruchamia się o 13:
 Do zrobienia:
 - Przestawić cron `calling-external-cleaning-service-policy-job` z `0 0 13 * * ?` na `0 30 1 * * ?`
   (1:30).
+- W README, w sekcji *Cleaning parking spots*, dopisać godzinę i uzasadnienie:
+  ```
+  - External cleaning service is called at 1:30am
+  - [WARNING] It may be harder to find a cleaning company, because not every company is willing to work at night
+  ```
 - Rozważyć regułę domenową, która nie pozwala wezwać sprzątania poza przerwą (dziś można to
   zrobić przez `/local/call-cleaning` o dowolnej porze).
 

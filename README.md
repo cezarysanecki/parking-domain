@@ -163,8 +163,6 @@ vehicles to occupy a single parking spot. Further requirements are outlined belo
 ### Cleaning parking spots
 
 - Parking spots can be cleaned during technical break
-    - External cleaning service is called at 1:30am
-    - [WARNING] It may be harder to find a cleaning company, because not every company is willing to work at night
 - Cleaning service is called when 10 parking spots are considered dirty
     - It means 20 releases
 
