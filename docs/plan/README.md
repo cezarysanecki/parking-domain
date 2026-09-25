@@ -110,8 +110,8 @@ Do zrobienia:
 - Usunąć JPA z listy technologii w README.
 
 Zrobione: JPA usunięte, jedyną warstwą zapisu jest JOOQ. Not-found rzuca własny wyjątek
-`commons.EntityNotFound`, a transakcjami w profilu domyślnym zarządza `JdbcTransactionManager`
-(pilnuje tego `TransactionsIntegrationSpec`).
+`commons.EntityNotFound`, a transakcjami w profilu domyślnym zarządza `JdbcTransactionManager`.
+To, że zapisy JOOQ należą do transakcji fasady, sprawdza `ReleasingParkingSpotIsAtomicIntegrationSpec`.
 
 ## Do zrobienia później (follow-upy)
 
