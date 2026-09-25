@@ -6,8 +6,8 @@ import pl.cezarysanecki.parkingdomain.parking.api.OccupantId
 import pl.cezarysanecki.parkingdomain.requesting.RequestingFacade
 import pl.cezarysanecki.parkingdomain.requesting.api.RequesterId
 import pl.cezarysanecki.parkingdomain.reservation.usecase.ActivatingReservationsUseCase
-import pl.cezarysanecki.parkingdomain.shared.SpotUnits
 import pl.cezarysanecki.parkingdomain.shared.TimeSlot
+import pl.cezarysanecki.parkingdomain.shared.VehicleType
 
 class CannotOccupyReservedParkingSpotAcceptanceSpec extends BaseAcceptanceSpec {
 
@@ -27,14 +27,14 @@ class CannotOccupyReservedParkingSpotAcceptanceSpec extends BaseAcceptanceSpec {
 
     when:
       requestingFacade.createForAll(timeSlot)
-      requestingFacade.request(new RequesterId(firstClientId.value()), parkingSpotId, timeSlot, new SpotUnits(4)).orElseThrow()
+      requestingFacade.request(new RequesterId(firstClientId.value()), parkingSpotId, timeSlot, VehicleType.CAR).orElseThrow()
       requestingFacade.makeValidFor(CURRENT_DATE)
     and:
       dateProvider.passHours(9)
       dateProvider.passMinutes(1)
       activatingReservationsUseCase.run()
     and:
-      def result = parkingFacade.occupy(new OccupantId(secondClientId.value()), parkingSpotId, new SpotUnits(4))
+      def result = parkingFacade.occupy(new OccupantId(secondClientId.value()), parkingSpotId, VehicleType.CAR)
 
     then:
       result.isEmpty()

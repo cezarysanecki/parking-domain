@@ -50,11 +50,11 @@ class InMemoryOccupationRepository implements OccupationRepository {
         ));
   }
 
-  static Optional<OccupationEntity> findFor(ParkingSpotId parkingSpotId) {
+  static List<OccupationEntity> findFor(ParkingSpotId parkingSpotId) {
     return DATABASE.values()
         .stream()
         .filter(entity -> entity.parkingSpotId.equals(parkingSpotId))
-        .findFirst();
+        .toList();
   }
 
   static List<OccupationEntity> findFor(OccupantId occupantId) {
@@ -90,7 +90,7 @@ class InMemoryParkingRepository implements ParkingRepository {
   }
 
   private static ParkingSpot toDomain(ParkingSpotEntity entity) {
-    Optional<OccupationEntity> occupations = InMemoryOccupationRepository.findFor(entity.parkingSpotId);
+    List<OccupationEntity> occupations = InMemoryOccupationRepository.findFor(entity.parkingSpotId);
     List<ReservedOccupationEntity> reservations = InMemoryReservedOccupationRepository.findFor(entity.parkingSpotId);
     return new ParkingSpot(
         entity.parkingSpotId,

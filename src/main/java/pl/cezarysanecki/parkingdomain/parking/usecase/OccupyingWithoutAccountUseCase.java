@@ -9,7 +9,7 @@ import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.ParkingFacade;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupantId;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupationId;
-import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
+import pl.cezarysanecki.parkingdomain.shared.VehicleType;
 
 import java.util.Optional;
 
@@ -23,13 +23,13 @@ public class OccupyingWithoutAccountUseCase {
   public Optional<OccupationId> run(
       PhoneNumber phoneNumber,
       ParkingSpotId parkingSpotId,
-      SpotUnits spotUnits
+      VehicleType vehicleType
   ) {
     return clientFacade.registerClient(ClientType.INDIVIDUAL, phoneNumber)
         .map(clientId -> parkingFacade.occupy(
             new OccupantId(clientId.value()),
             parkingSpotId,
-            spotUnits))
+            vehicleType))
         .flatMap(occupationId -> occupationId);
   }
 

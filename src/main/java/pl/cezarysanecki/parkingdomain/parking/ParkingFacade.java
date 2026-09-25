@@ -12,6 +12,7 @@ import pl.cezarysanecki.parkingdomain.parking.api.ParkingSpotReleased;
 import pl.cezarysanecki.parkingdomain.parking.api.ReleasedOccupation;
 import pl.cezarysanecki.parkingdomain.reservation.api.ReservationId;
 import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
+import pl.cezarysanecki.parkingdomain.shared.VehicleType;
 
 import java.util.Optional;
 
@@ -28,9 +29,10 @@ public class ParkingFacade {
   public Optional<OccupationId> occupy(
       OccupantId occupantId,
       ParkingSpotId parkingSpotId,
-      SpotUnits spotUnits
+      VehicleType vehicleType
   ) {
-    log.debug("occupying parking spot with id {} by {} units", parkingSpotId, spotUnits);
+    SpotUnits spotUnits = vehicleType.spotUnits();
+    log.debug("occupying parking spot with id {} by {} ({} units)", parkingSpotId, vehicleType, spotUnits);
     ParkingSpot parkingSpot = parkingRepository.loadBy(parkingSpotId);
     Occupant occupant = occupantRepository.findBy(occupantId);
 

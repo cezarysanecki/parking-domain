@@ -10,8 +10,8 @@ import pl.cezarysanecki.parkingdomain.requesting.api.RequestId
 import pl.cezarysanecki.parkingdomain.requesting.api.RequesterId
 import pl.cezarysanecki.parkingdomain.reservation.api.ReservationId
 import pl.cezarysanecki.parkingdomain.reservation.usecase.ActivatingReservationsUseCase
-import pl.cezarysanecki.parkingdomain.shared.SpotUnits
 import pl.cezarysanecki.parkingdomain.shared.TimeSlot
+import pl.cezarysanecki.parkingdomain.shared.VehicleType
 
 class UsingReservationToParkAcceptanceSpec extends BaseAcceptanceSpec {
 
@@ -61,7 +61,7 @@ class UsingReservationToParkAcceptanceSpec extends BaseAcceptanceSpec {
   private RequestId requestAndActivateReservation(UUID requesterId, ParkingSpotId parkingSpotId) {
     def timeSlot = TimeSlot.create(CURRENT_DATE, 10, 15)
     requestingFacade.createForAll(timeSlot)
-    def request = requestingFacade.request(new RequesterId(requesterId), parkingSpotId, timeSlot, new SpotUnits(4)).orElseThrow()
+    def request = requestingFacade.request(new RequesterId(requesterId), parkingSpotId, timeSlot, VehicleType.CAR).orElseThrow()
     requestingFacade.makeValidFor(CURRENT_DATE)
     dateProvider.passHours(9)
     dateProvider.passMinutes(1)

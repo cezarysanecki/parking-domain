@@ -7,7 +7,7 @@ import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotCapa
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotCategory
 import pl.cezarysanecki.parkingdomain.parking.ParkingFacade
 import pl.cezarysanecki.parkingdomain.parking.api.OccupantId
-import pl.cezarysanecki.parkingdomain.shared.SpotUnits
+import pl.cezarysanecki.parkingdomain.shared.VehicleType
 
 class CallingExternalCleaningAcceptanceSpec extends BaseAcceptanceSpec {
 
@@ -24,7 +24,7 @@ class CallingExternalCleaningAcceptanceSpec extends BaseAcceptanceSpec {
       10.times {
         def parkingSpotId = addParkingSpot(ParkingSpotCapacity.defaultCapacity(), ParkingSpotCategory.Silver)
         20.times {
-          def occupationId = parkingFacade.occupy(new OccupantId(clientId.value()), parkingSpotId, new SpotUnits(4)).orElseThrow()
+          def occupationId = parkingFacade.occupy(new OccupantId(clientId.value()), parkingSpotId, VehicleType.CAR).orElseThrow()
           parkingFacade.release(occupationId)
         }
       }

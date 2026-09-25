@@ -78,6 +78,11 @@ Do zrobienia:
 - Wprowadzić typ pojazdu, z którego wynika liczba jednostek.
 - Przejść w API i zgłoszeniach z surowych jednostek na typ pojazdu.
 
+Zrobione: `shared.VehicleType` (`CAR` = 4, `MOTORCYCLE` = 2, `SCOOTER` = 1). Fasady, use case
+zajmowania bez konta i HTTP API (`vehicleType` zamiast `spotUnits`) przyjmują typ pojazdu, a model
+i schemat zostają na jednostkach. Przy okazji poprawiony błąd profilu `local`: zajęta przestrzeń
+miejsca liczyła się tylko z jednego zajęcia, przez co kombinacje z README dało się przepełnić.
+
 ## 6. Testy
 
 README: testy jednostkowe i integracyjne, pisane w **Spocku**, z Testcontainers.
@@ -122,6 +127,9 @@ Zrobione: JPA usunięte, jedyną warstwą zapisu jest JOOQ. Not-found rzuca wła
 - `InMemoryCleaningRepository` korzysta ze statycznej `InMemoryRepositories.CLEANING_DATABASE`
   współdzielonej z kontekstem akceptacyjnym; rozważyć lokalną mapę (zmiana w `src/main`; naturalny
   moment: zadania 2/3 o sprzątaniu).
+- `requesting/_InMemory.toDomain` sumuje **wszystkie** zgłoszenia dla miejsca bez względu na slot
+  czasowy, więc w profilu `local` zgłoszenia z jednego slotu zmniejszają pojemność innego.
+  Znalezione przy punkcie 5, poza jego zakresem.
 
 ## Proponowana kolejność
 

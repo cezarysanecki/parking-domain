@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import pl.cezarysanecki.parkingdomain.management.client.api.ClientType
 import pl.cezarysanecki.parkingdomain.requesting.RequestingFacade
 import pl.cezarysanecki.parkingdomain.requesting.api.RequesterId
-import pl.cezarysanecki.parkingdomain.shared.SpotUnits
 import pl.cezarysanecki.parkingdomain.shared.TimeSlot
+import pl.cezarysanecki.parkingdomain.shared.VehicleType
 
 class RequestingParkingSpotAcceptanceSpec extends BaseAcceptanceSpec {
 
@@ -22,8 +22,8 @@ class RequestingParkingSpotAcceptanceSpec extends BaseAcceptanceSpec {
 
     when:
       requestingFacade.createForAll(timeSlot)
-      requestingFacade.request(new RequesterId(firstClientId.value()), parkingSpotId, timeSlot, new SpotUnits(4))
-      def result = requestingFacade.request(new RequesterId(secondClientId.value()), parkingSpotId, timeSlot, new SpotUnits(4))
+      requestingFacade.request(new RequesterId(firstClientId.value()), parkingSpotId, timeSlot, VehicleType.CAR)
+      def result = requestingFacade.request(new RequesterId(secondClientId.value()), parkingSpotId, timeSlot, VehicleType.CAR)
 
     then:
       result.isEmpty()
@@ -37,9 +37,9 @@ class RequestingParkingSpotAcceptanceSpec extends BaseAcceptanceSpec {
 
     when:
       requestingFacade.createForAll(timeSlot)
-      def request = requestingFacade.request(new RequesterId(firstClientId.value()), parkingSpotId, timeSlot, new SpotUnits(4)).orElseThrow()
+      def request = requestingFacade.request(new RequesterId(firstClientId.value()), parkingSpotId, timeSlot, VehicleType.CAR).orElseThrow()
       requestingFacade.cancel(request)
-      def result = requestingFacade.request(new RequesterId(secondClientId.value()), parkingSpotId, timeSlot, new SpotUnits(4))
+      def result = requestingFacade.request(new RequesterId(secondClientId.value()), parkingSpotId, timeSlot, VehicleType.CAR)
 
     then:
       result.isPresent()
@@ -53,8 +53,8 @@ class RequestingParkingSpotAcceptanceSpec extends BaseAcceptanceSpec {
 
     when:
       requestingFacade.createForAll(timeSlot)
-      requestingFacade.request(new RequesterId(clientId.value()), firstParkingSpotId, timeSlot, new SpotUnits(4))
-      def result = requestingFacade.request(new RequesterId(clientId.value()), secondParkingSpotId, timeSlot, new SpotUnits(4))
+      requestingFacade.request(new RequesterId(clientId.value()), firstParkingSpotId, timeSlot, VehicleType.CAR)
+      def result = requestingFacade.request(new RequesterId(clientId.value()), secondParkingSpotId, timeSlot, VehicleType.CAR)
 
     then:
       result.isPresent() == secondRequestAccepted
