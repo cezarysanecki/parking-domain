@@ -10,6 +10,6 @@ interface CleaningRepository {
 
   void resetAll();
 
-  List<ParkingSpotId> getAllRecordsWithCounterAbove(int limit);
+  List<ParkingSpotId> getAllRecordsWithCounterAtLeast(int threshold);
 
 }

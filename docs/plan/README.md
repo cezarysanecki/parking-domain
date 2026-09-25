@@ -9,7 +9,7 @@
 | Temat | Decyzja |
 |---|---|
 | „12pm” w README | Chodzi o **północ (24:00)**. W README trzeba poprawić zapis na „12am / midnight”. |
-| Próg brudnego miejsca | Miejsce jest brudne po **2 zwolnieniach**, więc 10 brudnych miejsc to ok. 20 zwolnień. |
+| Próg brudnego miejsca | Miejsce jest brudne po **20 zwolnieniach tego miejsca** (zostaje jak w kodzie). Sprzątanie wzywamy przy 10 brudnych miejscach. |
 | JPA | **Usunąć** JPA z README i z `pom.xml`. Jedyną warstwą zapisu zostaje JOOQ. |
 | Spock | Przepisać **wszystkie** testy na Spocka (akceptacyjne i integracyjne) i dodać testy jednostkowe. |
 | Godzina sprzątania | Serwis sprzątający wzywamy o **1:30**, w przerwie technicznej. Uzasadnienie jest w README. |
@@ -52,16 +52,23 @@ Do zrobienia:
 - Rozważyć regułę domenową, która nie pozwala wezwać sprzątania poza przerwą (dziś można to
   zrobić przez `/local/call-cleaning` o dowolnej porze).
 
+Zrobione: job sprzątania rusza o 1:30, a `CleaningFacade.callCleaning()` zwraca `Rejection` poza
+przerwą techniczną [1:00, 5:00), więc sprzątania nie da się wezwać w godzinach pracy parkingu (także
+przez `/local/call-cleaning`). Godziny przerwy pochodzą z `ParkingOpeningHours.isTechnicalBreak`.
+
 ## 3. Próg „brudnego” miejsca
 
 README: serwis sprzątający jest wzywany, gdy 10 miejsc jest brudnych, *„It means 20 releases”*.
 
-Stan obecny: miejsce jest brudne dopiero po 20 zwolnieniach **tego jednego miejsca**, więc
-sprzątanie wymaga co najmniej 200 zwolnień.
+Decyzja: miejsce jest brudne po **20 zwolnieniach tego miejsca**, czyli tak jak było w kodzie
+(`number-of-drives-away-to-consider-parking-spot-dirty: 20`). Sprzątanie wzywamy przy 10 brudnych
+miejscach.
 
 Do zrobienia:
-- Zmienić `number-of-drives-away-to-consider-parking-spot-dirty` z 20 na 2.
-- Poprawić testy akceptacyjne sprzątania, żeby sprawdzały tę regułę.
+- Zostawić próg 20 i pokryć go testami na granicy (19 → czyste, 20 → brudne) w obu implementacjach.
+
+Zrobione: miejsce jest brudne po 20 zwolnieniach (`>=`, w obu implementacjach). Próg pilnują testy
+jednostkowe, akceptacyjne i `DirtyParkingSpotIntegrationSpec` (Postgres/JOOQ).
 
 ## 4. Opłaty
 
@@ -115,8 +122,8 @@ Do zrobienia:
 - Usunąć JPA z listy technologii w README.
 
 Zrobione: JPA usunięte, jedyną warstwą zapisu jest JOOQ. Not-found rzuca własny wyjątek
-`commons.EntityNotFound`, a transakcjami w profilu domyślnym zarządza `JdbcTransactionManager`
-(pilnuje tego `TransactionsIntegrationSpec`).
+`commons.EntityNotFound`, a transakcjami w profilu domyślnym zarządza `JdbcTransactionManager`.
+To, że zapisy JOOQ należą do transakcji fasady, sprawdza `ReleasingParkingSpotIsAtomicIntegrationSpec`.
 
 ## Do zrobienia później (follow-upy)
 
