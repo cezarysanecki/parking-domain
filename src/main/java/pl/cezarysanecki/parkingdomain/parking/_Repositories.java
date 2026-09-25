@@ -211,4 +211,12 @@ class ProdOccupationRepository implements OccupationRepository {
         ));
   }
 
+  @Override
+  public List<OccupationId> findAll() {
+    return create
+        .select(OCCUPATION.ID)
+        .from(OCCUPATION)
+        .fetch(record -> new OccupationId(record.value1()));
+  }
+
 }

@@ -37,4 +37,26 @@ class OccupationReleaseNotificationInfrastructureConfig {
         .build();
   }
 
+  @Bean
+  JobDetail remindingAboutParkingClosingJob() {
+    return JobBuilder.newJob()
+        .storeDurably()
+        .ofType(RemindingAboutParkingClosingJob.class)
+        .withIdentity("reminding-about-parking-closing-job")
+        .build();
+  }
+
+  @Bean
+  Trigger remindingAboutParkingClosingJobTrigger(
+      JobDetail remindingAboutParkingClosingJob,
+      @Value("${job.reminding-about-parking-closing-job.cron-expression}") String cronExpression
+  ) {
+    return TriggerBuilder.newTrigger()
+        .withIdentity("reminding-about-parking-closing-job-trigger")
+        .forJob(remindingAboutParkingClosingJob)
+        .withSchedule(cronSchedule(cronExpression))
+        .startNow()
+        .build();
+  }
+
 }

@@ -3,6 +3,7 @@ package pl.cezarysanecki.parkingdomain.parking;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
+import pl.cezarysanecki.parkingdomain.commons.date.DateProvider;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupantId;
@@ -11,8 +12,10 @@ import pl.cezarysanecki.parkingdomain.parking.api.ParkingSpotOccupied;
 import pl.cezarysanecki.parkingdomain.parking.api.ParkingSpotReleased;
 import pl.cezarysanecki.parkingdomain.parking.api.ReleasedOccupation;
 import pl.cezarysanecki.parkingdomain.reservation.api.ReservationId;
+import pl.cezarysanecki.parkingdomain.shared.ParkingOpeningHours;
 import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -23,6 +26,7 @@ public class ParkingFacade {
   private final OccupationRepository occupationRepository;
   private final OccupantRepository occupantRepository;
   private final EventPublisher eventPublisher;
+  private final DateProvider dateProvider;
 
   @Transactional
   public Optional<OccupationId> occupy(
@@ -31,6 +35,10 @@ public class ParkingFacade {
       SpotUnits spotUnits
   ) {
     log.debug("occupying parking spot with id {} by {} units", parkingSpotId, spotUnits);
+    if (!canOccupyNow()) {
+      log.debug("cannot occupy parking spot with id {} outside occupying hours", parkingSpotId);
+      return Optional.empty();
+    }
     ParkingSpot parkingSpot = parkingRepository.loadBy(parkingSpotId);
     Occupant occupant = occupantRepository.findBy(occupantId);
 
@@ -56,6 +64,10 @@ public class ParkingFacade {
       ReservationId reservationId
   ) {
     log.debug("occupying parking spot with id {} with reservation {}", parkingSpotId, reservationId);
+    if (!canOccupyNow()) {
+      log.debug("cannot occupy parking spot with id {} outside occupying hours", parkingSpotId);
+      return Optional.empty();
+    }
     ParkingSpot parkingSpot = parkingRepository.loadBy(parkingSpotId);
     Occupant occupant = occupantRepository.findBy(occupantId);
 
@@ -97,6 +109,14 @@ public class ParkingFacade {
         releasedOccupation.spotUnits()
     ));
     return Optional.of(releasedOccupation);
+  }
+
+  public boolean canOccupyNow() {
+    return ParkingOpeningHours.canOccupyAt(dateProvider.now());
+  }
+
+  public List<OccupationId> findAllOccupations() {
+    return occupationRepository.findAll();
   }
 
 }

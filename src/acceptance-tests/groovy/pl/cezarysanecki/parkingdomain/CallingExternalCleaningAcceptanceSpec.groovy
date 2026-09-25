@@ -16,6 +16,10 @@ class CallingExternalCleaningAcceptanceSpec extends BaseAcceptanceSpec {
   @Autowired
   CallingCleaningWhenSpotsDirtyUseCase callingCleaningWhenSpotsDirtyUseCase
 
+  def setup() {
+    currentTimeIs(DURING_OCCUPYING_HOURS)
+  }
+
   def "call cleaning if there is required number of dirty parking spots"() {
     given:
       def clientId = registerClient()

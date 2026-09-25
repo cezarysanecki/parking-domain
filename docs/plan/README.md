@@ -30,6 +30,11 @@ Do zrobienia:
 - O 1:00 wymuszać zwolnienie wszystkich pozostałych zajęć (odholowanie).
 - W README poprawić „until 12pm” na „until 12am (midnight)”.
 
+Zrobione: godziny są stałymi w `shared.ParkingOpeningHours`. Zajmować (także bez konta i z
+rezerwacją) można tylko 5:00–24:00, między 0:00 a 1:00 job wysyła przypomnienia o zwolnieniu
+miejsca, a o 1:00 job zwalnia siłą pozostałe zajęcia (`Reason.PARKING_CLOSED`, bez opłaty).
+README mówi teraz „until 12am (midnight)”.
+
 ## 2. Sprzątanie w przerwie technicznej
 
 README: miejsca parkingowe można sprzątać w przerwie technicznej (1:00–5:00).

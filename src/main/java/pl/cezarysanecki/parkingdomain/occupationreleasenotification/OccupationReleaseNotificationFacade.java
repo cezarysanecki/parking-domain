@@ -44,4 +44,20 @@ public class OccupationReleaseNotificationFacade {
     return occupantsToNotify.size();
   }
 
+  @Transactional
+  public int remindAboutClosing() {
+    List<OccupantToRemindAboutClosing> occupantsToRemind = occupationReleaseNotificationRepository.findAllOccupants();
+
+    log.debug("reminding {} occupants about closing parking", occupantsToRemind.size());
+
+    occupantsToRemind.forEach(
+        occupantToRemind -> notificationFacade.notify(
+            new ClientId(occupantToRemind.occupantId().value()),
+            "please release parking spot with id " + occupantToRemind.parkingSpotId() + " because parking is being closed, vehicles left after closing will be towed"
+        )
+    );
+
+    return occupantsToRemind.size();
+  }
+
 }

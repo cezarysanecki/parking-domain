@@ -14,6 +14,10 @@ class OccupyingParkingSpotAcceptanceSpec extends BaseAcceptanceSpec {
   @Autowired
   OccupyingWithoutAccountUseCase occupyingWithoutAccountUseCase
 
+  def setup() {
+    currentTimeIs(DURING_OCCUPYING_HOURS)
+  }
+
   def "cannot occupy parking spot if capacity is exceeded"() {
     given:
       def parkingSpotId = addParkingSpot()

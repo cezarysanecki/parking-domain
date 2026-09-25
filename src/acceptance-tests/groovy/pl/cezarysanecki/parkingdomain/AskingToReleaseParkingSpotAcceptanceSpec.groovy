@@ -29,14 +29,14 @@ class AskingToReleaseParkingSpotAcceptanceSpec extends BaseAcceptanceSpec {
       def timeSlot = TimeSlot.create(CURRENT_DATE, 10, 15)
 
     when:
-      parkingFacade.occupy(new OccupantId(firstClientId.value()), parkingSpotId, new SpotUnits(4))
-    and:
       requestingFacade.createForAll(timeSlot)
       requestingFacade.request(new RequesterId(secondClientId.value()), parkingSpotId, timeSlot, new SpotUnits(4)).orElseThrow()
       requestingFacade.makeValidFor(CURRENT_DATE)
     and:
-      dateProvider.passHours(9)
-      dateProvider.passMinutes(1)
+      currentTimeIs(8)
+      parkingFacade.occupy(new OccupantId(firstClientId.value()), parkingSpotId, new SpotUnits(4)).orElseThrow()
+    and:
+      currentTimeIs(9, 1)
       activatingReservationsUseCase.run()
     and:
       dateProvider.passMinutes(30)
