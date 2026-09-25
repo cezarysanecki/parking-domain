@@ -1,6 +1,6 @@
 package pl.cezarysanecki.parkingdomain.requesting;
 
-import jakarta.persistence.EntityNotFoundException;
+import pl.cezarysanecki.parkingdomain.commons.EntityNotFound;
 import pl.cezarysanecki.parkingdomain.commons.aggregates.Version;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotCapacity;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
@@ -85,7 +85,7 @@ class InMemoryRequestableParkingSpotRepository implements RequestableParkingSpot
   static RequestableParkingSpotEntity findBy(ParkingSpotId parkingSpotId, TimeSlot timeSlot) {
     RequestableParkingSpotEntity entity = DATABASE.get(new FreeTimeSlotKey(parkingSpotId, timeSlot));
     if (entity == null) {
-      throw new EntityNotFoundException("cannot find requestable parking spot with id " + parkingSpotId + " for time slot " + timeSlot);
+      throw new EntityNotFound("cannot find requestable parking spot with id " + parkingSpotId + " for time slot " + timeSlot);
     }
     return entity;
   }
@@ -126,7 +126,7 @@ class InMemoryRequesterRepository implements RequesterRepository {
   static RequesterEntity findRequesterBy(RequesterId requesterId) {
     RequesterEntity entity = DATABASE.get(requesterId);
     if (entity == null) {
-      throw new EntityNotFoundException("No requester found with id " + requesterId);
+      throw new EntityNotFound("No requester found with id " + requesterId);
     }
     return entity;
   }

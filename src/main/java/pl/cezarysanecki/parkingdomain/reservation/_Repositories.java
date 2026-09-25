@@ -1,10 +1,10 @@
 package pl.cezarysanecki.parkingdomain.reservation;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
+import pl.cezarysanecki.parkingdomain.commons.EntityNotFound;
 import pl.cezarysanecki.parkingdomain.jooq.default_schema.tables.records.ReservationRecord;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.reservation.api.ReservationId;
@@ -64,7 +64,7 @@ class ProdReservationRepository implements ReservationRepository {
         .and(RESERVATION.STATUS.eq(Status.ACTIVE.name()))
         .fetchOne();
     if (reservationRecord == null) {
-      throw new EntityNotFoundException("cannot find reservation with id " + reservationId);
+      throw new EntityNotFound("cannot find reservation with id " + reservationId);
     }
     return new Reservation(
         new ReservationId(reservationRecord.getId()),

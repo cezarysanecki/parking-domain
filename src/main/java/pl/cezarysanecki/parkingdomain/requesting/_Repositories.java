@@ -1,10 +1,10 @@
 package pl.cezarysanecki.parkingdomain.requesting;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
+import pl.cezarysanecki.parkingdomain.commons.EntityNotFound;
 import pl.cezarysanecki.parkingdomain.commons.aggregates.AggregateRootIsStale;
 import pl.cezarysanecki.parkingdomain.commons.aggregates.Version;
 import pl.cezarysanecki.parkingdomain.jooq.default_schema.tables.records.RequestRecord;
@@ -89,7 +89,7 @@ class ProdRequestableParkingSpotRepository implements RequestableParkingSpotRepo
         .forUpdate()
         .fetchOne();
     if (requestableParkingSpotRecord == null) {
-      throw new EntityNotFoundException("cannot find requestable parking spot for id " + parkingSpotId.value() + " and " + timeSlot);
+      throw new EntityNotFound("cannot find requestable parking spot for id " + parkingSpotId.value() + " and " + timeSlot);
     }
 
     Integer occupiedSpace = create
@@ -168,7 +168,7 @@ class ProdRequesterRepository implements RequesterRepository {
         .forUpdate()
         .fetchOne();
     if (requesterRecord == null) {
-      throw new EntityNotFoundException("cannot find requester with id " + requesterId);
+      throw new EntityNotFound("cannot find requester with id " + requesterId);
     }
 
     List<RequestId> requests = create

@@ -1,7 +1,7 @@
 package pl.cezarysanecki.parkingdomain.reservation;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import pl.cezarysanecki.parkingdomain.commons.EntityNotFound;
 import pl.cezarysanecki.parkingdomain.reservation.api.ReservationId;
 
 import java.time.Instant;
@@ -39,7 +39,7 @@ class InMemoryReservationRepository implements ReservationRepository {
     )
         .findFirst()
         .map(InMemoryReservationRepository::toDomain)
-        .orElseThrow(() -> new EntityNotFoundException("cannot find reservation with id " + reservationId));
+        .orElseThrow(() -> new EntityNotFound("cannot find reservation with id " + reservationId));
   }
 
   @Override
@@ -71,7 +71,7 @@ class InMemoryReservationRepository implements ReservationRepository {
         .ifPresentOrElse(
             reservationEntity -> reservationEntity.status = ReservationEntity.Status.USED,
             () -> {
-              throw new EntityNotFoundException("cannot find reservation with id " + reservation.reservationId());
+              throw new EntityNotFound("cannot find reservation with id " + reservation.reservationId());
             }
         );
   }

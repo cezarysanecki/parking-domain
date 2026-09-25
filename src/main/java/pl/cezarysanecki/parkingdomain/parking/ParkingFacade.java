@@ -1,8 +1,8 @@
 package pl.cezarysanecki.parkingdomain.parking;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupantId;

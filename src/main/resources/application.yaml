@@ -3,9 +3,6 @@ spring:
     url: jdbc:postgresql://localhost:5432/parkingdomain
     username: postgres
     password: root
-  jpa:
-    hibernate:
-      ddl-auto: none
   liquibase:
     change-log: db/changelog/db.changelog-master.xml
   jooq:

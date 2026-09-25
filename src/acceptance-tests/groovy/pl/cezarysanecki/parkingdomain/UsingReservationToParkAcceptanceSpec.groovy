@@ -1,6 +1,7 @@
 package pl.cezarysanecki.parkingdomain
 
 import org.springframework.beans.factory.annotation.Autowired
+import pl.cezarysanecki.parkingdomain.commons.EntityNotFound
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.parking.api.OccupantId
 import pl.cezarysanecki.parkingdomain.parking.usecase.OccupyUsingReservationUseCase
@@ -53,8 +54,8 @@ class UsingReservationToParkAcceptanceSpec extends BaseAcceptanceSpec {
     when: "requester tries to use the same reservation again"
       occupyUsingReservationUseCase.run(new OccupantId(firstClientId.value()), new ReservationId(request.value()))
 
-    then: "generic Exception on purpose - concrete type (jakarta EntityNotFoundException) will change with JPA removal"
-      thrown(Exception)
+    then:
+      thrown(EntityNotFound)
   }
 
   private RequestId requestAndActivateReservation(UUID requesterId, ParkingSpotId parkingSpotId) {
