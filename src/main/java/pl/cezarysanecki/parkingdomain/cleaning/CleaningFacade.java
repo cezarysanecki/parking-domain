@@ -40,9 +40,9 @@ public class CleaningFacade {
   }
 
   public List<ParkingSpotId> getDirtyParkingSpots() {
-    List<ParkingSpotId> allRecordsWithCounterAbove = cleaningRepository.getAllRecordsWithCounterAbove(numberOfDrivesAwayToConsiderParkingSpotDirty);
-    log.debug("found {} dirty parking spots", allRecordsWithCounterAbove.size());
-    return allRecordsWithCounterAbove;
+    List<ParkingSpotId> dirtyParkingSpots = cleaningRepository.getAllRecordsWithCounterAtLeast(numberOfDrivesAwayToConsiderParkingSpotDirty);
+    log.debug("found {} dirty parking spots", dirtyParkingSpots.size());
+    return dirtyParkingSpots;
   }
 
   private static boolean isDuringTechnicalBreak(LocalTime time) {

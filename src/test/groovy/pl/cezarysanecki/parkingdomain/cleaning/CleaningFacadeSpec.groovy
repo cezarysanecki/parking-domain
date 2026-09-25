@@ -87,6 +87,18 @@ class CleaningFacadeSpec extends Specification {
     then:
       result == Result.Success
       cleaningFacade.getDirtyParkingSpots().isEmpty()
+
+    when:
+      19.times { cleaningRepository.increaseCounterFor(parkingSpotId) }
+
+    then:
+      cleaningFacade.getDirtyParkingSpots().isEmpty()
+
+    when:
+      cleaningRepository.increaseCounterFor(parkingSpotId)
+
+    then:
+      cleaningFacade.getDirtyParkingSpots() == [parkingSpotId]
   }
 
 }

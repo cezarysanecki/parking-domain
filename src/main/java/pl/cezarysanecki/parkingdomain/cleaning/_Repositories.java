@@ -34,10 +34,10 @@ class ProdCleaningRepository implements CleaningRepository {
   }
 
   @Override
-  public List<ParkingSpotId> getAllRecordsWithCounterAbove(int limit) {
+  public List<ParkingSpotId> getAllRecordsWithCounterAtLeast(int threshold) {
     return create.select(CLEANING.PARKING_SPOT)
         .from(CLEANING)
-        .where(CLEANING.COUNTER.greaterOrEqual(limit))
+        .where(CLEANING.COUNTER.greaterOrEqual(threshold))
         .fetch()
         .map(record -> new ParkingSpotId(record.get(CLEANING.PARKING_SPOT)))
         .stream().toList();
