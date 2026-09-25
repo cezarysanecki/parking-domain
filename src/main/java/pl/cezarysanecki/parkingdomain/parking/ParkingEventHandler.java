@@ -54,7 +54,7 @@ class ParkingEventHandler {
   @Transactional
   @EventListener
   public void handle(ReservationsRemoved event) {
-    parkingSpotReservationRepository.remove(event.reservations());
+    parkingSpotReservationRepository.remove(event.reservationIds());
   }
 
 }
