@@ -94,6 +94,9 @@ Do zrobienia:
   `src/acceptance-tests`).
 - Każdy punkt tego planu pokryć testami.
 
+Zrobione: testy są w Spocku (jednostkowe, akceptacyjne, integracyjne). Konwencje, których trzymają
+się kolejne punkty, są w [docs/testing.md](../testing.md).
+
 ## 7. JPA
 
 README: na liście technologii jest Spring Data JPA.
@@ -105,6 +108,16 @@ Do zrobienia:
 - Zastąpić `jakarta.persistence.EntityNotFoundException` własnym wyjątkiem.
 - Upewnić się, że transakcje nadal działają (menedżer transakcji dla JDBC/JOOQ).
 - Usunąć JPA z listy technologii w README.
+
+## Do zrobienia później (follow-upy)
+
+- `maven-resources-plugin` ma `outputDirectory` i `resources` ustawione na poziomie pluginu, więc
+  `testResources` kopiuje `src/main/resources` do `target/classes`, a `src/test/resources` nigdy
+  nie trafia na classpath testów. Trzeba przenieść konfigurację do execution `copy-resources`
+  (osobna zmiana, bo dotyczy budowania zasobów produkcyjnych).
+- `InMemoryCleaningRepository` korzysta ze statycznej `InMemoryRepositories.CLEANING_DATABASE`
+  współdzielonej z kontekstem akceptacyjnym; rozważyć lokalną mapę (zmiana w `src/main`; naturalny
+  moment: zadania 2/3 o sprzątaniu).
 
 ## Proponowana kolejność
 
