@@ -5,14 +5,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
-import pl.cezarysanecki.parkingdomain.parking.usecase.TowingVehiclesAfterClosingUseCase;
+import pl.cezarysanecki.parkingdomain.parking.usecase.CallingTowingServiceAfterClosingUseCase;
 
 @Slf4j
 @DisallowConcurrentExecution
 @RequiredArgsConstructor
-class TowingVehiclesAfterClosingJob implements Job {
+class CallingTowingServiceAfterClosingJob implements Job {
 
-  private final TowingVehiclesAfterClosingUseCase useCase;
+  private final CallingTowingServiceAfterClosingUseCase useCase;
 
   @Override
   public void execute(JobExecutionContext jobExecutionContext) {

@@ -16,22 +16,22 @@ import static org.quartz.CronScheduleBuilder.cronSchedule;
 class ParkingInfrastructureConfig {
 
   @Bean
-  JobDetail towingVehiclesAfterClosingJob() {
+  JobDetail callingTowingServiceAfterClosingJob() {
     return JobBuilder.newJob()
         .storeDurably()
-        .ofType(TowingVehiclesAfterClosingJob.class)
-        .withIdentity("towing-vehicles-after-closing-job")
+        .ofType(CallingTowingServiceAfterClosingJob.class)
+        .withIdentity("calling-towing-service-after-closing-job")
         .build();
   }
 
   @Bean
-  Trigger towingVehiclesAfterClosingJobTrigger(
-      JobDetail towingVehiclesAfterClosingJob,
-      @Value("${job.towing-vehicles-after-closing-job.cron-expression}") String cronExpression
+  Trigger callingTowingServiceAfterClosingJobTrigger(
+      JobDetail callingTowingServiceAfterClosingJob,
+      @Value("${job.calling-towing-service-after-closing-job.cron-expression}") String cronExpression
   ) {
     return TriggerBuilder.newTrigger()
-        .withIdentity("towing-vehicles-after-closing-job-trigger")
-        .forJob(towingVehiclesAfterClosingJob)
+        .withIdentity("calling-towing-service-after-closing-job-trigger")
+        .forJob(callingTowingServiceAfterClosingJob)
         .withSchedule(cronSchedule(cronExpression))
         .startNow()
         .build();

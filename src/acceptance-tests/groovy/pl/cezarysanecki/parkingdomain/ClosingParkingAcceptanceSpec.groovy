@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import pl.cezarysanecki.parkingdomain.occupationreleasenotification.usecase.RemindingAboutParkingClosingUseCase
 import pl.cezarysanecki.parkingdomain.parking.ParkingFacade
 import pl.cezarysanecki.parkingdomain.parking.api.OccupantId
-import pl.cezarysanecki.parkingdomain.parking.usecase.TowingVehiclesAfterClosingUseCase
+import pl.cezarysanecki.parkingdomain.parking.api.ParkingSpotForceReleased
+import pl.cezarysanecki.parkingdomain.parking.usecase.CallingTowingServiceAfterClosingUseCase
+import pl.cezarysanecki.parkingdomain.parking.usecase.RemoveOccupationByForceUseCase
 import pl.cezarysanecki.parkingdomain.shared.SpotUnits
 
 class ClosingParkingAcceptanceSpec extends BaseAcceptanceSpec {
@@ -14,7 +16,9 @@ class ClosingParkingAcceptanceSpec extends BaseAcceptanceSpec {
   @Autowired
   RemindingAboutParkingClosingUseCase remindingAboutParkingClosingUseCase
   @Autowired
-  TowingVehiclesAfterClosingUseCase towingVehiclesAfterClosingUseCase
+  CallingTowingServiceAfterClosingUseCase callingTowingServiceAfterClosingUseCase
+  @Autowired
+  RemoveOccupationByForceUseCase removeOccupationByForceUseCase
 
   def "occupants still on parking at #hour:#minute are reminded to release parking spot: #reminded"() {
     given:
@@ -42,7 +46,7 @@ class ClosingParkingAcceptanceSpec extends BaseAcceptanceSpec {
       25   | 0      || false
   }
 
-  def "vehicles left on parking at #hour:#minute are towed: #towed"() {
+  def "tow truck is called at #hour:#minute for vehicles left on parking: #called"() {
     given:
       def clientIds = [registerClient(), registerClient()]
     and:
@@ -53,30 +57,53 @@ class ClosingParkingAcceptanceSpec extends BaseAcceptanceSpec {
 
     when:
       currentTimeIs(hour, minute)
-      def result = towingVehiclesAfterClosingUseCase.run()
+      def result = callingTowingServiceAfterClosingUseCase.run()
 
     then:
-      result == (towed ? 2 : 0)
-      parkingFacade.findAllOccupations().size() == (towed ? 0 : 2)
+      result == (called ? 2 : 0)
+    and: "calling tow truck does not free parking spots"
+      parkingFacade.findAllOccupations().size() == 2
 
     where: // hour 24+ = next day
-      hour | minute || towed
+      hour | minute || called
       24   | 59     || false
       25   | 0      || true
       28   | 59     || true
       29   | 0      || false
   }
 
-  def "towed occupant can occupy parking spot again after opening"() {
+  def "parking spot is free only after tow truck confirms that vehicle was towed"() {
     given:
       def parkingSpotId = addParkingSpot()
       def clientId = registerClient()
     and:
       currentTimeIs(22)
-      parkingFacade.occupy(new OccupantId(clientId.value()), parkingSpotId, new SpotUnits(4)).orElseThrow()
+      def occupationId = parkingFacade.occupy(new OccupantId(clientId.value()), parkingSpotId, new SpotUnits(4)).orElseThrow()
     and:
       currentTimeIs(25)
-      towingVehiclesAfterClosingUseCase.run()
+      callingTowingServiceAfterClosingUseCase.run()
+
+    expect:
+      parkingFacade.findAllOccupations() == [occupationId]
+
+    when:
+      def result = removeOccupationByForceUseCase.run(occupationId, ParkingSpotForceReleased.Reason.VEHICLE_TOWED)
+
+    then:
+      result
+      parkingFacade.findAllOccupations().isEmpty()
+  }
+
+  def "occupant of towed vehicle can occupy parking spot again after opening"() {
+    given:
+      def parkingSpotId = addParkingSpot()
+      def clientId = registerClient()
+    and:
+      currentTimeIs(22)
+      def occupationId = parkingFacade.occupy(new OccupantId(clientId.value()), parkingSpotId, new SpotUnits(4)).orElseThrow()
+    and:
+      currentTimeIs(25)
+      removeOccupationByForceUseCase.run(occupationId, ParkingSpotForceReleased.Reason.VEHICLE_TOWED)
 
     when:
       currentTimeIs(29)

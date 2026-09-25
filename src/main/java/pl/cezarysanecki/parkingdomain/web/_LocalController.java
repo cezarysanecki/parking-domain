@@ -13,7 +13,7 @@ import pl.cezarysanecki.parkingdomain.cleaning.usecase.CallingCleaningWhenSpotsD
 import pl.cezarysanecki.parkingdomain.commons.Result;
 import pl.cezarysanecki.parkingdomain.occupationreleasenotification.usecase.NotifyingAboutReleasingOccupationUseCase;
 import pl.cezarysanecki.parkingdomain.occupationreleasenotification.usecase.RemindingAboutParkingClosingUseCase;
-import pl.cezarysanecki.parkingdomain.parking.usecase.TowingVehiclesAfterClosingUseCase;
+import pl.cezarysanecki.parkingdomain.parking.usecase.CallingTowingServiceAfterClosingUseCase;
 import pl.cezarysanecki.parkingdomain.requesting.RequestingFacade;
 import pl.cezarysanecki.parkingdomain.reservation.usecase.ActivatingReservationsUseCase;
 import pl.cezarysanecki.parkingdomain.reservation.usecase.RemovingNotUsedReservationsUseCase;
@@ -34,7 +34,7 @@ class _LocalController {
   private final RemovingNotUsedReservationsUseCase removingNotUsedReservationsUseCase;
   private final NotifyingAboutReleasingOccupationUseCase notifyingAboutReleasingOccupationUseCase;
   private final RemindingAboutParkingClosingUseCase remindingAboutParkingClosingUseCase;
-  private final TowingVehiclesAfterClosingUseCase towingVehiclesAfterClosingUseCase;
+  private final CallingTowingServiceAfterClosingUseCase callingTowingServiceAfterClosingUseCase;
   private final RequestingFacade requestingFacade;
 
   @PostMapping("/call-cleaning")
@@ -90,9 +90,9 @@ class _LocalController {
     return ResponseEntity.ok(remindingAboutParkingClosingUseCase.run());
   }
 
-  @PostMapping("/parking/tow-vehicles")
-  ResponseEntity<Integer> towVehiclesAfterClosing() {
-    return ResponseEntity.ok(towingVehiclesAfterClosingUseCase.run());
+  @PostMapping("/parking/call-towing")
+  ResponseEntity<Integer> callTowingAfterClosing() {
+    return ResponseEntity.ok(callingTowingServiceAfterClosingUseCase.run());
   }
 
 }

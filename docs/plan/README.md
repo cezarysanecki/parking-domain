@@ -13,7 +13,7 @@
 | JPA | **Usunąć** JPA z README i z `pom.xml`. Jedyną warstwą zapisu zostaje JOOQ. |
 | Spock | Przepisać **wszystkie** testy na Spocka (akceptacyjne i integracyjne) i dodać testy jednostkowe. |
 | Godzina sprzątania | Serwis sprzątający wzywamy o **1:30**, w przerwie technicznej. Uzasadnienie jest w README. |
-| Pojazdy po północy | Między 0:00 a 1:00 **przypomnienie** o zwolnieniu miejsca, a o 1:00 **wymuszone zwolnienie** (odholowanie). |
+| Pojazdy po północy | Między 0:00 a 1:00 **przypomnienie** o zwolnieniu miejsca. O 1:00 system **wzywa holownik**. Miejsce jest wolne dopiero, gdy holownik potwierdzi odholowanie auta, a klient dostaje wtedy powiadomienie, że auto zostało zabrane. |
 
 ## 1. Godziny działania parkingu
 
@@ -27,12 +27,14 @@ Do zrobienia:
 - Odrzucać zajmowanie miejsc (także z rezerwacją i bez konta) poza dozwolonymi godzinami.
 - Wymusić koniec zajmowania o północy (24:00).
 - Między 0:00 a 1:00 wysyłać przypomnienia o zwolnieniu miejsca.
-- O 1:00 wymuszać zwolnienie wszystkich pozostałych zajęć (odholowanie).
+- O 1:00 wezwać holownik do pozostałych aut; miejsce zwolnić dopiero po potwierdzeniu odholowania i powiadomić klienta.
 - W README poprawić „until 12pm” na „until 12am (midnight)”.
 
 Zrobione: godziny są stałymi w `shared.ParkingOpeningHours`. Zajmować (także bez konta i z
 rezerwacją) można tylko 5:00–24:00, między 0:00 a 1:00 job wysyła przypomnienia o zwolnieniu
-miejsca, a o 1:00 job zwalnia siłą pozostałe zajęcia (`Reason.PARKING_CLOSED`, bez opłaty).
+miejsca, a o 1:00 job wzywa holownik (`ExternalTowingService`) do aut, które zostały. Miejsce
+zwalnia się dopiero po potwierdzeniu holownika (`DELETE /parking/vehicle-towed`,
+`Reason.VEHICLE_TOWED`, bez opłaty), a klient dostaje powiadomienie, że auto zostało zabrane.
 README mówi teraz „until 12am (midnight)”.
 
 ## 2. Sprzątanie w przerwie technicznej

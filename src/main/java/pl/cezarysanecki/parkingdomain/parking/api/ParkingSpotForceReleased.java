@@ -14,7 +14,7 @@ public record ParkingSpotForceReleased(
 
   public enum Reason {
     NOT_RELEASED_PARKING_SPOT,
-    PARKING_CLOSED
+    VEHICLE_TOWED
   }
 
 }

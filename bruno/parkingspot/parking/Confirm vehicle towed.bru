@@ -1,0 +1,21 @@
+meta {
+  name: Confirm vehicle towed
+  type: http
+  seq: 8
+}
+
+delete {
+  url: {{baseUrl}}/parking/vehicle-towed
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "occupationId": "{{occupationId}}"
+  }
+}
+
+docs {
+  Tow truck confirms that the vehicle was towed. The parking spot becomes free and the occupant is notified.
+}
