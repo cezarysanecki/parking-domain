@@ -47,6 +47,10 @@ Do zrobienia:
 - Rozważyć regułę domenową, która nie pozwala wezwać sprzątania poza przerwą (dziś można to
   zrobić przez `/local/call-cleaning` o dowolnej porze).
 
+Zrobione: job sprzątania rusza o 1:30, a `CleaningFacade.callCleaning()` zwraca `Rejection` poza
+przerwą techniczną [1:00, 5:00), więc sprzątania nie da się wezwać w godzinach pracy parkingu (także
+przez `/local/call-cleaning`). Godziny przerwy są na razie stałymi w fasadzie.
+
 ## 3. Próg „brudnego” miejsca
 
 README: serwis sprzątający jest wzywany, gdy 10 miejsc jest brudnych, *„It means 20 releases”*.
