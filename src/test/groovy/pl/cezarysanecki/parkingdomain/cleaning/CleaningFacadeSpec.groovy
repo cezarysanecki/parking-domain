@@ -12,7 +12,7 @@ import java.time.LocalTime
 class CleaningFacadeSpec extends Specification {
 
   // business.cleaning.number-of-drives-away-to-consider-parking-spot-dirty
-  static final int DRIVES_AWAY_TO_CONSIDER_DIRTY = 2
+  static final int DRIVES_AWAY_TO_CONSIDER_DIRTY = 20
   static final LocalDate CURRENT_DATE = LocalDate.of(2020, 10, 10)
 
   def cleaningRepository = new InMemoryCleaningRepository()
@@ -37,16 +37,17 @@ class CleaningFacadeSpec extends Specification {
       releases || dirty
       0        || false
       1        || false
-      2        || true
-      3        || true
+      19       || false
+      20       || true
+      21       || true
   }
 
   def "releases are counted per parking spot"() {
     given:
       def dirtySpot = new ParkingSpotId(UUID.randomUUID())
       def cleanSpot = new ParkingSpotId(UUID.randomUUID())
-      2.times { cleaningRepository.increaseCounterFor(dirtySpot) }
-      cleaningRepository.increaseCounterFor(cleanSpot)
+      20.times { cleaningRepository.increaseCounterFor(dirtySpot) }
+      19.times { cleaningRepository.increaseCounterFor(cleanSpot) }
 
     expect:
       cleaningFacade.getDirtyParkingSpots() == [dirtySpot]
@@ -78,7 +79,7 @@ class CleaningFacadeSpec extends Specification {
   def "marking cleaning as done resets all counters"() {
     given:
       def parkingSpotId = new ParkingSpotId(UUID.randomUUID())
-      2.times { cleaningRepository.increaseCounterFor(parkingSpotId) }
+      20.times { cleaningRepository.increaseCounterFor(parkingSpotId) }
 
     when:
       def result = cleaningFacade.markCleaningAsDone()
@@ -88,7 +89,7 @@ class CleaningFacadeSpec extends Specification {
       cleaningFacade.getDirtyParkingSpots().isEmpty()
 
     when:
-      cleaningRepository.increaseCounterFor(parkingSpotId)
+      19.times { cleaningRepository.increaseCounterFor(parkingSpotId) }
 
     then:
       cleaningFacade.getDirtyParkingSpots().isEmpty()

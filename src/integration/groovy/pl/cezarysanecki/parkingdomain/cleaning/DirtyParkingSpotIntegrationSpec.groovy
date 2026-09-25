@@ -40,15 +40,15 @@ class DirtyParkingSpotIntegrationSpec extends BaseIntegrationSpec {
 
     where:
       releases || dirty
-      1        || false
-      2        || true
-      3        || true
+      19       || false
+      20       || true
+      21       || true
   }
 
   def "marking cleaning as done resets all counters"() {
     given:
       def parkingSpotId = new ParkingSpotId(UUID.randomUUID())
-      2.times { cleaningRepository.increaseCounterFor(parkingSpotId) }
+      20.times { cleaningRepository.increaseCounterFor(parkingSpotId) }
 
     when:
       cleaningFacade.markCleaningAsDone()

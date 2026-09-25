@@ -84,18 +84,18 @@ class CallingExternalCleaningAcceptanceSpec extends BaseAcceptanceSpec {
 
     where:
       releases || dirty
-      1        || false
-      2        || true
-      3        || true
+      19       || false
+      20       || true
+      21       || true
   }
 
-  def "#releases releases (#dirtySpots spot(s) twice, #cleanSpots once) make #dirtySpots parking spot(s) dirty"() {
+  def "#dirtySpots parking spot(s) released 20 times and #cleanSpots released 19 times make #dirtySpots parking spot(s) dirty"() {
     given:
       def clientId = registerClient()
 
     when:
-      dirtySpots.times { occupyAndRelease(clientId, addParkingSpot(), 2) }
-      cleanSpots.times { occupyAndRelease(clientId, addParkingSpot(), 1) }
+      dirtySpots.times { occupyAndRelease(clientId, addParkingSpot(), 20) }
+      cleanSpots.times { occupyAndRelease(clientId, addParkingSpot(), 19) }
 
     then:
       cleaningFacade.getDirtyParkingSpots().size() == dirtySpots
@@ -103,9 +103,9 @@ class CallingExternalCleaningAcceptanceSpec extends BaseAcceptanceSpec {
       viewCleaningRepository.queryCleaning().parkingSpotsExceedingThreshold() == dirtySpots
 
     where:
-      dirtySpots | cleanSpots || releases
-      9          | 1          || 19
-      10         | 0          || 20
+      dirtySpots | cleanSpots
+      9          | 1
+      10         | 0
   }
 
   private void nextDayAt(int hour, int minute) {
@@ -115,7 +115,7 @@ class CallingExternalCleaningAcceptanceSpec extends BaseAcceptanceSpec {
 
   private void makeTenParkingSpotsDirty() {
     def clientId = registerClient()
-    10.times { occupyAndRelease(clientId, addParkingSpot(), 2) }
+    10.times { occupyAndRelease(clientId, addParkingSpot(), 20) }
   }
 
   private void occupyAndRelease(ClientId clientId, ParkingSpotId parkingSpotId, int times) {

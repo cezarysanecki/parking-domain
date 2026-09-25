@@ -23,7 +23,7 @@ job:
 business:
   cleaning:
     number-of-dirty-parking-spots-to-call-external-service: 10
-    number-of-drives-away-to-consider-parking-spot-dirty: 2
+    number-of-drives-away-to-consider-parking-spot-dirty: 20
   parking:
     minutes-to-consider-reservation-active: 60
     minutes-to-consider-reservation-not-used: 15
