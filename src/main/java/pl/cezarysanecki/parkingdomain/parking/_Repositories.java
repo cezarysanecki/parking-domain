@@ -1,10 +1,10 @@
 package pl.cezarysanecki.parkingdomain.parking;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
+import pl.cezarysanecki.parkingdomain.commons.EntityNotFound;
 import pl.cezarysanecki.parkingdomain.commons.aggregates.AggregateRootIsStale;
 import pl.cezarysanecki.parkingdomain.commons.aggregates.Version;
 import pl.cezarysanecki.parkingdomain.jooq.default_schema.tables.records.OccupantRecord;
@@ -50,7 +50,7 @@ class ProdParkingRepository implements ParkingRepository {
         .forUpdate()
         .fetchOne();
     if (parkingRecord == null) {
-      throw new EntityNotFoundException("cannot find parking spot with id " + parkingSpotId);
+      throw new EntityNotFound("cannot find parking spot with id " + parkingSpotId);
     }
 
     Integer occupiedSpace = create
@@ -134,7 +134,7 @@ class ProdOccupantRepository implements OccupantRepository {
         .forUpdate()
         .fetchOne();
     if (occupantRecord == null) {
-      throw new EntityNotFoundException("cannot find occupant with id " + occupantId);
+      throw new EntityNotFound("cannot find occupant with id " + occupantId);
     }
 
     List<OccupationId> occupations = create

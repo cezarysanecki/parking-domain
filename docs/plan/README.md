@@ -109,6 +109,10 @@ Do zrobienia:
 - Upewnić się, że transakcje nadal działają (menedżer transakcji dla JDBC/JOOQ).
 - Usunąć JPA z listy technologii w README.
 
+Zrobione: JPA usunięte, jedyną warstwą zapisu jest JOOQ. Not-found rzuca własny wyjątek
+`commons.EntityNotFound`, a transakcjami w profilu domyślnym zarządza `JdbcTransactionManager`
+(pilnuje tego `TransactionsIntegrationSpec`).
+
 ## Do zrobienia później (follow-upy)
 
 - `maven-resources-plugin` ma `outputDirectory` i `resources` ustawione na poziomie pluginu, więc

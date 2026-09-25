@@ -23,7 +23,6 @@ Main:
 - [Maven](https://maven.apache.org/)
 - [Spring Boot 3](https://spring.io/projects/spring-boot)
     - [Web](https://docs.spring.io/spring-boot/docs/current/reference/html/web.html)
-    - [JPA](https://spring.io/projects/spring-data-jpa)
 - [Quartz](https://www.quartz-scheduler.org/)
 - [Lombok](https://projectlombok.org/)
 - [JOOQ](https://www.jooq.org/)

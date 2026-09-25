@@ -1,8 +1,8 @@
 package pl.cezarysanecki.parkingdomain.views;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import pl.cezarysanecki.parkingdomain._local.InMemoryRepositories;
+import pl.cezarysanecki.parkingdomain.commons.EntityNotFound;
 import pl.cezarysanecki.parkingdomain.management.client.api.ClientId;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpot;
 import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
@@ -88,7 +88,7 @@ class InMemoryViews implements
                 .map(entity -> entity.reservationId.value())
                 .toList()
         ))
-        .orElseThrow(() -> new EntityNotFoundException("cannot find view for client with id " + clientId.value()));
+        .orElseThrow(() -> new EntityNotFound("cannot find view for client with id " + clientId.value()));
   }
 
   @Override

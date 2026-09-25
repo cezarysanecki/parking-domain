@@ -1,9 +1,9 @@
 package pl.cezarysanecki.parkingdomain.parking;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain._local.InMemoryRepositories;
+import pl.cezarysanecki.parkingdomain.commons.EntityNotFound;
 import pl.cezarysanecki.parkingdomain.commons.aggregates.Version;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupantId;
@@ -119,7 +119,7 @@ class InMemoryOccupantRepository implements OccupantRepository {
   public Occupant findBy(OccupantId occupantId) {
     OccupantEntity entity = DATABASE.get(occupantId);
     if (entity == null) {
-      throw new EntityNotFoundException("No occupant found with id " + occupantId);
+      throw new EntityNotFound("No occupant found with id " + occupantId);
     }
     return toDomain(entity);
   }
