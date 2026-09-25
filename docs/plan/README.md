@@ -47,6 +47,10 @@ Do zrobienia:
 - Rozważyć regułę domenową, która nie pozwala wezwać sprzątania poza przerwą (dziś można to
   zrobić przez `/local/call-cleaning` o dowolnej porze).
 
+Zrobione: job sprzątania rusza o 1:30, a `CleaningFacade.callCleaning()` zwraca `Rejection` poza
+przerwą techniczną [1:00, 5:00), więc sprzątania nie da się wezwać w godzinach pracy parkingu (także
+przez `/local/call-cleaning`). Godziny przerwy są na razie stałymi w fasadzie.
+
 ## 3. Próg „brudnego” miejsca
 
 README: serwis sprzątający jest wzywany, gdy 10 miejsc jest brudnych, *„It means 20 releases”*.
@@ -113,8 +117,8 @@ Do zrobienia:
 - Usunąć JPA z listy technologii w README.
 
 Zrobione: JPA usunięte, jedyną warstwą zapisu jest JOOQ. Not-found rzuca własny wyjątek
-`commons.EntityNotFound`, a transakcjami w profilu domyślnym zarządza `JdbcTransactionManager`
-(pilnuje tego `TransactionsIntegrationSpec`).
+`commons.EntityNotFound`, a transakcjami w profilu domyślnym zarządza `JdbcTransactionManager`.
+To, że zapisy JOOQ należą do transakcji fasady, sprawdza `ReleasingParkingSpotIsAtomicIntegrationSpec`.
 
 ## Do zrobienia później (follow-upy)
 
