@@ -7,7 +7,8 @@ import spock.lang.Specification
 
 class CleaningFacadeSpec extends Specification {
 
-  static final int DRIVES_AWAY_TO_CONSIDER_DIRTY = 20
+  // business.cleaning.number-of-drives-away-to-consider-parking-spot-dirty
+  static final int DRIVES_AWAY_TO_CONSIDER_DIRTY = 2
 
   def cleaningRepository = new InMemoryCleaningRepository()
   def externalCleaningService = Mock(ExternalCleaningService)
@@ -29,17 +30,16 @@ class CleaningFacadeSpec extends Specification {
       releases || dirty
       0        || false
       1        || false
-      19       || false
-      20       || true
-      21       || true
+      2        || true
+      3        || true
   }
 
   def "releases are counted per parking spot"() {
     given:
       def dirtySpot = new ParkingSpotId(UUID.randomUUID())
       def cleanSpot = new ParkingSpotId(UUID.randomUUID())
-      20.times { cleaningRepository.increaseCounterFor(dirtySpot) }
-      19.times { cleaningRepository.increaseCounterFor(cleanSpot) }
+      2.times { cleaningRepository.increaseCounterFor(dirtySpot) }
+      cleaningRepository.increaseCounterFor(cleanSpot)
 
     expect:
       cleaningFacade.getDirtyParkingSpots() == [dirtySpot]
@@ -57,7 +57,7 @@ class CleaningFacadeSpec extends Specification {
   def "marking cleaning as done resets all counters"() {
     given:
       def parkingSpotId = new ParkingSpotId(UUID.randomUUID())
-      20.times { cleaningRepository.increaseCounterFor(parkingSpotId) }
+      2.times { cleaningRepository.increaseCounterFor(parkingSpotId) }
 
     when:
       def result = cleaningFacade.markCleaningAsDone()
@@ -65,6 +65,18 @@ class CleaningFacadeSpec extends Specification {
     then:
       result == Result.Success
       cleaningFacade.getDirtyParkingSpots().isEmpty()
+
+    when:
+      cleaningRepository.increaseCounterFor(parkingSpotId)
+
+    then:
+      cleaningFacade.getDirtyParkingSpots().isEmpty()
+
+    when:
+      cleaningRepository.increaseCounterFor(parkingSpotId)
+
+    then:
+      cleaningFacade.getDirtyParkingSpots() == [parkingSpotId]
   }
 
 }

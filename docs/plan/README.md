@@ -58,6 +58,9 @@ Do zrobienia:
 - Zmienić `number-of-drives-away-to-consider-parking-spot-dirty` z 20 na 2.
 - Poprawić testy akceptacyjne sprzątania, żeby sprawdzały tę regułę.
 
+Zrobione: miejsce jest brudne po 2 zwolnieniach (`>=`, w obu implementacjach). Próg pilnują testy
+jednostkowe, akceptacyjne i `DirtyParkingSpotIntegrationSpec` (Postgres/JOOQ).
+
 ## 4. Opłaty
 
 README: za niewykorzystaną rezerwację klient płaci 50$, a opłaty powinny wynikać z cennika.
