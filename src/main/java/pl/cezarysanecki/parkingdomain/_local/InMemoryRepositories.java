@@ -1,5 +1,6 @@
 package pl.cezarysanecki.parkingdomain._local;
 
+import pl.cezarysanecki.parkingdomain.fee.api.FeeId;
 import pl.cezarysanecki.parkingdomain.management.client.Client;
 import pl.cezarysanecki.parkingdomain.management.client.api.ClientId;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.ParkingSpot;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.FeeEntity;
 import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.FreeTimeSlotKey;
 import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.NotificationOccupationEntity;
 import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.NotificationReservationEntity;
@@ -47,6 +49,7 @@ public class InMemoryRepositories {
   public static final Map<OccupationId, NotificationOccupationEntity> NOTIFICATION_OCCUPATION_DATABASE = new ConcurrentHashMap<>();
   public static final Map<ReservationId, NotificationReservationEntity> NOTIFICATION_RESERVATION_DATABASE = new ConcurrentHashMap<>();
   public static final List<Instant> DONE_NOTIFICATION_DATABASE = new ArrayList<>();
+  public static final Map<FeeId, FeeEntity> FEE_DATABASE = new ConcurrentHashMap<>();
 
   public static void clearAll() {
     CLEANING_DATABASE.clear();
@@ -65,6 +68,7 @@ public class InMemoryRepositories {
     NOTIFICATION_OCCUPATION_DATABASE.clear();
     NOTIFICATION_RESERVATION_DATABASE.clear();
     DONE_NOTIFICATION_DATABASE.clear();
+    FEE_DATABASE.clear();
   }
 
 }

@@ -6,14 +6,17 @@ import org.jooq.JoinType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
+import pl.cezarysanecki.parkingdomain.jooq.default_schema.tables.records.FeeRecord;
 import pl.cezarysanecki.parkingdomain.management.client.api.ClientId;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotCategory;
 
+import java.time.ZoneId;
 import java.util.List;
 import java.util.UUID;
 
 import static pl.cezarysanecki.parkingdomain.jooq.default_schema.tables.Cleaning.CLEANING;
 import static pl.cezarysanecki.parkingdomain.jooq.default_schema.tables.ClientCatalogue.CLIENT_CATALOGUE;
+import static pl.cezarysanecki.parkingdomain.jooq.default_schema.tables.Fee.FEE;
 import static pl.cezarysanecki.parkingdomain.jooq.default_schema.tables.Occupation.OCCUPATION;
 import static pl.cezarysanecki.parkingdomain.jooq.default_schema.tables.ParkingSpotCatalogue.PARKING_SPOT_CATALOGUE;
 import static pl.cezarysanecki.parkingdomain.jooq.default_schema.tables.Request.REQUEST;
@@ -201,6 +204,47 @@ class ProdViewFreeTimeSlotsRepository implements ViewFreeTimeSlotsRepository {
           );
         })
         .toList();
+  }
+
+}
+
+@Profile("!local")
+@Repository
+@RequiredArgsConstructor
+class ProdViewFeesRepository implements ViewFeesRepository {
+
+  private final DSLContext create;
+
+  @Override
+  public List<FeeEntry> queryFees() {
+    return create
+        .selectFrom(FEE)
+        .orderBy(FEE.CHARGED_AT)
+        .stream()
+        .map(ProdViewFeesRepository::toFeeEntry)
+        .toList();
+  }
+
+  @Override
+  public List<FeeEntry> queryFeesFor(ClientId clientId) {
+    return create
+        .selectFrom(FEE)
+        .where(FEE.CLIENT.eq(clientId.value()))
+        .orderBy(FEE.CHARGED_AT)
+        .stream()
+        .map(ProdViewFeesRepository::toFeeEntry)
+        .toList();
+  }
+
+  private static FeeEntry toFeeEntry(FeeRecord record) {
+    return new FeeEntry(
+        record.getId(),
+        record.getClient(),
+        record.getReservation(),
+        record.getType(),
+        record.getAmount(),
+        record.getCurrency(),
+        record.getChargedAt().atZone(ZoneId.systemDefault()).toInstant());
   }
 
 }

@@ -1,6 +1,7 @@
 package pl.cezarysanecki.parkingdomain.parking.usecase;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import pl.cezarysanecki.parkingdomain.management.client.ClientFacade;
 import pl.cezarysanecki.parkingdomain.management.client.api.ClientType;
@@ -13,6 +14,7 @@ import pl.cezarysanecki.parkingdomain.shared.VehicleType;
 
 import java.util.Optional;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class OccupyingWithoutAccountUseCase {
@@ -25,6 +27,10 @@ public class OccupyingWithoutAccountUseCase {
       ParkingSpotId parkingSpotId,
       VehicleType vehicleType
   ) {
+    if (!parkingFacade.canOccupyNow()) {
+      log.debug("cannot occupy parking spot with id {} outside occupying hours", parkingSpotId);
+      return Optional.empty();
+    }
     return clientFacade.registerClient(ClientType.INDIVIDUAL, phoneNumber)
         .map(clientId -> parkingFacade.occupy(
             new OccupantId(clientId.value()),

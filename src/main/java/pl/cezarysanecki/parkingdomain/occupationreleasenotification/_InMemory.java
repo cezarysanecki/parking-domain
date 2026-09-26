@@ -98,6 +98,16 @@ class InMemoryOccupationReleaseNotificationRepository implements OccupationRelea
         .toList();
   }
 
+  @Override
+  public List<OccupantToRemindAboutClosing> findAllOccupants() {
+    return OCCUPATION_DATABASE.values()
+        .stream()
+        .map(occupationEntity -> new OccupantToRemindAboutClosing(
+            occupationEntity.occupantId(), occupationEntity.parkingSpotId()
+        ))
+        .toList();
+  }
+
   private Instant latest() {
     return DONE_NOTIFICATION_DATES_DATABASE.stream()
         .max(Instant::compareTo)

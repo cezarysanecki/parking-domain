@@ -50,6 +50,11 @@ class InMemoryOccupationRepository implements OccupationRepository {
         ));
   }
 
+  @Override
+  public List<OccupationId> findAll() {
+    return List.copyOf(DATABASE.keySet());
+  }
+
   static List<OccupationEntity> findFor(ParkingSpotId parkingSpotId) {
     return DATABASE.values()
         .stream()

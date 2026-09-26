@@ -11,6 +11,7 @@ import java.time.ZoneId;
 import java.util.Collection;
 import java.util.List;
 
+import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.FeeEntity;
 import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.OccupationEntity;
 import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.ReservedOccupationEntity;
 import static pl.cezarysanecki.parkingdomain._local.InMemoryEntities.ReservationEntity;
@@ -21,7 +22,8 @@ class InMemoryViews implements
     ViewCurrentRequestsRepository,
     ViewCurrentStateOfClientRepository,
     ViewFreeCurrentParkingSpotsRepository,
-    ViewFreeTimeSlotsRepository {
+    ViewFreeTimeSlotsRepository,
+    ViewFeesRepository {
 
   private final int numberOfDrivesAwayToConsiderParkingSpotDirty;
 
@@ -143,6 +145,34 @@ class InMemoryViews implements
                 .reduce(0, Integer::sum)
         ))
         .toList();
+  }
+
+  @Override
+  public List<FeeEntry> queryFees() {
+    return InMemoryRepositories.FEE_DATABASE.values()
+        .stream()
+        .map(InMemoryViews::toFeeEntry)
+        .toList();
+  }
+
+  @Override
+  public List<FeeEntry> queryFeesFor(ClientId clientId) {
+    return InMemoryRepositories.FEE_DATABASE.values()
+        .stream()
+        .filter(entity -> entity.clientId().equals(clientId))
+        .map(InMemoryViews::toFeeEntry)
+        .toList();
+  }
+
+  private static FeeEntry toFeeEntry(FeeEntity entity) {
+    return new FeeEntry(
+        entity.feeId().value(),
+        entity.clientId().value(),
+        entity.reservationId().value(),
+        entity.type().name(),
+        entity.amount().amount(),
+        entity.amount().currency().getCurrencyCode(),
+        entity.chargedAt());
   }
 
 }

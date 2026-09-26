@@ -249,4 +249,36 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="create_initial_tables_fee" author="cezarysanecki">
+        <createTable tableName="fee">
+            <column name="id" type="uuid">
+                <constraints nullable="false"
+                             primaryKey="true"
+                             primaryKeyName="fee_primary_key"/>
+            </column>
+            <column name="client" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="reservation" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="varchar(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="amount" type="numeric(19,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="currency" type="varchar(3)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="charged_at" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint tableName="fee"
+                             columnNames="type, reservation"
+                             constraintName="fee_type_reservation_unique"/>
+    </changeSet>
+
 </databaseChangeLog>

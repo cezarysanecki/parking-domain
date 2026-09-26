@@ -29,8 +29,7 @@ public class CallingCleaningWhenSpotsDirtyUseCase {
 
     if (parkingSpotIds.size() >= numberOfDirtyParkingSpotsToCallExternalService) {
       log.debug("at least {} parking spots need to be cleaned, calling external service", parkingSpotIds.size());
-      cleaningFacade.callCleaning();
-      return Result.Success;
+      return cleaningFacade.callCleaning();
     } else {
       log.debug("still not enough parking spots are dirty to call external service");
       return Result.Rejection;

@@ -9,11 +9,11 @@
 | Temat | Decyzja |
 |---|---|
 | „12pm” w README | Chodzi o **północ (24:00)**. W README trzeba poprawić zapis na „12am / midnight”. |
-| Próg brudnego miejsca | Miejsce jest brudne po **2 zwolnieniach**, więc 10 brudnych miejsc to ok. 20 zwolnień. |
+| Próg brudnego miejsca | Miejsce jest brudne po **20 zwolnieniach tego miejsca** (zostaje jak w kodzie). Sprzątanie wzywamy przy 10 brudnych miejscach. |
 | JPA | **Usunąć** JPA z README i z `pom.xml`. Jedyną warstwą zapisu zostaje JOOQ. |
 | Spock | Przepisać **wszystkie** testy na Spocka (akceptacyjne i integracyjne) i dodać testy jednostkowe. |
 | Godzina sprzątania | Serwis sprzątający wzywamy o **1:30**, w przerwie technicznej. Uzasadnienie jest w README. |
-| Pojazdy po północy | Między 0:00 a 1:00 **przypomnienie** o zwolnieniu miejsca, a o 1:00 **wymuszone zwolnienie** (odholowanie). |
+| Pojazdy po północy | Między 0:00 a 1:00 **przypomnienie** o zwolnieniu miejsca. O 1:00 system **wzywa holownik**. Miejsce jest wolne dopiero, gdy holownik potwierdzi odholowanie auta, a klient dostaje wtedy powiadomienie, że auto zostało zabrane. |
 
 ## 1. Godziny działania parkingu
 
@@ -27,8 +27,15 @@ Do zrobienia:
 - Odrzucać zajmowanie miejsc (także z rezerwacją i bez konta) poza dozwolonymi godzinami.
 - Wymusić koniec zajmowania o północy (24:00).
 - Między 0:00 a 1:00 wysyłać przypomnienia o zwolnieniu miejsca.
-- O 1:00 wymuszać zwolnienie wszystkich pozostałych zajęć (odholowanie).
+- O 1:00 wezwać holownik do pozostałych aut; miejsce zwolnić dopiero po potwierdzeniu odholowania i powiadomić klienta.
 - W README poprawić „until 12pm” na „until 12am (midnight)”.
+
+Zrobione: godziny są stałymi w `shared.ParkingOpeningHours`. Zajmować (także bez konta i z
+rezerwacją) można tylko 5:00–24:00, między 0:00 a 1:00 job wysyła przypomnienia o zwolnieniu
+miejsca, a o 1:00 job wzywa holownik (`ExternalTowingService`) do aut, które zostały. Miejsce
+zwalnia się dopiero po potwierdzeniu holownika (`DELETE /parking/vehicle-towed`,
+`Reason.VEHICLE_TOWED`, bez opłaty), a klient dostaje powiadomienie, że auto zostało zabrane.
+README mówi teraz „until 12am (midnight)”.
 
 ## 2. Sprzątanie w przerwie technicznej
 
@@ -47,16 +54,23 @@ Do zrobienia:
 - Rozważyć regułę domenową, która nie pozwala wezwać sprzątania poza przerwą (dziś można to
   zrobić przez `/local/call-cleaning` o dowolnej porze).
 
+Zrobione: job sprzątania rusza o 1:30, a `CleaningFacade.callCleaning()` zwraca `Rejection` poza
+przerwą techniczną [1:00, 5:00), więc sprzątania nie da się wezwać w godzinach pracy parkingu (także
+przez `/local/call-cleaning`). Godziny przerwy pochodzą z `ParkingOpeningHours.isTechnicalBreak`.
+
 ## 3. Próg „brudnego” miejsca
 
 README: serwis sprzątający jest wzywany, gdy 10 miejsc jest brudnych, *„It means 20 releases”*.
 
-Stan obecny: miejsce jest brudne dopiero po 20 zwolnieniach **tego jednego miejsca**, więc
-sprzątanie wymaga co najmniej 200 zwolnień.
+Decyzja: miejsce jest brudne po **20 zwolnieniach tego miejsca**, czyli tak jak było w kodzie
+(`number-of-drives-away-to-consider-parking-spot-dirty: 20`). Sprzątanie wzywamy przy 10 brudnych
+miejscach.
 
 Do zrobienia:
-- Zmienić `number-of-drives-away-to-consider-parking-spot-dirty` z 20 na 2.
-- Poprawić testy akceptacyjne sprzątania, żeby sprawdzały tę regułę.
+- Zostawić próg 20 i pokryć go testami na granicy (19 → czyste, 20 → brudne) w obu implementacjach.
+
+Zrobione: miejsce jest brudne po 20 zwolnieniach (`>=`, w obu implementacjach). Próg pilnują testy
+jednostkowe, akceptacyjne i `DirtyParkingSpotIntegrationSpec` (Postgres/JOOQ).
 
 ## 4. Opłaty
 
@@ -67,6 +81,12 @@ Stan obecny: `FeeEventHandler` tylko loguje kwotę `50.00` i nic nie nalicza.
 Do zrobienia:
 - Faktycznie naliczać i zapisywać opłatę za niewykorzystaną rezerwację.
 - Wprowadzić cennik (choćby z jedną pozycją), z którego brana jest kwota.
+
+Zrobione: niewykorzystana rezerwacja (`ReservationsRemoved`) obciąża jej właściciela opłatą
+`NOT_USED_RESERVATION`, a kwota (50.00 USD) pochodzi z cennika w `business.fee.price-list`.
+Opłaty są zapisywane w obu profilach (in-memory i Postgres), jedna rezerwacja jest obciążana
+najwyżej raz, a odczyt daje `GET /fee/view[/{clientId}]`. Log-only listener na
+`ParkingSpotForceReleased` został usunięty.
 
 ## 5. Typy pojazdów
 
@@ -115,8 +135,8 @@ Do zrobienia:
 - Usunąć JPA z listy technologii w README.
 
 Zrobione: JPA usunięte, jedyną warstwą zapisu jest JOOQ. Not-found rzuca własny wyjątek
-`commons.EntityNotFound`, a transakcjami w profilu domyślnym zarządza `JdbcTransactionManager`
-(pilnuje tego `TransactionsIntegrationSpec`).
+`commons.EntityNotFound`, a transakcjami w profilu domyślnym zarządza `JdbcTransactionManager`.
+To, że zapisy JOOQ należą do transakcji fasady, sprawdza `ReleasingParkingSpotIsAtomicIntegrationSpec`.
 
 ## Do zrobienia później (follow-upy)
 

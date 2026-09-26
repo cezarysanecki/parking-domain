@@ -104,6 +104,15 @@ class ParkingController {
     return result ? ResponseEntity.ok().build() : ResponseEntity.status(INTERNAL_SERVER_ERROR).build();
   }
 
+  @DeleteMapping("/vehicle-towed")
+  ResponseEntity confirmVehicleTowed(@RequestBody ConfirmVehicleTowedRequest request) {
+    boolean result = removeOccupationByForceUseCase.run(
+        new OccupationId(request.occupationId),
+        ParkingSpotForceReleased.Reason.VEHICLE_TOWED
+    );
+    return result ? ResponseEntity.ok().build() : ResponseEntity.status(INTERNAL_SERVER_ERROR).build();
+  }
+
   record CreateParkingSpotRequest(
       ParkingSpotCategory category
   ) {
@@ -141,6 +150,11 @@ class ParkingController {
   }
 
   record ReleaseByForceParkingSpotRequest(
+      UUID occupationId
+  ) {
+  }
+
+  record ConfirmVehicleTowedRequest(
       UUID occupationId
   ) {
   }

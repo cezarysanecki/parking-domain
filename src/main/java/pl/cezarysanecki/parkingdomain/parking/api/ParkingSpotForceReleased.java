@@ -13,7 +13,8 @@ public record ParkingSpotForceReleased(
 ) implements DomainEvent {
 
   public enum Reason {
-    NOT_RELEASED_PARKING_SPOT
+    NOT_RELEASED_PARKING_SPOT,
+    VEHICLE_TOWED
   }
 
 }
