@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import pl.cezarysanecki.parkingdomain.management.client.api.ClientId;
+import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.notification.NotificationFacade;
+import pl.cezarysanecki.parkingdomain.parking.api.OccupantId;
 
 import java.time.Instant;
 import java.util.Collection;
@@ -42,6 +44,30 @@ public class OccupationReleaseNotificationFacade {
     }
 
     return occupantsToNotify.size();
+  }
+
+  @Transactional
+  public int remindAboutClosing() {
+    List<OccupantToRemindAboutClosing> occupantsToRemind = occupationReleaseNotificationRepository.findAllOccupants();
+
+    log.debug("reminding {} occupants about closing parking", occupantsToRemind.size());
+
+    occupantsToRemind.forEach(
+        occupantToRemind -> notificationFacade.notify(
+            new ClientId(occupantToRemind.occupantId().value()),
+            "please release parking spot with id " + occupantToRemind.parkingSpotId() + " because parking is being closed, vehicles left after closing will be towed"
+        )
+    );
+
+    return occupantsToRemind.size();
+  }
+
+  public void notifyAboutTowedVehicle(OccupantId occupantId, ParkingSpotId parkingSpotId) {
+    log.debug("notifying occupant {} that vehicle was towed from parking spot {}", occupantId, parkingSpotId);
+    notificationFacade.notify(
+        new ClientId(occupantId.value()),
+        "unfortunately your vehicle was towed from parking spot with id " + parkingSpotId + " because it was left on the parking after closing"
+    );
   }
 
 }

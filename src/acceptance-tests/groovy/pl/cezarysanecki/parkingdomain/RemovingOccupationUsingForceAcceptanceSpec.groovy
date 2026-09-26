@@ -14,6 +14,10 @@ class RemovingOccupationUsingForceAcceptanceSpec extends BaseAcceptanceSpec {
   @Autowired
   RemoveOccupationByForceUseCase removeOccupationByForceUseCase
 
+  def setup() {
+    currentTimeIs(DURING_OCCUPYING_HOURS)
+  }
+
   def "occupation can be removed by force"() {
     given:
       def parkingSpotId = addParkingSpot()

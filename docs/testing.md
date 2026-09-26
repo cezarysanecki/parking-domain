@@ -55,6 +55,13 @@ akceptacyjne i integracyjne, a te ostatnie wymagają Dockera.
   `LocalInitialData`. Ustawia zegar na `CURRENT_DATE`, czyli 2020-10-10 00:00 w strefie
   systemowej. Upływ czasu symulujemy przez `dateProvider.passHours/passMinutes`. Nie używamy
   `Instant.now()`.
+- Konkretną godzinę ustawiamy przez `currentTimeIs(hour, minute = 0)`. Ten pomocnik liczy czas
+  bezwzględnie od `CURRENT_DATE`, a `hour >= 24` oznacza następny dzień, np. `currentTimeIs(25)`
+  to 01:00 następnego dnia.
+- **Miejsca można zajmować tylko w godzinach 05:00–24:00** (`ParkingOpeningHours`). Domyślne 00:00
+  jest poza tym oknem. Każda specyfikacja, która zajmuje miejsce (zwykle, bez konta albo z
+  rezerwacją), musi najpierw ustawić czas, np. `def setup() { currentTimeIs(DURING_OCCUPYING_HOURS) }`
+  albo `currentTimeIs(h, m)` w danym kroku. Bez tego zajęcie zostanie odrzucone.
 - Każdą nową mapę in-memory trzeba dopisać do `InMemoryRepositories.clearAll()`.
 - Pomocniki: `addParkingSpot(capacity = 4, category = Gold)` i
   `registerClient(type = INDIVIDUAL, phone = losowy)`. Wspólny krok przenosimy do bazy, gdy
@@ -73,6 +80,11 @@ akceptacyjne i integracyjne, a te ostatnie wymagają Dockera.
 - Danych nie czyścimy globalnie. Każda cecha używa losowych `UUID`. Jeśli cecha potrzebuje
   pustej tabeli, czyści ją w swoim `setup()` przez `DSLContext`.
 - Specyfikacje leżą w pakiecie modułu, żeby miały dostęp do package-private repozytoriów.
+- W kontekście integracyjnym działa prawdziwy zegar (`ProductionDateProvider`). **Nie wołamy
+  kodu zależnego od godziny**, np. `ParkingFacade.occupy*`, use case'ów zajmowania, przypomnień
+  i odholowania, bo wynik zależałby od godziny uruchomienia testu (00:00–05:00 → odrzucenie).
+  Zapis i odczyt sprawdzamy bezpośrednio na repozytoriach, jak w
+  `OptimisticLockingForOccupationIntegrationSpec` i `FindingAllOccupationsIntegrationSpec`.
 
 ## Konfiguracja testów
 

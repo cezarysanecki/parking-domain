@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import pl.cezarysanecki.parkingdomain.commons.date.DateProvider;
 import pl.cezarysanecki.parkingdomain.commons.events.EventPublisher;
 
 @Configuration
@@ -15,6 +16,7 @@ class ParkingConfig {
   private final OccupantRepository occupantRepository;
   private final ReservedOccupationRepository reservedOccupationRepository;
   private final EventPublisher eventPublisher;
+  private final DateProvider dateProvider;
 
   @Bean
   ParkingFacade parkingFacade() {
@@ -22,7 +24,8 @@ class ParkingConfig {
         parkingRepository,
         occupationRepository,
         occupantRepository,
-        eventPublisher);
+        eventPublisher,
+        dateProvider);
   }
 
   @Bean

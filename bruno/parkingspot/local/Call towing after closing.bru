@@ -1,0 +1,16 @@
+meta {
+  name: Call towing after closing
+  type: http
+  seq: 10
+}
+
+post {
+  url: {{baseUrl}}/local/parking/call-towing
+  body: none
+  auth: none
+}
+
+docs {
+  Calls the tow truck for vehicles left on the parking (only during technical break 1:00-5:00).
+  Parking spots stay occupied until the tow truck confirms each vehicle with "Confirm vehicle towed".
+}

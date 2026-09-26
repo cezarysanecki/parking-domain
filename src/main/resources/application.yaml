@@ -10,7 +10,7 @@ spring:
 
 job:
   calling-external-cleaning-service-policy-job:
-    cron-expression: "0 0 13 * * ?"
+    cron-expression: "0 30 1 * * ?"
   making-requests-valid-job:
     cron-expression: "0 0 1 * * ?"
   activating-reservations-job:
@@ -19,6 +19,12 @@ job:
     cron-expression: "0 */1 * * * ?"
   notifying-about-releasing-job:
     cron-expression: "0 */5 * * * ?"
+  # must fit ParkingOpeningHours: reminders between OCCUPYING_END (00:00) and CLOSING (01:00)
+  reminding-about-parking-closing-job:
+    cron-expression: "0 */15 0 * * ?"
+  # must fit ParkingOpeningHours: at CLOSING (01:00), start of technical break - tow truck is called for vehicles left
+  calling-towing-service-after-closing-job:
+    cron-expression: "0 0 1 * * ?"
 
 business:
   cleaning:

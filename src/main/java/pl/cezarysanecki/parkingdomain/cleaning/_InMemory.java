@@ -25,10 +25,10 @@ class InMemoryCleaningRepository implements CleaningRepository {
   }
 
   @Override
-  public List<ParkingSpotId> getAllRecordsWithCounterAbove(int limit) {
+  public List<ParkingSpotId> getAllRecordsWithCounterAtLeast(int threshold) {
     return DATABASE.entrySet()
         .stream()
-        .filter(entry -> entry.getValue() >= limit)
+        .filter(entry -> entry.getValue() >= threshold)
         .map(Map.Entry::getKey)
         .toList();
   }

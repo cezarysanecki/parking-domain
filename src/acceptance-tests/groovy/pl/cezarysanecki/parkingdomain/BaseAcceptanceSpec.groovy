@@ -22,6 +22,7 @@ import java.time.LocalDate
 abstract class BaseAcceptanceSpec extends Specification {
 
   static final LocalDate CURRENT_DATE = LocalDate.of(2020, 10, 10)
+  static final int DURING_OCCUPYING_HOURS = 10
 
   @Autowired
   ParkingSpotFacade parkingSpotFacade
@@ -33,6 +34,12 @@ abstract class BaseAcceptanceSpec extends Specification {
   def setup() {
     InMemoryRepositories.clearAll()
     dateProvider.setCurrentDate(CURRENT_DATE)
+  }
+
+  // sets the clock to CURRENT_DATE + given time, hour >= 24 means the next day(s)
+  void currentTimeIs(int hour, int minute = 0) {
+    dateProvider.setCurrentDate(CURRENT_DATE)
+    dateProvider.passMinutes(hour * 60 + minute)
   }
 
   ParkingSpotId addParkingSpot(

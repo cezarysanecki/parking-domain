@@ -133,4 +133,14 @@ class ProdOccupationReleaseNotificationRepository implements OccupationReleaseNo
         .toList();
   }
 
+  @Override
+  public List<OccupantToRemindAboutClosing> findAllOccupants() {
+    return create
+        .selectFrom(NOTIFICATION_OCCUPATION)
+        .fetch(record -> new OccupantToRemindAboutClosing(
+            new OccupantId(record.getOccupant()),
+            new ParkingSpotId(record.getParkingSpot())
+        ));
+  }
+
 }

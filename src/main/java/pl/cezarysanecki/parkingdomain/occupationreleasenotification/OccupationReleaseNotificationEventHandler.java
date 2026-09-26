@@ -7,6 +7,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotAdded;
+import pl.cezarysanecki.parkingdomain.parking.api.ParkingSpotForceReleased;
 import pl.cezarysanecki.parkingdomain.parking.api.ParkingSpotOccupied;
 import pl.cezarysanecki.parkingdomain.parking.api.ParkingSpotReleased;
 import pl.cezarysanecki.parkingdomain.reservation.api.ReservationsActivated;
@@ -17,6 +18,7 @@ import pl.cezarysanecki.parkingdomain.reservation.api.ReservationsActivated;
 class OccupationReleaseNotificationEventHandler {
 
   private final OccupationReleaseNotificationRepository occupationReleaseNotificationRepository;
+  private final OccupationReleaseNotificationFacade occupationReleaseNotificationFacade;
 
   @Transactional
   @EventListener
@@ -51,6 +53,13 @@ class OccupationReleaseNotificationEventHandler {
             reservation.startDate(),
             reservation.spotUnits()
         ));
+  }
+
+  @EventListener
+  public void handle(ParkingSpotForceReleased event) {
+    if (event.reason() == ParkingSpotForceReleased.Reason.VEHICLE_TOWED) {
+      occupationReleaseNotificationFacade.notifyAboutTowedVehicle(event.occupantId(), event.parkingSpotId());
+    }
   }
 
 }
