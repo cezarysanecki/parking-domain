@@ -10,7 +10,7 @@ import pl.cezarysanecki.parkingdomain.management.client.api.ClientId
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.parking.ParkingFacade
 import pl.cezarysanecki.parkingdomain.parking.api.OccupantId
-import pl.cezarysanecki.parkingdomain.shared.SpotUnits
+import pl.cezarysanecki.parkingdomain.shared.VehicleType
 import pl.cezarysanecki.parkingdomain.views.ViewCleaningRepository
 
 import java.time.LocalTime
@@ -124,7 +124,7 @@ class CallingExternalCleaningAcceptanceSpec extends BaseAcceptanceSpec {
 
   private void occupyAndRelease(ClientId clientId, ParkingSpotId parkingSpotId, int times) {
     times.times {
-      def occupationId = parkingFacade.occupy(new OccupantId(clientId.value()), parkingSpotId, new SpotUnits(4)).orElseThrow()
+      def occupationId = parkingFacade.occupy(new OccupantId(clientId.value()), parkingSpotId, VehicleType.CAR).orElseThrow()
       parkingFacade.release(occupationId).orElseThrow()
     }
   }

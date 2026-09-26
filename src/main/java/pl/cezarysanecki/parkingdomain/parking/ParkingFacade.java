@@ -14,6 +14,7 @@ import pl.cezarysanecki.parkingdomain.parking.api.ReleasedOccupation;
 import pl.cezarysanecki.parkingdomain.reservation.api.ReservationId;
 import pl.cezarysanecki.parkingdomain.shared.ParkingOpeningHours;
 import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
+import pl.cezarysanecki.parkingdomain.shared.VehicleType;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,9 +33,10 @@ public class ParkingFacade {
   public Optional<OccupationId> occupy(
       OccupantId occupantId,
       ParkingSpotId parkingSpotId,
-      SpotUnits spotUnits
+      VehicleType vehicleType
   ) {
-    log.debug("occupying parking spot with id {} by {} units", parkingSpotId, spotUnits);
+    SpotUnits spotUnits = vehicleType.spotUnits();
+    log.debug("occupying parking spot with id {} by {} ({} units)", parkingSpotId, vehicleType, spotUnits);
     if (!canOccupyNow()) {
       log.debug("cannot occupy parking spot with id {} outside occupying hours", parkingSpotId);
       return Optional.empty();

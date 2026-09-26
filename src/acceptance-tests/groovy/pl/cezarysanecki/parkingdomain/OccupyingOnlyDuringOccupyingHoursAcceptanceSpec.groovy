@@ -9,7 +9,7 @@ import pl.cezarysanecki.parkingdomain.requesting.RequestingFacade
 import pl.cezarysanecki.parkingdomain.requesting.api.RequesterId
 import pl.cezarysanecki.parkingdomain.reservation.api.ReservationId
 import pl.cezarysanecki.parkingdomain.reservation.usecase.ActivatingReservationsUseCase
-import pl.cezarysanecki.parkingdomain.shared.SpotUnits
+import pl.cezarysanecki.parkingdomain.shared.VehicleType
 import pl.cezarysanecki.parkingdomain.shared.TimeSlot
 import pl.cezarysanecki.parkingdomain.views.ViewCurrentStateOfClientRepository
 
@@ -36,7 +36,7 @@ class OccupyingOnlyDuringOccupyingHoursAcceptanceSpec extends BaseAcceptanceSpec
       currentTimeIs(hour, minute)
 
     when:
-      def result = parkingFacade.occupy(new OccupantId(clientId.value()), parkingSpotId, new SpotUnits(4))
+      def result = parkingFacade.occupy(new OccupantId(clientId.value()), parkingSpotId, VehicleType.CAR)
 
     then:
       result.isPresent() == allowed
@@ -58,7 +58,7 @@ class OccupyingOnlyDuringOccupyingHoursAcceptanceSpec extends BaseAcceptanceSpec
       currentTimeIs(24, 30)
 
     when:
-      def result = occupyingWithoutAccountUseCase.run(RandomTestUtils.randomPhoneNumber(), parkingSpotId, new SpotUnits(4))
+      def result = occupyingWithoutAccountUseCase.run(RandomTestUtils.randomPhoneNumber(), parkingSpotId, VehicleType.CAR)
 
     then:
       result.isEmpty()
@@ -72,7 +72,7 @@ class OccupyingOnlyDuringOccupyingHoursAcceptanceSpec extends BaseAcceptanceSpec
       def timeSlot = TimeSlot.create(CURRENT_DATE, 5, 17)
     and:
       requestingFacade.createForAll(timeSlot)
-      def request = requestingFacade.request(new RequesterId(clientId.value()), parkingSpotId, timeSlot, new SpotUnits(4)).orElseThrow()
+      def request = requestingFacade.request(new RequesterId(clientId.value()), parkingSpotId, timeSlot, VehicleType.CAR).orElseThrow()
       requestingFacade.makeValidFor(CURRENT_DATE)
     and:
       currentTimeIs(4, 1)

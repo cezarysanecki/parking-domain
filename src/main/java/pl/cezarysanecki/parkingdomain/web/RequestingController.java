@@ -12,11 +12,12 @@ import pl.cezarysanecki.parkingdomain.requesting.RequestingFacade;
 import pl.cezarysanecki.parkingdomain.requesting.api.RequestId;
 import pl.cezarysanecki.parkingdomain.requesting.api.RequesterId;
 import pl.cezarysanecki.parkingdomain.requesting.usecase.CreatingTimeSlotsForNextDayUseCase;
-import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
 import pl.cezarysanecki.parkingdomain.shared.TimeSlot;
+import pl.cezarysanecki.parkingdomain.shared.VehicleType;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Objects;
 import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
@@ -44,7 +45,7 @@ class RequestingController {
             request.from.atZone(ZoneId.systemDefault()).toInstant(),
             request.to.atZone(ZoneId.systemDefault()).toInstant()
         ),
-        new SpotUnits(request.spotUnits)
+        request.vehicleType
     );
     return result
         .map(RequestId::toString)
@@ -65,8 +66,11 @@ class RequestingController {
       UUID parkingSpotId,
       LocalDateTime from,
       LocalDateTime to,
-      int spotUnits
+      VehicleType vehicleType
   ) {
+    MakeRequestRequest {
+      Objects.requireNonNull(vehicleType, "vehicleType is required");
+    }
   }
 
   record CancelRequestRequest(

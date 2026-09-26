@@ -7,7 +7,7 @@ import pl.cezarysanecki.parkingdomain.parking.api.OccupantId
 import pl.cezarysanecki.parkingdomain.parking.api.ParkingSpotForceReleased
 import pl.cezarysanecki.parkingdomain.parking.usecase.CallingTowingServiceAfterClosingUseCase
 import pl.cezarysanecki.parkingdomain.parking.usecase.RemoveOccupationByForceUseCase
-import pl.cezarysanecki.parkingdomain.shared.SpotUnits
+import pl.cezarysanecki.parkingdomain.shared.VehicleType
 
 class ClosingParkingAcceptanceSpec extends BaseAcceptanceSpec {
 
@@ -27,8 +27,8 @@ class ClosingParkingAcceptanceSpec extends BaseAcceptanceSpec {
       def secondClientId = registerClient()
     and:
       currentTimeIs(22)
-      parkingFacade.occupy(new OccupantId(firstClientId.value()), parkingSpotId, new SpotUnits(2)).orElseThrow()
-      def released = parkingFacade.occupy(new OccupantId(secondClientId.value()), parkingSpotId, new SpotUnits(2)).orElseThrow()
+      parkingFacade.occupy(new OccupantId(firstClientId.value()), parkingSpotId, VehicleType.MOTORCYCLE).orElseThrow()
+      def released = parkingFacade.occupy(new OccupantId(secondClientId.value()), parkingSpotId, VehicleType.MOTORCYCLE).orElseThrow()
       parkingFacade.release(released)
 
     when:
@@ -52,7 +52,7 @@ class ClosingParkingAcceptanceSpec extends BaseAcceptanceSpec {
     and:
       currentTimeIs(22)
       clientIds.each { clientId ->
-        parkingFacade.occupy(new OccupantId(clientId.value()), addParkingSpot(), new SpotUnits(4)).orElseThrow()
+        parkingFacade.occupy(new OccupantId(clientId.value()), addParkingSpot(), VehicleType.CAR).orElseThrow()
       }
 
     when:
@@ -78,7 +78,7 @@ class ClosingParkingAcceptanceSpec extends BaseAcceptanceSpec {
       def clientId = registerClient()
     and:
       currentTimeIs(22)
-      def occupationId = parkingFacade.occupy(new OccupantId(clientId.value()), parkingSpotId, new SpotUnits(4)).orElseThrow()
+      def occupationId = parkingFacade.occupy(new OccupantId(clientId.value()), parkingSpotId, VehicleType.CAR).orElseThrow()
     and:
       currentTimeIs(25)
       callingTowingServiceAfterClosingUseCase.run()
@@ -100,14 +100,14 @@ class ClosingParkingAcceptanceSpec extends BaseAcceptanceSpec {
       def clientId = registerClient()
     and:
       currentTimeIs(22)
-      def occupationId = parkingFacade.occupy(new OccupantId(clientId.value()), parkingSpotId, new SpotUnits(4)).orElseThrow()
+      def occupationId = parkingFacade.occupy(new OccupantId(clientId.value()), parkingSpotId, VehicleType.CAR).orElseThrow()
     and:
       currentTimeIs(25)
       removeOccupationByForceUseCase.run(occupationId, ParkingSpotForceReleased.Reason.VEHICLE_TOWED)
 
     when:
       currentTimeIs(29)
-      def result = parkingFacade.occupy(new OccupantId(clientId.value()), parkingSpotId, new SpotUnits(4))
+      def result = parkingFacade.occupy(new OccupantId(clientId.value()), parkingSpotId, VehicleType.CAR)
 
     then:
       result.isPresent()

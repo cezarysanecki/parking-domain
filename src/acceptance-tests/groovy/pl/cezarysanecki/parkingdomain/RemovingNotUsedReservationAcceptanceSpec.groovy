@@ -9,8 +9,8 @@ import pl.cezarysanecki.parkingdomain.requesting.api.RequesterId
 import pl.cezarysanecki.parkingdomain.reservation.api.ReservationId
 import pl.cezarysanecki.parkingdomain.reservation.usecase.ActivatingReservationsUseCase
 import pl.cezarysanecki.parkingdomain.reservation.usecase.RemovingNotUsedReservationsUseCase
-import pl.cezarysanecki.parkingdomain.shared.SpotUnits
 import pl.cezarysanecki.parkingdomain.shared.TimeSlot
+import pl.cezarysanecki.parkingdomain.shared.VehicleType
 
 class RemovingNotUsedReservationAcceptanceSpec extends BaseAcceptanceSpec {
 
@@ -30,7 +30,7 @@ class RemovingNotUsedReservationAcceptanceSpec extends BaseAcceptanceSpec {
       def timeSlot = TimeSlot.create(CURRENT_DATE, 10, 15)
     and:
       requestingFacade.createForAll(timeSlot)
-      def request = requestingFacade.request(new RequesterId(clientId.value()), parkingSpotId, timeSlot, new SpotUnits(4)).orElseThrow()
+      def request = requestingFacade.request(new RequesterId(clientId.value()), parkingSpotId, timeSlot, VehicleType.CAR).orElseThrow()
       requestingFacade.makeValidFor(CURRENT_DATE)
     and: "reservation becomes active"
       dateProvider.passHours(9)

@@ -7,7 +7,7 @@ import pl.cezarysanecki.parkingdomain.parking.api.OccupantId
 import pl.cezarysanecki.parkingdomain.requesting.RequestingFacade
 import pl.cezarysanecki.parkingdomain.requesting.api.RequesterId
 import pl.cezarysanecki.parkingdomain.reservation.usecase.ActivatingReservationsUseCase
-import pl.cezarysanecki.parkingdomain.shared.SpotUnits
+import pl.cezarysanecki.parkingdomain.shared.VehicleType
 import pl.cezarysanecki.parkingdomain.shared.TimeSlot
 
 class AskingToReleaseParkingSpotAcceptanceSpec extends BaseAcceptanceSpec {
@@ -30,11 +30,11 @@ class AskingToReleaseParkingSpotAcceptanceSpec extends BaseAcceptanceSpec {
 
     when:
       requestingFacade.createForAll(timeSlot)
-      requestingFacade.request(new RequesterId(secondClientId.value()), parkingSpotId, timeSlot, new SpotUnits(4)).orElseThrow()
+      requestingFacade.request(new RequesterId(secondClientId.value()), parkingSpotId, timeSlot, VehicleType.CAR).orElseThrow()
       requestingFacade.makeValidFor(CURRENT_DATE)
     and:
       currentTimeIs(8)
-      parkingFacade.occupy(new OccupantId(firstClientId.value()), parkingSpotId, new SpotUnits(4)).orElseThrow()
+      parkingFacade.occupy(new OccupantId(firstClientId.value()), parkingSpotId, VehicleType.CAR).orElseThrow()
     and:
       currentTimeIs(9, 1)
       activatingReservationsUseCase.run()

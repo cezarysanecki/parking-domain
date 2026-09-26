@@ -10,6 +10,7 @@ import pl.cezarysanecki.parkingdomain.requesting.api.RequestId;
 import pl.cezarysanecki.parkingdomain.requesting.api.RequesterId;
 import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
 import pl.cezarysanecki.parkingdomain.shared.TimeSlot;
+import pl.cezarysanecki.parkingdomain.shared.VehicleType;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -29,9 +30,10 @@ public class RequestingFacade {
       RequesterId requesterId,
       ParkingSpotId parkingSpotId,
       TimeSlot timeSlot,
-      SpotUnits spotUnits
+      VehicleType vehicleType
   ) {
-    log.debug("requesting parking spot with id {} by {} units for {} time slot", parkingSpotId, spotUnits, timeSlot);
+    SpotUnits spotUnits = vehicleType.spotUnits();
+    log.debug("requesting parking spot with id {} by {} ({} units) for {} time slot", parkingSpotId, vehicleType, spotUnits, timeSlot);
     RequestableParkingSpot requestableParkingSpot = requestableParkingSpotRepository.findFor(parkingSpotId, timeSlot);
     Requester requester = requesterRepository.findBy(requesterId);
 
