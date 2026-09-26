@@ -82,6 +82,12 @@ Do zrobienia:
 - Faktycznie naliczać i zapisywać opłatę za niewykorzystaną rezerwację.
 - Wprowadzić cennik (choćby z jedną pozycją), z którego brana jest kwota.
 
+Zrobione: niewykorzystana rezerwacja (`ReservationsRemoved`) obciąża jej właściciela opłatą
+`NOT_USED_RESERVATION`, a kwota (50.00 USD) pochodzi z cennika w `business.fee.price-list`.
+Opłaty są zapisywane w obu profilach (in-memory i Postgres), jedna rezerwacja jest obciążana
+najwyżej raz, a odczyt daje `GET /fee/view[/{clientId}]`. Log-only listener na
+`ParkingSpotForceReleased` został usunięty.
+
 ## 5. Typy pojazdów
 
 README: miejsca zajmują samochody (4 jednostki), motocykle (2) i skutery (1).

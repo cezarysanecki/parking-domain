@@ -40,3 +40,8 @@ business:
       morning-end-hour: 17
       evening-start-hour: 18
       evening-end-hour: 24
+  fee:
+    price-list:
+      currency: USD
+      prices:
+        not-used-reservation: "50.00"

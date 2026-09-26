@@ -1,6 +1,10 @@
 package pl.cezarysanecki.parkingdomain._local;
 
 import lombok.AllArgsConstructor;
+import pl.cezarysanecki.parkingdomain.fee.api.FeeId;
+import pl.cezarysanecki.parkingdomain.fee.api.FeeType;
+import pl.cezarysanecki.parkingdomain.fee.api.Money;
+import pl.cezarysanecki.parkingdomain.management.client.api.ClientId;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotCapacity;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
 import pl.cezarysanecki.parkingdomain.parking.api.OccupantId;
@@ -99,6 +103,15 @@ public class InMemoryEntities {
       ParkingSpotId parkingSpotId,
       SpotUnits spotUnits,
       Instant validSince) {
+  }
+
+  public record FeeEntity(
+      FeeId feeId,
+      ClientId clientId,
+      ReservationId reservationId,
+      FeeType type,
+      Money amount,
+      Instant chargedAt) {
   }
 
 }

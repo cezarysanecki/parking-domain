@@ -58,14 +58,16 @@ public class ReservationFacade {
   @Transactional
   public void removeNotUsedReservationsFor(Instant date) {
     List<Reservation> reservations = reservationRepository.loadAllActiveSince(date);
-    List<ReservationId> activatedReservationEntries = reservations.stream()
-        .map(Reservation::reservationId)
-        .toList();
-    log.debug("removing {} not used reservations", activatedReservationEntries.size());
+    ReservationsRemoved event = new ReservationsRemoved(reservations.stream()
+        .map(reservation -> new ReservationsRemoved.Entry(
+            reservation.reservationId(),
+            reservation.ownerId()))
+        .toList());
+    log.debug("removing {} not used reservations", event.reservations().size());
 
-    eventPublisher.publish(new ReservationsRemoved(activatedReservationEntries));
+    eventPublisher.publish(event);
 
-    reservationRepository.markAsNotUsed(activatedReservationEntries);
+    reservationRepository.markAsNotUsed(event.reservationIds());
   }
 
 }
