@@ -5,16 +5,14 @@ import lombok.extern.slf4j.Slf4j;
 import pl.cezarysanecki.parkingdomain.commons.Result;
 import pl.cezarysanecki.parkingdomain.commons.date.DateProvider;
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId;
+import pl.cezarysanecki.parkingdomain.shared.ParkingOpeningHours;
 
-import java.time.LocalTime;
+import java.time.Instant;
 import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
 public class CleaningFacade {
-
-  private static final LocalTime TECHNICAL_BREAK_START = LocalTime.of(1, 0);
-  private static final LocalTime TECHNICAL_BREAK_END = LocalTime.of(5, 0);
 
   private final CleaningRepository cleaningRepository;
   private final ExternalCleaningService externalCleaningService;
@@ -22,10 +20,10 @@ public class CleaningFacade {
   private final int numberOfDrivesAwayToConsiderParkingSpotDirty;
 
   public Result callCleaning() {
-    LocalTime currentTime = dateProvider.now().atZone(DateProvider.ZONE_OFFSET).toLocalTime();
-    if (!isDuringTechnicalBreak(currentTime)) {
+    Instant now = dateProvider.now();
+    if (!ParkingOpeningHours.isTechnicalBreak(now)) {
       log.debug("cannot call external cleaning service at {}, parking spots can be cleaned only during technical break [{}, {})",
-          currentTime, TECHNICAL_BREAK_START, TECHNICAL_BREAK_END);
+          now, ParkingOpeningHours.CLOSING, ParkingOpeningHours.OPENING);
       return Result.Rejection;
     }
     log.debug("calling external service to clean parking spots");
@@ -43,10 +41,6 @@ public class CleaningFacade {
     List<ParkingSpotId> dirtyParkingSpots = cleaningRepository.getAllRecordsWithCounterAtLeast(numberOfDrivesAwayToConsiderParkingSpotDirty);
     log.debug("found {} dirty parking spots", dirtyParkingSpots.size());
     return dirtyParkingSpots;
-  }
-
-  private static boolean isDuringTechnicalBreak(LocalTime time) {
-    return !time.isBefore(TECHNICAL_BREAK_START) && time.isBefore(TECHNICAL_BREAK_END);
   }
 
 }

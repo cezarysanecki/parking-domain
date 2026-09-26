@@ -126,7 +126,7 @@ vehicles to occupy a single parking spot. Further requirements are outlined belo
 ### Parking
 
 - Parking is available **since 5am until 1am**
-    - Clients can only occupy parking spots **until 12pm**
+    - Clients can only occupy parking spots **until 12am (midnight)**
     - The last hour is reserved for reminders about releasing parking spots and towing
 - There is technical break **since 1am until 5am**
 - Parking spots have their own identity

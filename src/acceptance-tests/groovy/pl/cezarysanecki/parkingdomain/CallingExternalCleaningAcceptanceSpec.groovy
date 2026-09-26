@@ -30,6 +30,10 @@ class CallingExternalCleaningAcceptanceSpec extends BaseAcceptanceSpec {
   @Value('${job.calling-external-cleaning-service-policy-job.cron-expression}')
   String cleaningJobCronExpression
 
+  def setup() {
+    currentTimeIs(DURING_OCCUPYING_HOURS)
+  }
+
   def "call cleaning during technical break if there is required number of dirty parking spots"() {
     given:
       makeTenParkingSpotsDirty()

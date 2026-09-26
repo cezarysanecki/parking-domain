@@ -23,6 +23,10 @@ public class OccupyUsingReservationUseCase {
   @Transactional
   public Optional<OccupationId> run(OccupantId occupantId, ReservationId reservationId) {
     log.debug("occupying parking spot using reservation with id {}", reservationId);
+    if (!parkingFacade.canOccupyNow()) {
+      log.debug("cannot use reservation with id {} outside occupying hours", reservationId);
+      return Optional.empty();
+    }
     return reservationFacade.useReservationFor(reservationId, reservation -> {
           return parkingFacade.occupyUsing(
               occupantId,

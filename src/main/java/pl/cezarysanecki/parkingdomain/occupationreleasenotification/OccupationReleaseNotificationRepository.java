@@ -24,4 +24,6 @@ interface OccupationReleaseNotificationRepository {
   void doneFor(Instant date);
 
   List<NotificationResolver> findFor(Instant date);
+
+  List<OccupantToRemindAboutClosing> findAllOccupants();
 }
