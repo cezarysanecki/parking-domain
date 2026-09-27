@@ -7,16 +7,16 @@ import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotCapa
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.parking.api.OccupantId
 import pl.cezarysanecki.parkingdomain.parking.api.OccupationId
-import pl.cezarysanecki.parkingdomain.shared.VehicleType
-
-import static pl.cezarysanecki.parkingdomain.shared.VehicleType.MOTORCYCLE
-import static pl.cezarysanecki.parkingdomain.shared.VehicleType.SCOOTER
+import pl.cezarysanecki.parkingdomain.shared.SpotUnits
 
 /**
  * Works on the repositories and the aggregate, not on ParkingFacade, so it does not depend on
  * the wall clock of the integration context.
  */
-class SharingParkingSpotByVehicleTypesIntegrationSpec extends BaseIntegrationSpec {
+class SharingParkingSpotIntegrationSpec extends BaseIntegrationSpec {
+
+  static final SpotUnits TWO = new SpotUnits(2)
+  static final SpotUnits ONE = new SpotUnits(1)
 
   @Autowired
   ParkingRepository parkingRepository
@@ -25,34 +25,34 @@ class SharingParkingSpotByVehicleTypesIntegrationSpec extends BaseIntegrationSpe
   @Autowired
   OccupationRepository occupationRepository
 
-  def "parking spot stored in Postgres can be shared by motorcycle and two scooters and then it is full"() {
+  def "parking spot stored in Postgres can be shared by 2 + 1 + 1 units and then it is full"() {
     given:
       def parkingSpotId = new ParkingSpotId(UUID.randomUUID())
       parkingRepository.saveNew(ParkingSpot.create(parkingSpotId, ParkingSpotCapacity.defaultCapacity()))
 
     when:
-      def results = [MOTORCYCLE, SCOOTER, SCOOTER].collect { occupy(parkingSpotId, it) }
+      def results = [TWO, ONE, ONE].collect { occupy(parkingSpotId, it) }
 
     then:
       results == [true, true, true]
 
     when:
-      def oneMoreScooter = occupy(parkingSpotId, SCOOTER)
+      def oneMoreUnit = occupy(parkingSpotId, ONE)
 
     then:
-      oneMoreScooter == false
+      oneMoreUnit == false
   }
 
-  private boolean occupy(ParkingSpotId parkingSpotId, VehicleType vehicleType) {
+  private boolean occupy(ParkingSpotId parkingSpotId, SpotUnits spotUnits) {
     def clientId = new ClientId(UUID.randomUUID())
     occupantRepository.saveNew(Occupant.newOne(clientId))
     def occupant = occupantRepository.findBy(new OccupantId(clientId.value()))
     def parkingSpot = parkingRepository.loadBy(parkingSpotId)
-    if (!parkingSpot.occupyBy(vehicleType.spotUnits())) {
+    if (!parkingSpot.occupyBy(spotUnits)) {
       return false
     }
     occupationRepository.saveCheckingVersion(
-        new Occupation(new OccupationId(UUID.randomUUID()), occupant, parkingSpot, vehicleType.spotUnits()))
+        new Occupation(new OccupationId(UUID.randomUUID()), occupant, parkingSpot, spotUnits))
     return true
   }
 

@@ -1,5 +1,6 @@
-package pl.cezarysanecki.parkingdomain.shared
+package pl.cezarysanecki.parkingdomain.web
 
+import pl.cezarysanecki.parkingdomain.shared.SpotUnits
 import spock.lang.Specification
 
 class VehicleTypeSpec extends Specification {

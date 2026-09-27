@@ -11,14 +11,18 @@ import pl.cezarysanecki.parkingdomain.requesting.api.RequestId
 import pl.cezarysanecki.parkingdomain.requesting.api.RequesterId
 import pl.cezarysanecki.parkingdomain.reservation.api.ReservationId
 import pl.cezarysanecki.parkingdomain.reservation.usecase.ActivatingReservationsUseCase
+import pl.cezarysanecki.parkingdomain.shared.SpotUnits
 import pl.cezarysanecki.parkingdomain.shared.TimeSlot
-import pl.cezarysanecki.parkingdomain.shared.VehicleType
 
-import static pl.cezarysanecki.parkingdomain.shared.VehicleType.CAR
-import static pl.cezarysanecki.parkingdomain.shared.VehicleType.MOTORCYCLE
-import static pl.cezarysanecki.parkingdomain.shared.VehicleType.SCOOTER
+/**
+ * README: parking spot has 4 units and can be shared, f.ex. 1 x 4, 2 x 2, 1 x 2 + 2 x 1, 4 x 1.
+ * Domain works on spot units only - vehicle types are translated to units in the web layer.
+ */
+class SharingParkingSpotAcceptanceSpec extends BaseAcceptanceSpec {
 
-class OccupyingParkingSpotByVehicleTypesAcceptanceSpec extends BaseAcceptanceSpec {
+  static final SpotUnits FOUR = new SpotUnits(4)
+  static final SpotUnits TWO = new SpotUnits(2)
+  static final SpotUnits ONE = new SpotUnits(1)
 
   @Autowired
   ParkingFacade parkingFacade
@@ -32,70 +36,69 @@ class OccupyingParkingSpotByVehicleTypesAcceptanceSpec extends BaseAcceptanceSpe
   def timeSlot = TimeSlot.create(CURRENT_DATE, 10, 15)
 
   def setup() {
-    // occupy during the day, not at midnight set by BaseAcceptanceSpec
-    dateProvider.passHours(10)
+    currentTimeIs(DURING_OCCUPYING_HOURS)
   }
 
-  def "parking spot can be fully occupied by #vehicles"() {
+  def "parking spot can be fully occupied by #units units"() {
     given:
       def parkingSpotId = addParkingSpot()
 
     when:
-      def results = vehicles.collect { occupy(parkingSpotId, it) }
+      def results = units.collect { occupy(parkingSpotId, it) }
 
     then:
       results.every { it.isPresent() }
 
     when: "spot is full"
-      def oneMoreScooter = occupy(parkingSpotId, SCOOTER)
+      def oneMoreUnit = occupy(parkingSpotId, ONE)
 
-    then: "even a scooter does not fit"
-      oneMoreScooter.isEmpty()
+    then: "even one more unit does not fit"
+      oneMoreUnit.isEmpty()
 
     where:
-      vehicles << [
-          [CAR],
-          [MOTORCYCLE, MOTORCYCLE],
-          [MOTORCYCLE, SCOOTER, SCOOTER],
-          [SCOOTER, SCOOTER, SCOOTER, SCOOTER]
+      units << [
+          [FOUR],
+          [TWO, TWO],
+          [TWO, ONE, ONE],
+          [ONE, ONE, ONE, ONE]
       ]
   }
 
-  def "#vehicleType does not fit when #alreadyParked already occupy the parking spot"() {
+  def "#spotUnits units do not fit when #alreadyTaken units are already taken"() {
     given:
       def parkingSpotId = addParkingSpot()
-      alreadyParked.each { assert occupy(parkingSpotId, it).isPresent() }
+      alreadyTaken.each { assert occupy(parkingSpotId, it).isPresent() }
 
     when:
-      def result = occupy(parkingSpotId, vehicleType)
+      def result = occupy(parkingSpotId, spotUnits)
 
     then:
       result.isEmpty()
 
     where:
-      alreadyParked                | vehicleType
-      [MOTORCYCLE, SCOOTER]        | MOTORCYCLE
-      [SCOOTER, SCOOTER, SCOOTER]  | MOTORCYCLE
+      alreadyTaken    | spotUnits
+      [TWO, ONE]      | TWO
+      [ONE, ONE, ONE] | TWO
   }
 
-  def "parking spot can be requested by vehicles as long as they fit"() {
+  def "parking spot can be requested as long as requested units fit"() {
     given:
       def parkingSpotId = addParkingSpot()
       requestingFacade.createForAll(timeSlot)
 
     when:
-      def results = [MOTORCYCLE, SCOOTER, SCOOTER, CAR].collect { request(parkingSpotId, it) }
+      def results = [TWO, ONE, ONE, FOUR].collect { request(parkingSpotId, it) }
 
     then:
       results*.isPresent() == [true, true, true, false]
   }
 
-  def "vehicle using reservation occupies only units of vehicle type from request"() {
+  def "occupying using reservation takes only units from request"() {
     given:
       def parkingSpotId = addParkingSpot()
       requestingFacade.createForAll(timeSlot)
       def requesterId = registerClient().value()
-      def requestId = request(parkingSpotId, MOTORCYCLE, requesterId).orElseThrow()
+      def requestId = request(parkingSpotId, TWO, requesterId).orElseThrow()
       requestingFacade.makeValidFor(CURRENT_DATE)
       dateProvider.setCurrentDate(CURRENT_DATE)
       dateProvider.passHours(9)
@@ -109,20 +112,20 @@ class OccupyingParkingSpotByVehicleTypesAcceptanceSpec extends BaseAcceptanceSpe
       result.isPresent()
 
     when: "the other half of the spot is still free"
-      def car = occupy(parkingSpotId, CAR)
-      def motorcycle = occupy(parkingSpotId, MOTORCYCLE)
+      def fourUnits = occupy(parkingSpotId, FOUR)
+      def twoUnits = occupy(parkingSpotId, TWO)
 
-    then: "it fits a motorcycle, but not a car"
-      car.isEmpty()
-      motorcycle.isPresent()
+    then: "it fits 2 more units, but not 4"
+      fourUnits.isEmpty()
+      twoUnits.isPresent()
   }
 
-  private Optional<OccupationId> occupy(ParkingSpotId parkingSpotId, VehicleType vehicleType) {
-    return parkingFacade.occupy(new OccupantId(registerClient().value()), parkingSpotId, vehicleType)
+  private Optional<OccupationId> occupy(ParkingSpotId parkingSpotId, SpotUnits spotUnits) {
+    return parkingFacade.occupy(new OccupantId(registerClient().value()), parkingSpotId, spotUnits)
   }
 
-  private Optional<RequestId> request(ParkingSpotId parkingSpotId, VehicleType vehicleType, UUID requesterId = registerClient().value()) {
-    return requestingFacade.request(new RequesterId(requesterId), parkingSpotId, timeSlot, vehicleType)
+  private Optional<RequestId> request(ParkingSpotId parkingSpotId, SpotUnits spotUnits, UUID requesterId = registerClient().value()) {
+    return requestingFacade.request(new RequesterId(requesterId), parkingSpotId, timeSlot, spotUnits)
   }
 
 }

@@ -20,7 +20,6 @@ import pl.cezarysanecki.parkingdomain.parking.usecase.OccupyUsingReservationUseC
 import pl.cezarysanecki.parkingdomain.parking.usecase.OccupyingWithoutAccountUseCase;
 import pl.cezarysanecki.parkingdomain.parking.usecase.RemoveOccupationByForceUseCase;
 import pl.cezarysanecki.parkingdomain.reservation.api.ReservationId;
-import pl.cezarysanecki.parkingdomain.shared.VehicleType;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -55,7 +54,7 @@ class ParkingController {
     var result = parkingFacade.occupy(
         new OccupantId(request.occupantId),
         new ParkingSpotId(request.parkingSpotId),
-        request.vehicleType
+        request.vehicleType.spotUnits()
     );
     return result
         .map(OccupationId::toString)
@@ -68,7 +67,7 @@ class ParkingController {
     var result = occupyingWithoutAccountUseCase.run(
         PhoneNumber.of(request.phoneNumber),
         new ParkingSpotId(request.parkingSpotId),
-        request.vehicleType
+        request.vehicleType.spotUnits()
     );
 
     return result

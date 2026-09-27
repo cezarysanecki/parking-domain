@@ -13,7 +13,6 @@ import pl.cezarysanecki.parkingdomain.requesting.api.RequestId;
 import pl.cezarysanecki.parkingdomain.requesting.api.RequesterId;
 import pl.cezarysanecki.parkingdomain.requesting.usecase.CreatingTimeSlotsForNextDayUseCase;
 import pl.cezarysanecki.parkingdomain.shared.TimeSlot;
-import pl.cezarysanecki.parkingdomain.shared.VehicleType;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -45,7 +44,7 @@ class RequestingController {
             request.from.atZone(ZoneId.systemDefault()).toInstant(),
             request.to.atZone(ZoneId.systemDefault()).toInstant()
         ),
-        request.vehicleType
+        request.vehicleType.spotUnits()
     );
     return result
         .map(RequestId::toString)

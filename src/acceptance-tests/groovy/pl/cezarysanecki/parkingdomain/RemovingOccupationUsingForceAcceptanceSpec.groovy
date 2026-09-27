@@ -5,7 +5,7 @@ import pl.cezarysanecki.parkingdomain.parking.ParkingFacade
 import pl.cezarysanecki.parkingdomain.parking.api.OccupantId
 import pl.cezarysanecki.parkingdomain.parking.api.ParkingSpotForceReleased
 import pl.cezarysanecki.parkingdomain.parking.usecase.RemoveOccupationByForceUseCase
-import pl.cezarysanecki.parkingdomain.shared.VehicleType
+import pl.cezarysanecki.parkingdomain.shared.SpotUnits
 
 class RemovingOccupationUsingForceAcceptanceSpec extends BaseAcceptanceSpec {
 
@@ -24,7 +24,7 @@ class RemovingOccupationUsingForceAcceptanceSpec extends BaseAcceptanceSpec {
       def clientId = registerClient()
 
     when:
-      def occupation = parkingFacade.occupy(new OccupantId(clientId.value()), parkingSpotId, VehicleType.CAR).orElseThrow()
+      def occupation = parkingFacade.occupy(new OccupantId(clientId.value()), parkingSpotId, new SpotUnits(4)).orElseThrow()
       def result = removeOccupationByForceUseCase.run(occupation, ParkingSpotForceReleased.Reason.NOT_RELEASED_PARKING_SPOT)
 
     then:

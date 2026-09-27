@@ -98,9 +98,9 @@ Do zrobienia:
 - Wprowadzić typ pojazdu, z którego wynika liczba jednostek.
 - Przejść w API i zgłoszeniach z surowych jednostek na typ pojazdu.
 
-Zrobione: `shared.VehicleType` (`CAR` = 4, `MOTORCYCLE` = 2, `SCOOTER` = 1). Fasady, use case
-zajmowania bez konta i HTTP API (`vehicleType` zamiast `spotUnits`) przyjmują typ pojazdu, a model
-i schemat zostają na jednostkach. Przy okazji poprawiony błąd profilu `local`: zajęta przestrzeń
+Zrobione: domena nie zna typów pojazdów, wie tylko, ile jednostek miejsca jest zajętych (`SpotUnits`).
+Typ pojazdu (`web.VehicleType`: `CAR` = 4, `MOTORCYCLE` = 2, `SCOOTER` = 1) istnieje tylko w HTTP API
+(`vehicleType` zamiast `spotUnits`), a kontrolery tłumaczą go na jednostki. Przy okazji poprawiony błąd profilu `local`: zajęta przestrzeń
 miejsca liczyła się tylko z jednego zajęcia, przez co kombinacje z README dało się przepełnić.
 
 ## 6. Testy
