@@ -20,8 +20,8 @@ import pl.cezarysanecki.parkingdomain.parking.usecase.OccupyUsingReservationUseC
 import pl.cezarysanecki.parkingdomain.parking.usecase.OccupyingWithoutAccountUseCase;
 import pl.cezarysanecki.parkingdomain.parking.usecase.RemoveOccupationByForceUseCase;
 import pl.cezarysanecki.parkingdomain.reservation.api.ReservationId;
-import pl.cezarysanecki.parkingdomain.shared.SpotUnits;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -54,7 +54,7 @@ class ParkingController {
     var result = parkingFacade.occupy(
         new OccupantId(request.occupantId),
         new ParkingSpotId(request.parkingSpotId),
-        new SpotUnits(request.spotUnits)
+        request.vehicleType.spotUnits()
     );
     return result
         .map(OccupationId::toString)
@@ -67,7 +67,7 @@ class ParkingController {
     var result = occupyingWithoutAccountUseCase.run(
         PhoneNumber.of(request.phoneNumber),
         new ParkingSpotId(request.parkingSpotId),
-        new SpotUnits(request.spotUnits)
+        request.vehicleType.spotUnits()
     );
 
     return result
@@ -120,15 +120,21 @@ class ParkingController {
   record OccupyParkingSpotRequest(
       UUID occupantId,
       UUID parkingSpotId,
-      int spotUnits
+      VehicleType vehicleType
   ) {
+    OccupyParkingSpotRequest {
+      Objects.requireNonNull(vehicleType, "vehicleType is required");
+    }
   }
 
   record OccupyParkingSpotWithoutAccountRequest(
       String phoneNumber,
       UUID parkingSpotId,
-      int spotUnits
+      VehicleType vehicleType
   ) {
+    OccupyParkingSpotWithoutAccountRequest {
+      Objects.requireNonNull(vehicleType, "vehicleType is required");
+    }
   }
 
   record OccupyParkingSpotUsingReservationRequest(

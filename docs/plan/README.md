@@ -98,6 +98,11 @@ Do zrobienia:
 - Wprowadzić typ pojazdu, z którego wynika liczba jednostek.
 - Przejść w API i zgłoszeniach z surowych jednostek na typ pojazdu.
 
+Zrobione: domena nie zna typów pojazdów, wie tylko, ile jednostek miejsca jest zajętych (`SpotUnits`).
+Typ pojazdu (`web.VehicleType`: `CAR` = 4, `MOTORCYCLE` = 2, `SCOOTER` = 1) istnieje tylko w HTTP API
+(`vehicleType` zamiast `spotUnits`), a kontrolery tłumaczą go na jednostki. Przy okazji poprawiony błąd profilu `local`: zajęta przestrzeń
+miejsca liczyła się tylko z jednego zajęcia, przez co kombinacje z README dało się przepełnić.
+
 ## 6. Testy
 
 README: testy jednostkowe i integracyjne, pisane w **Spocku**, z Testcontainers.
@@ -142,6 +147,9 @@ To, że zapisy JOOQ należą do transakcji fasady, sprawdza `ReleasingParkingSpo
 - `InMemoryCleaningRepository` korzysta ze statycznej `InMemoryRepositories.CLEANING_DATABASE`
   współdzielonej z kontekstem akceptacyjnym; rozważyć lokalną mapę (zmiana w `src/main`; naturalny
   moment: zadania 2/3 o sprzątaniu).
+- `requesting/_InMemory.toDomain` sumuje **wszystkie** zgłoszenia dla miejsca bez względu na slot
+  czasowy, więc w profilu `local` zgłoszenia z jednego slotu zmniejszają pojemność innego.
+  Znalezione przy punkcie 5, poza jego zakresem.
 
 ## Proponowana kolejność
 
