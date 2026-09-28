@@ -1,86 +1,166 @@
 package pl.cezarysanecki.parkingdomain
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.MediaType
-import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.web.context.WebApplicationContext
+import pl.cezarysanecki.parkingdomain.api.ParkingHttpApi
+import pl.cezarysanecki.parkingdomain.api.ParkingHttpApi.MakeRequestBody
+import pl.cezarysanecki.parkingdomain.api.ParkingHttpApi.OccupyParkingSpotBody
+import pl.cezarysanecki.parkingdomain.api.ParkingHttpApi.OccupyParkingSpotWithoutAccountBody
 import pl.cezarysanecki.parkingdomain.management.parkingspot.api.ParkingSpotId
 import pl.cezarysanecki.parkingdomain.requesting.RequestingFacade
 import pl.cezarysanecki.parkingdomain.shared.TimeSlot
+import pl.cezarysanecki.parkingdomain.views.ViewFreeCurrentParkingSpotsRepository
+import pl.cezarysanecki.parkingdomain.views.ViewFreeTimeSlotsRepository
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-
+/**
+ * Vehicle type exists only in the HTTP API - the web layer translates it into spot units.
+ */
 class VehicleTypeHttpApiAcceptanceSpec extends BaseAcceptanceSpec {
 
   @Autowired
   WebApplicationContext webApplicationContext
   @Autowired
+  ObjectMapper objectMapper
+  @Autowired
   RequestingFacade requestingFacade
+  @Autowired
+  ViewFreeCurrentParkingSpotsRepository viewFreeCurrentParkingSpotsRepository
+  @Autowired
+  ViewFreeTimeSlotsRepository viewFreeTimeSlotsRepository
 
-  MockMvc mockMvc
-
+  ParkingHttpApi api
   ParkingSpotId parkingSpotId
 
   def setup() {
-    // occupy during the day, not at midnight set by BaseAcceptanceSpec
-    dateProvider.passHours(10)
-    mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build()
+    currentTimeIs(DURING_OCCUPYING_HOURS)
+    api = new ParkingHttpApi(MockMvcBuilders.webAppContextSetup(webApplicationContext).build(), objectMapper)
     parkingSpotId = addParkingSpot()
   }
 
-  def "occupying parking spot accepts vehicle type"() {
+  def "occupying parking spot by #vehicleType takes #units unit(s) of parking spot"() {
     when:
-      def status = postJson("/parking/occupy", """
-          {"occupantId": "${registerClient().value()}", "parkingSpotId": "${parkingSpotId.value()}", "vehicleType": "CAR"}
-      """)
+      def status = api.occupy(occupyBody(vehicleType: vehicleType))
 
     then:
       status == 200
+      spaceLeftOnParkingSpot() == 4 - units
+
+    where:
+      vehicleType  || units
+      "CAR"        || 4
+      "MOTORCYCLE" || 2
+      "SCOOTER"    || 1
   }
 
-  def "occupying parking spot without account accepts vehicle type"() {
+  def "occupying parking spot without account by vehicle type takes its units"() {
     when:
-      def status = postJson("/parking/occupy-without-account", """
-          {"phoneNumber": "${RandomTestUtils.randomPhoneNumber()}", "parkingSpotId": "${parkingSpotId.value()}", "vehicleType": "MOTORCYCLE"}
-      """)
+      def status = api.occupyWithoutAccount(occupyWithoutAccountBody(vehicleType: "MOTORCYCLE"))
 
     then:
       status == 200
+      spaceLeftOnParkingSpot() == 2
   }
 
-  def "making request accepts vehicle type"() {
+  def "requesting parking spot by vehicle type takes its units in time slot"() {
+    given:
+      def timeSlot = TimeSlot.create(CURRENT_DATE, 10, 15)
+      requestingFacade.createForAll(timeSlot)
+
+    when:
+      def status = api.makeRequest(makeRequestBody(vehicleType: "SCOOTER"))
+
+    then:
+      status == 200
+      spaceLeftInTimeSlot() == 3
+  }
+
+  def "occupying parking spot is rejected for #description"() {
+    when:
+      def status = api.occupy(occupyBody(changes))
+
+    then:
+      status == 400
+      spaceLeftOnParkingSpot() == 4
+
+    where:
+      description                                | changes
+      "unknown vehicle type"                     | [vehicleType: "car"]
+      "missing vehicle type"                     | [vehicleType: null]
+      "spot units sent instead of vehicle type"  | [vehicleType: null, spotUnits: 2]
+  }
+
+  def "occupying parking spot without account is rejected for #description"() {
+    when:
+      def status = api.occupyWithoutAccount(occupyWithoutAccountBody(changes))
+
+    then:
+      status == 400
+      spaceLeftOnParkingSpot() == 4
+
+    where:
+      description                                | changes
+      "unknown vehicle type"                     | [vehicleType: "car"]
+      "spot units sent instead of vehicle type"  | [vehicleType: null, spotUnits: 2]
+  }
+
+  def "requesting parking spot is rejected for #description"() {
     given:
       requestingFacade.createForAll(TimeSlot.create(CURRENT_DATE, 10, 15))
 
     when:
-      def status = postJson("/requesting/request", """
-          {"requesterId": "${registerClient().value()}", "parkingSpotId": "${parkingSpotId.value()}",
-           "from": "2020-10-10T10:00:00", "to": "2020-10-10T15:00:00", "vehicleType": "SCOOTER"}
-      """)
-
-    then:
-      status == 200
-  }
-
-  def "#endpoint rejects request with #description"() {
-    when:
-      def status = postJson(endpoint, body.replace("PARKING_SPOT_ID", parkingSpotId.value().toString()))
+      def status = api.makeRequest(makeRequestBody(changes))
 
     then:
       status == 400
+      spaceLeftInTimeSlot() == 4
 
     where:
-      endpoint                          | description                         | body
-      "/parking/occupy"                 | "unknown (lowercase) vehicle type"  | '{"occupantId": "' + UUID.randomUUID() + '", "parkingSpotId": "PARKING_SPOT_ID", "vehicleType": "car"}'
-      "/parking/occupy"                 | "raw spot units instead of type"    | '{"occupantId": "' + UUID.randomUUID() + '", "parkingSpotId": "PARKING_SPOT_ID", "spotUnits": 2}'
-      "/parking/occupy-without-account" | "raw spot units instead of type"    | '{"phoneNumber": "123456789", "parkingSpotId": "PARKING_SPOT_ID", "spotUnits": 2}'
-      "/requesting/request"             | "raw spot units instead of type"    | '{"requesterId": "' + UUID.randomUUID() + '", "parkingSpotId": "PARKING_SPOT_ID", "from": "2020-10-10T10:00:00", "to": "2020-10-10T15:00:00", "spotUnits": 4}'
+      description                                | changes
+      "unknown vehicle type"                     | [vehicleType: "car"]
+      "spot units sent instead of vehicle type"  | [vehicleType: null, spotUnits: 4]
   }
 
-  private int postJson(String url, String body) {
-    return mockMvc.perform(post(url).contentType(MediaType.APPLICATION_JSON).content(body))
-        .andReturn().response.status
+  private OccupyParkingSpotBody occupyBody(Map changes) {
+    def body = new OccupyParkingSpotBody(
+        occupantId: registerClient().value(),
+        parkingSpotId: parkingSpotId.value(),
+        vehicleType: "CAR")
+    changes.each { field, value -> body[field] = value }
+    return body
+  }
+
+  private OccupyParkingSpotWithoutAccountBody occupyWithoutAccountBody(Map changes) {
+    def body = new OccupyParkingSpotWithoutAccountBody(
+        phoneNumber: RandomTestUtils.randomPhoneNumber().value,
+        parkingSpotId: parkingSpotId.value(),
+        vehicleType: "CAR")
+    changes.each { field, value -> body[field] = value }
+    return body
+  }
+
+  private MakeRequestBody makeRequestBody(Map changes) {
+    def body = new MakeRequestBody(
+        requesterId: registerClient().value(),
+        parkingSpotId: parkingSpotId.value(),
+        from: CURRENT_DATE.atTime(10, 0),
+        to: CURRENT_DATE.atTime(15, 0),
+        vehicleType: "CAR")
+    changes.each { field, value -> body[field] = value }
+    return body
+  }
+
+  private int spaceLeftOnParkingSpot() {
+    return viewFreeCurrentParkingSpotsRepository.queryParkingSpots()
+        .find { it.parkingSpotId() == parkingSpotId.value() }
+        .spaceLeft()
+  }
+
+  private int spaceLeftInTimeSlot() {
+    return viewFreeTimeSlotsRepository.queryFreeTimeSlots()
+        .find { it.parkingSpotId() == parkingSpotId.value() }
+        .spaceLeft()
   }
 
 }

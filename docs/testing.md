@@ -70,6 +70,14 @@ akceptacyjne i integracyjne, a te ostatnie wymagają Dockera.
   ich use case.
 - Specyfikacji nie uruchamiamy równolegle, bo stan in-memory jest statyczny.
 
+### Testy HTTP API
+
+- Żądania wysyłamy przez `api.ParkingHttpApi` (MockMvc + `ObjectMapper` aplikacji). Ciało żądania
+  to obiekt z polami (np. `OccupyParkingSpotBody`), a nie ręcznie sklejany JSON. Pola `null` nie są
+  wysyłane.
+- Test buduje poprawne ciało żądania i zmienia tylko to, co sprawdza (np. `[vehicleType: "car"]`).
+- Oprócz statusu HTTP sprawdzamy efekt w aplikacji, np. ile miejsca zostało w widoku.
+
 ## Testy integracyjne: `BaseIntegrationSpec`
 
 - Adnotacje `@SpringBootTest` i `@ActiveProfiles("integration")`. Działają repozytoria JOOQ,
