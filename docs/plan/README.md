@@ -167,6 +167,9 @@ To, że zapisy JOOQ należą do transakcji fasady, sprawdza `ReleasingParkingSpo
   `IllegalArgumentException`, a w Postgres `EntityNotFound`; widok klienta po nieznanym id zwraca
   w Postgres 200, a w `local` rzuca `EntityNotFound`; `DELETE /parking/release`, `release-force`,
   `vehicle-towed` i `/requesting/cancel` z nieznanym id nie rzucają `EntityNotFound`.
+- Postgres `ProdRequestableParkingSpotRepository.saveCheckingVersion` podbija wersję po samym
+  `PARKING_SPOT`, bez `FROM`/`TO`, więc optymistyczne blokowanie obejmuje wszystkie sloty miejsca
+  naraz.
 
 Zrobione:
 - Rezerwacja nie jest zużywana, gdy zajęcie miejsca z nią się nie uda. Zostaje aktywna, więc
