@@ -150,6 +150,28 @@ To, że zapisy JOOQ należą do transakcji fasady, sprawdza `ReleasingParkingSpo
 - `requesting/_InMemory.toDomain` sumuje **wszystkie** zgłoszenia dla miejsca bez względu na slot
   czasowy, więc w profilu `local` zgłoszenia z jednego slotu zmniejszają pojemność innego.
   Znalezione przy punkcie 5, poza jego zakresem.
+- Granica „dokładnie 15 minut” przy niewykorzystanej rezerwacji działa różnie w profilach:
+  in-memory `loadAllActiveSince` używa `isBefore`, a Postgres `le`. Od tej granicy zależy opłata
+  50 USD. To samo dotyczy aktywacji rezerwacji 60 minut przed startem (`loadAllStaleSince`).
+  Decyzja: rezerwacja jest niewykorzystana dopiero **po** 15 minutach, a aktywna **już** dokładnie
+  60 minut przed startem.
+- `EntityNotFound` daje HTTP 500 zamiast 404. Decyzja: globalny `@RestControllerAdvice` zwracający
+  404 w formacie RFC 7807 (`ProblemDetail`). Przy okazji usunąć zbędne `.set(dataSource)` w
+  `DatabaseConfig`.
+- Przypomnienie o zwolnieniu miejsca przed rezerwacją (`occupationreleasenotification.findFor`)
+  działa różnie w profilach: in-memory wyklucza oba końce przedziału, Postgres (`between`) oba
+  włącza. Wymaga decyzji biznesowej o granicach.
+- Repozytoria Postgres porównują czas na `LocalDateTime` w strefie systemowej, więc w godzinie
+  cofnięcia zegara (koniec czasu letniego) kolejność zdarzeń może się odwrócić.
+- Niespójności przy nieznanych encjach między profilami: zajęcie nieznanego miejsca rzuca w `local`
+  `IllegalArgumentException`, a w Postgres `EntityNotFound`; widok klienta po nieznanym id zwraca
+  w Postgres 200, a w `local` rzuca `EntityNotFound`; `DELETE /parking/release`, `release-force`,
+  `vehicle-towed` i `/requesting/cancel` z nieznanym id nie rzucają `EntityNotFound`.
+
+Zrobione:
+- Rezerwacja nie jest zużywana, gdy zajęcie miejsca z nią się nie uda. Zostaje aktywna, więc
+  klient może spróbować ponownie. Jeśli nie zaparkuje w ciągu 15 minut, rezerwacja przepada
+  z opłatą jak dotąd.
 
 ## Proponowana kolejność
 
