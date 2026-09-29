@@ -103,7 +103,7 @@ class ProdReservationRepository implements ReservationRepository {
     return create
         .selectFrom(RESERVATION)
         .where(RESERVATION.STATUS.eq(Status.ACTIVE.name()))
-        .and(RESERVATION.FROM.le(LocalDateTime.ofInstant(date, ZoneId.systemDefault())))
+        .and(RESERVATION.FROM.lt(LocalDateTime.ofInstant(date, ZoneId.systemDefault())))
         .fetch()
         .map(record -> new Reservation(
             new ReservationId(record.getId()),
