@@ -27,14 +27,11 @@ public class OccupyUsingReservationUseCase {
       log.debug("cannot use reservation with id {} outside occupying hours", reservationId);
       return Optional.empty();
     }
-    return reservationFacade.useReservationFor(reservationId, reservation -> {
-          return parkingFacade.occupyUsing(
-              occupantId,
-              reservation.parkingSpotId(),
-              reservationId
-          );
-        })
-        .flatMap(result -> result);
+    return reservationFacade.useReservationFor(reservationId, reservation -> parkingFacade.occupyUsing(
+        occupantId,
+        reservation.parkingSpotId(),
+        reservationId
+    ));
   }
 
 }
