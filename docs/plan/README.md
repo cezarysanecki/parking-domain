@@ -144,9 +144,6 @@ To, że zapisy JOOQ należą do transakcji fasady, sprawdza `ReleasingParkingSpo
   `testResources` kopiuje `src/main/resources` do `target/classes`, a `src/test/resources` nigdy
   nie trafia na classpath testów. Trzeba przenieść konfigurację do execution `copy-resources`
   (osobna zmiana, bo dotyczy budowania zasobów produkcyjnych).
-- `InMemoryCleaningRepository` korzysta ze statycznej `InMemoryRepositories.CLEANING_DATABASE`
-  współdzielonej z kontekstem akceptacyjnym; rozważyć lokalną mapę (zmiana w `src/main`; naturalny
-  moment: zadania 2/3 o sprzątaniu).
 - `requesting/_InMemory.toDomain` sumuje **wszystkie** zgłoszenia dla miejsca bez względu na slot
   czasowy, więc w profilu `local` zgłoszenia z jednego slotu zmniejszają pojemność innego.
   Znalezione przy punkcie 5, poza jego zakresem.
@@ -172,6 +169,12 @@ To, że zapisy JOOQ należą do transakcji fasady, sprawdza `ReleasingParkingSpo
   naraz.
 
 Zrobione:
+- `InMemoryCleaningRepository` i statyczna `InMemoryRepositories.CLEANING_DATABASE`: zamknięte bez
+  zmian. Wszystkie repozytoria in-memory korzystają ze statycznych map z `InMemoryRepositories`, z
+  których czytają też widoki (`views/_InMemory.queryCleaning()`), więc lokalna mapa wyłączyłaby widok
+  sprzątania. Testy czyszczą mapy przez `clearAll()` i idą sekwencyjnie ([testing.md](../testing.md)),
+  więc stan nie przecieka. Izolację map, jeśli kiedyś będzie potrzebna, trzeba zaprojektować dla
+  wszystkich modułów naraz.
 - Rezerwacja nie jest zużywana, gdy zajęcie miejsca z nią się nie uda. Zostaje aktywna, więc
   klient może spróbować ponownie. Jeśli nie zaparkuje w ciągu 15 minut, rezerwacja przepada
   z opłatą jak dotąd.
