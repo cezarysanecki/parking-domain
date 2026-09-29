@@ -22,16 +22,20 @@ public class ReservationFacade {
   private final ReservationRepository reservationRepository;
 
   @Transactional
-  public <R> Optional<R> useReservationFor(ReservationId reservationId, Function<ReservedSpace, R> useCase) {
+  public <R> Optional<R> useReservationFor(ReservationId reservationId, Function<ReservedSpace, Optional<R>> useCase) {
     Reservation reservation = reservationRepository.loadActiveBy(reservationId);
     log.debug("found valid reservation with id {}", reservationId);
 
-    R result = useCase.apply(reservation);
+    Optional<R> result = useCase.apply(reservation);
+    if (result.isEmpty()) {
+      log.debug("reservation with id {} stays active, because it was not used", reservationId);
+      return Optional.empty();
+    }
 
     reservationRepository.markAsUsed(reservation);
 
     eventPublisher.publish(new ReservationUsed(reservationId));
-    return Optional.of(result);
+    return result;
   }
 
   @Transactional
