@@ -38,6 +38,19 @@ class InMemoryReservationRepositorySpec extends Specification {
       61             || false
   }
 
+  def "already active reservation is not activated again"() {
+    given:
+      def reservation = reservationStartingAt(NOW)
+      reservationRepository.saveAll([reservation])
+      reservationRepository.markAsActive([reservation.reservationId()])
+
+    when:
+      def result = reservationRepository.loadAllStaleSince(NOW + minutes(MINUTES_TO_CONSIDER_RESERVATION_ACTIVE))
+
+    then:
+      !(reservation in result)
+  }
+
   def "active reservation started #minutesAfterStart minutes ago is not used: #notUsed"() {
     given:
       def reservation = reservationStartingAt(NOW - minutes(minutesAfterStart))
