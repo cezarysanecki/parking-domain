@@ -103,21 +103,22 @@
         <plugins>
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
-                <configuration>
-                    <outputDirectory>${basedir}/target/classes</outputDirectory>
-                    <resources>
-                        <resource>
-                            <directory>${basedir}/src/main/resources</directory>
-                        </resource>
-                    </resources>
-                </configuration>
                 <executions>
+                    <!-- only path for src/main/resources into target/classes (build/resources omits it); jooq-codegen (generate-sources) reads the Liquibase changelog from there -->
                     <execution>
                         <id>copy-resources</id>
                         <phase>generate-sources</phase>
                         <goals>
                             <goal>copy-resources</goal>
                         </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/target/classes</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${basedir}/src/main/resources</directory>
+                                </resource>
+                            </resources>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

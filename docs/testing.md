@@ -96,8 +96,11 @@ akceptacyjne i integracyjne, a te ostatnie wymagają Dockera.
 
 ## Konfiguracja testów
 
-`src/test/resources` **nie** trafia dziś do `target/test-classes`. To znany błąd konfiguracji
-`maven-resources-plugin`, opisany w follow-upach w [planie](plan/README.md). Właściwości testowe
-ustawiamy więc przez `@SpringBootTest(properties = ...)` albo `@DynamicPropertySource`. Nie
-dodajemy konfiguracji testowej do `src/main/resources`. Jeśli potrzeba czegoś więcej, najpierw
-naprawiamy plugin w osobnej zmianie.
+`src/test/resources` trafia do `target/test-classes`, czyli na classpath testów, przed
+`src/main/resources`. Leży tam `application.properties` wspólny dla wszystkich kontekstów Springa w
+testach. Spring czyta go razem z `application.yaml` i plikami profili. Nie dodajemy tam plików o tej
+samej nazwie co w `src/main/resources` (np. `application.yaml`), bo przesłoniłyby produkcyjne w
+całości. Do `src/test/resources` trafiają tylko ustawienia wspólne dla wszystkich testów.
+Właściwości potrzebne tylko jednej klasie bazowej lub specyfikacji ustawiamy przez
+`@SpringBootTest(properties = ...)` albo `@DynamicPropertySource`. Nie dodajemy konfiguracji
+testowej do `src/main/resources`.
