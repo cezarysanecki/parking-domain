@@ -41,7 +41,7 @@ class VehicleTypeHttpApiAcceptanceSpec extends BaseAcceptanceSpec {
 
   def "occupying parking spot by #vehicleType takes #units unit(s) of parking spot"() {
     when:
-      def status = api.occupy(occupyBody(vehicleType: vehicleType))
+      def status = api.occupy(occupyBody(vehicleType: vehicleType)).status
 
     then:
       status == 200
@@ -56,7 +56,7 @@ class VehicleTypeHttpApiAcceptanceSpec extends BaseAcceptanceSpec {
 
   def "occupying parking spot without account by vehicle type takes its units"() {
     when:
-      def status = api.occupyWithoutAccount(occupyWithoutAccountBody(vehicleType: "MOTORCYCLE"))
+      def status = api.occupyWithoutAccount(occupyWithoutAccountBody(vehicleType: "MOTORCYCLE")).status
 
     then:
       status == 200
@@ -69,7 +69,7 @@ class VehicleTypeHttpApiAcceptanceSpec extends BaseAcceptanceSpec {
       requestingFacade.createForAll(timeSlot)
 
     when:
-      def status = api.makeRequest(makeRequestBody(vehicleType: "SCOOTER"))
+      def status = api.makeRequest(makeRequestBody(vehicleType: "SCOOTER")).status
 
     then:
       status == 200
@@ -78,7 +78,7 @@ class VehicleTypeHttpApiAcceptanceSpec extends BaseAcceptanceSpec {
 
   def "occupying parking spot is rejected for #description"() {
     when:
-      def status = api.occupy(occupyBody(changes))
+      def status = api.occupy(occupyBody(changes)).status
 
     then:
       status == 400
@@ -93,7 +93,7 @@ class VehicleTypeHttpApiAcceptanceSpec extends BaseAcceptanceSpec {
 
   def "occupying parking spot without account is rejected for #description"() {
     when:
-      def status = api.occupyWithoutAccount(occupyWithoutAccountBody(changes))
+      def status = api.occupyWithoutAccount(occupyWithoutAccountBody(changes)).status
 
     then:
       status == 400
@@ -110,7 +110,7 @@ class VehicleTypeHttpApiAcceptanceSpec extends BaseAcceptanceSpec {
       requestingFacade.createForAll(TimeSlot.create(CURRENT_DATE, 10, 15))
 
     when:
-      def status = api.makeRequest(makeRequestBody(changes))
+      def status = api.makeRequest(makeRequestBody(changes)).status
 
     then:
       status == 400

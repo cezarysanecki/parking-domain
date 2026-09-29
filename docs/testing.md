@@ -77,6 +77,8 @@ akceptacyjne i integracyjne, a te ostatnie wymagają Dockera.
   wysyłane.
 - Test buduje poprawne ciało żądania i zmienia tylko to, co sprawdza (np. `[vehicleType: "car"]`).
 - Oprócz statusu HTTP sprawdzamy efekt w aplikacji, np. ile miejsca zostało w widoku.
+- `ParkingHttpApi` zwraca `Response` (`status`, `contentType`, `problem`). `problem` to ciało RFC 7807,
+  wypełniane tylko dla `application/problem+json`, np. `response.problem.detail`.
 
 ## Testy integracyjne: `BaseIntegrationSpec`
 

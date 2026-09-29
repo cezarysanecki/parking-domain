@@ -25,23 +25,35 @@ class ParkingHttpApi {
     this.objectMapper = objectMapper
   }
 
-  int occupy(OccupyParkingSpotBody body) {
+  Response occupy(OccupyParkingSpotBody body) {
     return postJson("/parking/occupy", body)
   }
 
-  int occupyWithoutAccount(OccupyParkingSpotWithoutAccountBody body) {
+  Response occupyWithoutAccount(OccupyParkingSpotWithoutAccountBody body) {
     return postJson("/parking/occupy-without-account", body)
   }
 
-  int makeRequest(MakeRequestBody body) {
+  Response makeRequest(MakeRequestBody body) {
     return postJson("/requesting/request", body)
   }
 
-  private int postJson(String url, Object body) {
-    return mockMvc.perform(post(url)
+  private Response postJson(String url, Object body) {
+    def response = mockMvc.perform(post(url)
         .contentType(MediaType.APPLICATION_JSON)
         .content(objectMapper.writeValueAsString(body)))
-        .andReturn().response.status
+        .andReturn().response
+    return new Response(
+        status: response.status,
+        contentType: response.contentType,
+        problem: response.contentType == MediaType.APPLICATION_PROBLEM_JSON_VALUE
+            ? objectMapper.readValue(response.contentAsString, Map)
+            : null)
+  }
+
+  static class Response {
+    int status
+    String contentType
+    Map problem // RFC 7807 body, only for application/problem+json
   }
 
   @JsonInclude(JsonInclude.Include.NON_NULL)
