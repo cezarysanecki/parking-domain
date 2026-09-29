@@ -45,7 +45,7 @@ class InMemoryReservationRepository implements ReservationRepository {
   @Override
   public List<Reservation> loadAllStaleSince(Instant date) {
     return loadBy(
-        reservationEntity -> reservationEntity.timeSlot.from().isBefore(date)
+        reservationEntity -> !reservationEntity.timeSlot.from().isAfter(date)
             && reservationEntity.status == ReservationEntity.Status.STALE
     )
         .map(InMemoryReservationRepository::toDomain)
