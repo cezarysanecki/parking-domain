@@ -64,6 +64,7 @@ class ChargingFeeForNotUsedReservationAcceptanceSpec extends BaseAcceptanceSpec 
     where:
       minutesAfterStart || expectedFees | description
       14                || 0            | "not charged yet"
+      15                || 0            | "not charged yet"
       16                || 1            | "charged"
   }
 
