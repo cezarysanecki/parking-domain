@@ -34,7 +34,6 @@ public class DatabaseConfig {
     DataSourceConnectionProvider dataSourceConnectionProvider = new DataSourceConnectionProvider(
         new TransactionAwareDataSourceProxy(dataSource));
     return new DefaultDSLContext(new DefaultConfiguration()
-        .set(dataSource)
         .set(settings)
         .set(SQLDialect.POSTGRES)
         .set(dataSourceConnectionProvider));
