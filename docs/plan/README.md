@@ -140,21 +140,6 @@ To, że zapisy JOOQ należą do transakcji fasady, sprawdza `ReleasingParkingSpo
 
 ## Do zrobienia później (follow-upy)
 
-- `maven-resources-plugin` ma `outputDirectory` i `resources` ustawione na poziomie pluginu, więc
-  `testResources` kopiuje `src/main/resources` do `target/classes`, a `src/test/resources` nigdy
-  nie trafia na classpath testów. Trzeba przenieść konfigurację do execution `copy-resources`
-  (osobna zmiana, bo dotyczy budowania zasobów produkcyjnych).
-- `requesting/_InMemory.toDomain` sumuje **wszystkie** zgłoszenia dla miejsca bez względu na slot
-  czasowy, więc w profilu `local` zgłoszenia z jednego slotu zmniejszają pojemność innego.
-  Znalezione przy punkcie 5, poza jego zakresem.
-- Granica „dokładnie 15 minut” przy niewykorzystanej rezerwacji działa różnie w profilach:
-  in-memory `loadAllActiveSince` używa `isBefore`, a Postgres `le`. Od tej granicy zależy opłata
-  50 USD. To samo dotyczy aktywacji rezerwacji 60 minut przed startem (`loadAllStaleSince`).
-  Decyzja: rezerwacja jest niewykorzystana dopiero **po** 15 minutach, a aktywna **już** dokładnie
-  60 minut przed startem.
-- `EntityNotFound` daje HTTP 500 zamiast 404. Decyzja: globalny `@RestControllerAdvice` zwracający
-  404 w formacie RFC 7807 (`ProblemDetail`). Przy okazji usunąć zbędne `.set(dataSource)` w
-  `DatabaseConfig`.
 - Przypomnienie o zwolnieniu miejsca przed rezerwacją (`occupationreleasenotification.findFor`)
   działa różnie w profilach: in-memory wyklucza oba końce przedziału, Postgres (`between`) oba
   włącza. Wymaga decyzji biznesowej o granicach.
@@ -169,6 +154,15 @@ To, że zapisy JOOQ należą do transakcji fasady, sprawdza `ReleasingParkingSpo
   naraz.
 
 Zrobione:
+- `src/test/resources` trafia na classpath testów: konfiguracja `maven-resources-plugin` jest w
+  execution `copy-resources`, a jar produkcyjny się nie zmienił.
+- In-memory `requesting` liczy zajętą pojemność miejsca osobno dla każdego slotu czasowego, tak jak
+  Postgres.
+- Granice czasowe rezerwacji działają tak samo w obu profilach: rezerwacja jest niewykorzystana
+  dopiero **po** 15 minutach od startu (wtedy opłata 50 USD), a aktywna **już** dokładnie 60 minut
+  przed startem.
+- `EntityNotFound` daje HTTP 404 w formacie RFC 7807 (`ProblemDetail`) dla całego API. Zbędne
+  `.set(dataSource)` w `DatabaseConfig` jest usunięte.
 - `InMemoryCleaningRepository` i statyczna `InMemoryRepositories.CLEANING_DATABASE`: zamknięte bez
   zmian. Wszystkie repozytoria in-memory korzystają ze statycznych map z `InMemoryRepositories`, z
   których czytają też widoki (`views/_InMemory.queryCleaning()`), więc lokalna mapa wyłączyłaby widok
