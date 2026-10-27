@@ -45,6 +45,24 @@ class RequestingParkingSpotAcceptanceSpec extends BaseAcceptanceSpec {
       result.isPresent()
   }
 
+  def "request in one time slot does not take capacity of another time slot"() {
+    given:
+      def parkingSpotId = addParkingSpot()
+      def morning = TimeSlot.create(CURRENT_DATE, 5, 17)
+      def evening = TimeSlot.create(CURRENT_DATE, 18, 24)
+      requestingFacade.createForAll(morning)
+      requestingFacade.createForAll(evening)
+
+    and: "morning time slot is fully requested"
+      assert requestingFacade.request(new RequesterId(registerClient().value()), parkingSpotId, morning, new SpotUnits(4)).isPresent()
+
+    when:
+      def result = requestingFacade.request(new RequesterId(registerClient().value()), parkingSpotId, evening, new SpotUnits(4))
+
+    then:
+      result.isPresent()
+  }
+
   def "#clientType client #description"() {
     given:
       def firstParkingSpotId = addParkingSpot()

@@ -94,7 +94,7 @@ class InMemoryRequestableParkingSpotRepository implements RequestableParkingSpot
     return new RequestableParkingSpot(
         entity.freeTimeSlotKey.parkingSpotId(),
         entity.capacity,
-        InMemoryRequestRepository.findFor(entity.freeTimeSlotKey.parkingSpotId())
+        InMemoryRequestRepository.findFor(entity.freeTimeSlotKey.parkingSpotId(), entity.freeTimeSlotKey.timeSlot())
             .stream()
             .map(request -> request.units)
             .reduce(0, Integer::sum),
@@ -180,10 +180,10 @@ class InMemoryRequestRepository implements RequestRepository {
         .toList();
   }
 
-  static List<RequestEntity> findFor(ParkingSpotId parkingSpotId) {
+  static List<RequestEntity> findFor(ParkingSpotId parkingSpotId, TimeSlot timeSlot) {
     return DATABASE.values()
         .stream()
-        .filter(entity -> entity.parkingSpotId.equals(parkingSpotId))
+        .filter(entity -> entity.parkingSpotId.equals(parkingSpotId) && entity.timeSlot.equals(timeSlot))
         .toList();
   }
 
