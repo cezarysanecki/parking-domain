@@ -216,3 +216,7 @@ in the current project during the MVP phase.
 
 - [DevMentors YouTube video](https://www.youtube.com/@DevMentorsPL/videos)
 - [Library by example](https://github.com/ddd-by-examples/library)
+
+## License
+
+MIT, see [`LICENSE`](LICENSE).
